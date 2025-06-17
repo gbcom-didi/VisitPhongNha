@@ -1,8 +1,8 @@
-export const MAPBOX_CONFIG = {
-  accessToken: import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA',
-  style: 'mapbox://styles/mapbox/streets-v12',
-  center: [109.146630, 11.609051] as [number, number], // Ninh Thuan coordinates
+export const GOOGLE_MAPS_CONFIG = {
+  apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
+  center: { lat: 11.609051, lng: 109.146630 }, // Ninh Thuan coordinates
   zoom: 10,
+  mapId: import.meta.env.VITE_GOOGLE_MAPS_MAP_ID || '',
 };
 
 export interface MapMarker {
