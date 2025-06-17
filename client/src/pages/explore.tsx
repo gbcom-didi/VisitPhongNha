@@ -20,6 +20,7 @@ export default function Explore() {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
     const [showMapInMobile, setShowMapInMobile] = useState(false);
+  const [hoveredBusiness, setHoveredBusiness] = useState<BusinessWithCategory | null>(null);
 
   // Fetch categories
   const { data: categories = [] } = useQuery<Category[]>({
@@ -72,9 +73,15 @@ export default function Explore() {
     setIsModalOpen(true);
   };
 
-    const handleBusinessHover = (business: BusinessWithCategory) => {
-        setSelectedBusiness(business);
-    };
+  const handleBusinessHover = (business: BusinessWithCategory) => {
+    // Set hovered business for map zoom animation
+    setHoveredBusiness(business);
+  };
+
+  const handleBusinessLeave = () => {
+    // Clear hovered business and return to normal zoom
+    setHoveredBusiness(null);
+  };
 
   const handleMapPinClick = (business: BusinessWithCategory) => {
     setSelectedBusiness(business);
@@ -204,6 +211,7 @@ export default function Explore() {
                 onBusinessClick={handleBusinessClick}
                 onBusinessLike={handleBusinessLike}
                 onBusinessHover={handleBusinessHover}
+                onBusinessLeave={handleBusinessLeave}
                 selectedCategory={selectedCategory}
                 onCategoryChange={handleCategoryChange}
               />
@@ -217,7 +225,7 @@ export default function Explore() {
               businesses={filteredBusinesses}
               onBusinessClick={handleMapPinClick}
               selectedBusiness={selectedBusiness}
-              hoveredBusiness={selectedBusiness}
+              hoveredBusiness={hoveredBusiness}
             />
           </div>
         )}
@@ -318,6 +326,7 @@ export default function Explore() {
             onBusinessClick={handleBusinessClick}
             onBusinessLike={handleBusinessLike}
             onBusinessHover={handleBusinessHover}
+            onBusinessLeave={handleBusinessLeave}
             selectedCategory={selectedCategory}
             onCategoryChange={handleCategoryChange}
           />
@@ -329,7 +338,7 @@ export default function Explore() {
             businesses={filteredBusinesses}
             onBusinessClick={handleMapPinClick}
             selectedBusiness={selectedBusiness}
-            hoveredBusiness={selectedBusiness}
+            hoveredBusiness={hoveredBusiness}
           />
         </div>
       </div>

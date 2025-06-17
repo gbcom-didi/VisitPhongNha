@@ -8,15 +8,20 @@ interface BusinessCardProps {
   onLike?: (business: BusinessWithCategory) => void;
   onClick?: (business: BusinessWithCategory) => void;
   onHover?: (business: BusinessWithCategory) => void;
+  onLeave?: () => void;
 }
 
-export function BusinessCard({ business, onLike, onClick, onHover }: BusinessCardProps) {
+export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: BusinessCardProps) {
   const handleCardClick = () => {
     onClick?.(business);
   };
 
   const handleCardHover = () => {
     onHover?.(business);
+  };
+
+  const handleCardLeave = () => {
+    onLeave?.();
   };
 
   const handleLikeClick = (e: React.MouseEvent) => {
@@ -35,6 +40,7 @@ export function BusinessCard({ business, onLike, onClick, onHover }: BusinessCar
       className="bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border border-gray-100 overflow-hidden"
       onClick={handleCardClick}
       onMouseEnter={handleCardHover}
+      onMouseLeave={handleCardLeave}
     >
       {/* Business Image */}
       <div className="relative aspect-[4/3] bg-gray-200 overflow-hidden">

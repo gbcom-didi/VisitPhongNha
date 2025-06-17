@@ -13,6 +13,7 @@ interface BusinessDirectoryProps {
   onBusinessClick?: (business: BusinessWithCategory) => void;
   onBusinessLike?: (business: BusinessWithCategory) => void;
   onBusinessHover?: (business: BusinessWithCategory) => void;
+  onBusinessLeave?: () => void;
   selectedCategory: number | null;
   onCategoryChange: (categoryId: number | null) => void;
 }
@@ -23,6 +24,7 @@ export function BusinessDirectory({
   onBusinessClick, 
   onBusinessLike,
   onBusinessHover,
+  onBusinessLeave,
   selectedCategory,
   onCategoryChange
 }: BusinessDirectoryProps) {
@@ -141,6 +143,7 @@ export function BusinessDirectory({
                 onClick={onBusinessClick}
                 onLike={onBusinessLike}
                 onHover={onBusinessHover}
+                onLeave={onBusinessLeave}
               />
             ))}
           </div>

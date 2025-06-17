@@ -114,7 +114,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
     }
   }, [selectedBusiness]);
 
-  // Handle hovered business zoom
+  // Handle hovered business zoom with smooth animation
   useEffect(() => {
     if (!hoveredBusiness || !mapRef.current) return;
 
@@ -122,8 +122,33 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
     const lng = parseFloat(hoveredBusiness.longitude);
 
     if (!isNaN(lat) && !isNaN(lng)) {
+      // Smooth pan and zoom animation
       mapRef.current.panTo({ lat, lng });
-      mapRef.current.setZoom(16);
+      
+      // Animate zoom smoothly
+      const currentZoom = mapRef.current.getZoom() || 10;
+      const targetZoom = 16;
+      
+      if (currentZoom !== targetZoom) {
+        // Create smooth zoom animation
+        let step = 0;
+        const steps = 10;
+        const zoomDifference = targetZoom - currentZoom;
+        const zoomStep = zoomDifference / steps;
+        
+        const animateZoom = () => {
+          if (step < steps && mapRef.current) {
+            const newZoom = currentZoom + (zoomStep * step);
+            mapRef.current.setZoom(newZoom);
+            step++;
+            setTimeout(animateZoom, 50); // 50ms between steps for smooth animation
+          } else if (mapRef.current) {
+            mapRef.current.setZoom(targetZoom); // Ensure we end at exact target
+          }
+        };
+        
+        animateZoom();
+      }
     }
   }, [hoveredBusiness]);
 
