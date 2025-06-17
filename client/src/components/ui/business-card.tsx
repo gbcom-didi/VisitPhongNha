@@ -3,6 +3,25 @@ import { Button } from './button';
 import { Badge } from './badge';
 import type { BusinessWithCategory } from '@shared/schema';
 
+const getCategoryPlaceholderImage = (categorySlug: string) => {
+  const imageMap: Record<string, string> = {
+    'kiting': 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center',
+    'food-drink': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop&crop=center',
+    'stay': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&crop=center',
+    'recreation': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center',
+    'attractions': 'https://images.unsplash.com/photo-1539650116574-75c0c6d68bab?w=400&h=300&fit=crop&crop=center',
+    'waterfall': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center',
+    'market': 'https://images.unsplash.com/photo-1555529771-835f59fc5efe?w=400&h=300&fit=crop&crop=center',
+    'gym': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center',
+    'massage': 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=300&fit=crop&crop=center',
+    'medical': 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop&crop=center',
+    'atm': 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop&crop=center',
+    'default': 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop&crop=center'
+  };
+  
+  return imageMap[categorySlug] || imageMap['default'];
+};
+
 interface BusinessCardProps {
   business: BusinessWithCategory;
   onLike?: (business: BusinessWithCategory) => void;
@@ -45,9 +64,11 @@ export function BusinessCard({ business, onLike, onClick, onHover }: BusinessCar
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-            <MapPin className="w-12 h-12 text-gray-400" />
-          </div>
+          <img 
+            src={getCategoryPlaceholderImage(business.category?.slug || 'default')}
+            alt={business.name}
+            className="w-full h-full object-cover"
+          />
         )}
         
         {/* Like Button Overlay */}
