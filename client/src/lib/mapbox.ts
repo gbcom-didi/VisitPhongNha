@@ -16,24 +16,24 @@ export interface MapMarker {
 
 export const getCategoryColor = (categorySlug: string): string => {
   const colorMap: Record<string, string> = {
-    'stay': '#DDB097',
-    'food-drink': '#F7BAAD',
-    'kiting': '#3FC1C4',
-    'surf': '#35949B',
-    'things-to-do': '#A9D3D2',
-    'atm': '#DD4327',
-    'medical': '#DC2626',
-    'market': '#059669',
-    'supermarket': '#0891B2',
-    'mechanic': '#7C3AED',
-    'phone-repair': '#EA580C',
-    'gym': '#BE185D',
-    'massage': '#9333EA',
-    'recreation': '#16A34A',
-    'waterfall': '#0284C7',
-    'attractions': '#C2410C',
-    'pharmacy': '#DC2626',
-    'mobile-phone': '#7C2D12',
+    'stay': '#DD4327', // chili-red
+    'food-drink': '#F97316', // orange-500
+    'kiting': '#06B6D4', // cyan-500 (tropical-aqua)
+    'surf': '#0EA5E9', // sky-500 (sea-blue)
+    'things-to-do': '#8B5CF6', // violet-500
+    'atm': '#EF4444', // red-500
+    'medical': '#DC2626', // red-600
+    'market': '#10B981', // emerald-500
+    'supermarket': '#0891B2', // cyan-600
+    'mechanic': '#7C3AED', // violet-600
+    'phone-repair': '#EA580C', // orange-600
+    'gym': '#BE185D', // pink-600
+    'massage': '#9333EA', // purple-500
+    'recreation': '#16A34A', // green-600
+    'waterfall': '#0284C7', // sky-600
+    'attractions': '#F59E0B', // amber-500
+    'pharmacy': '#DC2626', // red-600
+    'mobile-phone': '#7C2D12', // orange-900
   };
 
   return colorMap[categorySlug] || '#6B7280';
