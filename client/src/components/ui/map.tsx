@@ -65,11 +65,11 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       const color = getCategoryColor(categorySlug);
       const iconPath = getCategoryIconPath(categorySlug);
 
-      // Create custom marker with circular icon
+      // Create custom marker with circular icon and tooltip
       const marker = new google.maps.Marker({
         position: { lat, lng },
         map: mapRef.current,
-        title: business.name,
+        title: business.name, // Built-in browser tooltip
         icon: {
           path: google.maps.SymbolPath.CIRCLE,
           fillColor: color,
@@ -78,6 +78,37 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
           strokeWeight: 3,
           scale: 12,
         },
+      });
+
+      // Create custom tooltip info window for enhanced hover experience
+      const tooltipInfoWindow = new google.maps.InfoWindow({
+        content: `
+          <div style="
+            padding: 8px 12px; 
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            min-width: 120px;
+            text-align: center;
+          ">
+            ${business.name}
+          </div>
+        `,
+        disableAutoPan: true,
+        pixelOffset: new google.maps.Size(0, -45),
+      });
+
+      // Add hover event listeners for custom tooltip
+      marker.addListener('mouseover', () => {
+        tooltipInfoWindow.open(mapRef.current, marker);
+      });
+
+      marker.addListener('mouseout', () => {
+        tooltipInfoWindow.close();
       });
 
       // Create info window
