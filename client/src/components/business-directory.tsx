@@ -30,9 +30,7 @@ export function BusinessDirectory({
                          business.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          business.category?.name.toLowerCase().includes(searchQuery.toLowerCase());
     
-    const matchesCategory = selectedCategory === null || business.categoryId === selectedCategory;
-    
-    return matchesSearch && matchesCategory;
+    return matchesSearch;
   });
 
   return (

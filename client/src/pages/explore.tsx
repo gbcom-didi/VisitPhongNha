@@ -33,6 +33,11 @@ export default function Explore() {
       : ['/api/businesses'],
   });
 
+  // Filter businesses based on selected category for consistent filtering across directory and map
+  const filteredBusinesses = businesses.filter((business) => {
+    return selectedCategory === null || business.categoryId === selectedCategory;
+  });
+
   // Like/unlike mutation
   const likeMutation = useMutation({
     mutationFn: async (businessId: number) => {
@@ -183,7 +188,7 @@ export default function Explore() {
       {/* Business Directory Panel */}
       <div className="w-96 bg-white border-r border-gray-200 flex-shrink-0 h-screen overflow-hidden">
         <BusinessDirectory
-          businesses={businesses}
+          businesses={filteredBusinesses}
           categories={categories}
           onBusinessClick={handleBusinessClick}
           onBusinessLike={handleBusinessLike}
@@ -195,7 +200,7 @@ export default function Explore() {
       {/* Map - Takes remaining space */}
       <div className="flex-1 h-screen">
         <Map
-          businesses={businesses}
+          businesses={filteredBusinesses}
           onBusinessClick={handleBusinessClick}
           selectedBusiness={selectedBusiness}
         />
