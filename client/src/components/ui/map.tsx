@@ -57,26 +57,34 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
 
       if (isNaN(lat) || isNaN(lng)) return;
 
-      const color = getCategoryColor(business.category?.slug || '');
+      const categorySlug = business.category?.slug || '';
+      const icon = getCategoryIcon(categorySlug);
 
-      // Create marker element
+      // Create marker element with white background and icon
       const el = document.createElement('div');
       el.className = 'marker';
-      el.style.backgroundColor = color;
-      el.style.width = '24px';
-      el.style.height = '24px';
-      el.style.borderRadius = '50%';
-      el.style.border = '2px solid white';
-      el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+      el.style.backgroundColor = 'white';
+      el.style.width = '32px';
+      el.style.height = '32px';
+      el.style.borderRadius = '8px';
+      el.style.border = '1px solid #e5e7eb';
+      el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
       el.style.cursor = 'pointer';
-      el.style.transition = 'transform 0.2s';
+      el.style.transition = 'transform 0.2s, box-shadow 0.2s';
+      el.style.display = 'flex';
+      el.style.alignItems = 'center';
+      el.style.justifyContent = 'center';
+      el.style.fontSize = '16px';
+      el.innerHTML = icon;
 
       el.addEventListener('mouseenter', () => {
-        el.style.transform = 'scale(1.2)';
+        el.style.transform = 'scale(1.1) translateY(-2px)';
+        el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.25)';
       });
 
       el.addEventListener('mouseleave', () => {
-        el.style.transform = 'scale(1)';
+        el.style.transform = 'scale(1) translateY(0)';
+        el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
       });
 
       const marker = new mapboxgl.Marker(el)
@@ -190,7 +198,7 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       <div ref={mapContainer} className="w-full h-full" />
 
       {/* Map Controls */}
-      <div className="absolute top-4 right-4 z-10 flex flex-col gap-1">
+      <div className="absolute top-20 right-4 z-10 flex flex-col gap-1">
         <Button
           size="sm"
           variant="outline"
@@ -232,9 +240,9 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       </div>
 
       {/* Map Legend */}
-      <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-md p-3 z-10 max-w-48">
-        <h5 className="font-semibold text-gray-900 mb-2 text-sm">Legend</h5>
-        <div className="space-y-1 text-xs max-h-32 overflow-y-auto">
+      <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-10 max-w-52">
+        <h5 className="font-semibold text-gray-900 mb-3 text-sm">Map Legend</h5>
+        <div className="space-y-2 text-xs max-h-40 overflow-y-auto">
           {Array.from(new Set(businesses.map(b => b.category?.slug).filter(Boolean))).map((categorySlug) => {
             const category = businesses.find(b => b.category?.slug === categorySlug)?.category;
             if (!category) return null;
@@ -242,9 +250,10 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
             return (
               <div key={categorySlug} className="flex items-center">
                 <div 
-                  className="w-3 h-3 rounded-full mr-2 flex-shrink-0"
-                  style={{ backgroundColor: getCategoryColor(categorySlug) }}
-                />
+                  className="w-5 h-5 rounded bg-white border border-gray-200 shadow-sm mr-2 flex-shrink-0 flex items-center justify-center text-xs"
+                >
+                  {getCategoryIcon(categorySlug)}
+                </div>
                 <span className="text-gray-700 truncate">{category.name}</span>
               </div>
             );
