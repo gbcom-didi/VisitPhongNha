@@ -322,16 +322,27 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
         <div className="space-y-2 text-xs max-h-40 overflow-y-auto">
           {Array.from(new Set(businesses.map(b => b.category?.slug).filter(Boolean))).map((categorySlug) => {
             const category = businesses.find(b => b.category?.slug === categorySlug)?.category;
-            if (!category) return null;
+            const count = businesses.filter(b => b.category?.slug === categorySlug).length;
+            if (!category || !categorySlug) return null;
+
+            const iconData = getCategoryIcon(categorySlug as string);
 
             return (
-              <div key={categorySlug} className="flex items-center">
-                <div 
-                  className="w-5 h-5 rounded bg-white border border-gray-200 shadow-sm mr-2 flex-shrink-0 flex items-center justify-center text-xs"
-                >
-                  {getCategoryIcon(categorySlug)}
+              <div key={categorySlug} className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div 
+                    className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center mr-2 border-2 border-white shadow-sm"
+                    style={{ backgroundColor: iconData.color, color: 'white' }}
+                    dangerouslySetInnerHTML={{ __html: iconData.svg }}
+                  />
+                  <span className="text-gray-700 truncate font-medium">{category.name}</span>
                 </div>
-                <span className="text-gray-700 truncate">{category.name}</span>
+                <span 
+                  className="text-white text-xs px-1.5 py-0.5 rounded-full ml-2 font-medium"
+                  style={{ backgroundColor: iconData.color }}
+                >
+                  {count}
+                </span>
               </div>
             );
           })}
