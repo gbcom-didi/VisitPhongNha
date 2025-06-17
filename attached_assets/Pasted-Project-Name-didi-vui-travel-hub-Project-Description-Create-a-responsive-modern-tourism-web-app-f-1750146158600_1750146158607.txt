@@ -1,0 +1,168 @@
+Project Name: didi-vui-travel-hub
+Project Description:
+Create a responsive, modern tourism web app for the Ninh Thuan region of Vietnam. The app should serve as an interactive guide primarily for the international kitesurfing community and general tourists. It will eventually be part of a scalable network of regional tourism hubs across Vietnam.
+Features to Implement in Initial Version
+Home Page
+Brand identity with logo and color scheme.
+
+
+Welcome message with a brief explanation of how the site works.
+
+
+Hero banner (image or animation relevant to Ninh Thuan).
+
+
+Navigation bar with sticky behavior.
+
+
+Interactive Map (Explore) 
+Searchable Directory in sidebar with listings. Map on the left with corresponding listings
+Mapbox GL JS integration.
+Display categories of points of interest:
+Stay: Budget / Mid Range / High End
+Food & Drink: Street Food / BBQ / Vietnamese / Fusion / International
+Things To Do: Kite / Surf  / National Park / Tours / Waterfalls / Gym / Beaches / Massage /
+ATM:
+Medical:
+Market:
+Supermarket:
+Mechanic:
+Phone Repair: 
+
+
+Filter functionality for map categories.
+Clickable markers that open modals, for additional info side panels come out from right of screen with more detailed info.
+Here are some business listing to add for now:
+name,longitude,latitude, Categories
+Phi Kite School,109.1466303,11.609051, Kiting
+Ninh Thuan Stone Park,11.632838820357826, 109.16033562229548, Recreation
+Lo O stream, 11.7277889144002, 109.18908449614895, Waterfall
+Stone Balcony,109.1806202,11.7813086, Waterfall 
+Quán Nướng Chinh,109.093323,11.5881943, Food & Drink
+Gym Thành vương,109.1110923,11.5839599, Gym
+SPA HUYNH LE,11.580022696395199, 109.12253750044609, Massage
+Vân Trinh Quán,11.58123087598502, 109.13184523954125, Food & Drink
+Quán Nhậu Hải Sản Sơn Ca (SON CA SEAFOOD RESTAURANT),11.58950968154129, 109.04084053954136, Food & Drink
+Ninh Thuan Tourist Night Market,109.0002817,11.5674067, Market
+Bãi Thùng,11.746072483438226, 109.22346517975794, Recreation
+Surf Spot,109.1641657,11.6220852, Surf
+Sight Spot,11.753769471192864, 109.21498323580664, View
+Quang Hanh Seafood Restaurant,11.609608802765214, 109.14582943558244, Food & Drink
+Supermarket My Hoa,11.609490858914706, 109.14580080674735, Supermarket
+Thanh Hoa Spa & Massage,11.605285261608342, 109.14505174907715, Massage
+Hoàng Sáng Residence & Restaurant,11.6071664563042, 109.14495518956126, Accommodation, 
+Com Restaurant,11.617250037323663, 109.14840539562361, Food & Drink
+Farobe - Farmstay & Homestay,11.611912978543582, 109.14671994559635, Accommodation 
+Bánh xèo cô Luỹ,11.586167219121084, 109.11173238018986, Food & Drink
+Siêu thị Bách hoá XANH Nhơn Hải,11.588450691379888, 109.11243973954154, Supermarket
+Hospital of Ninh Hai District, 11.598916185548248, 109.0295103887739, Medical
+Đoài Vegetarian Restaurant and Coffee,11.726828996353927, 109.18990310886277, Food & Drink
+Chợ Mỹ Hòa,11.61566958231253, 109.14744820859305, Market
+Sorrento Beach Club Vietnam and Kite Centre,11.613175654310185, 109.14714083954186, Kiting
+Vietnam Surf Camping,11.604913370140338, 109.14598576679313, Kiting
+Quầy Thuốc Lan,11.58591429169155, 109.1187256508982, Pharmacy
+Tiệm Thuốc Bắc Phương,11.58557024228947, 109.11283851070625, Pharmacy
+TY TÁO APPLE,11.57278403877868, 108.98591834692387, Mobile Phone
+Nam A Bank,109.0984989,11.5877636, ATM
+Bánh mi Ari,11.583646784672514, 109.11203920886045, Food & Drink
+Sửa Xe Quang, 11.616184017476552, 109.14768458187595, Mechanic
+Sửa Xe Tưởng, 11.615824813399625, 109.14775987893938, Mechanic
+Đi Surf,11.676692071027649, 109.17605638423518, Surf
+VƯỜN NHÀ BÀ HƯƠNG,11.72720551249635, 109.19156110490167, Food & Drink
+Mỹ Tường 2 Maket, 11.583840731905196, 109.1162549746144, Market
+Vịnh Vĩnh Hy, 11.725978025751777, 109.19663654896006, Attractions
+Khu du lịch Hang Rái, 11.678165496573625, 109.1827376151634, Attractions
+Hồ Đá Hang, 11.689800966904574, 109.16376388534367, Attractions
+Amanoi, 11.709837045045854, 109.1976847957338, Accommodation
+Bãi tắm Hòn Rùa, 11.716869956167146, 109.22075421600371, Attractions
+Bãi biển Bình Tiên, 11.80177473447905, 109.18503012285544, Surf
+ANARA Binh Tien Golf Club,11.802903447069856, 109.17903711197583, Attractions
+Binh Lap, 11.85096635323411, 109.1729761411355, Attractions
+Tropixblue Guesthouse, 11.665360718681976, 109.17362049927166, Accommodation
+Thái An, 11.662841953976537, 109.1714127513966, Attractions
+Vườn Nho Thái Đạt, 11.654418870955856, 109.15968477003852, Attractions
+Công viên stone, 11.625042206202346, 109.16571543322603, Recreation
+Color Inn, 11.61414969263561, 109.14817137791222, Accommodation
+MyHoa Lagoon - Kiting Town, 11.608411627264813, 109.14634747562955, Kiting
+Phan Rang Kite Center, 11.605324725762694, 109.14642087584058, Kiting
+OzFarm-Kiteboarding School, 11.603593017195797, 109.14567214191531, Kiting
+Cơm Sườn Ba Chỉ nướng thơm ngon nhất vùng, 11.58323277773106, 109.12909344839473, Food & Drink
+PHONG GYM MỸ TƯỜNG, 11.588982291748032, 109.11039284819316, Gym
+Quán ăn hải sản Mỹ Nhân Ngư, 11.579622833264818, 109.12844139753118, Food & Drink
+Bến Tàu Cá Mỹ Tân (PIER), 11.58173668249799, 109.13352593086559, Attractions
+Nomad Homestay, 11.580856015240307, 109.12991492393363, Accommodation
+Bờ kè Ninh Hải, 11.583225679894348, 109.06058569969743, Attractions
+Mirro Salt Lake, 11.58477276996619, 109.06011549994085, Attractions
+Jo Garden Coffee, 11.59575152452612, 109.050042711024, Food & Drink
+Ninh Chu beach, 11.587209763824733, 109.03339222739925, Recreation
+Binh Son Beach, 11.565489337259535, 109.0245849974999, Recreation
+Vincom Ninh Thuận, 11.563727539068521, 109.00926806049043, Supermarket
+Ninh Thuận Museum, 11.56450501474619, 108.99954400308874, Attraction
+Quảng trường Thành Phố Phan Rang-Tháp Chàm Ninh Thuận, 11.56552091301579, 108.9996603954941, Attraction
+MASSAGE ĐIỀU TRỊ DA SUNNY SPA, 11.568454328765565, 108.99767669474326, Massage
+Mono Coffee, 11.571210135252343, 108.99454062119294, Food & Drink
+Hùng Mobile, 11.569180523659023, 108.99117646916473, Mobile Phone
+Viettel Store, 11.564939687270572, 108.99054083819767, Mobile Phone
+Phan Rang Market, 11.561427584859224, 108.99006128300952, Market
+Saigon - Phan Rang Hospital, 11.56632245428013, 108.99032098803568, Medical
+Ninh Thuan Hospital, 11.565953299072081, 108.98905576216565, Medical
+Massage Người Mù Nam Hằng, 11.578268764029197, 108.99734292304726, Massage
+Ninh Thuan Provincial General Hospital, 11.580484282646273, 109.00461987220595, Medical
+Phan Rang Buffet, 11.564025508149198, 108.99793973674443, Food & Drink
+
+
+User Features
+Login/Signup with email or social or google
+Profile management (saved places, preferences)
+Like buttons on listings to save listings
+Basic Analytics: to track clicks and likes
+Business Listings
+Local operators can sign up and pay to be featured
+Claim/update listings
+Pay for sponsored placement
+Get analytics on traffic
+
+
+Static Pages
+Getting Here
+Getting Around
+About
+Contact
+Help
+Terms & Privacy
+
+
+Basic Features
+Like buttons for listings
+User login/signup system
+Simple user dashboard
+Mobile responsive UI
+Marker click → info card with description, images, link, and “like” button, book buttons
+Filter panel by category + search bar
+footer with social links
+
+
+ Tech Stack
+Frontend: React (JS/TS) (with Tailwind for styling)
+Map Integration: Mapbox GL JS (with React wrappers like react-map-gl) including clustering, pop-ups, geolocation, multiple base-layer styles
+Data Aggregation	Custom crawlers + backend database
+User Accounts	Auth system + user preferences/personas
+Collaboration & Storage	Backend (Node.js/Python), file storage
+
+
+Brand Style
+Brand Name: ĐiĐiVui
+Primary Font: Questrial Regular
+Color Palette:
+Chili Red #DD4327
+Peach Blush #F7BAAD
+Soft Clay #DDB097
+Sea Blue #35949B
+Tropical Aqua #3FC1C4
+Coastal Mist #A9D3D2
+Integrate
+Admin interface to manage listings
+Business sign-up form for listing requests and sponsored listings
+Booking.com affiliate integration / Agoda affiliate integration / Expedia Affiliate Program / Viator Affiliate Program / Klook Affiliate Program / 12Go Asia affiliate integration
+Multi-language support: English & Vietnamese
+Create SEO-Optimized Pages
