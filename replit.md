@@ -45,7 +45,7 @@ The application uses several core tables:
 - **Protected Routes**: Middleware-based route protection
 
 ### Frontend Features
-- **Interactive Map**: Mapbox GL JS integration for location visualization
+- **Interactive Map**: Google Maps API integration for location visualization
 - **Business Directory**: Searchable and filterable business listings
 - **Favorites System**: User-specific business bookmarking
 - **Responsive Design**: Mobile-first approach with desktop optimization
@@ -70,7 +70,8 @@ The application uses several core tables:
 ### Core Dependencies
 - **@neondatabase/serverless**: PostgreSQL database connection
 - **drizzle-orm**: Type-safe database operations
-- **mapbox-gl**: Interactive mapping functionality
+- **@googlemaps/react-wrapper**: Google Maps React integration
+- **@types/google.maps**: TypeScript definitions for Google Maps
 - **@radix-ui/***: Accessible UI components
 - **@tanstack/react-query**: Server state management
 
@@ -100,11 +101,18 @@ The application uses several core tables:
 - **REPLIT_DOMAINS**: Allowed domains for Replit Auth
 - **SESSION_SECRET**: Session encryption secret
 - **ISSUER_URL**: OpenID Connect issuer URL
+- **VITE_GOOGLE_MAPS_API_KEY**: Google Maps JavaScript API key (required for maps)
+- **VITE_GOOGLE_MAPS_MAP_ID**: Google Maps Map ID for custom styling (optional)
 
 ## Changelog
 ```
 Changelog:
 - June 17, 2025. Initial setup
+- June 17, 2025. Migrated from Mapbox GL JS to Google Maps API integration
+  - Removed mapbox-gl dependency
+  - Added @googlemaps/react-wrapper and @types/google.maps
+  - Replaced Map component with Google Maps implementation
+  - Updated configuration and environment variables
 ```
 
 ## User Preferences
