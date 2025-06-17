@@ -196,7 +196,7 @@ export default function Explore() {
         </Sidebar>
 
         {/* Business Directory Sidebar */}
-        <div className="w-96 bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0">
+        <div className="w-80 bg-white border-r border-gray-200 flex-shrink-0 h-screen overflow-hidden">
           <BusinessDirectory
             businesses={businesses}
             categories={categories}
@@ -208,7 +208,7 @@ export default function Explore() {
         </div>
 
         {/* Map - Full Screen */}
-        <div className="flex-1 h-screen">
+        <div className="flex-1 h-screen overflow-hidden">
           <Map
             businesses={businesses}
             onBusinessClick={handleBusinessClick}

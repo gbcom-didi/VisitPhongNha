@@ -36,7 +36,7 @@ export function BusinessDirectory({
   });
 
   return (
-    <div className="h-full bg-white overflow-y-auto">
+    <div className="h-full bg-white flex flex-col">
       {/* Header */}
       <div className="p-4 border-b border-gray-200 bg-white sticky top-0 z-10">
         <h2 className="text-lg font-semibold text-gray-900 mb-3 font-questrial">Explore Ninh Thuan</h2>
@@ -67,23 +67,25 @@ export function BusinessDirectory({
       </div>
 
       {/* Business Listings */}
-      <div className="divide-y divide-gray-100">
-        {filteredBusinesses.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">
-            <MapPin className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-            <p className="text-lg font-medium mb-2">No places found</p>
-            <p className="text-sm">Try adjusting your search or filters</p>
-          </div>
-        ) : (
-          filteredBusinesses.map((business) => (
-            <BusinessCard
-              key={business.id}
-              business={business}
-              onClick={onBusinessClick}
-              onLike={onBusinessLike}
-            />
-          ))
-        )}
+      <div className="flex-1 overflow-y-auto">
+        <div className="divide-y divide-gray-100">
+          {filteredBusinesses.length === 0 ? (
+            <div className="p-8 text-center text-gray-500">
+              <MapPin className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+              <p className="text-lg font-medium mb-2">No places found</p>
+              <p className="text-sm">Try adjusting your search or filters</p>
+            </div>
+          ) : (
+            filteredBusinesses.map((business) => (
+              <BusinessCard
+                key={business.id}
+                business={business}
+                onClick={onBusinessClick}
+                onLike={onBusinessLike}
+              />
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

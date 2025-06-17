@@ -23,28 +23,42 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
     if (map.current) return;
 
     const initializeMap = () => {
-      if (!mapContainer.current) return;
+      if (!mapContainer.current) {
+        console.log('Map container not ready');
+        return;
+      }
 
-      mapboxgl.accessToken = MAPBOX_CONFIG.accessToken;
+      try {
+        mapboxgl.accessToken = MAPBOX_CONFIG.accessToken;
 
-      map.current = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: MAPBOX_CONFIG.style,
-        center: MAPBOX_CONFIG.center,
-        zoom: MAPBOX_CONFIG.zoom,
-      });
+        map.current = new mapboxgl.Map({
+          container: mapContainer.current,
+          style: MAPBOX_CONFIG.style,
+          center: MAPBOX_CONFIG.center,
+          zoom: MAPBOX_CONFIG.zoom,
+        });
 
-      map.current.on('load', () => {
-        setIsLoaded(true);
-      });
+        map.current.on('load', () => {
+          setIsLoaded(true);
+        });
+
+        map.current.on('error', (error) => {
+          console.error('Map error:', error);
+        });
+      } catch (error) {
+        console.error('Failed to initialize map:', error);
+      }
     };
 
     // Add a small delay to ensure the container is ready
-    const timer = setTimeout(initializeMap, 100);
+    const timer = setTimeout(initializeMap, 200);
 
     return () => {
       clearTimeout(timer);
-      map.current?.remove();
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
     };
   }, []);
 
