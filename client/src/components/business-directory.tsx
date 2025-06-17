@@ -36,9 +36,10 @@ export function BusinessDirectory({
   });
 
   return (
-    <div className="lg:w-1/3 bg-white border-r border-gray-200 overflow-y-auto">
-      {/* Search Bar */}
+    <div className="h-full bg-white overflow-y-auto">
+      {/* Header */}
       <div className="p-4 border-b border-gray-200 bg-white sticky top-0 z-10">
+        <h2 className="text-lg font-semibold text-gray-900 mb-3 font-questrial">Explore Ninh Thuan</h2>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <Input

@@ -1,26 +1,33 @@
+
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { Navigation } from '@/components/navigation';
-import { Footer } from '@/components/footer';
 import { BusinessDirectory } from '@/components/business-directory';
 import { BusinessModal } from '@/components/business-modal';
 import { Map } from '@/components/ui/map';
-import { Button } from '@/components/ui/button';
-import { Filter } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { isUnauthorizedError } from '@/lib/authUtils';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { BusinessWithCategory, Category } from '@shared/schema';
+import { 
+  Sidebar, 
+  SidebarContent, 
+  SidebarProvider,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarHeader
+} from '@/components/ui/sidebar';
+import { Link, useLocation } from 'wouter';
+import { Heart, Home, Compass, Plane, Info, Phone } from 'lucide-react';
 
 export default function Explore() {
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
+  const [location] = useLocation();
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  
 
   // Fetch categories
   const { data: categories = [] } = useQuery<Category[]>({
@@ -93,80 +100,125 @@ export default function Explore() {
     setSelectedCategory(categoryId);
   };
 
+  const navigationLinks = [
+    { href: '/', label: 'Home', icon: Home },
+    { href: '/explore', label: 'Explore', icon: Compass },
+    { href: '/getting-here', label: 'Getting Here', icon: Plane },
+    { href: '/about', label: 'About', icon: Info },
+    { href: '/contact', label: 'Contact', icon: Phone },
+  ];
+
+  const isActiveLink = (href: string) => {
+    if (href === '/' && location === '/') return true;
+    if (href !== '/' && location.startsWith(href)) return true;
+    return false;
+  };
+
   if (businessesLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Navigation />
-        <div className="flex items-center justify-center h-96">
+      <div className="min-h-screen bg-gray-50 flex">
+        <div className="flex items-center justify-center flex-1">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-chili-red mx-auto mb-4"></div>
             <p className="text-gray-600">Loading places to explore...</p>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation />
-      
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4 lg:mb-0 font-questrial">
-              Explore Ninh Thuan
-            </h1>
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-gray-600">
-                {businesses.length} places found
+    <SidebarProvider>
+      <div className="min-h-screen bg-gray-50 flex">
+        {/* Main Navigation Sidebar */}
+        <Sidebar className="border-r border-gray-200">
+          <SidebarHeader className="p-6 border-b border-gray-200">
+            <Link href="/">
+              <div className="cursor-pointer">
+                <h1 className="text-2xl font-bold text-chili-red font-questrial">ĐiĐiVui</h1>
+                <p className="text-xs text-gray-500">Ninh Thuan Travel Hub</p>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="lg:hidden"
-              >
-                <Filter className="w-4 h-4 mr-2" />
-                Filters
-              </Button>
+            </Link>
+          </SidebarHeader>
+          
+          <SidebarContent className="p-4">
+            <SidebarMenu>
+              {navigationLinks.map(({ href, label, icon: Icon }) => (
+                <SidebarMenuItem key={href}>
+                  <SidebarMenuButton asChild isActive={isActiveLink(href)}>
+                    <Link href={href}>
+                      <a className="flex items-center w-full">
+                        <Icon className="w-5 h-5 mr-3" />
+                        {label}
+                      </a>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+              {isAuthenticated && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link href="/saved">
+                      <a className="flex items-center w-full">
+                        <Heart className="w-5 h-5 mr-3" />
+                        Saved Places
+                      </a>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
+            </SidebarMenu>
+
+            {/* Auth Section */}
+            <div className="mt-8 pt-8 border-t border-gray-200">
+              {isAuthenticated ? (
+                <button 
+                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                  onClick={() => window.location.href = '/api/logout'}
+                >
+                  Sign Out
+                </button>
+              ) : (
+                <button 
+                  className="w-full bg-chili-red text-white px-3 py-2 rounded-md text-sm hover:bg-red-600 transition-colors"
+                  onClick={() => window.location.href = '/api/login'}
+                >
+                  Sign In
+                </button>
+              )}
             </div>
-          </div>
+          </SidebarContent>
+        </Sidebar>
+
+        {/* Business Directory Sidebar */}
+        <div className="w-96 bg-white border-r border-gray-200 overflow-y-auto">
+          <BusinessDirectory
+            businesses={businesses}
+            categories={categories}
+            onBusinessClick={handleBusinessClick}
+            onBusinessLike={handleBusinessLike}
+            selectedCategory={selectedCategory}
+            onCategoryChange={handleCategoryChange}
+          />
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="lg:flex lg:h-screen">
-        {/* Directory Sidebar */}
-        <BusinessDirectory
-          businesses={businesses}
-          categories={categories}
-          onBusinessClick={handleBusinessClick}
-          onBusinessLike={handleBusinessLike}
-          selectedCategory={selectedCategory}
-          onCategoryChange={handleCategoryChange}
-        />
-
-        {/* Map */}
-        <div className="lg:flex-1 h-96 lg:h-auto">
+        {/* Map - Full Screen */}
+        <div className="flex-1 h-screen">
           <Map
             businesses={businesses}
             onBusinessClick={handleBusinessClick}
             selectedBusiness={selectedBusiness}
           />
         </div>
+
+        {/* Business Detail Modal */}
+        <BusinessModal
+          business={selectedBusiness}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          onLike={handleBusinessLike}
+        />
       </div>
-
-      {/* Business Detail Modal */}
-      <BusinessModal
-        business={selectedBusiness}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onLike={handleBusinessLike}
-      />
-
-      <Footer />
-    </div>
+    </SidebarProvider>
   );
 }

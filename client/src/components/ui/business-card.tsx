@@ -27,12 +27,12 @@ export function BusinessCard({ business, onLike, onClick }: BusinessCardProps) {
 
   return (
     <div 
-      className="p-4 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-100"
+      className="m-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border border-gray-100"
       onClick={handleCardClick}
     >
       <div className="flex items-start space-x-3">
         {/* Business Image */}
-        <div className="w-16 h-16 rounded-lg bg-gray-200 flex-shrink-0 overflow-hidden">
+        <div className="w-20 h-20 rounded-xl bg-gray-200 flex-shrink-0 overflow-hidden">
           {business.imageUrl ? (
             <img 
               src={business.imageUrl} 
