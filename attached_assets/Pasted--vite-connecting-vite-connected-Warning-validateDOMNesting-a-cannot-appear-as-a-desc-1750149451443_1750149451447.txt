@@ -1,0 +1,41 @@
+[vite] connecting...
+[vite] connected.
+Warning: validateDOMNesting(...): <a> cannot appear as a descendant of &lt;a&gt;.
+    at a
+    at a
+    at https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=5e12e627:337:18
+    at div
+    at div
+    at div
+    at nav
+    at Navigation (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/src/components/navigation.tsx:25:22)
+    at div
+    at Explore (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/src/pages/explore.tsx:33:31)
+    at Route (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=5e12e627:323:16)
+    at Switch (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=5e12e627:379:17)
+    at Router (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/src/App.tsx?v=ujBIMBKYfL62U1Wh43I9H:33:42)
+    at Provider (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-DWV4X2LQ.js?v=5e12e627:55:15)
+    at TooltipProvider (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=5e12e627:2242:5)
+    at QueryClientProvider (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=5e12e627:2805:3)
+    at App
+at a
+at a
+at https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=5e12e627:337:18
+at div
+at div
+at div
+at nav
+at Navigation (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/src/components/navigation.tsx:25:22)
+at div
+at Explore (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/src/pages/explore.tsx:33:31)
+at Route (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=5e12e627:323:16)
+at Switch (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=5e12e627:379:17)
+at Router (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/src/App.tsx?v=ujBIMBKYfL62U1Wh43I9H:33:42)
+at Provider (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-DWV4X2LQ.js?v=5e12e627:55:15)
+at TooltipProvider (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=5e12e627:2242:5)
+at QueryClientProvider (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=5e12e627:2805:3)
+at App
+at t.value (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://17c95ada-857d-4fc8-a5c1-e6a92ee830c7-00-2if672blhscf3.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
