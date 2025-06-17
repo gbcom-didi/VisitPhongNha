@@ -182,7 +182,7 @@ export function Map({ businesses, onBusinessClick, selectedBusiness, hoveredBusi
     if (!isNaN(lat) && !isNaN(lng)) {
       map.current.flyTo({
         center: [lng, lat],
-        zoom: 13,
+        zoom: 15,
         duration: 800
       });
     }
