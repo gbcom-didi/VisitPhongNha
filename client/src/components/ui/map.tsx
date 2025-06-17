@@ -82,31 +82,35 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       const categorySlug = business.category?.slug || '';
       const iconData = getCategoryIcon(categorySlug);
 
-      // Create marker element with colored circular background and icon
+      // Create marker element with minimal Material Design style
       const el = document.createElement('div');
       el.className = 'marker';
       el.style.backgroundColor = iconData.color;
-      el.style.width = '28px';
-      el.style.height = '28px';
+      el.style.width = '24px';
+      el.style.height = '24px';
       el.style.borderRadius = '50%';
       el.style.border = '2px solid white';
-      el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.25)';
+      el.style.boxShadow = '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)';
       el.style.cursor = 'pointer';
-      el.style.transition = 'transform 0.2s, box-shadow 0.2s';
+      el.style.transition = 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
       el.style.display = 'flex';
       el.style.alignItems = 'center';
       el.style.justifyContent = 'center';
-      el.style.fontSize = '12px';
+      el.style.fontSize = '10px';
+      el.style.fontWeight = '500';
+      el.style.color = 'white';
       el.innerHTML = iconData.symbol;
 
       el.addEventListener('mouseenter', () => {
-        el.style.transform = 'scale(1.1) translateY(-2px)';
-        el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.25)';
+        el.style.transform = 'scale(1.15)';
+        el.style.boxShadow = '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)';
+        el.style.zIndex = '1000';
       });
 
       el.addEventListener('mouseleave', () => {
-        el.style.transform = 'scale(1) translateY(0)';
-        el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+        el.style.transform = 'scale(1)';
+        el.style.boxShadow = '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)';
+        el.style.zIndex = 'auto';
       });
 
       const marker = new mapboxgl.Marker(el)
@@ -192,27 +196,27 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
 
   const getCategoryIcon = (slug: string): { symbol: string; color: string } => {
     const iconMap: Record<string, { symbol: string; color: string }> = {
-      'stay': { symbol: '🏠', color: '#3B82F6' },
-      'food-drink': { symbol: '🍽️', color: '#EF4444' },
-      'kiting': { symbol: '🪁', color: '#10B981' },
-      'surf': { symbol: '🏄', color: '#06B6D4' },
-      'things-to-do': { symbol: '🎯', color: '#8B5CF6' },
-      'atm': { symbol: '🏧', color: '#374151' },
-      'medical': { symbol: '🏥', color: '#DC2626' },
+      'stay': { symbol: '🏠', color: '#DDB097' },
+      'food-drink': { symbol: '🍽', color: '#F7BAAD' },
+      'kiting': { symbol: '⚡', color: '#3FC1C4' },
+      'surf': { symbol: '🌊', color: '#35949B' },
+      'things-to-do': { symbol: '📍', color: '#A9D3D2' },
+      'atm': { symbol: '💳', color: '#DD4327' },
+      'medical': { symbol: '+', color: '#DC2626' },
       'market': { symbol: '🛒', color: '#059669' },
       'supermarket': { symbol: '🏪', color: '#0891B2' },
       'mechanic': { symbol: '🔧', color: '#7C3AED' },
       'phone-repair': { symbol: '📱', color: '#EA580C' },
-      'gym': { symbol: '💪', color: '#F59E0B' },
-      'massage': { symbol: '💆', color: '#9333EA' },
-      'recreation': { symbol: '🎪', color: '#16A34A' },
+      'gym': { symbol: '💪', color: '#BE185D' },
+      'massage': { symbol: '✋', color: '#9333EA' },
+      'recreation': { symbol: '★', color: '#16A34A' },
       'waterfall': { symbol: '💧', color: '#0284C7' },
-      'attractions': { symbol: '🎭', color: '#8B5CF6' },
+      'attractions': { symbol: '📷', color: '#C2410C' },
       'pharmacy': { symbol: '💊', color: '#DC2626' },
       'mobile-phone': { symbol: '📞', color: '#7C2D12' },
     };
 
-    return iconMap[slug] || { symbol: '📍', color: '#6B7280' };
+    return iconMap[slug] || { symbol: '●', color: '#6B7280' };
   };
 
   return (
