@@ -9,34 +9,23 @@ interface CategoryFiltersProps {
 
 export function CategoryFilters({ categories, selectedCategory, onCategoryChange }: CategoryFiltersProps) {
   return (
-    <div className="p-4 border-b border-gray-200">
-      <div className="flex flex-wrap gap-2">
+    <div className="px-4 py-2 border-b border-gray-200 bg-gray-50">
+      <div className="flex flex-wrap gap-1">
         <Button
-          size="sm"
           variant={selectedCategory === null ? "default" : "outline"}
-          className={selectedCategory === null 
-            ? "bg-chili-red text-white hover:bg-red-600" 
-            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }
+          size="sm"
           onClick={() => onCategoryChange(null)}
+          className={`h-7 px-3 text-xs ${selectedCategory === null ? "bg-chili-red hover:bg-red-600" : ""}`}
         >
           All
         </Button>
-        
         {categories.map((category) => (
           <Button
             key={category.id}
-            size="sm"
             variant={selectedCategory === category.id ? "default" : "outline"}
-            className={selectedCategory === category.id
-              ? "text-white hover:opacity-90"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }
-            style={selectedCategory === category.id ? {
-              backgroundColor: category.color,
-              borderColor: category.color
-            } : {}}
+            size="sm"
             onClick={() => onCategoryChange(category.id)}
+            className={`h-7 px-3 text-xs ${selectedCategory === category.id ? "bg-chili-red hover:bg-red-600" : ""}`}
           >
             {category.name}
           </Button>
