@@ -1,6 +1,6 @@
 export const MAPBOX_CONFIG = {
   accessToken: import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA',
-  style: 'mapbox://styles/mapbox/light-v11',
+  style: 'mapbox://styles/mapbox/outdoors-v12',
   center: [109.146630, 11.609051] as [number, number], // Ninh Thuan coordinates
   zoom: 10,
 };
@@ -35,6 +35,6 @@ export const getCategoryColor = (categorySlug: string): string => {
     'pharmacy': '#DC2626',
     'mobile-phone': '#7C2D12',
   };
-  
+
   return colorMap[categorySlug] || '#6B7280';
 };
