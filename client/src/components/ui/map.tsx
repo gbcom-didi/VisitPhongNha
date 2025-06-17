@@ -27,6 +27,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       mapTypeControl: false,
       streetViewControl: false,
       fullscreenControl: false,
+      gestureHandling: 'greedy',
       styles: [
         {
           featureType: 'poi',
