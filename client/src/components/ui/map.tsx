@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import { MAPBOX_CONFIG, getCategoryColor } from '@/lib/mapbox';
 import type { BusinessWithCategory } from '@shared/schema';
 import { Button } from './button';
 import { Plus, Minus, Target } from 'lucide-react';
@@ -10,224 +13,174 @@ interface MapProps {
 }
 
 export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [zoom, setZoom] = useState(11);
-  const [center, setCenter] = useState({ lat: 11.65, lng: 109.15 });
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<mapboxgl.Map | null>(null);
+  const markers = useRef<mapboxgl.Marker[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // Coordinate conversion
-  const latLngToPixel = (lat: number, lng: number) => {
-    if (!canvasRef.current) return { x: 0, y: 0 };
-    
-    const canvas = canvasRef.current;
-    const scale = Math.pow(2, zoom - 8);
-    const x = ((lng - center.lng) * scale * 300) + canvas.width / 2;
-    const y = ((center.lat - lat) * scale * 300) + canvas.height / 2;
-    
-    return { x, y };
-  };
+  // Initialize map
+  useEffect(() => {
+    if (map.current) return;
 
-  const getCategoryIcon = (slug: string): { color: string } => {
-    const iconMap: Record<string, { color: string }> = {
-      'stay': { color: '#DD4327' },
-      'food-drink': { color: '#3FC1C4' },
-      'kiting': { color: '#DD4327' },
-      'surf': { color: '#3FC1C4' },
-      'things-to-do': { color: '#A9D3D2' },
-      'atm': { color: '#DD4327' },
-      'medical': { color: '#DD4327' },
-      'market': { color: '#3FC1C4' },
-      'supermarket': { color: '#3FC1C4' },
-      'mechanic': { color: '#A9D3D2' },
-      'phone-repair': { color: '#DD4327' },
-      'gym': { color: '#3FC1C4' },
-      'massage': { color: '#A9D3D2' },
-      'recreation': { color: '#3FC1C4' },
-      'waterfall': { color: '#3FC1C4' },
-      'attractions': { color: '#DD4327' },
-      'pharmacy': { color: '#DD4327' },
-      'mobile-phone': { color: '#A9D3D2' },
+    const initializeMap = () => {
+      if (!mapContainer.current) {
+        console.log('Map container not ready');
+        return;
+      }
+
+      try {
+        mapboxgl.accessToken = MAPBOX_CONFIG.accessToken;
+
+        map.current = new mapboxgl.Map({
+          container: mapContainer.current,
+          style: MAPBOX_CONFIG.style,
+          center: MAPBOX_CONFIG.center,
+          zoom: MAPBOX_CONFIG.zoom,
+        });
+
+        map.current.on('load', () => {
+          setIsLoaded(true);
+        });
+
+        map.current.on('error', (error) => {
+          console.error('Map error:', error);
+        });
+      } catch (error) {
+        console.error('Failed to initialize map:', error);
+      }
     };
 
-    return iconMap[slug] || { color: '#6B7280' };
-  };
+    // Add a small delay to ensure the container is ready
+    const timer = setTimeout(initializeMap, 200);
 
-  // Draw map
-  const drawMap = () => {
-    if (!canvasRef.current) return;
+    return () => {
+      clearTimeout(timer);
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
+    };
+  }, []);
 
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+  // Update markers when businesses change
+  useEffect(() => {
+    if (!map.current || !isLoaded) return;
 
-    // Set canvas size
-    if (containerRef.current) {
-      canvas.width = containerRef.current.clientWidth;
-      canvas.height = containerRef.current.clientHeight;
-    }
+    // Clear existing markers
+    markers.current.forEach(marker => marker.remove());
+    markers.current = [];
 
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw ocean background
-    ctx.fillStyle = '#a8dadc';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Draw simplified landmass for Vietnam coastline
-    ctx.fillStyle = '#f1faee';
-    ctx.strokeStyle = '#457b9d';
-    ctx.lineWidth = 2;
-    
-    // Simple coastline shape
-    ctx.beginPath();
-    ctx.moveTo(canvas.width * 0.3, canvas.height * 0.1);
-    ctx.quadraticCurveTo(canvas.width * 0.4, canvas.height * 0.3, canvas.width * 0.35, canvas.height * 0.6);
-    ctx.quadraticCurveTo(canvas.width * 0.3, canvas.height * 0.8, canvas.width * 0.4, canvas.height * 0.9);
-    ctx.lineTo(canvas.width * 0.7, canvas.height * 0.9);
-    ctx.quadraticCurveTo(canvas.width * 0.8, canvas.height * 0.7, canvas.width * 0.75, canvas.height * 0.4);
-    ctx.quadraticCurveTo(canvas.width * 0.7, canvas.height * 0.2, canvas.width * 0.6, canvas.height * 0.1);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    // Draw grid
-    ctx.strokeStyle = '#e0e0e0';
-    ctx.lineWidth = 0.5;
-    for (let i = 0; i < canvas.width; i += 40) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, canvas.height);
-      ctx.stroke();
-    }
-    for (let i = 0; i < canvas.height; i += 40) {
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(canvas.width, i);
-      ctx.stroke();
-    }
-
-    // Draw businesses
+    // Add new markers
     businesses.forEach((business) => {
       if (!business.latitude || !business.longitude) return;
 
-      const lat = Number(business.latitude);
-      const lng = Number(business.longitude);
+      const lat = parseFloat(business.latitude);
+      const lng = parseFloat(business.longitude);
 
       if (isNaN(lat) || isNaN(lng)) return;
-
-      const { x, y } = latLngToPixel(lat, lng);
-      
-      // Only draw if within canvas bounds
-      if (x < -20 || x > canvas.width + 20 || y < -20 || y > canvas.height + 20) return;
 
       const categorySlug = business.category?.slug || '';
       const iconData = getCategoryIcon(categorySlug);
 
-      // Draw marker shadow
-      ctx.fillStyle = 'rgba(0,0,0,0.2)';
-      ctx.beginPath();
-      ctx.arc(x + 2, y + 2, 16, 0, 2 * Math.PI);
-      ctx.fill();
+      // Create marker element with minimal Material Design style
+      const el = document.createElement('div');
+      el.className = 'marker';
+      el.style.backgroundColor = iconData.color;
+      el.style.width = '32px';
+      el.style.height = '32px';
+      el.style.borderRadius = '50%';
+      el.style.border = '3px solid white';
+      el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+      el.style.cursor = 'pointer';
+      el.style.transition = 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+      el.style.display = 'flex';
+      el.style.alignItems = 'center';
+      el.style.justifyContent = 'center';
+      el.style.fontSize = '14px';
+      el.style.fontWeight = '600';
+      el.style.color = 'white';
+      el.style.position = 'relative';
+      el.innerHTML = iconData.symbol;
 
-      // Draw marker
-      ctx.fillStyle = iconData.color;
-      ctx.strokeStyle = 'white';
-      ctx.lineWidth = 3;
-      
-      ctx.beginPath();
-      ctx.arc(x, y, 16, 0, 2 * Math.PI);
-      ctx.fill();
-      ctx.stroke();
-
-      // Draw inner dot
-      ctx.fillStyle = 'white';
-      ctx.beginPath();
-      ctx.arc(x, y, 6, 0, 2 * Math.PI);
-      ctx.fill();
-
-      // Highlight selected business
-      if (selectedBusiness && selectedBusiness.id === business.id) {
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(x, y, 20, 0, 2 * Math.PI);
-        ctx.stroke();
-      }
-    });
-  };
-
-  // Initialize and draw
-  useEffect(() => {
-    drawMap();
-  }, [businesses, zoom, center, selectedBusiness]);
-
-  // Handle resize
-  useEffect(() => {
-    const handleResize = () => drawMap();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [businesses, zoom, center]);
-
-  // Handle clicks
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
-    const canvas = canvasRef.current;
-    
-    const handleClick = (event: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-
-      // Find clicked business
-      businesses.forEach((business) => {
-        if (!business.latitude || !business.longitude) return;
-
-        const lat = Number(business.latitude);
-        const lng = Number(business.longitude);
-        const pixel = latLngToPixel(lat, lng);
-
-        const distance = Math.sqrt(Math.pow(x - pixel.x, 2) + Math.pow(y - pixel.y, 2));
-        if (distance <= 16) {
-          onBusinessClick?.(business);
-        }
+      el.addEventListener('mouseenter', () => {
+        el.style.transform = 'scale(1.15)';
+        el.style.boxShadow = '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)';
+        el.style.zIndex = '1000';
       });
-    };
 
-    canvas.addEventListener('click', handleClick);
-    return () => canvas.removeEventListener('click', handleClick);
-  }, [businesses, onBusinessClick, zoom, center]);
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = 'scale(1)';
+        el.style.boxShadow = '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)';
+        el.style.zIndex = 'auto';
+      });
+
+      const marker = new mapboxgl.Marker(el)
+        .setLngLat([lng, lat])
+        .addTo(map.current!);
+
+      // Add click handler
+      el.addEventListener('click', () => {
+        onBusinessClick?.(business);
+      });
+
+      markers.current.push(marker);
+    });
+  }, [businesses, isLoaded, onBusinessClick]);
+
+  // Highlight selected business
+  useEffect(() => {
+    if (!selectedBusiness || !map.current) return;
+
+    const lat = parseFloat(selectedBusiness.latitude);
+    const lng = parseFloat(selectedBusiness.longitude);
+
+    if (!isNaN(lat) && !isNaN(lng)) {
+      map.current.flyTo({
+        center: [lng, lat],
+        zoom: 14,
+        duration: 1000
+      });
+    }
+  }, [selectedBusiness]);
 
   const handleZoomIn = () => {
-    setZoom(prev => Math.min(prev + 1, 16));
+    map.current?.zoomIn();
   };
 
   const handleZoomOut = () => {
-    setZoom(prev => Math.max(prev - 1, 8));
+    map.current?.zoomOut();
   };
 
   const handleFitBounds = () => {
-    if (businesses.length === 0) return;
+    if (!map.current || businesses.length === 0) return;
 
-    const validBusinesses = businesses.filter(b => b.latitude && b.longitude);
-    if (validBusinesses.length === 0) return;
+    const coordinates = businesses
+      .filter(b => b.latitude && b.longitude)
+      .map(b => [parseFloat(b.longitude), parseFloat(b.latitude)] as [number, number]);
 
-    const lats = validBusinesses.map(b => Number(b.latitude));
-    const lngs = validBusinesses.map(b => Number(b.longitude));
+    if (coordinates.length === 0) return;
 
-    const centerLat = (Math.max(...lats) + Math.min(...lats)) / 2;
-    const centerLng = (Math.max(...lngs) + Math.min(...lngs)) / 2;
+    const bounds = coordinates.reduce(
+      (bounds, coord) => bounds.extend(coord),
+      new mapboxgl.LngLatBounds(coordinates[0], coordinates[0])
+    );
 
-    setCenter({ lat: centerLat, lng: centerLng });
-    setZoom(12);
+    map.current.fitBounds(bounds, {
+      padding: 50,
+      maxZoom: 15
+    });
   };
 
   const handleCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
-          setZoom(14);
+          const { latitude, longitude } = position.coords;
+          map.current?.flyTo({
+            center: [longitude, latitude],
+            zoom: 14,
+            duration: 1000
+          });
         },
         (error) => {
           console.error('Error getting location:', error);
@@ -236,29 +189,43 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
     }
   };
 
-  // Auto-fit on mount
-  useEffect(() => {
-    if (businesses.length > 0) {
-      setTimeout(handleFitBounds, 500);
-    }
-  }, [businesses.length]);
-
   const categories = businesses.map(b => b.category).filter((category, index, self) =>
     index === self.findIndex((t) => (
       t && category && t.id === category.id
     ))
   ).filter(Boolean) as BusinessWithCategory['category'][];
 
+  const getCategoryIcon = (slug: string): { symbol: string; color: string } => {
+    const iconMap: Record<string, { symbol: string; color: string }> = {
+      'stay': { symbol: '⌂', color: '#DD4327' },
+      'food-drink': { symbol: '○', color: '#3FC1C4' },
+      'kiting': { symbol: '◊', color: '#DD4327' },
+      'surf': { symbol: '~', color: '#3FC1C4' },
+      'things-to-do': { symbol: '★', color: '#A9D3D2' },
+      'atm': { symbol: '$', color: '#DD4327' },
+      'medical': { symbol: '+', color: '#DD4327' },
+      'market': { symbol: '■', color: '#3FC1C4' },
+      'supermarket': { symbol: '▲', color: '#3FC1C4' },
+      'mechanic': { symbol: '⚙', color: '#A9D3D2' },
+      'phone-repair': { symbol: '●', color: '#DD4327' },
+      'gym': { symbol: '◉', color: '#3FC1C4' },
+      'massage': { symbol: '✋', color: '#A9D3D2' },
+      'recreation': { symbol: '◈', color: '#3FC1C4' },
+      'waterfall': { symbol: '◦', color: '#3FC1C4' },
+      'attractions': { symbol: '◐', color: '#DD4327' },
+      'pharmacy': { symbol: '⊕', color: '#DD4327' },
+      'mobile-phone': { symbol: '◑', color: '#A9D3D2' },
+    };
+
+    return iconMap[slug] || { symbol: '●', color: '#6B7280' };
+  };
+
   return (
-    <div className="relative w-full h-full" ref={containerRef}>
-      <canvas 
-        ref={canvasRef} 
-        className="w-full h-full cursor-pointer"
-        style={{ background: '#a8dadc' }}
-      />
+    <div className="relative w-full h-full">
+      <div ref={mapContainer} className="w-full h-full" />
 
       {/* Map Controls */}
-      <div className="absolute top-4 right-4 z-10 flex flex-col gap-1">
+      <div className="absolute top-20 right-4 z-10 flex flex-col gap-1">
         <Button
           size="sm"
           variant="outline"
@@ -277,7 +244,7 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
         </Button>
       </div>
 
-      {/* Bottom Controls */}
+      {/* Current Location Button */}
       <div className="absolute bottom-4 right-4 z-10 flex flex-col gap-2">
         <Button
           size="sm"
@@ -303,13 +270,18 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       <div className="absolute top-4 left-4 bg-white rounded-xl shadow-lg border border-gray-200 p-4 z-10 min-w-48">
         <div className="flex items-center justify-between mb-3">
           <h5 className="font-semibold text-gray-900 text-sm">Map Legend</h5>
+          <button className="text-gray-400 hover:text-gray-600">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
         </div>
         
         {/* All Places Summary */}
         <div className="flex items-center justify-between mb-3 p-2 bg-gray-50 rounded-lg">
           <div className="flex items-center">
             <div className="w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center mr-3">
-              <div className="w-3 h-3 bg-white rounded-full"></div>
+              <span className="text-white text-xs">📍</span>
             </div>
             <span className="text-gray-700 text-sm font-medium">All Places</span>
           </div>
@@ -329,10 +301,10 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
               <div key={categorySlug} className="flex items-center justify-between">
                 <div className="flex items-center">
                   <div 
-                    className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center mr-3 border-2 border-white shadow-sm"
-                    style={{ backgroundColor: iconData.color }}
+                    className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center mr-3 text-xs font-semibold border-2 border-white shadow-sm"
+                    style={{ backgroundColor: iconData.color, color: 'white' }}
                   >
-                    <div className="w-3 h-3 bg-white rounded-full"></div>
+                    {iconData.symbol}
                   </div>
                   <span className="text-gray-700 truncate font-medium">{category.name}</span>
                 </div>
