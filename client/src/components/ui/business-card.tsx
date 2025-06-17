@@ -3,26 +3,6 @@ import { Button } from './button';
 import { Badge } from './badge';
 import type { BusinessWithCategory } from '@shared/schema';
 
-const getCategoryPlaceholderImage = (categorySlug: string) => {
-  const imageMap: Record<string, string> = {
-    'kiting': 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'food-drink': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'stay': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'recreation': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'attractions': 'https://images.unsplash.com/photo-1539650116574-75c0c6d68bab?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'waterfall': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'market': 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'gym': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'massage': 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'medical': 'https://images.unsplash.com/photo-1551601651-2a8555f1a136?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'atm': 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'surf': 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
-    'default': 'https://images.unsplash.com/photo-1539650116574-75c0c6d68bab?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'
-  };
-  
-  return imageMap[categorySlug] || imageMap['default'];
-};
-
 interface BusinessCardProps {
   business: BusinessWithCategory;
   onLike?: (business: BusinessWithCategory) => void;
@@ -65,11 +45,9 @@ export function BusinessCard({ business, onLike, onClick, onHover }: BusinessCar
             className="w-full h-full object-cover"
           />
         ) : (
-          <img 
-            src={getCategoryPlaceholderImage(business.category?.slug || 'default')}
-            alt={business.name}
-            className="w-full h-full object-cover"
-          />
+          <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+            <MapPin className="w-12 h-12 text-gray-400" />
+          </div>
         )}
         
         {/* Like Button Overlay */}

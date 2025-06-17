@@ -4,26 +4,6 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import type { BusinessWithCategory } from '@shared/schema';
 
-const getCategoryPlaceholderImage = (categorySlug: string) => {
-  const imageMap: Record<string, string> = {
-    'kiting': 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400',
-    'food-drink': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400',
-    'stay': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400',
-    'recreation': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400',
-    'attractions': 'https://images.unsplash.com/photo-1539650116574-75c0c6d68bab?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400',
-    'waterfall': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400',
-    'market': 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400',
-    'gym': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400',
-    'massage': 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400',
-    'medical': 'https://images.unsplash.com/photo-1551601651-2a8555f1a136?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400',
-    'atm': 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400',
-    'surf': 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400',
-    'default': 'https://images.unsplash.com/photo-1539650116574-75c0c6d68bab?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400'
-  };
-  
-  return imageMap[categorySlug] || imageMap['default'];
-};
-
 interface BusinessModalProps {
   business: BusinessWithCategory | null;
   isOpen: boolean;
@@ -70,11 +50,9 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
               className="w-full h-full object-cover"
             />
           ) : (
-            <img 
-              src={getCategoryPlaceholderImage(business.category?.slug || 'default')}
-              alt={business.name}
-              className="w-full h-full object-cover"
-            />
+            <div className="w-full h-full bg-gradient-to-br from-sea-blue to-tropical-aqua flex items-center justify-center">
+              <MapPin className="w-16 h-16 text-white opacity-50" />
+            </div>
           )}
         </div>
 
