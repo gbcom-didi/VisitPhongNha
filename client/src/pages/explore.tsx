@@ -131,7 +131,7 @@ export default function Explore() {
     <SidebarProvider>
       <div className="min-h-screen bg-gray-50 flex">
         {/* Main Navigation Sidebar */}
-        <Sidebar className="border-r border-gray-200 w-16">
+        <Sidebar className="border-r border-gray-200 w-16 flex-shrink-0">
           <SidebarHeader className="p-4 border-b border-gray-200">
             <Link href="/">
               <div className="cursor-pointer flex justify-center">
@@ -196,7 +196,7 @@ export default function Explore() {
         </Sidebar>
 
         {/* Business Directory Sidebar */}
-        <div className="w-96 bg-white border-r border-gray-200 overflow-y-auto">
+        <div className="w-96 bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0">
           <BusinessDirectory
             businesses={businesses}
             categories={categories}

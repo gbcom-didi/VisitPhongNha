@@ -20,22 +20,30 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
 
   // Initialize map
   useEffect(() => {
-    if (map.current || !mapContainer.current) return;
+    if (map.current) return;
 
-    mapboxgl.accessToken = MAPBOX_CONFIG.accessToken;
+    const initializeMap = () => {
+      if (!mapContainer.current) return;
 
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: MAPBOX_CONFIG.style,
-      center: MAPBOX_CONFIG.center,
-      zoom: MAPBOX_CONFIG.zoom,
-    });
+      mapboxgl.accessToken = MAPBOX_CONFIG.accessToken;
 
-    map.current.on('load', () => {
-      setIsLoaded(true);
-    });
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: MAPBOX_CONFIG.style,
+        center: MAPBOX_CONFIG.center,
+        zoom: MAPBOX_CONFIG.zoom,
+      });
+
+      map.current.on('load', () => {
+        setIsLoaded(true);
+      });
+    };
+
+    // Add a small delay to ensure the container is ready
+    const timer = setTimeout(initializeMap, 100);
 
     return () => {
+      clearTimeout(timer);
       map.current?.remove();
     };
   }, []);
