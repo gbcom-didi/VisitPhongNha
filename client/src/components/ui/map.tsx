@@ -80,38 +80,33 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       if (isNaN(lat) || isNaN(lng)) return;
 
       const categorySlug = business.category?.slug || '';
-      const iconData = getCategoryIcon(categorySlug);
+      const icon = getCategoryIcon(categorySlug);
 
-      // Create marker element with minimal Material Design style
+      // Create marker element with white background and icon
       const el = document.createElement('div');
       el.className = 'marker';
-      el.style.backgroundColor = iconData.color;
+      el.style.backgroundColor = 'white';
       el.style.width = '32px';
       el.style.height = '32px';
-      el.style.borderRadius = '50%';
-      el.style.border = '3px solid white';
+      el.style.borderRadius = '8px';
+      el.style.border = '1px solid #e5e7eb';
       el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
       el.style.cursor = 'pointer';
-      el.style.transition = 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+      el.style.transition = 'transform 0.2s, box-shadow 0.2s';
       el.style.display = 'flex';
       el.style.alignItems = 'center';
       el.style.justifyContent = 'center';
-      el.style.fontSize = '14px';
-      el.style.fontWeight = '600';
-      el.style.color = 'white';
-      el.style.position = 'relative';
-      el.innerHTML = iconData.symbol;
+      el.style.fontSize = '16px';
+      el.innerHTML = icon;
 
       el.addEventListener('mouseenter', () => {
-        el.style.transform = 'scale(1.15)';
-        el.style.boxShadow = '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)';
-        el.style.zIndex = '1000';
+        el.style.transform = 'scale(1.1) translateY(-2px)';
+        el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.25)';
       });
 
       el.addEventListener('mouseleave', () => {
-        el.style.transform = 'scale(1)';
-        el.style.boxShadow = '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)';
-        el.style.zIndex = 'auto';
+        el.style.transform = 'scale(1) translateY(0)';
+        el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
       });
 
       const marker = new mapboxgl.Marker(el)
@@ -195,29 +190,29 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
     ))
   ).filter(Boolean) as BusinessWithCategory['category'][];
 
-  const getCategoryIcon = (slug: string): { symbol: string; color: string } => {
-    const iconMap: Record<string, { symbol: string; color: string }> = {
-      'stay': { symbol: '⌂', color: '#DD4327' },
-      'food-drink': { symbol: '○', color: '#3FC1C4' },
-      'kiting': { symbol: '◊', color: '#DD4327' },
-      'surf': { symbol: '~', color: '#3FC1C4' },
-      'things-to-do': { symbol: '★', color: '#A9D3D2' },
-      'atm': { symbol: '$', color: '#DD4327' },
-      'medical': { symbol: '+', color: '#DD4327' },
-      'market': { symbol: '■', color: '#3FC1C4' },
-      'supermarket': { symbol: '▲', color: '#3FC1C4' },
-      'mechanic': { symbol: '⚙', color: '#A9D3D2' },
-      'phone-repair': { symbol: '●', color: '#DD4327' },
-      'gym': { symbol: '◉', color: '#3FC1C4' },
-      'massage': { symbol: '✋', color: '#A9D3D2' },
-      'recreation': { symbol: '◈', color: '#3FC1C4' },
-      'waterfall': { symbol: '◦', color: '#3FC1C4' },
-      'attractions': { symbol: '◐', color: '#DD4327' },
-      'pharmacy': { symbol: '⊕', color: '#DD4327' },
-      'mobile-phone': { symbol: '◑', color: '#A9D3D2' },
+  const getCategoryIcon = (slug: string): string => {
+    const iconMap: Record<string, string> = {
+      'stay': '⌂',
+      'food-drink': '◎',
+      'kiting': '⟁',
+      'surf': '〜',
+      'things-to-do': '◉',
+      'atm': '⎔',
+      'medical': '✚',
+      'market': '⬟',
+      'supermarket': '▣',
+      'mechanic': '⚒',
+      'phone-repair': '⎆',
+      'gym': '▲',
+      'massage': '※',
+      'recreation': '○',
+      'waterfall': '⩙',
+      'attractions': '◆',
+      'pharmacy': '⊕',
+      'mobile-phone': '⦿',
     };
 
-    return iconMap[slug] || { symbol: '●', color: '#6B7280' };
+    return iconMap[slug] || '●';
   };
 
   return (
@@ -267,53 +262,21 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       </div>
 
       {/* Map Legend */}
-      <div className="absolute top-4 left-4 bg-white rounded-xl shadow-lg border border-gray-200 p-4 z-10 min-w-48">
-        <div className="flex items-center justify-between mb-3">
-          <h5 className="font-semibold text-gray-900 text-sm">Map Legend</h5>
-          <button className="text-gray-400 hover:text-gray-600">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-        </div>
-        
-        {/* All Places Summary */}
-        <div className="flex items-center justify-between mb-3 p-2 bg-gray-50 rounded-lg">
-          <div className="flex items-center">
-            <div className="w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center mr-3">
-              <span className="text-white text-xs">📍</span>
-            </div>
-            <span className="text-gray-700 text-sm font-medium">All Places</span>
-          </div>
-          <span className="bg-gray-600 text-white text-xs px-2 py-1 rounded-full">{businesses.length}</span>
-        </div>
-
-        <div className="space-y-2 text-sm max-h-40 overflow-y-auto">
+      <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-10 max-w-52">
+        <h5 className="font-semibold text-gray-900 mb-3 text-sm">Map Legend</h5>
+        <div className="space-y-2 text-xs max-h-40 overflow-y-auto">
           {Array.from(new Set(businesses.map(b => b.category?.slug).filter(Boolean))).map((categorySlug) => {
-            if (!categorySlug) return null;
             const category = businesses.find(b => b.category?.slug === categorySlug)?.category;
-            const count = businesses.filter(b => b.category?.slug === categorySlug).length;
             if (!category) return null;
 
-            const iconData = getCategoryIcon(categorySlug as string);
-
             return (
-              <div key={categorySlug} className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div 
-                    className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center mr-3 text-xs font-semibold border-2 border-white shadow-sm"
-                    style={{ backgroundColor: iconData.color, color: 'white' }}
-                  >
-                    {iconData.symbol}
-                  </div>
-                  <span className="text-gray-700 truncate font-medium">{category.name}</span>
-                </div>
-                <span 
-                  className="text-white text-xs px-2 py-1 rounded-full ml-2 font-medium"
-                  style={{ backgroundColor: iconData.color }}
+              <div key={categorySlug} className="flex items-center">
+                <div 
+                  className="w-5 h-5 rounded bg-white border border-gray-200 shadow-sm mr-2 flex-shrink-0 flex items-center justify-center text-xs"
                 >
-                  {count}
-                </span>
+                  {getCategoryIcon(categorySlug)}
+                </div>
+                <span className="text-gray-700 truncate">{category.name}</span>
               </div>
             );
           })}
