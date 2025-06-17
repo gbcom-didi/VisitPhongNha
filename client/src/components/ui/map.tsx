@@ -99,12 +99,47 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       el.style.fontSize = '16px';
       el.innerHTML = icon;
 
+      // Create tooltip element
+      const tooltip = document.createElement('div');
+      tooltip.innerHTML = business.name;
+      tooltip.style.position = 'absolute';
+      tooltip.style.bottom = '40px';
+      tooltip.style.left = '50%';
+      tooltip.style.transform = 'translateX(-50%)';
+      tooltip.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+      tooltip.style.color = 'white';
+      tooltip.style.padding = '6px 10px';
+      tooltip.style.borderRadius = '6px';
+      tooltip.style.fontSize = '12px';
+      tooltip.style.whiteSpace = 'nowrap';
+      tooltip.style.display = 'none';
+      tooltip.style.zIndex = '1000';
+      tooltip.style.pointerEvents = 'none';
+      tooltip.style.fontFamily = 'system-ui, -apple-system, sans-serif';
+      
+      // Add small arrow to tooltip
+      const arrow = document.createElement('div');
+      arrow.style.position = 'absolute';
+      arrow.style.top = '100%';
+      arrow.style.left = '50%';
+      arrow.style.transform = 'translateX(-50%)';
+      arrow.style.width = '0';
+      arrow.style.height = '0';
+      arrow.style.borderLeft = '4px solid transparent';
+      arrow.style.borderRight = '4px solid transparent';
+      arrow.style.borderTop = '4px solid rgba(0, 0, 0, 0.8)';
+      tooltip.appendChild(arrow);
+      
+      el.appendChild(tooltip);
+
       el.addEventListener('mouseenter', () => {
         el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.25)';
+        tooltip.style.display = 'block';
       });
 
       el.addEventListener('mouseleave', () => {
         el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+        tooltip.style.display = 'none';
       });
 
       const marker = new mapboxgl.Marker(el)
