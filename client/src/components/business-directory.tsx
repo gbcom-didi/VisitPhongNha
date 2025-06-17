@@ -1,9 +1,10 @@
+
 import { useState } from 'react';
-import { Search, MapPin } from 'lucide-react';
+import { Search, MapPin, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { BusinessCard } from '@/components/ui/business-card';
-import { CategoryFilters } from './category-filters';
+import { FilterDialog } from './filter-dialog';
 import type { BusinessWithCategory, Category } from '@shared/schema';
 
 interface BusinessDirectoryProps {
@@ -26,6 +27,7 @@ export function BusinessDirectory({
   onCategoryChange
 }: BusinessDirectoryProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
 
   const filteredBusinesses = businesses.filter((business) => {
     const matchesSearch = business.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -35,34 +37,90 @@ export function BusinessDirectory({
     return matchesSearch;
   });
 
+  const selectedCategoryName = selectedCategory 
+    ? categories.find(cat => cat.id === selectedCategory)?.name 
+    : null;
+
+  const handleFilterChange = (categoryId: number | null) => {
+    onCategoryChange(categoryId);
+    setIsFilterDialogOpen(false);
+  };
+
   return (
     <div className="h-full bg-white flex flex-col md:h-screen">
       {/* Header */}
       <div className="p-4 border-b border-gray-200 bg-white sticky top-0 z-10 md:static">
         <h2 className="text-lg font-semibold text-gray-900 mb-3 font-questrial">Explore Ninh Thuan</h2>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <Input
-            type="text"
-            placeholder="Search places..."
-            className="pl-10 pr-4"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+        
+        {/* Search and Filter Row */}
+        <div className="flex gap-2 mb-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Input
+              type="text"
+              placeholder="Search places..."
+              className="pl-10 pr-4"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => setIsFilterDialogOpen(true)}
+            className="flex items-center gap-2 px-4"
+          >
+            <Filter className="w-4 h-4" />
+            Filters
+          </Button>
+        </div>
+
+        {/* Horizontal Filter Buttons */}
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          <Button
+            variant={selectedCategory === null ? "default" : "outline"}
+            size="sm"
+            onClick={() => onCategoryChange(null)}
+            className={`h-8 px-4 text-sm whitespace-nowrap flex-shrink-0 ${
+              selectedCategory === null ? "bg-chili-red hover:bg-red-600 text-white" : ""
+            }`}
+          >
+            For you
+          </Button>
+          {categories.slice(0, 5).map((category) => (
+            <Button
+              key={category.id}
+              variant={selectedCategory === category.id ? "default" : "outline"}
+              size="sm"
+              onClick={() => onCategoryChange(category.id)}
+              className={`h-8 px-4 text-sm whitespace-nowrap flex-shrink-0 ${
+                selectedCategory === category.id ? "bg-chili-red hover:bg-red-600 text-white" : ""
+              }`}
+            >
+              {category.name}
+            </Button>
+          ))}
+          {categories.length > 5 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsFilterDialogOpen(true)}
+              className="h-8 px-4 text-sm whitespace-nowrap flex-shrink-0"
+            >
+              More...
+            </Button>
+          )}
         </div>
       </div>
-
-      {/* Category Filters */}
-      <CategoryFilters
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onCategoryChange={onCategoryChange}
-      />
 
       {/* Results Count */}
       <div className="px-4 py-2 bg-gray-50 border-b border-gray-200">
         <p className="text-sm text-gray-600">
           {filteredBusinesses.length} {filteredBusinesses.length === 1 ? 'place' : 'places'} found
+          {selectedCategoryName && (
+            <span className="ml-1">
+              • Filtered by <span className="font-medium">{selectedCategoryName}</span>
+            </span>
+          )}
         </p>
       </div>
 
@@ -88,6 +146,15 @@ export function BusinessDirectory({
           )}
         </div>
       </div>
+
+      {/* Filter Dialog */}
+      <FilterDialog
+        isOpen={isFilterDialogOpen}
+        onClose={() => setIsFilterDialogOpen(false)}
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onCategoryChange={handleFilterChange}
+      />
     </div>
   );
 }
