@@ -10,7 +10,7 @@ import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { BusinessWithCategory, Category } from '@shared/schema';
 
 import { Link, useLocation } from 'wouter';
-import { Heart, Home, Compass, Plane, Info, Phone } from 'lucide-react';
+import { Heart, Home, Compass, Plane, Info, Phone, Map as MapIcon, List } from 'lucide-react';
 
 export default function Explore() {
   const { isAuthenticated } = useAuth();
@@ -19,6 +19,7 @@ export default function Explore() {
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+    const [showMapInMobile, setShowMapInMobile] = useState(false);
 
   // Fetch categories
   const { data: categories = [] } = useQuery<Category[]>({
@@ -147,6 +148,19 @@ export default function Explore() {
           </Link>
 
           <div className="flex items-center space-x-2">
+            {/* Map Toggle Button */}
+            <button
+              className={`w-10 h-10 flex items-center justify-center rounded-md transition-colors ${
+                showMapInMobile 
+                  ? 'bg-chili-red text-white' 
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+              onClick={() => setShowMapInMobile(!showMapInMobile)}
+              title={showMapInMobile ? "Show List" : "Show Map"}
+            >
+              {showMapInMobile ? <List className="w-5 h-5" /> : <MapIcon className="w-5 h-5" />}
+            </button>
+
             {isAuthenticated ? (
               <button 
                 className="w-10 h-10 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
@@ -172,27 +186,31 @@ export default function Explore() {
         </div>
 
         {/* Mobile Business Directory */}
-        <div className="bg-white">
-          <BusinessDirectory
-            businesses={filteredBusinesses}
-            categories={categories}
-            onBusinessClick={handleBusinessClick}
-            onBusinessLike={handleBusinessLike}
-            onBusinessHover={handleBusinessHover}
-            selectedCategory={selectedCategory}
-            onCategoryChange={handleCategoryChange}
-          />
-        </div>
+        {!showMapInMobile && (
+            <div className="bg-white">
+              <BusinessDirectory
+                businesses={filteredBusinesses}
+                categories={categories}
+                onBusinessClick={handleBusinessClick}
+                onBusinessLike={handleBusinessLike}
+                onBusinessHover={handleBusinessHover}
+                selectedCategory={selectedCategory}
+                onCategoryChange={handleCategoryChange}
+              />
+            </div>
+        )}
 
         {/* Mobile Map */}
-        <div className="h-96 bg-white border-t border-gray-200">
-          <Map
-            businesses={filteredBusinesses}
-            onBusinessClick={handleMapPinClick}
-            selectedBusiness={selectedBusiness}
-            hoveredBusiness={selectedBusiness}
-          />
-        </div>
+        {showMapInMobile && (
+          <div className="h-96 bg-white border-t border-gray-200">
+            <Map
+              businesses={filteredBusinesses}
+              onBusinessClick={handleMapPinClick}
+              selectedBusiness={selectedBusiness}
+              hoveredBusiness={selectedBusiness}
+            />
+          </div>
+        )}
 
         {/* Mobile Bottom Navigation */}
         <div className="bg-white border-t border-gray-200 p-2 sticky bottom-0 z-20">
