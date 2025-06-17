@@ -80,27 +80,26 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
         },
       });
 
-      // Create minimal tooltip info window
+      // Create custom tooltip info window for enhanced hover experience
       const tooltipInfoWindow = new google.maps.InfoWindow({
         content: `
           <div style="
-            padding: 4px 8px; 
+            padding: 8px 12px; 
             font-family: system-ui, -apple-system, sans-serif;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 500;
-            color: #374151;
-            background: rgba(255, 255, 255, 0.95);
-            border: none;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            white-space: nowrap;
+            color: #1f2937;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            min-width: 120px;
+            text-align: center;
           ">
             ${business.name}
           </div>
         `,
         disableAutoPan: true,
-        disableDefaultUI: true,
-        pixelOffset: new google.maps.Size(0, -40),
+        pixelOffset: new google.maps.Size(0, -45),
       });
 
       // Add hover event listeners for custom tooltip
