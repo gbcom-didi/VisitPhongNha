@@ -9,8 +9,9 @@ import type { BusinessWithCategory, Category } from '@shared/schema';
 interface BusinessDirectoryProps {
   businesses: BusinessWithCategory[];
   categories: Category[];
-  onBusinessClick: (business: BusinessWithCategory) => void;
-  onBusinessLike: (business: BusinessWithCategory) => void;
+  onBusinessClick?: (business: BusinessWithCategory) => void;
+  onBusinessLike?: (business: BusinessWithCategory) => void;
+  onBusinessHover?: (business: BusinessWithCategory) => void;
   selectedCategory: number | null;
   onCategoryChange: (categoryId: number | null) => void;
 }
@@ -20,6 +21,7 @@ export function BusinessDirectory({
   categories, 
   onBusinessClick, 
   onBusinessLike,
+  onBusinessHover,
   selectedCategory,
   onCategoryChange
 }: BusinessDirectoryProps) {
@@ -29,7 +31,7 @@ export function BusinessDirectory({
     const matchesSearch = business.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          business.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          business.category?.name.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     return matchesSearch;
   });
 
@@ -80,6 +82,7 @@ export function BusinessDirectory({
                 business={business}
                 onClick={onBusinessClick}
                 onLike={onBusinessLike}
+                onHover={onBusinessHover}
               />
             ))
           )}
@@ -88,3 +91,4 @@ export function BusinessDirectory({
     </div>
   );
 }
+`

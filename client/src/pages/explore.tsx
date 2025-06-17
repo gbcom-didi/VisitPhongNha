@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { BusinessDirectory } from '@/components/business-directory';
@@ -69,8 +68,12 @@ export default function Explore() {
 
   const handleBusinessClick = (business: BusinessWithCategory) => {
     setSelectedBusiness(business);
-    // Don't open modal, just update map location
+    setIsModalOpen(true);
   };
+
+    const handleBusinessHover = (business: BusinessWithCategory) => {
+        setSelectedBusiness(business);
+    };
 
   const handleMapPinClick = (business: BusinessWithCategory) => {
     setSelectedBusiness(business);
@@ -142,7 +145,7 @@ export default function Explore() {
               </div>
             </div>
           </Link>
-          
+
           <div className="flex items-center space-x-2">
             {isAuthenticated ? (
               <button 
@@ -175,6 +178,7 @@ export default function Explore() {
             categories={categories}
             onBusinessClick={handleBusinessClick}
             onBusinessLike={handleBusinessLike}
+            onBusinessHover={handleBusinessHover}
             selectedCategory={selectedCategory}
             onCategoryChange={handleCategoryChange}
           />
@@ -186,6 +190,7 @@ export default function Explore() {
             businesses={filteredBusinesses}
             onBusinessClick={handleMapPinClick}
             selectedBusiness={selectedBusiness}
+            hoveredBusiness={selectedBusiness}
           />
         </div>
 
@@ -229,7 +234,7 @@ export default function Explore() {
               </div>
             </Link>
           </div>
-          
+
           <div className="p-2 flex flex-col items-center space-y-2">
             {navigationLinks.map(({ href, label, icon: Icon }) => (
               <Link key={href} href={href}>
@@ -284,6 +289,7 @@ export default function Explore() {
             categories={categories}
             onBusinessClick={handleBusinessClick}
             onBusinessLike={handleBusinessLike}
+            onBusinessHover={handleBusinessHover}
             selectedCategory={selectedCategory}
             onCategoryChange={handleCategoryChange}
           />
@@ -295,6 +301,7 @@ export default function Explore() {
             businesses={filteredBusinesses}
             onBusinessClick={handleMapPinClick}
             selectedBusiness={selectedBusiness}
+            hoveredBusiness={selectedBusiness}
           />
         </div>
       </div>

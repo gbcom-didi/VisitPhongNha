@@ -7,11 +7,16 @@ interface BusinessCardProps {
   business: BusinessWithCategory;
   onLike?: (business: BusinessWithCategory) => void;
   onClick?: (business: BusinessWithCategory) => void;
+  onHover?: (business: BusinessWithCategory) => void;
 }
 
-export function BusinessCard({ business, onLike, onClick }: BusinessCardProps) {
+export function BusinessCard({ business, onLike, onClick, onHover }: BusinessCardProps) {
   const handleCardClick = () => {
     onClick?.(business);
+  };
+
+  const handleCardHover = () => {
+    onHover?.(business);
   };
 
   const handleLikeClick = (e: React.MouseEvent) => {
@@ -29,6 +34,7 @@ export function BusinessCard({ business, onLike, onClick }: BusinessCardProps) {
     <div 
       className="m-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border border-gray-100"
       onClick={handleCardClick}
+      onMouseEnter={handleCardHover}
     >
       <div className="flex items-start space-x-3">
         {/* Business Image */}

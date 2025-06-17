@@ -10,9 +10,10 @@ interface MapProps {
   businesses: BusinessWithCategory[];
   onBusinessClick?: (business: BusinessWithCategory) => void;
   selectedBusiness?: BusinessWithCategory | null;
+  hoveredBusiness?: BusinessWithCategory | null;
 }
 
-export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps) {
+export function Map({ businesses, onBusinessClick, selectedBusiness, hoveredBusiness }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const markers = useRef<mapboxgl.Marker[]>([]);
@@ -170,6 +171,22 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       });
     }
   }, [selectedBusiness]);
+
+  // Handle hovered business zoom
+  useEffect(() => {
+    if (!hoveredBusiness || !map.current) return;
+
+    const lat = parseFloat(hoveredBusiness.latitude);
+    const lng = parseFloat(hoveredBusiness.longitude);
+
+    if (!isNaN(lat) && !isNaN(lng)) {
+      map.current.flyTo({
+        center: [lng, lat],
+        zoom: 13,
+        duration: 800
+      });
+    }
+  }, [hoveredBusiness]);
 
   const handleZoomIn = () => {
     map.current?.zoomIn();
