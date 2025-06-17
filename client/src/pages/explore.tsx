@@ -150,7 +150,7 @@ export default function Explore() {
           <div className="flex items-center space-x-2">
             {/* Map Toggle Button */}
             <button
-              className={`w-10 h-10 flex items-center justify-center rounded-md transition-colors ${
+              className={`px-3 py-2 flex items-center justify-center space-x-2 rounded-md transition-colors ${
                 showMapInMobile 
                   ? 'bg-chili-red text-white' 
                   : 'text-gray-700 hover:bg-gray-100'
@@ -158,7 +158,17 @@ export default function Explore() {
               onClick={() => setShowMapInMobile(!showMapInMobile)}
               title={showMapInMobile ? "Show List" : "Show Map"}
             >
-              {showMapInMobile ? <List className="w-5 h-5" /> : <MapIcon className="w-5 h-5" />}
+              {showMapInMobile ? (
+                <>
+                  <List className="w-4 h-4" />
+                  <span className="text-sm font-medium">List</span>
+                </>
+              ) : (
+                <>
+                  <MapIcon className="w-4 h-4" />
+                  <span className="text-sm font-medium">Map</span>
+                </>
+              )}
             </button>
 
             {isAuthenticated ? (
