@@ -46,6 +46,11 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
 
         map.current.on('error', (error) => {
           console.error('Map error:', error);
+          setIsLoaded(false);
+        });
+
+        map.current.on('style.load', () => {
+          console.log('Map style loaded successfully');
         });
       } catch (error) {
         console.error('Failed to initialize map:', error);
@@ -324,6 +329,15 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
   return (
     <div className="relative w-full h-full">
       <div ref={mapContainer} className="w-full h-full" />
+      
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-chili-red mx-auto mb-2"></div>
+            <p className="text-gray-600 text-sm">Loading map...</p>
+          </div>
+        </div>
+      )}
 
       {/* Map Controls */}
       <div className="absolute top-20 right-4 z-10 flex flex-col gap-1">

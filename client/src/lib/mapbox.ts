@@ -1,6 +1,6 @@
 export const MAPBOX_CONFIG = {
-  accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NnM5NjAwMmQycXMzcjdkZDdpaG4ifQ.rJcFIG214AriISLbB6B5aw',
-  style: 'mapbox://styles/mapbox/streets-v11',
+  accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA',
+  style: 'mapbox://styles/mapbox/streets-v12',
   center: [109.15, 11.65] as [number, number], // Centered on Ninh Thuan businesses
   zoom: 11,
 };
