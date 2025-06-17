@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useQuery, useMutation, queryClient } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { BusinessDirectory } from '@/components/business-directory';
@@ -10,7 +10,7 @@ import { Filter } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { isUnauthorizedError } from '@/lib/authUtils';
-import { apiRequest } from '@/lib/queryClient';
+import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { BusinessWithCategory, Category } from '@shared/schema';
 
 export default function Explore() {
@@ -39,7 +39,6 @@ export default function Explore() {
 
   // Fetch businesses
   const { data: businesses = [], isLoading: businessesLoading } = useQuery<BusinessWithCategory[]>({
-    queryKey: ['/api/businesses', selectedCategory],
     queryKey: selectedCategory 
       ? ['/api/businesses', { categoryId: selectedCategory }]
       : ['/api/businesses'],
