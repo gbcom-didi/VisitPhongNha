@@ -86,19 +86,20 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       const el = document.createElement('div');
       el.className = 'marker';
       el.style.backgroundColor = iconData.color;
-      el.style.width = '24px';
-      el.style.height = '24px';
+      el.style.width = '32px';
+      el.style.height = '32px';
       el.style.borderRadius = '50%';
-      el.style.border = '2px solid white';
-      el.style.boxShadow = '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)';
+      el.style.border = '3px solid white';
+      el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
       el.style.cursor = 'pointer';
       el.style.transition = 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
       el.style.display = 'flex';
       el.style.alignItems = 'center';
       el.style.justifyContent = 'center';
-      el.style.fontSize = '10px';
-      el.style.fontWeight = '500';
+      el.style.fontSize = '14px';
+      el.style.fontWeight = '600';
       el.style.color = 'white';
+      el.style.position = 'relative';
       el.innerHTML = iconData.symbol;
 
       el.addEventListener('mouseenter', () => {
@@ -196,24 +197,24 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
 
   const getCategoryIcon = (slug: string): { symbol: string; color: string } => {
     const iconMap: Record<string, { symbol: string; color: string }> = {
-      'stay': { symbol: '🏠', color: '#DDB097' },
-      'food-drink': { symbol: '🍽', color: '#F7BAAD' },
-      'kiting': { symbol: '⚡', color: '#3FC1C4' },
-      'surf': { symbol: '🌊', color: '#35949B' },
-      'things-to-do': { symbol: '📍', color: '#A9D3D2' },
-      'atm': { symbol: '💳', color: '#DD4327' },
-      'medical': { symbol: '+', color: '#DC2626' },
-      'market': { symbol: '🛒', color: '#059669' },
-      'supermarket': { symbol: '🏪', color: '#0891B2' },
-      'mechanic': { symbol: '🔧', color: '#7C3AED' },
-      'phone-repair': { symbol: '📱', color: '#EA580C' },
-      'gym': { symbol: '💪', color: '#BE185D' },
-      'massage': { symbol: '✋', color: '#9333EA' },
-      'recreation': { symbol: '★', color: '#16A34A' },
-      'waterfall': { symbol: '💧', color: '#0284C7' },
-      'attractions': { symbol: '📷', color: '#C2410C' },
-      'pharmacy': { symbol: '💊', color: '#DC2626' },
-      'mobile-phone': { symbol: '📞', color: '#7C2D12' },
+      'stay': { symbol: '⌂', color: '#DD4327' },
+      'food-drink': { symbol: '○', color: '#3FC1C4' },
+      'kiting': { symbol: '◊', color: '#DD4327' },
+      'surf': { symbol: '~', color: '#3FC1C4' },
+      'things-to-do': { symbol: '★', color: '#A9D3D2' },
+      'atm': { symbol: '$', color: '#DD4327' },
+      'medical': { symbol: '+', color: '#DD4327' },
+      'market': { symbol: '■', color: '#3FC1C4' },
+      'supermarket': { symbol: '▲', color: '#3FC1C4' },
+      'mechanic': { symbol: '⚙', color: '#A9D3D2' },
+      'phone-repair': { symbol: '●', color: '#DD4327' },
+      'gym': { symbol: '◉', color: '#3FC1C4' },
+      'massage': { symbol: '✋', color: '#A9D3D2' },
+      'recreation': { symbol: '◈', color: '#3FC1C4' },
+      'waterfall': { symbol: '◦', color: '#3FC1C4' },
+      'attractions': { symbol: '◐', color: '#DD4327' },
+      'pharmacy': { symbol: '⊕', color: '#DD4327' },
+      'mobile-phone': { symbol: '◑', color: '#A9D3D2' },
     };
 
     return iconMap[slug] || { symbol: '●', color: '#6B7280' };
@@ -289,25 +290,26 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
 
         <div className="space-y-2 text-sm max-h-40 overflow-y-auto">
           {Array.from(new Set(businesses.map(b => b.category?.slug).filter(Boolean))).map((categorySlug) => {
+            if (!categorySlug) return null;
             const category = businesses.find(b => b.category?.slug === categorySlug)?.category;
             const count = businesses.filter(b => b.category?.slug === categorySlug).length;
             if (!category) return null;
 
-            const iconData = getCategoryIcon(categorySlug);
+            const iconData = getCategoryIcon(categorySlug as string);
 
             return (
               <div key={categorySlug} className="flex items-center justify-between">
                 <div className="flex items-center">
                   <div 
-                    className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center mr-3 text-xs"
+                    className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center mr-3 text-xs font-semibold border-2 border-white shadow-sm"
                     style={{ backgroundColor: iconData.color, color: 'white' }}
                   >
                     {iconData.symbol}
                   </div>
-                  <span className="text-gray-700 truncate">{category.name}</span>
+                  <span className="text-gray-700 truncate font-medium">{category.name}</span>
                 </div>
                 <span 
-                  className="text-white text-xs px-2 py-1 rounded-full ml-2"
+                  className="text-white text-xs px-2 py-1 rounded-full ml-2 font-medium"
                   style={{ backgroundColor: iconData.color }}
                 >
                   {count}
