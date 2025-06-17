@@ -32,82 +32,32 @@ export function BusinessCard({ business, onLike, onClick, onHover }: BusinessCar
 
   return (
     <div 
-      className="m-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border border-gray-100"
+      className="bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border border-gray-100 overflow-hidden"
       onClick={handleCardClick}
       onMouseEnter={handleCardHover}
     >
-      <div className="flex items-start space-x-3">
-        {/* Business Image */}
-        <div className="w-20 h-20 rounded-xl bg-gray-200 flex-shrink-0 overflow-hidden">
-          {business.imageUrl ? (
-            <img 
-              src={business.imageUrl} 
-              alt={business.name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-              <MapPin className="w-6 h-6 text-gray-400" />
-            </div>
-          )}
-        </div>
-
-        {/* Business Info */}
-        <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-gray-900 truncate text-sm">
-            {business.name}
-          </h4>
-          
-          {business.description && (
-            <p className="text-sm text-gray-600 line-clamp-2 mt-1">
-              {business.description}
-            </p>
-          )}
-
-          <div className="flex items-center mt-2 gap-2">
-            {business.category && (
-              <Badge 
-                variant="secondary"
-                style={{ 
-                  backgroundColor: business.category.color + '20',
-                  color: business.category.color,
-                  border: `1px solid ${business.category.color}40`
-                }}
-                className="text-xs"
-              >
-                {business.category.name}
-              </Badge>
-            )}
-            <span className="text-xs text-gray-500">
-              {getDistanceText()}
-            </span>
+      {/* Business Image */}
+      <div className="relative aspect-[4/3] bg-gray-200 overflow-hidden">
+        {business.imageUrl ? (
+          <img 
+            src={business.imageUrl} 
+            alt={business.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+            <MapPin className="w-12 h-12 text-gray-400" />
           </div>
-
-          {/* Additional Info */}
-          <div className="flex items-center mt-1 text-xs text-gray-500 space-x-3">
-            {business.phone && (
-              <div className="flex items-center">
-                <Phone className="w-3 h-3 mr-1" />
-                <span className="truncate">{business.phone}</span>
-              </div>
-            )}
-            {business.hours && (
-              <div className="flex items-center">
-                <Clock className="w-3 h-3 mr-1" />
-                <span className="truncate">{business.hours}</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Like Button */}
+        )}
+        
+        {/* Like Button Overlay */}
         <Button
           variant="ghost"
           size="sm"
-          className={`p-1 ${
+          className={`absolute top-3 right-3 p-2 bg-white/80 hover:bg-white/90 backdrop-blur-sm rounded-full ${
             business.isLiked 
               ? 'text-chili-red hover:text-red-600' 
-              : 'text-gray-400 hover:text-chili-red'
+              : 'text-gray-600 hover:text-chili-red'
           }`}
           onClick={handleLikeClick}
         >
@@ -115,6 +65,56 @@ export function BusinessCard({ business, onLike, onClick, onHover }: BusinessCar
             className={`w-5 h-5 ${business.isLiked ? 'fill-current' : ''}`} 
           />
         </Button>
+
+        {/* Info Button */}
+        <div className="absolute bottom-3 right-3">
+          <div className="w-6 h-6 bg-black/40 rounded-full flex items-center justify-center">
+            <span className="text-white text-xs font-bold">i</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Business Info */}
+      <div className="p-4">
+        <h4 className="font-semibold text-gray-900 text-lg mb-1 line-clamp-1">
+          {business.name}
+        </h4>
+        
+        <div className="flex items-center text-gray-500 text-sm mb-2">
+          <MapPin className="w-4 h-4 mr-1" />
+          <span>Ninh Thuan Province, Vietnam</span>
+        </div>
+
+        {business.category && (
+          <Badge 
+            variant="secondary"
+            style={{ 
+              backgroundColor: business.category.color + '20',
+              color: business.category.color,
+              border: `1px solid ${business.category.color}40`
+            }}
+            className="text-xs mb-2"
+          >
+            {business.category.name}
+          </Badge>
+        )}
+
+        {business.description && (
+          <p className="text-sm text-gray-600 line-clamp-2 mb-2">
+            {business.description}
+          </p>
+        )}
+
+        {/* Additional Info */}
+        <div className="flex items-center justify-between text-xs text-gray-500">
+          <span>{getDistanceText()}</span>
+          {business.hours && (
+            <div className="flex items-center">
+              <Clock className="w-3 h-3 mr-1" />
+              <span className="truncate">{business.hours}</span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

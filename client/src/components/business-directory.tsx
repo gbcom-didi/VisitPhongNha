@@ -126,15 +126,15 @@ export function BusinessDirectory({
 
       {/* Business Listings */}
       <div className="flex-1 overflow-y-auto md:max-h-none max-h-[50vh]">
-        <div className="divide-y divide-gray-100">
-          {filteredBusinesses.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
-              <MapPin className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-              <p className="text-lg font-medium mb-2">No places found</p>
-              <p className="text-sm">Try adjusting your search or filters</p>
-            </div>
-          ) : (
-            filteredBusinesses.map((business) => (
+        {filteredBusinesses.length === 0 ? (
+          <div className="p-8 text-center text-gray-500">
+            <MapPin className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+            <p className="text-lg font-medium mb-2">No places found</p>
+            <p className="text-sm">Try adjusting your search or filters</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
+            {filteredBusinesses.map((business) => (
               <BusinessCard
                 key={business.id}
                 business={business}
@@ -142,9 +142,9 @@ export function BusinessDirectory({
                 onLike={onBusinessLike}
                 onHover={onBusinessHover}
               />
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Filter Dialog */}
