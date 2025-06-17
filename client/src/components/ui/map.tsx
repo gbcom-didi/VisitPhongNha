@@ -64,19 +64,18 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       const color = getCategoryColor(categorySlug);
       const iconPath = getCategoryIconPath(categorySlug);
 
-      // Create custom marker with category-specific line art icon
+      // Create custom marker with circular icon
       const marker = new google.maps.Marker({
         position: { lat, lng },
         map: mapRef.current,
         title: business.name,
         icon: {
-          path: iconPath,
+          path: google.maps.SymbolPath.CIRCLE,
           fillColor: color,
           fillOpacity: 0.9,
           strokeColor: '#ffffff',
-          strokeWeight: 2,
-          scale: 1.5,
-          anchor: new google.maps.Point(12, 24),
+          strokeWeight: 3,
+          scale: 12,
         },
       });
 
