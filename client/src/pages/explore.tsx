@@ -69,6 +69,11 @@ export default function Explore() {
 
   const handleBusinessClick = (business: BusinessWithCategory) => {
     setSelectedBusiness(business);
+    // Don't open modal, just update map location
+  };
+
+  const handleMapPinClick = (business: BusinessWithCategory) => {
+    setSelectedBusiness(business);
     setIsModalOpen(true);
   };
 
@@ -201,7 +206,7 @@ export default function Explore() {
       <div className="flex-1 h-screen">
         <Map
           businesses={filteredBusinesses}
-          onBusinessClick={handleBusinessClick}
+          onBusinessClick={handleMapPinClick}
           selectedBusiness={selectedBusiness}
         />
       </div>
