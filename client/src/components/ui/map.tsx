@@ -80,24 +80,24 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       if (isNaN(lat) || isNaN(lng)) return;
 
       const categorySlug = business.category?.slug || '';
-      const icon = getCategoryIcon(categorySlug);
+      const iconData = getCategoryIcon(categorySlug);
 
-      // Create marker element with white background and icon
+      // Create marker element with colored circular background and icon
       const el = document.createElement('div');
       el.className = 'marker';
-      el.style.backgroundColor = 'white';
-      el.style.width = '32px';
-      el.style.height = '32px';
-      el.style.borderRadius = '8px';
-      el.style.border = '1px solid #e5e7eb';
-      el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+      el.style.backgroundColor = iconData.color;
+      el.style.width = '28px';
+      el.style.height = '28px';
+      el.style.borderRadius = '50%';
+      el.style.border = '2px solid white';
+      el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.25)';
       el.style.cursor = 'pointer';
       el.style.transition = 'transform 0.2s, box-shadow 0.2s';
       el.style.display = 'flex';
       el.style.alignItems = 'center';
       el.style.justifyContent = 'center';
-      el.style.fontSize = '16px';
-      el.innerHTML = icon;
+      el.style.fontSize = '12px';
+      el.innerHTML = iconData.symbol;
 
       el.addEventListener('mouseenter', () => {
         el.style.transform = 'scale(1.1) translateY(-2px)';
@@ -190,29 +190,29 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
     ))
   ).filter(Boolean) as BusinessWithCategory['category'][];
 
-  const getCategoryIcon = (slug: string): string => {
-    const iconMap: Record<string, string> = {
-      'stay': '⌂',
-      'food-drink': '◎',
-      'kiting': '⟁',
-      'surf': '〜',
-      'things-to-do': '◉',
-      'atm': '⎔',
-      'medical': '✚',
-      'market': '⬟',
-      'supermarket': '▣',
-      'mechanic': '⚒',
-      'phone-repair': '⎆',
-      'gym': '▲',
-      'massage': '※',
-      'recreation': '○',
-      'waterfall': '⩙',
-      'attractions': '◆',
-      'pharmacy': '⊕',
-      'mobile-phone': '⦿',
+  const getCategoryIcon = (slug: string): { symbol: string; color: string } => {
+    const iconMap: Record<string, { symbol: string; color: string }> = {
+      'stay': { symbol: '🏠', color: '#3B82F6' },
+      'food-drink': { symbol: '🍽️', color: '#EF4444' },
+      'kiting': { symbol: '🪁', color: '#10B981' },
+      'surf': { symbol: '🏄', color: '#06B6D4' },
+      'things-to-do': { symbol: '🎯', color: '#8B5CF6' },
+      'atm': { symbol: '🏧', color: '#374151' },
+      'medical': { symbol: '🏥', color: '#DC2626' },
+      'market': { symbol: '🛒', color: '#059669' },
+      'supermarket': { symbol: '🏪', color: '#0891B2' },
+      'mechanic': { symbol: '🔧', color: '#7C3AED' },
+      'phone-repair': { symbol: '📱', color: '#EA580C' },
+      'gym': { symbol: '💪', color: '#F59E0B' },
+      'massage': { symbol: '💆', color: '#9333EA' },
+      'recreation': { symbol: '🎪', color: '#16A34A' },
+      'waterfall': { symbol: '💧', color: '#0284C7' },
+      'attractions': { symbol: '🎭', color: '#8B5CF6' },
+      'pharmacy': { symbol: '💊', color: '#DC2626' },
+      'mobile-phone': { symbol: '📞', color: '#7C2D12' },
     };
 
-    return iconMap[slug] || '●';
+    return iconMap[slug] || { symbol: '📍', color: '#6B7280' };
   };
 
   return (
@@ -262,21 +262,52 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       </div>
 
       {/* Map Legend */}
-      <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-10 max-w-52">
-        <h5 className="font-semibold text-gray-900 mb-3 text-sm">Map Legend</h5>
-        <div className="space-y-2 text-xs max-h-40 overflow-y-auto">
+      <div className="absolute top-4 left-4 bg-white rounded-xl shadow-lg border border-gray-200 p-4 z-10 min-w-48">
+        <div className="flex items-center justify-between mb-3">
+          <h5 className="font-semibold text-gray-900 text-sm">Map Legend</h5>
+          <button className="text-gray-400 hover:text-gray-600">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+        
+        {/* All Places Summary */}
+        <div className="flex items-center justify-between mb-3 p-2 bg-gray-50 rounded-lg">
+          <div className="flex items-center">
+            <div className="w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center mr-3">
+              <span className="text-white text-xs">📍</span>
+            </div>
+            <span className="text-gray-700 text-sm font-medium">All Places</span>
+          </div>
+          <span className="bg-gray-600 text-white text-xs px-2 py-1 rounded-full">{businesses.length}</span>
+        </div>
+
+        <div className="space-y-2 text-sm max-h-40 overflow-y-auto">
           {Array.from(new Set(businesses.map(b => b.category?.slug).filter(Boolean))).map((categorySlug) => {
             const category = businesses.find(b => b.category?.slug === categorySlug)?.category;
+            const count = businesses.filter(b => b.category?.slug === categorySlug).length;
             if (!category) return null;
 
+            const iconData = getCategoryIcon(categorySlug);
+
             return (
-              <div key={categorySlug} className="flex items-center">
-                <div 
-                  className="w-5 h-5 rounded bg-white border border-gray-200 shadow-sm mr-2 flex-shrink-0 flex items-center justify-center text-xs"
-                >
-                  {getCategoryIcon(categorySlug)}
+              <div key={categorySlug} className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div 
+                    className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center mr-3 text-xs"
+                    style={{ backgroundColor: iconData.color, color: 'white' }}
+                  >
+                    {iconData.symbol}
+                  </div>
+                  <span className="text-gray-700 truncate">{category.name}</span>
                 </div>
-                <span className="text-gray-700 truncate">{category.name}</span>
+                <span 
+                  className="text-white text-xs px-2 py-1 rounded-full ml-2"
+                  style={{ backgroundColor: iconData.color }}
+                >
+                  {count}
+                </span>
               </div>
             );
           })}
