@@ -192,6 +192,13 @@ export class DatabaseStorage implements IStorage {
       .limit(1);
     return !!like;
   }
+
+  async clearAllBusinesses(): Promise<void> {
+    // Delete all user likes first
+    await db.delete(userLikes);
+    // Delete all businesses
+    await db.delete(businesses);
+  }
 }
 
 export const storage = new DatabaseStorage();

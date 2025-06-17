@@ -124,6 +124,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Reset data endpoint (for development)
+  app.post('/api/reset-data', async (req, res) => {
+    try {
+      // Clear all existing businesses
+      await storage.clearAllBusinesses();
+      
+      res.json({ message: "Data reset successfully" });
+    } catch (error) {
+      console.error("Error resetting data:", error);
+      res.status(500).json({ message: "Failed to reset data" });
+    }
+  });
+
   // Initialize data endpoint (for development)
   app.post('/api/init-data', async (req, res) => {
     try {
@@ -166,6 +179,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       allCategories.forEach(cat => {
         categoryMap[cat.slug] = cat.id;
       });
+
+      // Check if data is already initialized
+      const existingBusinesses = await storage.getBusinesses();
+      if (existingBusinesses.length > 0) {
+        return res.json({ 
+          message: "Data already initialized",
+          categories: allCategories.length,
+          businesses: existingBusinesses.length
+        });
+      }
 
       // Create businesses based on the provided data
       const businessesData = [

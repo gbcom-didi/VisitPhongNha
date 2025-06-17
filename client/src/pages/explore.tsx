@@ -20,17 +20,7 @@ export default function Explore() {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Initialize data on first load
-  useEffect(() => {
-    const initializeData = async () => {
-      try {
-        await apiRequest('POST', '/api/init-data');
-      } catch (error) {
-        // Data might already be initialized, that's okay
-      }
-    };
-    initializeData();
-  }, []);
+  
 
   // Fetch categories
   const { data: categories = [] } = useQuery<Category[]>({

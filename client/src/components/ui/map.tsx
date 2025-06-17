@@ -54,11 +54,11 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
 
       const lat = parseFloat(business.latitude);
       const lng = parseFloat(business.longitude);
-      
+
       if (isNaN(lat) || isNaN(lng)) return;
 
       const color = getCategoryColor(business.category?.slug || '');
-      
+
       // Create marker element
       const el = document.createElement('div');
       el.className = 'marker';
@@ -70,11 +70,11 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
       el.style.cursor = 'pointer';
       el.style.transition = 'transform 0.2s';
-      
+
       el.addEventListener('mouseenter', () => {
         el.style.transform = 'scale(1.2)';
       });
-      
+
       el.addEventListener('mouseleave', () => {
         el.style.transform = 'scale(1)';
       });
@@ -98,7 +98,7 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
 
     const lat = parseFloat(selectedBusiness.latitude);
     const lng = parseFloat(selectedBusiness.longitude);
-    
+
     if (!isNaN(lat) && !isNaN(lng)) {
       map.current.flyTo({
         center: [lng, lat],
@@ -154,10 +154,41 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
     }
   };
 
+  const categories = businesses.map(b => b.category).filter((category, index, self) =>
+    index === self.findIndex((t) => (
+      t && category && t.id === category.id
+    ))
+  ).filter(Boolean) as BusinessWithCategory['category'][];
+
+  const getCategoryIcon = (slug: string): string => {
+    const iconMap: Record<string, string> = {
+      'stay': '🏨',
+      'food-drink': '🍽️',
+      'kiting': '🪁',
+      'surf': '🏄',
+      'things-to-do': '📸',
+      'atm': '🏧',
+      'medical': '🏥',
+      'market': '🛒',
+      'supermarket': '🛍️',
+      'mechanic': '🔧',
+      'phone-repair': '📱',
+      'gym': '💪',
+      'massage': '💆',
+      'recreation': '☀️',
+      'waterfall': '💧',
+      'attractions': '📍',
+      'pharmacy': '💊',
+      'mobile-phone': '📞',
+    };
+
+    return iconMap[slug] || '📍';
+  };
+
   return (
     <div className="relative w-full h-full">
       <div ref={mapContainer} className="w-full h-full" />
-      
+
       {/* Map Controls */}
       <div className="absolute top-4 right-4 z-10 flex flex-col gap-1">
         <Button
@@ -207,7 +238,7 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
           {Array.from(new Set(businesses.map(b => b.category?.slug).filter(Boolean))).map((categorySlug) => {
             const category = businesses.find(b => b.category?.slug === categorySlug)?.category;
             if (!category) return null;
-            
+
             return (
               <div key={categorySlug} className="flex items-center">
                 <div 
@@ -223,3 +254,27 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
     </div>
   );
 }
+const getCategoryColor = (slug: string): string => {
+  const colorMap: Record<string, string> = {
+    'stay': '#DDB097',
+    'food-drink': '#F7BAAD',
+    'kiting': '#3FC1C4',
+    'surf': '#35949B',
+    'things-to-do': '#A9D3D2',
+    'atm': '#DD4327',
+    'medical': '#DC2626',
+    'market': '#059669',
+    'supermarket': '#0891B2',
+    'mechanic': '#7C3AED',
+    'phone-repair': '#EA580C',
+    'gym': '#BE185D',
+    'massage': '#9333EA',
+    'recreation': '#16A34A',
+    'waterfall': '#0284C7',
+    'attractions': '#C2410C',
+    'pharmacy': '#DC2626',
+    'mobile-phone': '#7C2D12',
+  };
+
+  return colorMap[slug] || '#6B7280';
+};
