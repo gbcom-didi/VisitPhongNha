@@ -75,12 +75,12 @@ export function BusinessDirectory({
         </div>
 
         {/* Horizontal Filter Buttons */}
-        <div className="flex gap-2 overflow-x-auto pb-1">
+        <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-hide">
           <Button
             variant={selectedCategory === null ? "default" : "outline"}
             size="sm"
             onClick={() => onCategoryChange(null)}
-            className={`h-8 px-4 text-sm whitespace-nowrap flex-shrink-0 ${
+            className={`h-7 px-3 text-xs whitespace-nowrap flex-shrink-0 min-w-fit ${
               selectedCategory === null ? "bg-chili-red hover:bg-red-600 text-white" : ""
             }`}
           >
@@ -92,7 +92,7 @@ export function BusinessDirectory({
               variant={selectedCategory === category.id ? "default" : "outline"}
               size="sm"
               onClick={() => onCategoryChange(category.id)}
-              className={`h-8 px-4 text-sm whitespace-nowrap flex-shrink-0 ${
+              className={`h-7 px-3 text-xs whitespace-nowrap flex-shrink-0 min-w-fit ${
                 selectedCategory === category.id ? "bg-chili-red hover:bg-red-600 text-white" : ""
               }`}
             >
@@ -104,7 +104,7 @@ export function BusinessDirectory({
               variant="outline"
               size="sm"
               onClick={() => setIsFilterDialogOpen(true)}
-              className="h-8 px-4 text-sm whitespace-nowrap flex-shrink-0"
+              className="h-7 px-3 text-xs whitespace-nowrap flex-shrink-0 min-w-fit"
             >
               More...
             </Button>

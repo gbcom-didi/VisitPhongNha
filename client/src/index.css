@@ -35,6 +35,17 @@
   --coastal-mist: hsl(181, 32%, 73%);
 }
 
+/* Hide scrollbars */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;     /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;             /* Chrome, Safari and Opera */
+  }
+}
+
 .dark {
   --background: hsl(240, 10%, 3.9%);
   --foreground: hsl(0, 0%, 98%);
