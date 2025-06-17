@@ -35,7 +35,7 @@ export function Hero() {
             <Button 
               size="lg"
               className="bg-chili-red hover:bg-red-600 text-white px-8 py-3 text-lg"
-              onClick={scrollToExplore}
+              onClick={() => window.location.href = '/explore'}
             >
               Start Exploring
             </Button>
