@@ -170,27 +170,27 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
 
   const getCategoryIcon = (slug: string): string => {
     const iconMap: Record<string, string> = {
-      'stay': '🏨',
-      'food-drink': '🍽️',
-      'kiting': '🪁',
-      'surf': '🏄',
-      'things-to-do': '📸',
-      'atm': '🏧',
-      'medical': '🏥',
-      'market': '🛒',
-      'supermarket': '🛍️',
-      'mechanic': '🔧',
-      'phone-repair': '📱',
-      'gym': '💪',
-      'massage': '💆',
-      'recreation': '☀️',
-      'waterfall': '💧',
-      'attractions': '📍',
-      'pharmacy': '💊',
-      'mobile-phone': '📞',
+      'stay': '⌂',
+      'food-drink': '◎',
+      'kiting': '⟁',
+      'surf': '〜',
+      'things-to-do': '◉',
+      'atm': '⎔',
+      'medical': '✚',
+      'market': '⬟',
+      'supermarket': '▣',
+      'mechanic': '⚒',
+      'phone-repair': '⎆',
+      'gym': '▲',
+      'massage': '※',
+      'recreation': '○',
+      'waterfall': '⩙',
+      'attractions': '◆',
+      'pharmacy': '⊕',
+      'mobile-phone': '⦿',
     };
 
-    return iconMap[slug] || '📍';
+    return iconMap[slug] || '●';
   };
 
   return (
