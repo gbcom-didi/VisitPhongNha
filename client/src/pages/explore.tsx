@@ -131,25 +131,25 @@ export default function Explore() {
     <SidebarProvider>
       <div className="min-h-screen bg-gray-50 flex">
         {/* Main Navigation Sidebar */}
-        <Sidebar className="border-r border-gray-200">
-          <SidebarHeader className="p-6 border-b border-gray-200">
+        <Sidebar className="border-r border-gray-200 w-16">
+          <SidebarHeader className="p-4 border-b border-gray-200">
             <Link href="/">
-              <div className="cursor-pointer">
-                <h1 className="text-2xl font-bold text-chili-red font-questrial">ĐiĐiVui</h1>
-                <p className="text-xs text-gray-500">Ninh Thuan Travel Hub</p>
+              <div className="cursor-pointer flex justify-center">
+                <div className="w-8 h-8 bg-chili-red rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">Đ</span>
+                </div>
               </div>
             </Link>
           </SidebarHeader>
           
-          <SidebarContent className="p-4">
+          <SidebarContent className="p-2">
             <SidebarMenu>
               {navigationLinks.map(({ href, label, icon: Icon }) => (
                 <SidebarMenuItem key={href}>
-                  <SidebarMenuButton asChild isActive={isActiveLink(href)}>
+                  <SidebarMenuButton asChild isActive={isActiveLink(href)} className="w-12 h-12 p-0 justify-center">
                     <Link href={href}>
-                      <a className="flex items-center w-full">
-                        <Icon className="w-5 h-5 mr-3" />
-                        {label}
+                      <a className="flex items-center justify-center w-full h-full" title={label}>
+                        <Icon className="w-5 h-5" />
                       </a>
                     </Link>
                   </SidebarMenuButton>
@@ -157,11 +157,10 @@ export default function Explore() {
               ))}
               {isAuthenticated && (
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="w-12 h-12 p-0 justify-center">
                     <Link href="/saved">
-                      <a className="flex items-center w-full">
-                        <Heart className="w-5 h-5 mr-3" />
-                        Saved Places
+                      <a className="flex items-center justify-center w-full h-full" title="Saved Places">
+                        <Heart className="w-5 h-5" />
                       </a>
                     </Link>
                   </SidebarMenuButton>
@@ -173,17 +172,23 @@ export default function Explore() {
             <div className="mt-8 pt-8 border-t border-gray-200">
               {isAuthenticated ? (
                 <button 
-                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                  className="w-12 h-12 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
                   onClick={() => window.location.href = '/api/logout'}
+                  title="Sign Out"
                 >
-                  Sign Out
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
                 </button>
               ) : (
                 <button 
-                  className="w-full bg-chili-red text-white px-3 py-2 rounded-md text-sm hover:bg-red-600 transition-colors"
+                  className="w-12 h-12 flex items-center justify-center bg-chili-red text-white rounded-md hover:bg-red-600 transition-colors"
                   onClick={() => window.location.href = '/api/login'}
+                  title="Sign In"
                 >
-                  Sign In
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                  </svg>
                 </button>
               )}
             </div>
