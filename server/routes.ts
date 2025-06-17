@@ -127,18 +127,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize data endpoint (for development)
   app.post('/api/init-data', async (req, res) => {
     try {
-      // Check if data already exists
-      const existingCategories = await storage.getCategories();
-      const existingBusinesses = await storage.getBusinessesWithUserLikes();
-      
-      if (existingCategories.length > 0 && existingBusinesses.length > 0) {
-        return res.json({ 
-          message: "Data already initialized",
-          categories: existingCategories.length,
-          businesses: existingBusinesses.length
-        });
-      }
-
       // Create categories
       const categoriesData = [
         { name: "Stay", slug: "stay", color: "#DDB097", icon: "bed" },
@@ -287,35 +275,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error initializing data:", error);
       res.status(500).json({ message: "Failed to initialize data" });
-    }
-  });
-
-  // Cleanup duplicates endpoint (for development)
-  app.post('/api/cleanup-duplicates', async (req, res) => {
-    try {
-      const businesses = await storage.getBusinessesWithUserLikes();
-      const seen = new Set();
-      const duplicates = [];
-
-      for (const business of businesses) {
-        const key = `${business.name}-${business.latitude}-${business.longitude}`;
-        if (seen.has(key)) {
-          duplicates.push(business.id);
-        } else {
-          seen.add(key);
-        }
-      }
-
-      // Note: You would need to implement deleteBusinesses in storage
-      // For now, just return the count
-      res.json({ 
-        message: "Duplicate analysis complete",
-        duplicatesFound: duplicates.length,
-        duplicateIds: duplicates
-      });
-    } catch (error) {
-      console.error("Error cleaning duplicates:", error);
-      res.status(500).json({ message: "Failed to clean duplicates" });
     }
   });
 
