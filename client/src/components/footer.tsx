@@ -50,23 +50,23 @@ export function Footer() {
             <h5 className="font-semibold mb-4">Explore</h5>
             <ul className="space-y-2 text-gray-300">
               <li>
-                <Link href="/explore?category=kiting">
-                  <a className="hover:text-white transition-colors">Kitesurfing Spots</a>
+                <Link href="/explore?category=kiting" className="hover:text-white transition-colors">
+                  Kitesurfing Spots
                 </Link>
               </li>
               <li>
-                <Link href="/explore?category=food-drink">
-                  <a className="hover:text-white transition-colors">Restaurants</a>
+                <Link href="/explore?category=food-drink" className="hover:text-white transition-colors">
+                  Restaurants
                 </Link>
               </li>
               <li>
-                <Link href="/explore?category=stay">
-                  <a className="hover:text-white transition-colors">Accommodations</a>
+                <Link href="/explore?category=stay" className="hover:text-white transition-colors">
+                  Accommodations
                 </Link>
               </li>
               <li>
-                <Link href="/explore?category=attractions">
-                  <a className="hover:text-white transition-colors">Attractions</a>
+                <Link href="/explore?category=attractions" className="hover:text-white transition-colors">
+                  Attractions
                 </Link>
               </li>
             </ul>
@@ -77,23 +77,23 @@ export function Footer() {
             <h5 className="font-semibold mb-4">Support</h5>
             <ul className="space-y-2 text-gray-300">
               <li>
-                <Link href="/about">
-                  <a className="hover:text-white transition-colors">About</a>
+                <Link href="/about" className="hover:text-white transition-colors">
+                  About
                 </Link>
               </li>
               <li>
-                <Link href="/contact">
-                  <a className="hover:text-white transition-colors">Contact</a>
+                <Link href="/contact" className="hover:text-white transition-colors">
+                  Contact
                 </Link>
               </li>
               <li>
-                <Link href="/help">
-                  <a className="hover:text-white transition-colors">Help</a>
+                <Link href="/help" className="hover:text-white transition-colors">
+                  Help
                 </Link>
               </li>
               <li>
-                <Link href="/privacy">
-                  <a className="hover:text-white transition-colors">Terms & Privacy</a>
+                <Link href="/privacy" className="hover:text-white transition-colors">
+                  Terms & Privacy
                 </Link>
               </li>
             </ul>
