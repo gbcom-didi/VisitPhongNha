@@ -136,9 +136,9 @@ export default function Explore() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Mobile Layout */}
-      <div className="md:hidden flex flex-col">
+      <div className="md:hidden h-screen flex flex-col">
         {/* Mobile Header with Navigation */}
-        <div className="bg-white border-b border-gray-200 p-4 flex items-center justify-between sticky top-0 z-20">
+        <div className="bg-white border-b border-gray-200 p-4 flex items-center justify-between flex-shrink-0 z-20">
           <Link href="/">
             <div className="cursor-pointer">
               <div className="w-8 h-8 bg-chili-red rounded-lg flex items-center justify-center">
@@ -187,7 +187,7 @@ export default function Explore() {
 
         {/* Mobile Business Directory */}
         {!showMapInMobile && (
-            <div className="bg-white">
+            <div className="flex-1 bg-white overflow-hidden">
               <BusinessDirectory
                 businesses={filteredBusinesses}
                 categories={categories}
@@ -202,7 +202,7 @@ export default function Explore() {
 
         {/* Mobile Map */}
         {showMapInMobile && (
-          <div className="h-96 bg-white border-t border-gray-200">
+          <div className="flex-1 bg-white">
             <Map
               businesses={filteredBusinesses}
               onBusinessClick={handleMapPinClick}
@@ -213,7 +213,7 @@ export default function Explore() {
         )}
 
         {/* Mobile Bottom Navigation */}
-        <div className="bg-white border-t border-gray-200 p-2 sticky bottom-0 z-20">
+        <div className="bg-white border-t border-gray-200 p-2 flex-shrink-0 z-20">
           <div className="flex justify-around">
             {navigationLinks.map(({ href, label, icon: Icon }) => (
               <Link key={href} href={href}>
