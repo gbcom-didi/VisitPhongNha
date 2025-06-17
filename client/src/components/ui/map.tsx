@@ -92,7 +92,7 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       el.style.border = '1px solid #e5e7eb';
       el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
       el.style.cursor = 'pointer';
-      el.style.transition = 'transform 0.2s, box-shadow 0.2s';
+      el.style.transition = 'box-shadow 0.2s';
       el.style.display = 'flex';
       el.style.alignItems = 'center';
       el.style.justifyContent = 'center';
@@ -100,12 +100,10 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       el.innerHTML = icon;
 
       el.addEventListener('mouseenter', () => {
-        el.style.transform = 'scale(1.1) translateY(-2px)';
         el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.25)';
       });
 
       el.addEventListener('mouseleave', () => {
-        el.style.transform = 'scale(1) translateY(0)';
         el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
       });
 
