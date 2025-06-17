@@ -36,6 +36,8 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
           style: MAPBOX_CONFIG.style,
           center: MAPBOX_CONFIG.center,
           zoom: MAPBOX_CONFIG.zoom,
+          attributionControl: false,
+          logoPosition: 'bottom-right',
         });
 
         map.current.on('load', () => {
@@ -83,8 +85,7 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
         return;
       }
 
-      // Debug logging for coordinate issues
-      console.log(`Creating marker for ${business.name}: lat=${lat}, lng=${lng}, [lng, lat]=[${lng}, ${lat}]`);
+
 
       // Additional validation for realistic coordinates in Vietnam
       if (lat < 8 || lat > 24 || lng < 102 || lng > 112) {
@@ -137,8 +138,24 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
     });
 
     // Auto-fit bounds to show all markers when businesses are loaded
-    if (businesses.length > 0) {
-      setTimeout(() => handleFitBounds(), 500);
+    if (businesses.length > 0 && map.current) {
+      setTimeout(() => {
+        const coordinates = businesses
+          .filter(b => b.latitude && b.longitude)
+          .map(b => [Number(b.longitude), Number(b.latitude)] as [number, number]);
+
+        if (coordinates.length === 0) return;
+
+        const bounds = coordinates.reduce(
+          (bounds, coord) => bounds.extend(coord),
+          new mapboxgl.LngLatBounds(coordinates[0], coordinates[0])
+        );
+
+        map.current?.fitBounds(bounds, {
+          padding: { top: 50, bottom: 50, left: 50, right: 50 },
+          maxZoom: 13
+        });
+      }, 1000);
     }
   }, [businesses, isLoaded, onBusinessClick]);
 
