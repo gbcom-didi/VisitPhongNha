@@ -135,6 +135,11 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
 
       markers.current.push(marker);
     });
+
+    // Auto-fit bounds to show all markers when businesses are loaded
+    if (businesses.length > 0) {
+      setTimeout(() => handleFitBounds(), 500);
+    }
   }, [businesses, isLoaded, onBusinessClick]);
 
   // Highlight selected business
