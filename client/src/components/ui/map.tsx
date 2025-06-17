@@ -74,29 +74,17 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
     businesses.forEach((business) => {
       if (!business.latitude || !business.longitude) return;
 
-      // Parse coordinates more carefully
-      let lat, lng;
-      
-      if (typeof business.latitude === 'string') {
-        lat = parseFloat(business.latitude.replace(',', '.'));
-      } else if (typeof business.latitude === 'number') {
-        lat = business.latitude;
-      } else {
-        lat = parseFloat(String(business.latitude));
-      }
-      
-      if (typeof business.longitude === 'string') {
-        lng = parseFloat(business.longitude.replace(',', '.'));
-      } else if (typeof business.longitude === 'number') {
-        lng = business.longitude;
-      } else {
-        lng = parseFloat(String(business.longitude));
-      }
+      // Convert decimal coordinates to numbers
+      const lat = Number(business.latitude);
+      const lng = Number(business.longitude);
 
       if (isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) {
         console.warn(`Invalid coordinates for ${business.name}: lat=${business.latitude}, lng=${business.longitude}, parsed: lat=${lat}, lng=${lng}`);
         return;
       }
+
+      // Debug logging for coordinate issues
+      console.log(`Creating marker for ${business.name}: lat=${lat}, lng=${lng}, [lng, lat]=[${lng}, ${lat}]`);
 
       // Additional validation for realistic coordinates in Vietnam
       if (lat < 8 || lat > 24 || lng < 102 || lng > 112) {
