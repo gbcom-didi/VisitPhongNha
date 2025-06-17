@@ -133,7 +133,7 @@ export function BusinessDirectory({
             <p className="text-sm">Try adjusting your search or filters</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4 p-4"></div>
+          <div className="grid grid-cols-2 gap-4 p-4">
             {filteredBusinesses.map((business) => (
               <BusinessCard
                 key={business.id}
