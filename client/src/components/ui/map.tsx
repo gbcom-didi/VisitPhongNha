@@ -65,18 +65,22 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       const color = getCategoryColor(categorySlug);
       const iconPath = getCategoryIconPath(categorySlug);
 
-      // Create custom marker with circular icon
+      // Create custom marker with category icon
+      const iconSvg = `
+        <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="16" cy="16" r="14" fill="${color}" stroke="#ffffff" stroke-width="3"/>
+          <text x="16" y="20" text-anchor="middle" font-size="12" fill="#ffffff">${getCategoryIcon(categorySlug)}</text>
+        </svg>
+      `;
+      
       const marker = new google.maps.Marker({
         position: { lat, lng },
         map: mapRef.current,
         title: business.name,
         icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          fillColor: color,
-          fillOpacity: 0.9,
-          strokeColor: '#ffffff',
-          strokeWeight: 3,
-          scale: 12,
+          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(iconSvg),
+          scaledSize: new google.maps.Size(32, 32),
+          anchor: new google.maps.Point(16, 16),
         },
       });
 
