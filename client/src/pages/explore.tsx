@@ -9,15 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { isUnauthorizedError } from '@/lib/authUtils';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { BusinessWithCategory, Category } from '@shared/schema';
-import { 
-  Sidebar, 
-  SidebarContent, 
-  SidebarProvider,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarHeader
-} from '@/components/ui/sidebar';
+
 import { Link, useLocation } from 'wouter';
 import { Heart, Home, Compass, Plane, Info, Phone } from 'lucide-react';
 
@@ -128,102 +120,94 @@ export default function Explore() {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen bg-gray-50 flex">
-        {/* Main Navigation Sidebar */}
-        <Sidebar className="border-r border-gray-200 w-16 flex-shrink-0">
-          <SidebarHeader className="p-4 border-b border-gray-200">
-            <Link href="/">
-              <div className="cursor-pointer flex justify-center">
-                <div className="w-8 h-8 bg-chili-red rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">Đ</span>
-                </div>
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Main Navigation Sidebar */}
+      <div className="w-16 bg-white border-r border-gray-200 flex-shrink-0 h-screen">
+        <div className="p-4 border-b border-gray-200">
+          <Link href="/">
+            <div className="cursor-pointer flex justify-center">
+              <div className="w-8 h-8 bg-chili-red rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">Đ</span>
+              </div>
+            </div>
+          </Link>
+        </div>
+        
+        <div className="p-2 flex flex-col items-center space-y-2">
+          {navigationLinks.map(({ href, label, icon: Icon }) => (
+            <Link key={href} href={href}>
+              <div className={`w-12 h-12 flex items-center justify-center rounded-md transition-colors cursor-pointer ${
+                isActiveLink(href) 
+                  ? 'bg-chili-red text-white' 
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`} title={label}>
+                <Icon className="w-5 h-5" />
               </div>
             </Link>
-          </SidebarHeader>
-          
-          <SidebarContent className="p-2">
-            <SidebarMenu>
-              {navigationLinks.map(({ href, label, icon: Icon }) => (
-                <SidebarMenuItem key={href}>
-                  <SidebarMenuButton asChild isActive={isActiveLink(href)} className="w-12 h-12 p-0 justify-center">
-                    <Link href={href}>
-                      <a className="flex items-center justify-center w-full h-full" title={label}>
-                        <Icon className="w-5 h-5" />
-                      </a>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-              {isAuthenticated && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild className="w-12 h-12 p-0 justify-center">
-                    <Link href="/saved">
-                      <a className="flex items-center justify-center w-full h-full" title="Saved Places">
-                        <Heart className="w-5 h-5" />
-                      </a>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-            </SidebarMenu>
-
-            {/* Auth Section */}
-            <div className="mt-8 pt-8 border-t border-gray-200">
-              {isAuthenticated ? (
-                <button 
-                  className="w-12 h-12 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
-                  onClick={() => window.location.href = '/api/logout'}
-                  title="Sign Out"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                </button>
-              ) : (
-                <button 
-                  className="w-12 h-12 flex items-center justify-center bg-chili-red text-white rounded-md hover:bg-red-600 transition-colors"
-                  onClick={() => window.location.href = '/api/login'}
-                  title="Sign In"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                  </svg>
-                </button>
-              )}
-            </div>
-          </SidebarContent>
-        </Sidebar>
-
-        {/* Business Directory Sidebar */}
-        <div className="w-80 bg-white border-r border-gray-200 flex-shrink-0 h-screen overflow-hidden">
-          <BusinessDirectory
-            businesses={businesses}
-            categories={categories}
-            onBusinessClick={handleBusinessClick}
-            onBusinessLike={handleBusinessLike}
-            selectedCategory={selectedCategory}
-            onCategoryChange={handleCategoryChange}
-          />
+          ))}
+          {isAuthenticated && (
+            <Link href="/saved">
+              <div className="w-12 h-12 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors cursor-pointer" title="Saved Places">
+                <Heart className="w-5 h-5" />
+              </div>
+            </Link>
+          )}
         </div>
 
-        {/* Map - Full Screen */}
-        <div className="flex-1 h-screen overflow-hidden">
-          <Map
-            businesses={businesses}
-            onBusinessClick={handleBusinessClick}
-            selectedBusiness={selectedBusiness}
-          />
+        {/* Auth Section */}
+        <div className="mt-8 pt-8 border-t border-gray-200 px-2">
+          {isAuthenticated ? (
+            <button 
+              className="w-12 h-12 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+              onClick={() => window.location.href = '/api/logout'}
+              title="Sign Out"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
+          ) : (
+            <button 
+              className="w-12 h-12 flex items-center justify-center bg-chili-red text-white rounded-md hover:bg-red-600 transition-colors"
+              onClick={() => window.location.href = '/api/login'}
+              title="Sign In"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+              </svg>
+            </button>
+          )}
         </div>
+      </div>
 
-        {/* Business Detail Modal */}
-        <BusinessModal
-          business={selectedBusiness}
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          onLike={handleBusinessLike}
+      {/* Business Directory Panel */}
+      <div className="w-96 bg-white border-r border-gray-200 flex-shrink-0 h-screen overflow-hidden">
+        <BusinessDirectory
+          businesses={businesses}
+          categories={categories}
+          onBusinessClick={handleBusinessClick}
+          onBusinessLike={handleBusinessLike}
+          selectedCategory={selectedCategory}
+          onCategoryChange={handleCategoryChange}
         />
       </div>
-    </SidebarProvider>
+
+      {/* Map - Takes remaining space */}
+      <div className="flex-1 h-screen">
+        <Map
+          businesses={businesses}
+          onBusinessClick={handleBusinessClick}
+          selectedBusiness={selectedBusiness}
+        />
+      </div>
+
+      {/* Business Detail Modal */}
+      <BusinessModal
+        business={selectedBusiness}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onLike={handleBusinessLike}
+      />
+    </div>
   );
 }
