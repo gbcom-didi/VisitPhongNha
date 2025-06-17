@@ -44,14 +44,12 @@ export function Navigation() {
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
             {navigationLinks.map(({ href, label }) => (
-              <Link key={href} href={href}>
-                <a className={`transition-colors ${
-                  isActiveLink(href)
-                    ? 'text-chili-red font-medium'
-                    : 'text-gray-700 hover:text-chili-red'
-                }`}>
-                  {label}
-                </a>
+              <Link key={href} href={href} className={`transition-colors ${
+                isActiveLink(href)
+                  ? 'text-chili-red font-medium'
+                  : 'text-gray-700 hover:text-chili-red'
+              }`}>
+                {label}
               </Link>
             ))}
           </div>
@@ -111,28 +109,27 @@ export function Navigation() {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
               {navigationLinks.map(({ href, label }) => (
-                <Link key={href} href={href}>
-                  <a 
-                    className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                      isActiveLink(href)
-                        ? 'text-chili-red bg-red-50'
-                        : 'text-gray-700 hover:text-chili-red hover:bg-gray-50'
-                    }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {label}
-                  </a>
+                <Link 
+                  key={href} 
+                  href={href}
+                  className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                    isActiveLink(href)
+                      ? 'text-chili-red bg-red-50'
+                      : 'text-gray-700 hover:text-chili-red hover:bg-gray-50'
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {label}
                 </Link>
               ))}
               {isAuthenticated && (
-                <Link href="/saved">
-                  <a 
-                    className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-chili-red hover:bg-gray-50"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <Heart className="w-5 h-5 mr-2" />
-                    Saved Places
-                  </a>
+                <Link 
+                  href="/saved"
+                  className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-chili-red hover:bg-gray-50"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Heart className="w-5 h-5 mr-2" />
+                  Saved Places
                 </Link>
               )}
             </div>
