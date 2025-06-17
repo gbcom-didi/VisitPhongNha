@@ -184,22 +184,23 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
     }
   };
 
-  // Get all unique categories from businesses (not filtered by current selection)
+  // Get all unique categories from businesses on initial load only
   const [allCategories, setAllCategories] = useState<BusinessWithCategory['category'][]>([]);
+  const [hasInitialized, setHasInitialized] = useState(false);
   
-  // Update all categories when businesses change (but not when filtering)
+  // Initialize all categories once when businesses are first loaded
   useEffect(() => {
-    const uniqueCategories = businesses.map(b => b.category).filter((category, index, self) =>
-      index === self.findIndex((t) => (
-        t && category && t.id === category.id
-      ))
-    ).filter(Boolean) as BusinessWithCategory['category'][];
-    
-    // Only update if we have more categories than before (to build a complete list)
-    if (uniqueCategories.length > allCategories.length) {
+    if (businesses.length > 0 && !hasInitialized) {
+      const uniqueCategories = businesses.map(b => b.category).filter((category, index, self) =>
+        index === self.findIndex((t) => (
+          t && category && t.id === category.id
+        ))
+      ).filter(Boolean) as BusinessWithCategory['category'][];
+      
       setAllCategories(uniqueCategories);
+      setHasInitialized(true);
     }
-  }, [businesses.length]); // Only depend on length, not the filtered content
+  }, [businesses, hasInitialized])
 
   const getCategoryIcon = (slug: string): string => {
     const iconMap: Record<string, string> = {
