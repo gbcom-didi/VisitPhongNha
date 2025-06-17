@@ -130,85 +130,173 @@ export default function Explore() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Main Navigation Sidebar */}
-      <div className="w-16 bg-white border-r border-gray-200 flex-shrink-0 h-screen">
-        <div className="p-4 border-b border-gray-200">
+    <div className="min-h-screen bg-gray-50">
+      {/* Mobile Layout */}
+      <div className="md:hidden flex flex-col">
+        {/* Mobile Header with Navigation */}
+        <div className="bg-white border-b border-gray-200 p-4 flex items-center justify-between sticky top-0 z-20">
           <Link href="/">
-            <div className="cursor-pointer flex justify-center">
+            <div className="cursor-pointer">
               <div className="w-8 h-8 bg-chili-red rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">Đ</span>
               </div>
             </div>
           </Link>
-        </div>
-        
-        <div className="p-2 flex flex-col items-center space-y-2">
-          {navigationLinks.map(({ href, label, icon: Icon }) => (
-            <Link key={href} href={href}>
-              <div className={`w-12 h-12 flex items-center justify-center rounded-md transition-colors cursor-pointer ${
-                isActiveLink(href) 
-                  ? 'bg-chili-red text-white' 
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`} title={label}>
-                <Icon className="w-5 h-5" />
-              </div>
-            </Link>
-          ))}
-          {isAuthenticated && (
-            <Link href="/saved">
-              <div className="w-12 h-12 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors cursor-pointer" title="Saved Places">
-                <Heart className="w-5 h-5" />
-              </div>
-            </Link>
-          )}
+          
+          <div className="flex items-center space-x-2">
+            {isAuthenticated ? (
+              <button 
+                className="w-10 h-10 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                onClick={() => window.location.href = '/api/logout'}
+                title="Sign Out"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              </button>
+            ) : (
+              <button 
+                className="w-10 h-10 flex items-center justify-center bg-chili-red text-white rounded-md hover:bg-red-600 transition-colors"
+                onClick={() => window.location.href = '/api/login'}
+                title="Sign In"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Auth Section */}
-        <div className="mt-8 pt-8 border-t border-gray-200 px-2">
-          {isAuthenticated ? (
-            <button 
-              className="w-12 h-12 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
-              onClick={() => window.location.href = '/api/logout'}
-              title="Sign Out"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-            </button>
-          ) : (
-            <button 
-              className="w-12 h-12 flex items-center justify-center bg-chili-red text-white rounded-md hover:bg-red-600 transition-colors"
-              onClick={() => window.location.href = '/api/login'}
-              title="Sign In"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-              </svg>
-            </button>
-          )}
+        {/* Mobile Business Directory */}
+        <div className="bg-white">
+          <BusinessDirectory
+            businesses={filteredBusinesses}
+            categories={categories}
+            onBusinessClick={handleBusinessClick}
+            onBusinessLike={handleBusinessLike}
+            selectedCategory={selectedCategory}
+            onCategoryChange={handleCategoryChange}
+          />
+        </div>
+
+        {/* Mobile Map */}
+        <div className="h-96 bg-white border-t border-gray-200">
+          <Map
+            businesses={filteredBusinesses}
+            onBusinessClick={handleMapPinClick}
+            selectedBusiness={selectedBusiness}
+          />
+        </div>
+
+        {/* Mobile Bottom Navigation */}
+        <div className="bg-white border-t border-gray-200 p-2 sticky bottom-0 z-20">
+          <div className="flex justify-around">
+            {navigationLinks.map(({ href, label, icon: Icon }) => (
+              <Link key={href} href={href}>
+                <div className={`flex flex-col items-center p-2 rounded-md transition-colors cursor-pointer ${
+                  isActiveLink(href) 
+                    ? 'text-chili-red' 
+                    : 'text-gray-700'
+                }`}>
+                  <Icon className="w-5 h-5 mb-1" />
+                  <span className="text-xs">{label}</span>
+                </div>
+              </Link>
+            ))}
+            {isAuthenticated && (
+              <Link href="/saved">
+                <div className="flex flex-col items-center p-2 text-gray-700 rounded-md transition-colors cursor-pointer">
+                  <Heart className="w-5 h-5 mb-1" />
+                  <span className="text-xs">Saved</span>
+                </div>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Business Directory Panel */}
-      <div className="w-96 bg-white border-r border-gray-200 flex-shrink-0 h-screen overflow-hidden">
-        <BusinessDirectory
-          businesses={filteredBusinesses}
-          categories={categories}
-          onBusinessClick={handleBusinessClick}
-          onBusinessLike={handleBusinessLike}
-          selectedCategory={selectedCategory}
-          onCategoryChange={handleCategoryChange}
-        />
-      </div>
+      {/* Desktop Layout */}
+      <div className="hidden md:flex">
+        {/* Main Navigation Sidebar */}
+        <div className="w-16 bg-white border-r border-gray-200 flex-shrink-0 h-screen">
+          <div className="p-4 border-b border-gray-200">
+            <Link href="/">
+              <div className="cursor-pointer flex justify-center">
+                <div className="w-8 h-8 bg-chili-red rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">Đ</span>
+                </div>
+              </div>
+            </Link>
+          </div>
+          
+          <div className="p-2 flex flex-col items-center space-y-2">
+            {navigationLinks.map(({ href, label, icon: Icon }) => (
+              <Link key={href} href={href}>
+                <div className={`w-12 h-12 flex items-center justify-center rounded-md transition-colors cursor-pointer ${
+                  isActiveLink(href) 
+                    ? 'bg-chili-red text-white' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`} title={label}>
+                  <Icon className="w-5 h-5" />
+                </div>
+              </Link>
+            ))}
+            {isAuthenticated && (
+              <Link href="/saved">
+                <div className="w-12 h-12 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors cursor-pointer" title="Saved Places">
+                  <Heart className="w-5 h-5" />
+                </div>
+              </Link>
+            )}
+          </div>
 
-      {/* Map - Takes remaining space */}
-      <div className="flex-1 h-screen">
-        <Map
-          businesses={filteredBusinesses}
-          onBusinessClick={handleMapPinClick}
-          selectedBusiness={selectedBusiness}
-        />
+          {/* Auth Section */}
+          <div className="mt-8 pt-8 border-t border-gray-200 px-2">
+            {isAuthenticated ? (
+              <button 
+                className="w-12 h-12 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                onClick={() => window.location.href = '/api/logout'}
+                title="Sign Out"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              </button>
+            ) : (
+              <button 
+                className="w-12 h-12 flex items-center justify-center bg-chili-red text-white rounded-md hover:bg-red-600 transition-colors"
+                onClick={() => window.location.href = '/api/login'}
+                title="Sign In"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Business Directory Panel */}
+        <div className="w-96 bg-white border-r border-gray-200 flex-shrink-0 h-screen overflow-hidden">
+          <BusinessDirectory
+            businesses={filteredBusinesses}
+            categories={categories}
+            onBusinessClick={handleBusinessClick}
+            onBusinessLike={handleBusinessLike}
+            selectedCategory={selectedCategory}
+            onCategoryChange={handleCategoryChange}
+          />
+        </div>
+
+        {/* Map - Takes remaining space */}
+        <div className="flex-1 h-screen">
+          <Map
+            businesses={filteredBusinesses}
+            onBusinessClick={handleMapPinClick}
+            selectedBusiness={selectedBusiness}
+          />
+        </div>
       </div>
 
       {/* Business Detail Modal */}

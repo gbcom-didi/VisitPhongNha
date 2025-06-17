@@ -34,9 +34,9 @@ export function BusinessDirectory({
   });
 
   return (
-    <div className="h-full bg-white flex flex-col">
+    <div className="h-full bg-white flex flex-col md:h-screen">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200 bg-white sticky top-0 z-10">
+      <div className="p-4 border-b border-gray-200 bg-white sticky top-0 z-10 md:static">
         <h2 className="text-lg font-semibold text-gray-900 mb-3 font-questrial">Explore Ninh Thuan</h2>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -65,7 +65,7 @@ export function BusinessDirectory({
       </div>
 
       {/* Business Listings */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto md:max-h-none max-h-[50vh]">
         <div className="divide-y divide-gray-100">
           {filteredBusinesses.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
