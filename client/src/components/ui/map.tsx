@@ -75,15 +75,32 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       if (!business.latitude || !business.longitude) return;
 
       // Parse coordinates more carefully
-      const lat = typeof business.latitude === 'string' 
-        ? parseFloat(business.latitude.replace(',', '.')) 
-        : parseFloat(String(business.latitude));
-      const lng = typeof business.longitude === 'string' 
-        ? parseFloat(business.longitude.replace(',', '.')) 
-        : parseFloat(String(business.longitude));
+      let lat, lng;
+      
+      if (typeof business.latitude === 'string') {
+        lat = parseFloat(business.latitude.replace(',', '.'));
+      } else if (typeof business.latitude === 'number') {
+        lat = business.latitude;
+      } else {
+        lat = parseFloat(String(business.latitude));
+      }
+      
+      if (typeof business.longitude === 'string') {
+        lng = parseFloat(business.longitude.replace(',', '.'));
+      } else if (typeof business.longitude === 'number') {
+        lng = business.longitude;
+      } else {
+        lng = parseFloat(String(business.longitude));
+      }
 
-      if (isNaN(lat) || isNaN(lng)) {
-        console.warn(`Invalid coordinates for ${business.name}: lat=${business.latitude}, lng=${business.longitude}`);
+      if (isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) {
+        console.warn(`Invalid coordinates for ${business.name}: lat=${business.latitude}, lng=${business.longitude}, parsed: lat=${lat}, lng=${lng}`);
+        return;
+      }
+
+      // Additional validation for realistic coordinates in Vietnam
+      if (lat < 8 || lat > 24 || lng < 102 || lng > 110) {
+        console.warn(`Coordinates outside Vietnam for ${business.name}: lat=${lat}, lng=${lng}`);
         return;
       }
 
@@ -136,10 +153,25 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
   useEffect(() => {
     if (!selectedBusiness || !map.current) return;
 
-    const lat = parseFloat(selectedBusiness.latitude);
-    const lng = parseFloat(selectedBusiness.longitude);
+    let lat, lng;
+    
+    if (typeof selectedBusiness.latitude === 'string') {
+      lat = parseFloat(selectedBusiness.latitude.replace(',', '.'));
+    } else if (typeof selectedBusiness.latitude === 'number') {
+      lat = selectedBusiness.latitude;
+    } else {
+      lat = parseFloat(String(selectedBusiness.latitude));
+    }
+    
+    if (typeof selectedBusiness.longitude === 'string') {
+      lng = parseFloat(selectedBusiness.longitude.replace(',', '.'));
+    } else if (typeof selectedBusiness.longitude === 'number') {
+      lng = selectedBusiness.longitude;
+    } else {
+      lng = parseFloat(String(selectedBusiness.longitude));
+    }
 
-    if (!isNaN(lat) && !isNaN(lng)) {
+    if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
       map.current.flyTo({
         center: [lng, lat],
         zoom: 14,
