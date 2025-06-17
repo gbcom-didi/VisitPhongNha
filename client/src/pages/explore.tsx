@@ -131,7 +131,7 @@ export default function Explore() {
     <SidebarProvider>
       <div className="min-h-screen bg-gray-50 flex">
         {/* Main Navigation Sidebar */}
-        <Sidebar collapsible="icon" className="border-r border-gray-200">
+        <Sidebar className="border-r border-gray-200 w-16">
           <SidebarHeader className="p-4 border-b border-gray-200">
             <Link href="/">
               <div className="cursor-pointer flex justify-center">
@@ -146,16 +146,10 @@ export default function Explore() {
             <SidebarMenu>
               {navigationLinks.map(({ href, label, icon: Icon }) => (
                 <SidebarMenuItem key={href}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={isActiveLink(href)} 
-                    tooltip={label}
-                    className="justify-start"
-                  >
+                  <SidebarMenuButton asChild isActive={isActiveLink(href)} className="w-12 h-12 p-0 justify-center">
                     <Link href={href}>
-                      <a className="flex items-center gap-2 w-full">
+                      <a className="flex items-center justify-center w-full h-full" title={label}>
                         <Icon className="w-5 h-5" />
-                        <span>{label}</span>
                       </a>
                     </Link>
                   </SidebarMenuButton>
@@ -163,15 +157,10 @@ export default function Explore() {
               ))}
               {isAuthenticated && (
                 <SidebarMenuItem>
-                  <SidebarMenuButton 
-                    asChild 
-                    tooltip="Saved Places"
-                    className="justify-start"
-                  >
+                  <SidebarMenuButton asChild className="w-12 h-12 p-0 justify-center">
                     <Link href="/saved">
-                      <a className="flex items-center gap-2 w-full">
+                      <a className="flex items-center justify-center w-full h-full" title="Saved Places">
                         <Heart className="w-5 h-5" />
-                        <span>Saved Places</span>
                       </a>
                     </Link>
                   </SidebarMenuButton>
@@ -182,27 +171,25 @@ export default function Explore() {
             {/* Auth Section */}
             <div className="mt-8 pt-8 border-t border-gray-200">
               {isAuthenticated ? (
-                <SidebarMenuButton 
+                <button 
+                  className="w-12 h-12 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
                   onClick={() => window.location.href = '/api/logout'}
-                  tooltip="Sign Out"
-                  className="justify-start w-full"
+                  title="Sign Out"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
-                  <span>Sign Out</span>
-                </SidebarMenuButton>
+                </button>
               ) : (
-                <SidebarMenuButton 
+                <button 
+                  className="w-12 h-12 flex items-center justify-center bg-chili-red text-white rounded-md hover:bg-red-600 transition-colors"
                   onClick={() => window.location.href = '/api/login'}
-                  tooltip="Sign In"
-                  className="justify-start w-full bg-chili-red text-white hover:bg-red-600"
+                  title="Sign In"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                   </svg>
-                  <span>Sign In</span>
-                </SidebarMenuButton>
+                </button>
               )}
             </div>
           </SidebarContent>

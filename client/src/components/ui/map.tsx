@@ -22,35 +22,21 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
 
-    try {
-      mapboxgl.accessToken = MAPBOX_CONFIG.accessToken;
+    mapboxgl.accessToken = MAPBOX_CONFIG.accessToken;
 
-      map.current = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: MAPBOX_CONFIG.style,
-        center: MAPBOX_CONFIG.center,
-        zoom: MAPBOX_CONFIG.zoom,
-      });
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: MAPBOX_CONFIG.style,
+      center: MAPBOX_CONFIG.center,
+      zoom: MAPBOX_CONFIG.zoom,
+    });
 
-      map.current.on('load', () => {
-        setIsLoaded(true);
-      });
-
-      map.current.on('error', (e) => {
-        console.error('Map error:', e);
-        setIsLoaded(false);
-      });
-
-    } catch (error) {
-      console.error('Failed to initialize map:', error);
-      setIsLoaded(false);
-    }
+    map.current.on('load', () => {
+      setIsLoaded(true);
+    });
 
     return () => {
-      if (map.current) {
-        map.current.remove();
-        map.current = null;
-      }
+      map.current?.remove();
     };
   }, []);
 
@@ -210,15 +196,6 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
   return (
     <div className="relative w-full h-full">
       <div ref={mapContainer} className="w-full h-full" />
-      
-      {!isLoaded && (
-        <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-chili-red mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading map...</p>
-          </div>
-        </div>
-      )}
 
       {/* Map Controls */}
       <div className="absolute top-20 right-4 z-10 flex flex-col gap-1">
