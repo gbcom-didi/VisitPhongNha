@@ -1,7 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import { MAPBOX_CONFIG, getCategoryColor } from '@/lib/mapbox';
 import type { BusinessWithCategory } from '@shared/schema';
 import { Button } from './button';
 import { Plus, Minus, Target } from 'lucide-react';
@@ -13,226 +10,224 @@ interface MapProps {
 }
 
 export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps) {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const markers = useRef<mapboxgl.Marker[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [zoom, setZoom] = useState(11);
+  const [center, setCenter] = useState({ lat: 11.65, lng: 109.15 });
 
-  // Initialize map
-  useEffect(() => {
-    if (map.current) return;
+  // Coordinate conversion
+  const latLngToPixel = (lat: number, lng: number) => {
+    if (!canvasRef.current) return { x: 0, y: 0 };
+    
+    const canvas = canvasRef.current;
+    const scale = Math.pow(2, zoom - 8);
+    const x = ((lng - center.lng) * scale * 300) + canvas.width / 2;
+    const y = ((center.lat - lat) * scale * 300) + canvas.height / 2;
+    
+    return { x, y };
+  };
 
-    const initializeMap = () => {
-      if (!mapContainer.current) {
-        console.log('Map container not ready');
-        return;
-      }
-
-      try {
-        mapboxgl.accessToken = MAPBOX_CONFIG.accessToken;
-
-        map.current = new mapboxgl.Map({
-          container: mapContainer.current,
-          style: MAPBOX_CONFIG.style,
-          center: MAPBOX_CONFIG.center,
-          zoom: MAPBOX_CONFIG.zoom,
-          attributionControl: false,
-          logoPosition: 'bottom-right',
-        });
-
-        map.current.on('load', () => {
-          setIsLoaded(true);
-        });
-
-        map.current.on('error', (error) => {
-          console.error('Map error:', error);
-          setIsLoaded(false);
-        });
-
-        map.current.on('style.load', () => {
-          console.log('Map style loaded successfully');
-        });
-      } catch (error) {
-        console.error('Failed to initialize map:', error);
-      }
+  const getCategoryIcon = (slug: string): { color: string } => {
+    const iconMap: Record<string, { color: string }> = {
+      'stay': { color: '#DD4327' },
+      'food-drink': { color: '#3FC1C4' },
+      'kiting': { color: '#DD4327' },
+      'surf': { color: '#3FC1C4' },
+      'things-to-do': { color: '#A9D3D2' },
+      'atm': { color: '#DD4327' },
+      'medical': { color: '#DD4327' },
+      'market': { color: '#3FC1C4' },
+      'supermarket': { color: '#3FC1C4' },
+      'mechanic': { color: '#A9D3D2' },
+      'phone-repair': { color: '#DD4327' },
+      'gym': { color: '#3FC1C4' },
+      'massage': { color: '#A9D3D2' },
+      'recreation': { color: '#3FC1C4' },
+      'waterfall': { color: '#3FC1C4' },
+      'attractions': { color: '#DD4327' },
+      'pharmacy': { color: '#DD4327' },
+      'mobile-phone': { color: '#A9D3D2' },
     };
 
-    // Add a small delay to ensure the container is ready
-    const timer = setTimeout(initializeMap, 200);
+    return iconMap[slug] || { color: '#6B7280' };
+  };
 
-    return () => {
-      clearTimeout(timer);
-      if (map.current) {
-        map.current.remove();
-        map.current = null;
-      }
-    };
-  }, []);
+  // Draw map
+  const drawMap = () => {
+    if (!canvasRef.current) return;
 
-  // Update markers when businesses change
-  useEffect(() => {
-    if (!map.current || !isLoaded) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    // Clear existing markers
-    markers.current.forEach(marker => marker.remove());
-    markers.current = [];
+    // Set canvas size
+    if (containerRef.current) {
+      canvas.width = containerRef.current.clientWidth;
+      canvas.height = containerRef.current.clientHeight;
+    }
 
-    // Add new markers
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw ocean background
+    ctx.fillStyle = '#a8dadc';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw simplified landmass for Vietnam coastline
+    ctx.fillStyle = '#f1faee';
+    ctx.strokeStyle = '#457b9d';
+    ctx.lineWidth = 2;
+    
+    // Simple coastline shape
+    ctx.beginPath();
+    ctx.moveTo(canvas.width * 0.3, canvas.height * 0.1);
+    ctx.quadraticCurveTo(canvas.width * 0.4, canvas.height * 0.3, canvas.width * 0.35, canvas.height * 0.6);
+    ctx.quadraticCurveTo(canvas.width * 0.3, canvas.height * 0.8, canvas.width * 0.4, canvas.height * 0.9);
+    ctx.lineTo(canvas.width * 0.7, canvas.height * 0.9);
+    ctx.quadraticCurveTo(canvas.width * 0.8, canvas.height * 0.7, canvas.width * 0.75, canvas.height * 0.4);
+    ctx.quadraticCurveTo(canvas.width * 0.7, canvas.height * 0.2, canvas.width * 0.6, canvas.height * 0.1);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Draw grid
+    ctx.strokeStyle = '#e0e0e0';
+    ctx.lineWidth = 0.5;
+    for (let i = 0; i < canvas.width; i += 40) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i, canvas.height);
+      ctx.stroke();
+    }
+    for (let i = 0; i < canvas.height; i += 40) {
+      ctx.beginPath();
+      ctx.moveTo(0, i);
+      ctx.lineTo(canvas.width, i);
+      ctx.stroke();
+    }
+
+    // Draw businesses
     businesses.forEach((business) => {
       if (!business.latitude || !business.longitude) return;
 
-      // Convert decimal coordinates to numbers
       const lat = Number(business.latitude);
       const lng = Number(business.longitude);
 
-      if (isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) {
-        console.warn(`Invalid coordinates for ${business.name}: lat=${business.latitude}, lng=${business.longitude}, parsed: lat=${lat}, lng=${lng}`);
-        return;
-      }
+      if (isNaN(lat) || isNaN(lng)) return;
 
-
-
-      // Additional validation for realistic coordinates in Vietnam
-      if (lat < 8 || lat > 24 || lng < 102 || lng > 112) {
-        console.warn(`Coordinates outside Vietnam for ${business.name}: lat=${lat}, lng=${lng}`);
-        return;
-      }
+      const { x, y } = latLngToPixel(lat, lng);
+      
+      // Only draw if within canvas bounds
+      if (x < -20 || x > canvas.width + 20 || y < -20 || y > canvas.height + 20) return;
 
       const categorySlug = business.category?.slug || '';
       const iconData = getCategoryIcon(categorySlug);
 
-      // Create marker element with smaller icon
-      const el = document.createElement('div');
-      el.className = 'marker';
-      el.style.backgroundColor = iconData.color;
-      el.style.width = '32px';
-      el.style.height = '32px';
-      el.style.borderRadius = '50%';
-      el.style.border = '2px solid white';
-      el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
-      el.style.cursor = 'pointer';
-      el.style.transition = 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
-      el.style.display = 'flex';
-      el.style.alignItems = 'center';
-      el.style.justifyContent = 'center';
-      el.style.position = 'relative';
-      el.innerHTML = iconData.svg;
+      // Draw marker shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.beginPath();
+      ctx.arc(x + 2, y + 2, 16, 0, 2 * Math.PI);
+      ctx.fill();
 
-      el.addEventListener('mouseenter', () => {
-        el.style.transform = 'scale(1.2)';
-        el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
-        el.style.zIndex = '1000';
-      });
+      // Draw marker
+      ctx.fillStyle = iconData.color;
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 3;
+      
+      ctx.beginPath();
+      ctx.arc(x, y, 16, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.stroke();
 
-      el.addEventListener('mouseleave', () => {
-        el.style.transform = 'scale(1)';
-        el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
-        el.style.zIndex = 'auto';
-      });
+      // Draw inner dot
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.arc(x, y, 6, 0, 2 * Math.PI);
+      ctx.fill();
 
-      const marker = new mapboxgl.Marker(el)
-        .setLngLat([lng, lat])
-        .addTo(map.current!);
-
-      // Add click handler
-      el.addEventListener('click', () => {
-        onBusinessClick?.(business);
-      });
-
-      markers.current.push(marker);
+      // Highlight selected business
+      if (selectedBusiness && selectedBusiness.id === business.id) {
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(x, y, 20, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
     });
+  };
 
-    // Auto-fit bounds to show all markers when businesses are loaded
-    if (businesses.length > 0 && map.current) {
-      setTimeout(() => {
-        const coordinates = businesses
-          .filter(b => b.latitude && b.longitude)
-          .map(b => [Number(b.longitude), Number(b.latitude)] as [number, number]);
-
-        if (coordinates.length === 0) return;
-
-        const bounds = coordinates.reduce(
-          (bounds, coord) => bounds.extend(coord),
-          new mapboxgl.LngLatBounds(coordinates[0], coordinates[0])
-        );
-
-        map.current?.fitBounds(bounds, {
-          padding: { top: 50, bottom: 50, left: 50, right: 50 },
-          maxZoom: 13
-        });
-      }, 1000);
-    }
-  }, [businesses, isLoaded, onBusinessClick]);
-
-  // Highlight selected business
+  // Initialize and draw
   useEffect(() => {
-    if (!selectedBusiness || !map.current) return;
+    drawMap();
+  }, [businesses, zoom, center, selectedBusiness]);
 
-    let lat, lng;
-    
-    if (typeof selectedBusiness.latitude === 'string') {
-      lat = parseFloat(selectedBusiness.latitude.replace(',', '.'));
-    } else if (typeof selectedBusiness.latitude === 'number') {
-      lat = selectedBusiness.latitude;
-    } else {
-      lat = parseFloat(String(selectedBusiness.latitude));
-    }
-    
-    if (typeof selectedBusiness.longitude === 'string') {
-      lng = parseFloat(selectedBusiness.longitude.replace(',', '.'));
-    } else if (typeof selectedBusiness.longitude === 'number') {
-      lng = selectedBusiness.longitude;
-    } else {
-      lng = parseFloat(String(selectedBusiness.longitude));
-    }
+  // Handle resize
+  useEffect(() => {
+    const handleResize = () => drawMap();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [businesses, zoom, center]);
 
-    if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
-      map.current.flyTo({
-        center: [lng, lat],
-        zoom: 14,
-        duration: 1000
+  // Handle clicks
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    
+    const handleClick = (event: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      // Find clicked business
+      businesses.forEach((business) => {
+        if (!business.latitude || !business.longitude) return;
+
+        const lat = Number(business.latitude);
+        const lng = Number(business.longitude);
+        const pixel = latLngToPixel(lat, lng);
+
+        const distance = Math.sqrt(Math.pow(x - pixel.x, 2) + Math.pow(y - pixel.y, 2));
+        if (distance <= 16) {
+          onBusinessClick?.(business);
+        }
       });
-    }
-  }, [selectedBusiness]);
+    };
+
+    canvas.addEventListener('click', handleClick);
+    return () => canvas.removeEventListener('click', handleClick);
+  }, [businesses, onBusinessClick, zoom, center]);
 
   const handleZoomIn = () => {
-    map.current?.zoomIn();
+    setZoom(prev => Math.min(prev + 1, 16));
   };
 
   const handleZoomOut = () => {
-    map.current?.zoomOut();
+    setZoom(prev => Math.max(prev - 1, 8));
   };
 
   const handleFitBounds = () => {
-    if (!map.current || businesses.length === 0) return;
+    if (businesses.length === 0) return;
 
-    const coordinates = businesses
-      .filter(b => b.latitude && b.longitude)
-      .map(b => [parseFloat(b.longitude), parseFloat(b.latitude)] as [number, number]);
+    const validBusinesses = businesses.filter(b => b.latitude && b.longitude);
+    if (validBusinesses.length === 0) return;
 
-    if (coordinates.length === 0) return;
+    const lats = validBusinesses.map(b => Number(b.latitude));
+    const lngs = validBusinesses.map(b => Number(b.longitude));
 
-    const bounds = coordinates.reduce(
-      (bounds, coord) => bounds.extend(coord),
-      new mapboxgl.LngLatBounds(coordinates[0], coordinates[0])
-    );
+    const centerLat = (Math.max(...lats) + Math.min(...lats)) / 2;
+    const centerLng = (Math.max(...lngs) + Math.min(...lngs)) / 2;
 
-    map.current.fitBounds(bounds, {
-      padding: 50,
-      maxZoom: 15
-    });
+    setCenter({ lat: centerLat, lng: centerLng });
+    setZoom(12);
   };
 
   const handleCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const { latitude, longitude } = position.coords;
-          map.current?.flyTo({
-            center: [longitude, latitude],
-            zoom: 14,
-            duration: 1000
-          });
+          setCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
+          setZoom(14);
         },
         (error) => {
           console.error('Error getting location:', error);
@@ -241,106 +236,29 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
     }
   };
 
+  // Auto-fit on mount
+  useEffect(() => {
+    if (businesses.length > 0) {
+      setTimeout(handleFitBounds, 500);
+    }
+  }, [businesses.length]);
+
   const categories = businesses.map(b => b.category).filter((category, index, self) =>
     index === self.findIndex((t) => (
       t && category && t.id === category.id
     ))
   ).filter(Boolean) as BusinessWithCategory['category'][];
 
-  const getCategoryIcon = (slug: string): { svg: string; color: string } => {
-    const iconMap: Record<string, { svg: string; color: string }> = {
-      'stay': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>', 
-        color: '#DDB097' 
-      },
-      'food-drink': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M6 2L6 8c0 2.5 2 4.5 4.5 4.5s4.5-2 4.5-4.5V2"/><path d="M6 5h9"/><path d="m17 2-1 20h-2"/></svg>', 
-        color: '#F7BAAD' 
-      },
-      'kiting': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10"/></svg>', 
-        color: '#3FC1C4' 
-      },
-      'surf': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M2 18a10 10 0 0 0 20 0"/><path d="M2 12a10 10 0 0 0 20 0"/><path d="M2 6a10 10 0 0 0 20 0"/></svg>', 
-        color: '#35949B' 
-      },
-      'things-to-do': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>', 
-        color: '#A9D3D2' 
-      },
-      'atm': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>', 
-        color: '#DD4327' 
-      },
-      'medical': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2v20M2 12h20"/></svg>', 
-        color: '#DC2626' 
-      },
-      'market': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M7 4V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2"/><path d="M5 4h14l-1 10H6L5 4Z"/><path d="M9 9v6"/><path d="M15 9v6"/></svg>', 
-        color: '#059669' 
-      },
-      'supermarket': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>', 
-        color: '#0891B2' 
-      },
-      'mechanic': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>', 
-        color: '#7C3AED' 
-      },
-      'phone-repair': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>', 
-        color: '#EA580C' 
-      },
-      'gym': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M6.5 6.5h11"/><path d="M6.5 17.5h11"/><path d="M6.5 12h11"/><path d="M16 6.5v11"/><path d="M8 6.5v11"/></svg>', 
-        color: '#BE185D' 
-      },
-      'massage': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2a3 3 0 0 0-3 3c0 1.5 0 2.5 0 4a3 3 0 0 0 6 0c0-1.5 0-2.5 0-4a3 3 0 0 0-3-3z"/><path d="M19 13H5"/><path d="M19 17H5"/><path d="M19 21H5"/></svg>', 
-        color: '#9333EA' 
-      },
-      'recreation': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>', 
-        color: '#16A34A' 
-      },
-      'waterfall': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2.26 4.89 4.56 6.68a7.58 7.58 0 0 1 2.79 5.98c0 2.9-2.18 5.32-5.35 5.32s-5.35-2.42-5.35-5.32a7.58 7.58 0 0 1 1.91-4.08z"/></svg>', 
-        color: '#0284C7' 
-      },
-      'attractions': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2v11z"/><circle cx="12" cy="13" r="3"/></svg>', 
-        color: '#C2410C' 
-      },
-      'pharmacy': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2v20M2 12h20"/></svg>', 
-        color: '#DC2626' 
-      },
-      'mobile-phone': { 
-        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>', 
-        color: '#7C2D12' 
-      },
-    };
-
-    return iconMap[slug] || { svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="10"/></svg>', color: '#6B7280' };
-  };
-
   return (
-    <div className="relative w-full h-full">
-      <div ref={mapContainer} className="w-full h-full" />
-      
-      {!isLoaded && (
-        <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-chili-red mx-auto mb-2"></div>
-            <p className="text-gray-600 text-sm">Loading map...</p>
-          </div>
-        </div>
-      )}
+    <div className="relative w-full h-full" ref={containerRef}>
+      <canvas 
+        ref={canvasRef} 
+        className="w-full h-full cursor-pointer"
+        style={{ background: '#a8dadc' }}
+      />
 
       {/* Map Controls */}
-      <div className="absolute top-20 right-4 z-10 flex flex-col gap-1">
+      <div className="absolute top-4 right-4 z-10 flex flex-col gap-1">
         <Button
           size="sm"
           variant="outline"
@@ -359,7 +277,7 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
         </Button>
       </div>
 
-      {/* Current Location Button */}
+      {/* Bottom Controls */}
       <div className="absolute bottom-4 right-4 z-10 flex flex-col gap-2">
         <Button
           size="sm"
@@ -385,21 +303,13 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       <div className="absolute top-4 left-4 bg-white rounded-xl shadow-lg border border-gray-200 p-4 z-10 min-w-48">
         <div className="flex items-center justify-between mb-3">
           <h5 className="font-semibold text-gray-900 text-sm">Map Legend</h5>
-          <button className="text-gray-400 hover:text-gray-600">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
         </div>
         
         {/* All Places Summary */}
         <div className="flex items-center justify-between mb-3 p-2 bg-gray-50 rounded-lg">
           <div className="flex items-center">
             <div className="w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center mr-3">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                <circle cx="12" cy="10" r="3"/>
-              </svg>
+              <div className="w-3 h-3 bg-white rounded-full"></div>
             </div>
             <span className="text-gray-700 text-sm font-medium">All Places</span>
           </div>
@@ -419,10 +329,10 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
               <div key={categorySlug} className="flex items-center justify-between">
                 <div className="flex items-center">
                   <div 
-                    className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center mr-3 text-xs font-semibold border-2 border-white shadow-sm"
-                    style={{ backgroundColor: iconData.color, color: 'white' }}
-                    dangerouslySetInnerHTML={{ __html: iconData.svg }}
+                    className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center mr-3 border-2 border-white shadow-sm"
+                    style={{ backgroundColor: iconData.color }}
                   >
+                    <div className="w-3 h-3 bg-white rounded-full"></div>
                   </div>
                   <span className="text-gray-700 truncate font-medium">{category.name}</span>
                 </div>
