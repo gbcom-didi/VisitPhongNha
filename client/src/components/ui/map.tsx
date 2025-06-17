@@ -80,25 +80,31 @@ export function Map({ businesses, onBusinessClick, selectedBusiness, hoveredBusi
 
       if (isNaN(lat) || isNaN(lng)) return;
 
-      const categorySlug = business.category?.slug || '';
-      const icon = getCategoryIcon(categorySlug);
-
-      // Create marker element with white background and icon
+      // Create marker element with location pin icon
       const el = document.createElement('div');
       el.className = 'marker';
-      el.style.backgroundColor = 'white';
-      el.style.width = '32px';
+      el.style.backgroundColor = '#DC2626'; // Red background
+      el.style.width = '24px';
       el.style.height = '32px';
-      el.style.borderRadius = '8px';
-      el.style.border = '1px solid #e5e7eb';
-      el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+      el.style.borderRadius = '12px 12px 12px 0';
+      el.style.transform = 'rotate(-45deg)';
+      el.style.border = '2px solid white';
+      el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.25)';
       el.style.cursor = 'pointer';
       el.style.transition = 'box-shadow 0.2s';
-      el.style.display = 'flex';
-      el.style.alignItems = 'center';
-      el.style.justifyContent = 'center';
-      el.style.fontSize = '16px';
-      el.innerHTML = icon;
+      el.style.position = 'relative';
+      
+      // Add white dot in center
+      const dot = document.createElement('div');
+      dot.style.position = 'absolute';
+      dot.style.top = '50%';
+      dot.style.left = '50%';
+      dot.style.transform = 'translate(-50%, -50%) rotate(45deg)';
+      dot.style.width = '8px';
+      dot.style.height = '8px';
+      dot.style.backgroundColor = 'white';
+      dot.style.borderRadius = '50%';
+      el.appendChild(dot);
 
       // Create tooltip element
       const tooltip = document.createElement('div');
@@ -236,30 +242,7 @@ export function Map({ businesses, onBusinessClick, selectedBusiness, hoveredBusi
 
   
 
-  const getCategoryIcon = (slug: string): string => {
-    const iconMap: Record<string, string> = {
-      'stay': '⌂',
-      'food-drink': '◎',
-      'kiting': '⟁',
-      'surf': '〜',
-      'things-to-do': '◉',
-      'atm': '⎔',
-      'medical': '✚',
-      'market': '⬟',
-      'supermarket': '▣',
-      'mechanic': '⚒',
-      'phone-repair': '⎆',
-      'gym': '▲',
-      'massage': '※',
-      'recreation': '○',
-      'waterfall': '⩙',
-      'attractions': '◆',
-      'pharmacy': '⊕',
-      'mobile-phone': '⦿',
-    };
-
-    return iconMap[slug] || '●';
-  };
+  
 
   return (
     <div className="relative w-full h-full">
