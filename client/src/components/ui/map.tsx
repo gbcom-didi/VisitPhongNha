@@ -184,11 +184,22 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
     }
   };
 
-  const categories = businesses.map(b => b.category).filter((category, index, self) =>
-    index === self.findIndex((t) => (
-      t && category && t.id === category.id
-    ))
-  ).filter(Boolean) as BusinessWithCategory['category'][];
+  // Get all unique categories from businesses (not filtered by current selection)
+  const [allCategories, setAllCategories] = useState<BusinessWithCategory['category'][]>([]);
+  
+  // Update all categories when businesses change (but not when filtering)
+  useEffect(() => {
+    const uniqueCategories = businesses.map(b => b.category).filter((category, index, self) =>
+      index === self.findIndex((t) => (
+        t && category && t.id === category.id
+      ))
+    ).filter(Boolean) as BusinessWithCategory['category'][];
+    
+    // Only update if we have more categories than before (to build a complete list)
+    if (uniqueCategories.length > allCategories.length) {
+      setAllCategories(uniqueCategories);
+    }
+  }, [businesses.length]); // Only depend on length, not the filtered content
 
   const getCategoryIcon = (slug: string): string => {
     const iconMap: Record<string, string> = {
@@ -265,12 +276,12 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-10 max-w-52">
         <h5 className="font-semibold text-gray-900 mb-3 text-sm">Map Legend</h5>
         <div className="space-y-2 text-xs max-h-40 overflow-y-auto">
-          {Array.from(new Set(businesses.map(b => b.category?.slug).filter(Boolean))).map((categorySlug) => {
-            const category = businesses.find(b => b.category?.slug === categorySlug)?.category;
+          {allCategories.map((category) => {
             if (!category) return null;
+            const categorySlug = category.slug;
 
             return (
-              <div key={categorySlug} className="flex items-center">
+              <div key={category.id} className="flex items-center">
                 <div 
                   className="w-5 h-5 rounded bg-white border border-gray-200 shadow-sm mr-2 flex-shrink-0 flex items-center justify-center text-xs"
                 >
