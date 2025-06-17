@@ -91,41 +91,6 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
         `
       });
 
-      // Create clean minimal tooltip info window
-      const tooltipInfoWindow = new google.maps.InfoWindow({
-        content: `
-          <div style="
-            padding: 6px 12px; 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            color: #ffffff;
-            background: rgba(0, 0, 0, 0.8);
-            border: none;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            white-space: nowrap;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            line-height: 1.2;
-          ">
-            ${business.name}
-          </div>
-        `,
-        disableAutoPan: true,
-        disableDefaultUI: true,
-        pixelOffset: new google.maps.Size(0, -45),
-      });
-
-      // Add hover event listeners for clean tooltip
-      marker.addListener('mouseover', () => {
-        tooltipInfoWindow.open(mapRef.current, marker);
-      });
-
-      marker.addListener('mouseout', () => {
-        tooltipInfoWindow.close();
-      });
-
       // Add click listener
       marker.addListener('click', () => {
         onBusinessClick?.(business);
@@ -159,18 +124,18 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
     if (!isNaN(lat) && !isNaN(lng)) {
       // Smooth pan and zoom animation
       mapRef.current.panTo({ lat, lng });
-
+      
       // Animate zoom smoothly
       const currentZoom = mapRef.current.getZoom() || 10;
       const targetZoom = 16;
-
+      
       if (currentZoom !== targetZoom) {
         // Create smooth zoom animation
         let step = 0;
         const steps = 10;
         const zoomDifference = targetZoom - currentZoom;
         const zoomStep = zoomDifference / steps;
-
+        
         const animateZoom = () => {
           if (step < steps && mapRef.current) {
             const newZoom = currentZoom + (zoomStep * step);
@@ -181,7 +146,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
             mapRef.current.setZoom(targetZoom); // Ensure we end at exact target
           }
         };
-
+        
         animateZoom();
       }
     }
@@ -207,10 +172,10 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
     const bounds = new google.maps.LatLngBounds();
     businesses.forEach((business) => {
       if (!business.latitude || !business.longitude) return;
-
+      
       const lat = parseFloat(business.latitude);
       const lng = parseFloat(business.longitude);
-
+      
       if (!isNaN(lat) && !isNaN(lng)) {
         bounds.extend({ lat, lng });
       }
@@ -222,7 +187,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
   return (
     <div className="relative h-full">
       <div ref={mapContainerRef} className="h-full w-full" />
-
+      
       {/* Map Controls */}
       <div className="absolute top-4 right-4 flex flex-col gap-2">
         <Button
