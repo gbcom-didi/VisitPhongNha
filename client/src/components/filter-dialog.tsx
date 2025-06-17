@@ -38,7 +38,7 @@ export function FilterDialog({
           <h3 className="text-lg font-semibold mb-4 text-gray-900">Categories</h3>
           
           <div className="space-y-3">
-            {/* For You / All Categories */}
+            {/* All Categories */}
             <Button
               variant={selectedCategory === null ? "default" : "outline"}
               className={`w-full justify-start h-12 text-left ${
@@ -48,8 +48,8 @@ export function FilterDialog({
               }`}
               onClick={() => handleCategorySelect(null)}
             >
-              <span className="mr-2">👤</span>
-              For you
+              <span className="mr-2">🌐</span>
+              All
             </Button>
 
             {/* Category Grid */}

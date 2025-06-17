@@ -84,7 +84,7 @@ export function BusinessDirectory({
               selectedCategory === null ? "bg-chili-red hover:bg-red-600 text-white" : ""
             }`}
           >
-            For you
+            All
           </Button>
           {categories.slice(0, 5).map((category) => (
             <Button
