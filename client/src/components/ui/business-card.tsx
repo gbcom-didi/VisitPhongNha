@@ -76,7 +76,7 @@ export function BusinessCard({ business, onLike, onClick, onHover }: BusinessCar
 
       {/* Business Info */}
       <div className="p-4">
-        <h4 className="font-semibold text-gray-900 text-lg mb-1 line-clamp-1">
+        <h4 className="font-semibold text-gray-900 text-base mb-1 line-clamp-1">
           {business.name}
         </h4>
         
