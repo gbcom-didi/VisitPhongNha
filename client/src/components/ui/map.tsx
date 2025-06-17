@@ -184,23 +184,7 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
     }
   };
 
-  // Get all unique categories from businesses on initial load only
-  const [allCategories, setAllCategories] = useState<BusinessWithCategory['category'][]>([]);
-  const [hasInitialized, setHasInitialized] = useState(false);
   
-  // Initialize all categories once when businesses are first loaded
-  useEffect(() => {
-    if (businesses.length > 0 && !hasInitialized) {
-      const uniqueCategories = businesses.map(b => b.category).filter((category, index, self) =>
-        index === self.findIndex((t) => (
-          t && category && t.id === category.id
-        ))
-      ).filter(Boolean) as BusinessWithCategory['category'][];
-      
-      setAllCategories(uniqueCategories);
-      setHasInitialized(true);
-    }
-  }, [businesses, hasInitialized])
 
   const getCategoryIcon = (slug: string): string => {
     const iconMap: Record<string, string> = {
@@ -273,27 +257,7 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
         </Button>
       </div>
 
-      {/* Map Legend */}
-      <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-10 max-w-52">
-        <h5 className="font-semibold text-gray-900 mb-3 text-sm">Map Legend</h5>
-        <div className="space-y-2 text-xs max-h-40 overflow-y-auto">
-          {allCategories.map((category) => {
-            if (!category) return null;
-            const categorySlug = category.slug;
-
-            return (
-              <div key={category.id} className="flex items-center">
-                <div 
-                  className="w-5 h-5 rounded bg-white border border-gray-200 shadow-sm mr-2 flex-shrink-0 flex items-center justify-center text-xs"
-                >
-                  {getCategoryIcon(categorySlug)}
-                </div>
-                <span className="text-gray-700 truncate">{category.name}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      
     </div>
   );
 }
