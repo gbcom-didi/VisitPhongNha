@@ -74,22 +74,30 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
     businesses.forEach((business) => {
       if (!business.latitude || !business.longitude) return;
 
-      const lat = parseFloat(business.latitude);
-      const lng = parseFloat(business.longitude);
+      // Parse coordinates more carefully
+      const lat = typeof business.latitude === 'string' 
+        ? parseFloat(business.latitude.replace(',', '.')) 
+        : parseFloat(String(business.latitude));
+      const lng = typeof business.longitude === 'string' 
+        ? parseFloat(business.longitude.replace(',', '.')) 
+        : parseFloat(String(business.longitude));
 
-      if (isNaN(lat) || isNaN(lng)) return;
+      if (isNaN(lat) || isNaN(lng)) {
+        console.warn(`Invalid coordinates for ${business.name}: lat=${business.latitude}, lng=${business.longitude}`);
+        return;
+      }
 
       const categorySlug = business.category?.slug || '';
       const iconData = getCategoryIcon(categorySlug);
 
-      // Create marker element with line art icon
+      // Create marker element with smaller icon
       const el = document.createElement('div');
       el.className = 'marker';
       el.style.backgroundColor = iconData.color;
-      el.style.width = '36px';
-      el.style.height = '36px';
+      el.style.width = '32px';
+      el.style.height = '32px';
       el.style.borderRadius = '50%';
-      el.style.border = '3px solid white';
+      el.style.border = '2px solid white';
       el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
       el.style.cursor = 'pointer';
       el.style.transition = 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
@@ -100,14 +108,14 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       el.innerHTML = iconData.svg;
 
       el.addEventListener('mouseenter', () => {
-        el.style.transform = 'scale(1.15)';
-        el.style.boxShadow = '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)';
+        el.style.transform = 'scale(1.2)';
+        el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
         el.style.zIndex = '1000';
       });
 
       el.addEventListener('mouseleave', () => {
         el.style.transform = 'scale(1)';
-        el.style.boxShadow = '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)';
+        el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
         el.style.zIndex = 'auto';
       });
 
@@ -195,80 +203,80 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
   const getCategoryIcon = (slug: string): { svg: string; color: string } => {
     const iconMap: Record<string, { svg: string; color: string }> = {
       'stay': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>', 
-        color: '#DD4327' 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>', 
+        color: '#DDB097' 
       },
       'food-drink': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M6 2L6 8c0 2.5 2 4.5 4.5 4.5s4.5-2 4.5-4.5V2"/><path d="M6 5h9"/><path d="m17 2-1 20h-2"/></svg>', 
-        color: '#3FC1C4' 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M6 2L6 8c0 2.5 2 4.5 4.5 4.5s4.5-2 4.5-4.5V2"/><path d="M6 5h9"/><path d="m17 2-1 20h-2"/></svg>', 
+        color: '#F7BAAD' 
       },
       'kiting': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10"/></svg>', 
-        color: '#DD4327' 
-      },
-      'surf': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M2 18a10 10 0 0 0 20 0"/><path d="M2 12a10 10 0 0 0 20 0"/><path d="M2 6a10 10 0 0 0 20 0"/></svg>', 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10"/></svg>', 
         color: '#3FC1C4' 
       },
+      'surf': { 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M2 18a10 10 0 0 0 20 0"/><path d="M2 12a10 10 0 0 0 20 0"/><path d="M2 6a10 10 0 0 0 20 0"/></svg>', 
+        color: '#35949B' 
+      },
       'things-to-do': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>', 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>', 
         color: '#A9D3D2' 
       },
       'atm': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>', 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>', 
         color: '#DD4327' 
       },
       'medical': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>', 
-        color: '#DD4327' 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2v20M2 12h20"/></svg>', 
+        color: '#DC2626' 
       },
       'market': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M7 4V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2"/><path d="M5 4h14l-1 10H6L5 4Z"/><path d="M9 9v6"/><path d="M15 9v6"/></svg>', 
-        color: '#3FC1C4' 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M7 4V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2"/><path d="M5 4h14l-1 10H6L5 4Z"/><path d="M9 9v6"/><path d="M15 9v6"/></svg>', 
+        color: '#059669' 
       },
       'supermarket': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>', 
-        color: '#3FC1C4' 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>', 
+        color: '#0891B2' 
       },
       'mechanic': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>', 
-        color: '#A9D3D2' 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>', 
+        color: '#7C3AED' 
       },
       'phone-repair': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>', 
-        color: '#DD4327' 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>', 
+        color: '#EA580C' 
       },
       'gym': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M6.5 6.5h11"/><path d="M6.5 17.5h11"/><path d="M6.5 12h11"/><path d="M16 6.5v11"/><path d="M8 6.5v11"/></svg>', 
-        color: '#3FC1C4' 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M6.5 6.5h11"/><path d="M6.5 17.5h11"/><path d="M6.5 12h11"/><path d="M16 6.5v11"/><path d="M8 6.5v11"/></svg>', 
+        color: '#BE185D' 
       },
       'massage': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3c0 1.5 0 2.5 0 4a3 3 0 0 0 6 0c0-1.5 0-2.5 0-4a3 3 0 0 0-3-3z"/><path d="M19 13H5"/><path d="M19 17H5"/><path d="M19 21H5"/></svg>', 
-        color: '#A9D3D2' 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2a3 3 0 0 0-3 3c0 1.5 0 2.5 0 4a3 3 0 0 0 6 0c0-1.5 0-2.5 0-4a3 3 0 0 0-3-3z"/><path d="M19 13H5"/><path d="M19 17H5"/><path d="M19 21H5"/></svg>', 
+        color: '#9333EA' 
       },
       'recreation': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>', 
-        color: '#3FC1C4' 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>', 
+        color: '#16A34A' 
       },
       'waterfall': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2.26 4.89 4.56 6.68a7.58 7.58 0 0 1 2.79 5.98c0 2.9-2.18 5.32-5.35 5.32s-5.35-2.42-5.35-5.32a7.58 7.58 0 0 1 1.91-4.08z"/></svg>', 
-        color: '#3FC1C4' 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2.26 4.89 4.56 6.68a7.58 7.58 0 0 1 2.79 5.98c0 2.9-2.18 5.32-5.35 5.32s-5.35-2.42-5.35-5.32a7.58 7.58 0 0 1 1.91-4.08z"/></svg>', 
+        color: '#0284C7' 
       },
       'attractions': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2v11z"/><circle cx="12" cy="13" r="3"/></svg>', 
-        color: '#DD4327' 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2v11z"/><circle cx="12" cy="13" r="3"/></svg>', 
+        color: '#C2410C' 
       },
       'pharmacy': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>', 
-        color: '#DD4327' 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2v20M2 12h20"/></svg>', 
+        color: '#DC2626' 
       },
       'mobile-phone': { 
-        svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>', 
-        color: '#A9D3D2' 
+        svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>', 
+        color: '#7C2D12' 
       },
     };
 
-    return iconMap[slug] || { svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>', color: '#6B7280' };
+    return iconMap[slug] || { svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="10"/></svg>', color: '#6B7280' };
   };
 
   return (
