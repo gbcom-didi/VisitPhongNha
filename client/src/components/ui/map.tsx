@@ -99,7 +99,7 @@ export function Map({ businesses, onBusinessClick, selectedBusiness }: MapProps)
       }
 
       // Additional validation for realistic coordinates in Vietnam
-      if (lat < 8 || lat > 24 || lng < 102 || lng > 110) {
+      if (lat < 8 || lat > 24 || lng < 102 || lng > 112) {
         console.warn(`Coordinates outside Vietnam for ${business.name}: lat=${lat}, lng=${lng}`);
         return;
       }
