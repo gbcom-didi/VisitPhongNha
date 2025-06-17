@@ -182,7 +182,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check if data is already initialized
       const existingBusinesses = await storage.getBusinesses();
-      if (existingBusinesses.length > 0) {
+      if (existingBusinesses.length >= 75) {
         return res.json({ 
           message: "Data already initialized",
           categories: allCategories.length,
