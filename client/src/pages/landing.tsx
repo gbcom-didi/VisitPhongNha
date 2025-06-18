@@ -23,7 +23,7 @@ export default function Landing() {
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">How ĐiĐiVui Works</h3>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Discover, save, and experience the best of Ninh Thuan with our interactive travel platform 
+              Discover, save, and experience the best of Phan Rang with our interactive travel platform 
               designed for adventurers and culture seekers.
             </p>
           </div>

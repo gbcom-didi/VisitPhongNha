@@ -238,7 +238,7 @@ export default function Contact() {
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-1">Office</h3>
                         <p className="text-gray-600 text-sm mb-1">Phan Rang-Tháp Chàm</p>
-                        <p className="text-gray-600 text-sm">Ninh Thuan Province, Vietnam</p>
+                        <p className="text-gray-600 text-sm">Phan Rang Province, Vietnam</p>
                       </div>
                     </div>
                   </CardContent>
@@ -280,7 +280,7 @@ export default function Contact() {
                 </div>
                 <h3 className="text-lg font-semibold mb-2">Travel Planning</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  Need help planning your trip to Ninh Thuan? Our team can provide personalized recommendations.
+                  Need help planning your trip to Phan Rang? Our team can provide personalized recommendations.
                 </p>
                 <Button variant="outline" size="sm" className="text-chili-red border-chili-red hover:bg-chili-red hover:text-white">
                   Get Travel Tips

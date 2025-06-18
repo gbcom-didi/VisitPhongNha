@@ -147,7 +147,7 @@ export default function About() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-6 font-questrial">The Future of ĐiĐiVui</h2>
             <p className="text-lg text-gray-600 leading-relaxed">
-              Our vision extends beyond Ninh Thuan. We're building a scalable network of regional tourism hubs across Vietnam, each celebrating the unique character and opportunities of different provinces. From the mountains of Sapa to the beaches of Phu Quoc, we aim to become Vietnam's most trusted travel companion.
+              Our vision extends beyond Phan Rang. We're building a scalable network of regional tourism hubs across Vietnam, each celebrating the unique character and opportunities of different provinces. From the mountains of Sapa to the beaches of Phu Quoc, we aim to become Vietnam's most trusted travel companion.
             </p>
           </div>
 

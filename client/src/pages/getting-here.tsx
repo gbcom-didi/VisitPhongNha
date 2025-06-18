@@ -20,7 +20,7 @@ export default function GettingHere() {
         />
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="text-center text-white px-4">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 font-questrial">Getting to Ninh Thuan</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 font-questrial">Getting to Phan Rang</h1>
             <p className="text-xl max-w-2xl mx-auto">Your complete guide to reaching Vietnam's kitesurfing paradise</p>
           </div>
         </div>
@@ -44,14 +44,14 @@ export default function GettingHere() {
                     <MapPin className="w-5 h-5 text-chili-red mt-0.5 mr-3 flex-shrink-0" />
                     <div>
                       <h4 className="font-semibold">Cam Ranh International Airport</h4>
-                      <p className="text-sm text-gray-600">1.5 hours drive to Ninh Thuan</p>
+                      <p className="text-sm text-gray-600">1.5 hours drive to Phan Rang</p>
                     </div>
                   </div>
                   <div className="flex items-start">
                     <MapPin className="w-5 h-5 text-chili-red mt-0.5 mr-3 flex-shrink-0" />
                     <div>
                       <h4 className="font-semibold">Ho Chi Minh City Airport</h4>
-                      <p className="text-sm text-gray-600">4 hours drive to Ninh Thuan</p>
+                      <p className="text-sm text-gray-600">4 hours drive to Phan Rang</p>
                     </div>
                   </div>
                 </div>
@@ -172,7 +172,7 @@ export default function GettingHere() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">Travel Tips & Information</h2>
-            <p className="text-gray-600">Important information for your journey to Ninh Thuan</p>
+            <p className="text-gray-600">Important information for your journey to Phan Rang</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -218,7 +218,7 @@ export default function GettingHere() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl">Getting Around Ninh Thuan</CardTitle>
+                <CardTitle className="text-xl">Getting Around Phan Rang</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
@@ -264,7 +264,7 @@ export default function GettingHere() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">Route Overview</h2>
-            <p className="text-gray-600">Popular routes to reach Ninh Thuan from major cities</p>
+            <p className="text-gray-600">Popular routes to reach Phan Rang from major cities</p>
           </div>
 
           <div className="bg-white rounded-xl p-8 shadow-lg">
@@ -272,7 +272,7 @@ export default function GettingHere() {
               <div className="text-center text-gray-500">
                 <MapPin className="w-16 h-16 mx-auto mb-4" />
                 <p className="text-lg font-medium">Interactive Route Map</p>
-                <p className="text-sm">Plan your journey to Ninh Thuan</p>
+                <p className="text-sm">Plan your journey to Phan Rang</p>
               </div>
             </div>
             

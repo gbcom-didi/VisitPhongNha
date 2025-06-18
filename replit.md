@@ -1,8 +1,8 @@
-# ĐiĐiVui - Ninh Thuan Travel Hub Replit.md
+# ĐiĐiVui - Phan Rang Travel Hub Replit.md
 
 ## Overview
 
-ĐiĐiVui is a comprehensive travel platform designed to showcase Ninh Thuan province in Vietnam, particularly focusing on its kitesurfing opportunities and Vietnamese culture. The application serves as an interactive guide for travelers to discover accommodations, restaurants, attractions, and adventure activities in the region.
+ĐiĐiVui is a comprehensive travel platform designed to showcase Phan Rang province in Vietnam, particularly focusing on its kitesurfing opportunities and Vietnamese culture. The application serves as an interactive guide for travelers to discover accommodations, restaurants, attractions, and adventure activities in the region.
 
 ## System Architecture
 
