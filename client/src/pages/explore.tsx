@@ -204,7 +204,7 @@ export default function Explore() {
 
         {/* Mobile Business Directory */}
         {!showMapInMobile && (
-            <div className="flex-1 bg-white overflow-hidden">
+            <div className="flex-1 bg-white overflow-hidden flex flex-col">
               <BusinessDirectory
                 businesses={filteredBusinesses}
                 categories={categories}
