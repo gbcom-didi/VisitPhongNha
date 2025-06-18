@@ -32,7 +32,7 @@ export function FilterDialog({
           <DialogTitle className="text-center text-xl font-semibold">Filters</DialogTitle>
         </DialogHeader>
         
-        <div className="py-4 max-h-96 overflow-y-auto">
+        <div className="py-2 max-h-96 overflow-y-auto">
           <h3 className="text-lg font-semibold mb-4 text-gray-900">Categories</h3>
           
           <div className="space-y-3">
