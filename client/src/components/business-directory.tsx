@@ -88,7 +88,7 @@ export function BusinessDirectory({
           >
             All
           </Button>
-          {categories.slice(0, 5).map((category) => (
+          {categories.map((category) => (
             <Button
               key={category.id}
               variant={selectedCategory === category.id ? "default" : "outline"}
@@ -101,16 +101,14 @@ export function BusinessDirectory({
               {category.name}
             </Button>
           ))}
-          {categories.length > 5 && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsFilterDialogOpen(true)}
-              className="h-7 px-3 text-xs whitespace-nowrap flex-shrink-0 min-w-fit"
-            >
-              More...
-            </Button>
-          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsFilterDialogOpen(true)}
+            className="h-7 px-3 text-xs whitespace-nowrap flex-shrink-0 min-w-fit"
+          >
+            Filters
+          </Button>
         </div>
       </div>
 
