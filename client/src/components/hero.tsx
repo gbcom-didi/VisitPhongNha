@@ -10,7 +10,7 @@ export function Hero() {
   };
 
   return (
-    <section className="relative h-96 bg-gradient-to-r from-sea-blue to-tropical-aqua">
+    <section className="relative min-h-screen sm:h-96 bg-gradient-to-r from-sea-blue to-tropical-aqua">
       {/* Hero Background */}
       <div 
         className="absolute inset-0 bg-cover bg-center"
@@ -21,12 +21,12 @@ export function Hero() {
       />
       
       {/* Hero Content */}
-      <div className="relative z-10 flex items-center justify-center h-full">
-        <div className="text-center text-white px-4 max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-6xl font-bold mb-4 font-questrial">
+      <div className="relative z-10 flex items-center justify-center min-h-screen sm:h-full px-4 py-8 sm:py-0">
+        <div className="text-center text-white max-w-4xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 font-questrial">
             Discover Phan Rang
           </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
             Your ultimate guide to kitesurfing paradise and Vietnamese culture. 
             Explore hidden gems, authentic experiences, and the best spots for adventure.
           </p>
