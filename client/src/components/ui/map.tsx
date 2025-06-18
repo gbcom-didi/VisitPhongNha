@@ -26,7 +26,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       zoom: GOOGLE_MAPS_CONFIG.zoom,
       mapTypeControl: true,
       mapTypeControlOptions: {
-        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
         position: google.maps.ControlPosition.TOP_RIGHT
       },
       streetViewControl: false,
