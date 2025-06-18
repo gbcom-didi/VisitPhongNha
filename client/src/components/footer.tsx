@@ -102,7 +102,7 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 ĐiĐiVui. All rights reserved. Built for the kitesurfing community in Ninh Thuan, Vietnam.</p>
+          <p>&copy; 2025 ĐiĐiVui. All rights reserved. Built for the kitesurfing community in Ninh Thuan, Vietnam.</p>
         </div>
       </div>
     </footer>
