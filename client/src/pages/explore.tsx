@@ -204,7 +204,7 @@ export default function Explore() {
 
         {/* Mobile Business Directory */}
         {!showMapInMobile && (
-            <div className="flex-1 bg-white overflow-hidden flex flex-col">
+            <div className="flex-1 bg-white overflow-hidden flex flex-col relative">
               <BusinessDirectory
                 businesses={filteredBusinesses}
                 categories={categories}
@@ -215,18 +215,36 @@ export default function Explore() {
                 selectedCategory={selectedCategory}
                 onCategoryChange={handleCategoryChange}
               />
+              
+              {/* Floating Map Button */}
+              <button
+                className="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-black text-white px-6 py-3 rounded-full flex items-center space-x-2 shadow-lg z-30"
+                onClick={() => setShowMapInMobile(true)}
+              >
+                <MapIcon className="w-5 h-5" />
+                <span className="font-medium">Map</span>
+              </button>
             </div>
         )}
 
         {/* Mobile Map */}
         {showMapInMobile && (
-          <div className="flex-1 bg-white">
+          <div className="flex-1 bg-white relative">
             <Map
               businesses={filteredBusinesses}
               onBusinessClick={handleMapPinClick}
               selectedBusiness={selectedBusiness}
               hoveredBusiness={hoveredBusiness}
             />
+            
+            {/* Floating List Button */}
+            <button
+              className="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-black text-white px-6 py-3 rounded-full flex items-center space-x-2 shadow-lg z-30"
+              onClick={() => setShowMapInMobile(false)}
+            >
+              <List className="w-5 h-5" />
+              <span className="font-medium">List</span>
+            </button>
           </div>
         )}
 
