@@ -123,12 +123,12 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
 
     if (!isNaN(lat) && !isNaN(lng)) {
       const currentZoom = mapRef.current.getZoom() || 10;
-      const zoomOutLevel = Math.max(8, currentZoom - 3); // Zoom out to overview level
+      const zoomOutLevel = Math.max(9, currentZoom - 2); // Less dramatic zoom out
       const targetZoom = 16; // Final zoom level
       
-      // Phase 1: Zoom out smoothly
+      // Phase 1: Zoom out smoothly and quickly
       let zoomOutStep = 0;
-      const zoomOutSteps = 8;
+      const zoomOutSteps = 5; // Fewer steps for faster animation
       const zoomOutDifference = zoomOutLevel - currentZoom;
       const zoomOutStepSize = zoomOutDifference / zoomOutSteps;
       
@@ -137,12 +137,12 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
           const newZoom = currentZoom + (zoomOutStepSize * zoomOutStep);
           mapRef.current.setZoom(newZoom);
           zoomOutStep++;
-          setTimeout(zoomOutAnimation, 40);
+          setTimeout(zoomOutAnimation, 25); // Faster timing
         } else if (mapRef.current) {
           // Set exact zoom out level and pan to new location
           mapRef.current.setZoom(zoomOutLevel);
           
-          // Brief pause at zoom out level before panning
+          // Minimal pause at zoom out level before panning
           setTimeout(() => {
             if (mapRef.current) {
               // Pan to new location
@@ -152,7 +152,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
               setTimeout(() => {
                 if (mapRef.current) {
                   let zoomInStep = 0;
-                  const zoomInSteps = 12;
+                  const zoomInSteps = 8; // Fewer steps for faster zoom in
                   const zoomInDifference = targetZoom - zoomOutLevel;
                   const zoomInStepSize = zoomInDifference / zoomInSteps;
                   
@@ -161,7 +161,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
                       const newZoom = zoomOutLevel + (zoomInStepSize * zoomInStep);
                       mapRef.current.setZoom(newZoom);
                       zoomInStep++;
-                      setTimeout(zoomInAnimation, 45);
+                      setTimeout(zoomInAnimation, 30); // Faster timing
                     } else if (mapRef.current) {
                       mapRef.current.setZoom(targetZoom);
                     }
@@ -169,9 +169,9 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
                   
                   zoomInAnimation();
                 }
-              }, 300); // Wait for pan to complete
+              }, 150); // Shorter wait for pan to complete
             }
-          }, 200); // Brief pause at zoom out level
+          }, 100); // Shorter pause at zoom out level
         }
       };
       
