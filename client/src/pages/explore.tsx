@@ -19,7 +19,7 @@ export default function Explore() {
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-    const [showMapInMobile, setShowMapInMobile] = useState(false);
+    const [showMapInMobile, setShowMapInMobile] = useState(true);
   const [hoveredBusiness, setHoveredBusiness] = useState<BusinessWithCategory | null>(null);
 
   // Fetch categories
