@@ -43,7 +43,7 @@ export const getCategoryIconPath = (categorySlug: string): string => {
   const iconPaths: Record<string, string> = {
     'stay': 'M3 21v-6h18v6H3zm3-8V7a4 4 0 118 0v6h-8zm2-6a2 2 0 114 0v6H8V7z', // Bed icon
     'food-drink': 'M8.5 8.5c1.84 0 3.53.5 4.5 1.3.97-.8 2.66-1.3 4.5-1.3s3.53.5 4.5 1.3v9.2h-18v-9.2c.97-.8 2.66-1.3 4.5-1.3z', // Restaurant
-    'kiting': 'M5 16c0 3.87 3.13 7 7 7s7-3.13 7-7v-4H5v4zM12 2L8.5 7h7L12 2z', // Kite
+    'kiting': 'M14 6v7h3l-4 4-4-4h3V6h2m-2-2C6.48 4 2 8.48 2 14s4.48 10 10 10 10-4.48 10-10S17.52 4 12 4z', // Wind/Air flow
     'surf': 'M17 5.923A1 1 0 0016 5h-4a1 1 0 00-1 .923L10.5 8.5 12 10l1.5-1.5L15 6h1l1 1.923z', // Wave
     'things-to-do': 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z', // Star
     'atm': 'M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm-1 14H5v-8h14v8z', // Credit card
