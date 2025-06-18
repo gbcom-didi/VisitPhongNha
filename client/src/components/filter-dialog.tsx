@@ -34,43 +34,43 @@ export function FilterDialog({
           <DialogTitle className="text-center text-xl font-semibold">Filters</DialogTitle>
         </DialogHeader>
         
-        <div className="py-4">
+        <div className="py-4 max-h-96 overflow-y-auto">
           <h3 className="text-lg font-semibold mb-4 text-gray-900">Categories</h3>
           
           <div className="space-y-3">
             {/* All Categories */}
             <Button
               variant={selectedCategory === null ? "default" : "outline"}
-              className={`w-full justify-start h-12 text-left ${
+              className={`w-full justify-start h-8 text-left text-sm ${
                 selectedCategory === null 
                   ? "bg-gray-900 hover:bg-gray-800 text-white border-gray-900" 
                   : "border-gray-200 hover:bg-gray-50"
               }`}
               onClick={() => handleCategorySelect(null)}
             >
-              <span className="mr-2">🌐</span>
+              <span className="mr-2 text-xs">🌐</span>
               All
             </Button>
 
             {/* Category Grid */}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-1.5">
               {categories.map((category) => {
                 const isSelected = selectedCategory === category.id;
                 return (
                   <Button
                     key={category.id}
                     variant={isSelected ? "default" : "outline"}
-                    className={`justify-start h-12 text-left ${
+                    className={`justify-start h-8 text-left text-sm px-2 ${
                       isSelected 
                         ? "bg-gray-900 hover:bg-gray-800 text-white border-gray-900" 
                         : "border-gray-200 hover:bg-gray-50"
                     }`}
                     onClick={() => handleCategorySelect(category.id)}
                   >
-                    <span className="mr-2">
+                    <span className="mr-1.5 text-xs">
                       {getCategoryIcon(category.slug)}
                     </span>
-                    <span className="truncate">{category.name}</span>
+                    <span className="truncate text-xs">{category.name}</span>
                   </Button>
                 );
               })}
@@ -94,23 +94,23 @@ export function FilterDialog({
 function getCategoryIcon(slug: string): string {
   const iconMap: Record<string, string> = {
     'kiting': '🪁',
-    'food-drink': '🍜',
-    'accommodation': '🏨',
+    'food-drink': '🍽',
+    'accommodation': '🏠',
     'transport': '🚗',
-    'activities': '🎯',
-    'shopping': '🛍️',
-    'health': '🏥',
-    'education': '🎓',
-    'entertainment': '🎭',
+    'activities': '⚡',
+    'shopping': '🛒',
+    'health': '⚕',
+    'education': '📚',
+    'entertainment': '🎪',
     'services': '🔧',
     'atm': '💳',
-    'beaches': '🏖️',
-    'temples': '🏛️',
-    'nature': '🌿',
-    'landmarks': '🏛️',
-    'cuisine': '🍽️',
+    'beaches': '🏖',
+    'temples': '🏛',
+    'nature': '🌲',
+    'landmarks': '🗿',
+    'cuisine': '🍴',
     'vineyards': '🍇',
-    'historic-sites': '🏛️'
+    'historic-sites': '🏺'
   };
   
   return iconMap[slug] || '📍';
