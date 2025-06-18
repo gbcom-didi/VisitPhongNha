@@ -144,63 +144,6 @@ export default function Explore() {
     <div className="min-h-screen bg-gray-50">
       {/* Mobile Layout */}
       <div className="md:hidden h-screen flex flex-col">
-        {/* Mobile Header with Navigation */}
-        <div className="bg-white border-b border-gray-200 p-2 flex items-center justify-between flex-shrink-0 z-20">
-          <Link href="/">
-            <div className="cursor-pointer">
-              <div className="w-8 h-8 bg-chili-red rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">Đ</span>
-              </div>
-            </div>
-          </Link>
-
-          <div className="flex items-center space-x-2">
-            {/* Map Toggle Button */}
-            <button
-              className={`px-3 py-2 flex items-center justify-center space-x-2 rounded-md transition-colors ${
-                showMapInMobile 
-                  ? 'bg-chili-red text-white' 
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-              onClick={() => setShowMapInMobile(!showMapInMobile)}
-              title={showMapInMobile ? "Show List" : "Show Map"}
-            >
-              {showMapInMobile ? (
-                <>
-                  <List className="w-4 h-4" />
-                  <span className="text-sm font-medium">List</span>
-                </>
-              ) : (
-                <>
-                  <MapIcon className="w-4 h-4" />
-                  <span className="text-sm font-medium">Map</span>
-                </>
-              )}
-            </button>
-
-            {isAuthenticated ? (
-              <button 
-                className="w-10 h-10 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
-                onClick={() => window.location.href = '/api/logout'}
-                title="Sign Out"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-              </button>
-            ) : (
-              <button 
-                className="w-10 h-10 flex items-center justify-center bg-chili-red text-white rounded-md hover:bg-red-600 transition-colors"
-                onClick={() => window.location.href = '/api/login'}
-                title="Sign In"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                </svg>
-              </button>
-            )}
-          </div>
-        </div>
 
         {/* Mobile Business Directory */}
         {!showMapInMobile && (
