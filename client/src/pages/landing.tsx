@@ -23,7 +23,8 @@ export default function Landing() {
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">How ĐiĐiVui Works</h3>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Discover, save, and experience the best of Phan Rang with our interactive travel platform designed for adventurers and culture seekers. Soon you'll be able to chat with ĐiĐi! Our intelligent, AI-powered travel assistant to help you explore, plan, and personalise your next adventure.
+              Discover, save, and experience the best of Phan Rang with our interactive travel platform 
+              designed for adventurers and culture seekers. Soon you'll be able to chat with ĐiĐi! Our intelligent, AI-powered travel assistant to help you explore, plan, and personalise your next adventure.
             </p>    
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -72,10 +73,32 @@ export default function Landing() {
               <div 
                 className="relative h-48 bg-cover bg-center rounded-xl overflow-hidden mb-4"
                 style={{
-                  backgroundImage: `url('/images/kitesurfing-vietnam-01.jpg')`
+                  backgroundImage: `url('https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400')`
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent group-hover:from-black/70 transition-all" />
+                <div 
+  className="relative h-48 bg-cover bg-center rounded-xl overflow-hidden mb-4"
+  style={{
+    backgroundImage: `url('/images/kitesurfing-vietnam-01.jpg')` // Updated image path
+  }}
+>
+  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent group-hover:from-black/70 transition-all" />
+  <div className="absolute bottom-4 left-4 text-white">
+    <h4 className="text-xl font-semibold">Kitesurfing</h4>
+    <p className="text-sm opacity-90">15+ spots</p>
+  </div>
+</div><div 
+  className="relative h-48 bg-cover bg-center rounded-xl overflow-hidden mb-4"
+  style={{
+    backgroundImage: `url('/images/my-hoa-lagoon-6.jpg')` // Updated image path
+  }}
+>
+  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent group-hover:from-black/30 transition-all" />
+  <div className="absolute bottom-4 left-4 text-white">
+    <h4 className="text-xl font-semibold">Kitesurfing</h4>
+    <p className="text-sm opacity-90">15+ spots</p>
+  </div>
+</div><div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent group-hover:from-black/30 transition-all" />
                 <div className="absolute bottom-4 left-4 text-white">
                   <h4 className="text-xl font-semibold">Kitesurfing</h4>
                   <p className="text-sm opacity-90">15+ spots</p>
@@ -86,7 +109,7 @@ export default function Landing() {
               <div 
                 className="relative h-48 bg-cover bg-center rounded-xl overflow-hidden mb-4"
                 style={{
-                  backgroundImage: `url('/images/my-hoa-lagoon-3.jpg')`
+                  backgroundImage: `url('https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400')`
                 }}
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent group-hover:from-black/30 transition-all" />
@@ -100,7 +123,7 @@ export default function Landing() {
               <div 
                 className="relative h-48 bg-cover bg-center rounded-xl overflow-hidden mb-4"
                 style={{
-                  backgroundImage: `url('/images/my-hoa-lagoon-4.jpg')`
+                  backgroundImage: `url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400')`
                 }}
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent group-hover:from-black/30 transition-all" />
