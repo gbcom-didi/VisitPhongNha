@@ -122,33 +122,60 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
     const lng = parseFloat(hoveredBusiness.longitude);
 
     if (!isNaN(lat) && !isNaN(lng)) {
-      // Smooth pan and zoom animation
-      mapRef.current.panTo({ lat, lng });
-      
-      // Animate zoom smoothly
       const currentZoom = mapRef.current.getZoom() || 10;
-      const targetZoom = 16;
+      const zoomOutLevel = Math.max(8, currentZoom - 3); // Zoom out to overview level
+      const targetZoom = 16; // Final zoom level
       
-      if (currentZoom !== targetZoom) {
-        // Create smooth zoom animation
-        let step = 0;
-        const steps = 10;
-        const zoomDifference = targetZoom - currentZoom;
-        const zoomStep = zoomDifference / steps;
-        
-        const animateZoom = () => {
-          if (step < steps && mapRef.current) {
-            const newZoom = currentZoom + (zoomStep * step);
-            mapRef.current.setZoom(newZoom);
-            step++;
-            setTimeout(animateZoom, 50); // 50ms between steps for smooth animation
-          } else if (mapRef.current) {
-            mapRef.current.setZoom(targetZoom); // Ensure we end at exact target
-          }
-        };
-        
-        animateZoom();
-      }
+      // Phase 1: Zoom out smoothly
+      let zoomOutStep = 0;
+      const zoomOutSteps = 8;
+      const zoomOutDifference = zoomOutLevel - currentZoom;
+      const zoomOutStepSize = zoomOutDifference / zoomOutSteps;
+      
+      const zoomOutAnimation = () => {
+        if (zoomOutStep < zoomOutSteps && mapRef.current) {
+          const newZoom = currentZoom + (zoomOutStepSize * zoomOutStep);
+          mapRef.current.setZoom(newZoom);
+          zoomOutStep++;
+          setTimeout(zoomOutAnimation, 40);
+        } else if (mapRef.current) {
+          // Set exact zoom out level and pan to new location
+          mapRef.current.setZoom(zoomOutLevel);
+          
+          // Brief pause at zoom out level before panning
+          setTimeout(() => {
+            if (mapRef.current) {
+              // Pan to new location
+              mapRef.current.panTo({ lat, lng });
+              
+              // Phase 2: Zoom in to target location after pan completes
+              setTimeout(() => {
+                if (mapRef.current) {
+                  let zoomInStep = 0;
+                  const zoomInSteps = 12;
+                  const zoomInDifference = targetZoom - zoomOutLevel;
+                  const zoomInStepSize = zoomInDifference / zoomInSteps;
+                  
+                  const zoomInAnimation = () => {
+                    if (zoomInStep < zoomInSteps && mapRef.current) {
+                      const newZoom = zoomOutLevel + (zoomInStepSize * zoomInStep);
+                      mapRef.current.setZoom(newZoom);
+                      zoomInStep++;
+                      setTimeout(zoomInAnimation, 45);
+                    } else if (mapRef.current) {
+                      mapRef.current.setZoom(targetZoom);
+                    }
+                  };
+                  
+                  zoomInAnimation();
+                }
+              }, 300); // Wait for pan to complete
+            }
+          }, 200); // Brief pause at zoom out level
+        }
+      };
+      
+      zoomOutAnimation();
     }
   }, [hoveredBusiness]);
 
