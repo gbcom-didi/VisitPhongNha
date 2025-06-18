@@ -1,7 +1,14 @@
 import { Button } from '@/components/ui/button';
 import { Play } from 'lucide-react';
+import { useTypewriter } from '@/hooks/useTypewriter';
 
 export function Hero() {
+  const { displayText, showCursor } = useTypewriter({
+    text: 'Discover Phan Rang',
+    speed: 120,
+    delay: 1000
+  });
+
   const scrollToExplore = () => {
     const exploreSection = document.getElementById('explore');
     if (exploreSection) {
@@ -23,8 +30,12 @@ export function Hero() {
       {/* Hero Content */}
       <div className="relative z-10 flex items-center justify-center min-h-screen sm:h-full px-4 py-8 sm:py-0">
         <div className="text-center text-white max-w-4xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 font-questrial">
-            Discover Phan Rang
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 font-questrial min-h-[1.2em]">
+            {displayText}
+            <span 
+              className={`inline-block w-1 h-[0.8em] ml-1 bg-white ${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity duration-100`}
+              style={{ animation: 'none' }}
+            />
           </h2>
           <p className="text-lg sm:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
             Your ultimate guide to kitesurfing paradise and Vietnamese culture. 
