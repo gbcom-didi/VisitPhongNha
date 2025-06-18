@@ -26,18 +26,31 @@ export function useGooglePlaces(business: BusinessWithCategory | null) {
           throw new Error('Invalid coordinates');
         }
 
+        console.log(`Fetching Google Places data for: ${business.name} at (${lat}, ${lng})`);
+
         // First, search for the place to get its Place ID
         const placeId = await searchPlaceByName(business.name, lat, lng);
         
         if (!placeId) {
-          throw new Error('Place not found');
+          console.log(`No Place ID found for: ${business.name}`);
+          throw new Error('Place not found in Google Places');
         }
+
+        console.log(`Found Place ID: ${placeId} for ${business.name}`);
 
         // Then get detailed information
         const details = await getPlaceDetails(placeId);
-        setPlaceDetails(details);
+        
+        if (details) {
+          console.log(`Retrieved Google Places details for: ${business.name}`, details);
+          setPlaceDetails(details);
+        } else {
+          throw new Error('Failed to retrieve place details');
+        }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch place details');
+        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch place details';
+        console.error(`Google Places error for ${business.name}:`, errorMessage);
+        setError(errorMessage);
         setPlaceDetails(null);
       } finally {
         setIsLoading(false);
