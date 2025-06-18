@@ -28,7 +28,16 @@ export const useTypewriter = ({ text, speed = 100, delay = 0 }: UseTypewriterPro
       setShowCursor(prev => !prev);
     }, 530);
 
-    return () => clearInterval(cursorInterval);
+    // Stop cursor blinking after 5 seconds
+    const stopCursorTimeout = setTimeout(() => {
+      clearInterval(cursorInterval);
+      setShowCursor(false);
+    }, 5000);
+
+    return () => {
+      clearInterval(cursorInterval);
+      clearTimeout(stopCursorTimeout);
+    };
   }, []);
 
   return { displayText, showCursor, isComplete: currentIndex >= text.length };
