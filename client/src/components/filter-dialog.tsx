@@ -23,9 +23,7 @@ export function FilterDialog({
     onCategoryChange(categoryId);
   };
 
-  const handleShowPlaces = () => {
-    onClose();
-  };
+  
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -48,7 +46,6 @@ export function FilterDialog({
               }`}
               onClick={() => handleCategorySelect(null)}
             >
-              <span className="mr-2 text-xs">🌐</span>
               All
             </Button>
 
@@ -67,9 +64,6 @@ export function FilterDialog({
                     }`}
                     onClick={() => handleCategorySelect(category.id)}
                   >
-                    <span className="mr-1.5 text-xs">
-                      {getCategoryIcon(category.slug)}
-                    </span>
                     <span className="truncate text-xs">{category.name}</span>
                   </Button>
                 );
@@ -78,14 +72,7 @@ export function FilterDialog({
           </div>
         </div>
 
-        <div className="pt-4 border-t">
-          <Button
-            onClick={handleShowPlaces}
-            className="w-full bg-gray-900 hover:bg-gray-800 text-white h-12 text-base font-medium"
-          >
-            Show places
-          </Button>
-        </div>
+        
       </DialogContent>
     </Dialog>
   );
