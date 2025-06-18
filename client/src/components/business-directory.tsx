@@ -59,7 +59,7 @@ export function BusinessDirectory({
             <Input
               type="text"
               placeholder="Search places..."
-              className="pl-10 pr-4"
+              className="pl-10 pr-4 h-8"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -67,7 +67,7 @@ export function BusinessDirectory({
           <Button
             variant="outline"
             onClick={() => setIsFilterDialogOpen(true)}
-            className="flex items-center gap-2 px-4"
+            className="flex items-center gap-2 px-4 h-8"
           >
             <Filter className="w-4 h-4" />
             Filters
