@@ -113,6 +113,11 @@ Changelog:
   - Added @googlemaps/react-wrapper and @types/google.maps
   - Replaced Map component with Google Maps implementation
   - Updated configuration and environment variables
+- June 18, 2025. Enhanced business listings with main images
+  - Added comprehensive image support for all 75 business listings
+  - Business cards and modals now display high-quality category-appropriate images
+  - Database schema already included imageUrl field with proper fallback handling
+  - Images sourced from Unsplash for authentic, professional appearance
 ```
 
 ## User Preferences
