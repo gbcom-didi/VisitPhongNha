@@ -1,9 +1,7 @@
-import { X, MapPin, Phone, Clock, Globe, Heart, ExternalLink, Star } from 'lucide-react';
+import { X, MapPin, Phone, Clock, Globe, Heart, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { useGooglePlaces } from '@/hooks/useGooglePlaces';
-import { getPhotoUrl } from '@/lib/googlemaps';
 import type { BusinessWithCategory } from '@shared/schema';
 
 interface BusinessModalProps {
@@ -14,8 +12,6 @@ interface BusinessModalProps {
 }
 
 export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessModalProps) {
-  const { placeDetails, isLoading, error } = useGooglePlaces(business);
-  
   if (!business) return null;
 
   const handleLikeClick = () => {
@@ -47,13 +43,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
 
         {/* Business Image */}
         <div className="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden mb-4">
-          {placeDetails?.photos && placeDetails.photos.length > 0 ? (
-            <img 
-              src={getPhotoUrl(placeDetails.photos[0].photo_reference, 800)} 
-              alt={business.name}
-              className="w-full h-full object-cover"
-            />
-          ) : business.imageUrl ? (
+          {business.imageUrl ? (
             <img 
               src={business.imageUrl} 
               alt={business.name}
@@ -71,150 +61,69 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">{business.name}</h3>
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                {business.category && (
-                  <Badge
-                    style={{
-                      backgroundColor: business.category.color + '20',
-                      color: business.category.color,
-                      border: `1px solid ${business.category.color}40`
-                    }}
-                  >
-                    {business.category.name}
-                  </Badge>
-                )}
-                
-                {/* Google Rating */}
-                {placeDetails?.rating && (
-                  <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full">
-                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                    <span className="text-sm font-medium text-gray-700">
-                      {placeDetails.rating.toFixed(1)}
-                    </span>
-                    {placeDetails.user_ratings_total && (
-                      <span className="text-xs text-gray-500">
-                        ({placeDetails.user_ratings_total})
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
+              {business.category && (
+                <Badge
+                  style={{
+                    backgroundColor: business.category.color + '20',
+                    color: business.category.color,
+                    border: `1px solid ${business.category.color}40`
+                  }}
+                  className="mb-3"
+                >
+                  {business.category.name}
+                </Badge>
+              )}
             </div>
           </div>
 
-          {/* Description */}
-          {(placeDetails?.description || business.description) && (
-            <div className="mb-4">
-              <h4 className="text-sm font-semibold text-gray-800 mb-2">About</h4>
-              <p className="text-gray-600 leading-relaxed">
-                {placeDetails?.description || business.description}
-              </p>
-            </div>
-          )}
-
-          {/* Loading indicator */}
-          {isLoading && (
-            <div className="text-sm text-gray-400 mb-4 flex items-center">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400 mr-2"></div>
-              Loading Google Places data...
-            </div>
-          )}
-
-          {/* Error indicator */}
-          {error && (
-            <div className="text-sm text-red-500 mb-4 bg-red-50 p-2 rounded">
-              Unable to load additional details from Google Places
-            </div>
+          {business.description && (
+            <p className="text-gray-600 leading-relaxed">
+              {business.description}
+            </p>
           )}
 
           {/* Contact Information */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-gray-800">Contact & Hours</h4>
+          <div className="space-y-3">
+            {business.address && (
+              <div className="flex items-start text-gray-600">
+                <MapPin className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
+                <span className="text-sm">{business.address}</span>
+              </div>
+            )}
             
-            <div className="space-y-3">
-              {business.address && (
-                <div className="flex items-start text-gray-600">
-                  <MapPin className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">{business.address}</span>
-                </div>
-              )}
-              
-              {(placeDetails?.formatted_phone_number || business.phone) && (
-                <div className="flex items-center text-gray-600">
-                  <Phone className="w-5 h-5 mr-3 flex-shrink-0" />
-                  <div className="flex flex-col">
-                    <a 
-                      href={`tel:${placeDetails?.formatted_phone_number || business.phone}`}
-                      className="text-sm hover:text-chili-red transition-colors"
-                    >
-                      {placeDetails?.formatted_phone_number || business.phone}
-                    </a>
-                    {placeDetails?.formatted_phone_number && business.phone && 
-                     placeDetails.formatted_phone_number !== business.phone && (
-                      <span className="text-xs text-gray-400">
-                        Local: {business.phone}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )}
-              
-              {/* Opening Hours */}
-              {placeDetails?.opening_hours?.weekday_text ? (
-                <div className="flex items-start text-gray-600">
-                  <Clock className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
-                  <div className="text-sm">
-                    {placeDetails.opening_hours.open_now !== undefined && (
-                      <div className={`inline-block px-3 py-1 rounded-full text-xs font-medium mb-3 ${
-                        placeDetails.opening_hours.open_now 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {placeDetails.opening_hours.open_now ? 'Open Now' : 'Closed'}
-                      </div>
-                    )}
-                    <div className="space-y-1">
-                      {placeDetails.opening_hours.weekday_text.map((hours, index) => (
-                        <div key={index} className="text-xs text-gray-600">{hours}</div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ) : business.hours && (
-                <div className="flex items-center text-gray-600">
-                  <Clock className="w-5 h-5 mr-3 flex-shrink-0" />
-                  <span className="text-sm">{business.hours}</span>
-                </div>
-              )}
-              
-              {(placeDetails?.website || business.website) && (
-                <div className="flex items-center text-gray-600">
-                  <Globe className="w-5 h-5 mr-3 flex-shrink-0" />
-                  <div className="flex flex-col">
-                    <a 
-                      href={placeDetails?.website || business.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm hover:text-chili-red transition-colors flex items-center"
-                    >
-                      Visit Website
-                      <ExternalLink className="w-3 h-3 ml-1" />
-                    </a>
-                    {placeDetails?.website && business.website && 
-                     placeDetails.website !== business.website && (
-                      <a 
-                        href={business.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-gray-400 hover:text-gray-600 mt-1"
-                      >
-                        Local site: {business.website}
-                      </a>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+            {business.phone && (
+              <div className="flex items-center text-gray-600">
+                <Phone className="w-5 h-5 mr-3 flex-shrink-0" />
+                <a 
+                  href={`tel:${business.phone}`}
+                  className="text-sm hover:text-chili-red transition-colors"
+                >
+                  {business.phone}
+                </a>
+              </div>
+            )}
+            
+            {business.hours && (
+              <div className="flex items-center text-gray-600">
+                <Clock className="w-5 h-5 mr-3 flex-shrink-0" />
+                <span className="text-sm">{business.hours}</span>
+              </div>
+            )}
+            
+            {business.website && (
+              <div className="flex items-center text-gray-600">
+                <Globe className="w-5 h-5 mr-3 flex-shrink-0" />
+                <a 
+                  href={business.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm hover:text-chili-red transition-colors flex items-center"
+                >
+                  Visit Website
+                  <ExternalLink className="w-3 h-3 ml-1" />
+                </a>
+              </div>
+            )}
           </div>
         </div>
 

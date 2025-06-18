@@ -84,16 +84,13 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
         },
       });
 
-      // Create info window with enhanced content
+      // Create info window
       const infoWindow = new google.maps.InfoWindow({
         content: `
-          <div style="padding: 12px; font-family: system-ui, -apple-system, sans-serif; min-width: 200px;">
-            <div style="font-weight: 600; margin-bottom: 4px; font-size: 14px;">${business.name}</div>
-            <div style="font-size: 12px; color: #666; margin-bottom: 6px;">${business.category?.name || ''}</div>
-            ${business.address ? `<div style="font-size: 11px; color: #666; margin-bottom: 6px;">${business.address}</div>` : ''}
-            <div style="font-size: 11px; color: #888; border-top: 1px solid #eee; padding-top: 6px;">
-              Click marker for more details
-            </div>
+          <div style="padding: 8px; font-family: system-ui, -apple-system, sans-serif;">
+            <div style="font-weight: 600; margin-bottom: 4px;">${business.name}</div>
+            <div style="font-size: 12px; color: #666;">${business.category?.name || ''}</div>
+            ${business.address ? `<div style="font-size: 12px; color: #666; margin-top: 4px;">${business.address}</div>` : ''}
           </div>
         `
       });
