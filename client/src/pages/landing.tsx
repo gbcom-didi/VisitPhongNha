@@ -38,7 +38,7 @@ export default function Landing() {
               </p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-sea-blue rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#F7BAAD' }}>
                 <Heart className="w-8 h-8 text-white" />
               </div>
               <h4 className="text-xl font-semibold mb-2">Save Your Favorites</h4>
