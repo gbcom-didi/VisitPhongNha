@@ -218,11 +218,11 @@ export default function Explore() {
               
               {/* Floating Map Button */}
               <button
-                className="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-black text-white px-6 py-3 rounded-full flex items-center space-x-2 shadow-lg z-30"
+                className="fixed bottom-16 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded-full flex items-center space-x-1 shadow-lg z-30"
                 onClick={() => setShowMapInMobile(true)}
               >
-                <MapIcon className="w-5 h-5" />
-                <span className="font-medium">Map</span>
+                <MapIcon className="w-4 h-4" />
+                <span className="font-medium text-sm">Map</span>
               </button>
             </div>
         )}
@@ -239,11 +239,11 @@ export default function Explore() {
             
             {/* Floating List Button */}
             <button
-              className="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-black text-white px-6 py-3 rounded-full flex items-center space-x-2 shadow-lg z-30"
+              className="fixed bottom-16 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded-full flex items-center space-x-1 shadow-lg z-30"
               onClick={() => setShowMapInMobile(false)}
             >
-              <List className="w-5 h-5" />
-              <span className="font-medium">List</span>
+              <List className="w-4 h-4" />
+              <span className="font-medium text-sm">List</span>
             </button>
           </div>
         )}
