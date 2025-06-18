@@ -25,59 +25,77 @@ export interface PlaceDetails {
 
 // Function to search for a place and get its Place ID
 export const searchPlaceByName = async (name: string, lat: number, lng: number): Promise<string | null> => {
-  if (!window.google || !GOOGLE_MAPS_CONFIG.apiKey) return null;
+  if (!window.google || !window.google.maps || !window.google.maps.places || !GOOGLE_MAPS_CONFIG.apiKey) {
+    console.log('Google Maps Places API not available');
+    return null;
+  }
 
-  const service = new google.maps.places.PlacesService(document.createElement('div'));
-  
-  return new Promise((resolve) => {
-    const request = {
-      query: name,
-      location: new google.maps.LatLng(lat, lng),
-      radius: 1000, // 1km radius
-    };
+  try {
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    
+    return new Promise((resolve) => {
+      const request = {
+        query: name,
+        location: new google.maps.LatLng(lat, lng),
+        radius: 1000, // 1km radius
+      };
 
-    service.textSearch(request, (results, status) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
-        resolve(results[0].place_id || null);
-      } else {
-        resolve(null);
-      }
+      service.textSearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
+          resolve(results[0].place_id || null);
+        } else {
+          console.log(`Place search failed for ${name}: ${status}`);
+          resolve(null);
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error('Error in searchPlaceByName:', error);
+    return null;
+  }
 };
 
 // Function to get detailed place information
 export const getPlaceDetails = async (placeId: string): Promise<PlaceDetails | null> => {
-  if (!window.google || !GOOGLE_MAPS_CONFIG.apiKey) return null;
+  if (!window.google || !window.google.maps || !window.google.maps.places || !GOOGLE_MAPS_CONFIG.apiKey) {
+    console.log('Google Maps Places API not available');
+    return null;
+  }
 
-  const service = new google.maps.places.PlacesService(document.createElement('div'));
-  
-  return new Promise((resolve) => {
-    const request = {
-      placeId: placeId,
-      fields: ['rating', 'user_ratings_total', 'opening_hours', 'formatted_phone_number', 'website', 'photos', 'editorial_summary']
-    };
+  try {
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    
+    return new Promise((resolve) => {
+      const request = {
+        placeId: placeId,
+        fields: ['rating', 'user_ratings_total', 'opening_hours', 'formatted_phone_number', 'website', 'photos', 'editorial_summary']
+      };
 
-    service.getDetails(request, (place, status) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK && place) {
-        resolve({
-          description: place.editorial_summary?.overview,
-          rating: place.rating,
-          user_ratings_total: place.user_ratings_total,
-          opening_hours: place.opening_hours,
-          formatted_phone_number: place.formatted_phone_number,
-          website: place.website,
-          photos: place.photos?.map(photo => ({
-            photo_reference: photo.photo_reference,
-            height: photo.height,
-            width: photo.width
-          }))
-        });
-      } else {
-        resolve(null);
-      }
+      service.getDetails(request, (place, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && place) {
+          resolve({
+            description: place.editorial_summary?.overview,
+            rating: place.rating,
+            user_ratings_total: place.user_ratings_total,
+            opening_hours: place.opening_hours,
+            formatted_phone_number: place.formatted_phone_number,
+            website: place.website,
+            photos: place.photos?.map(photo => ({
+              photo_reference: photo.photo_reference,
+              height: photo.height,
+              width: photo.width
+            }))
+          });
+        } else {
+          console.log(`Place details failed for ${placeId}: ${status}`);
+          resolve(null);
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error('Error in getPlaceDetails:', error);
+    return null;
+  }
 };
 
 // Function to get photo URL from photo reference

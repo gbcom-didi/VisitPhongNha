@@ -28,6 +28,19 @@ export function useGooglePlaces(business: BusinessWithCategory | null) {
 
         console.log(`Fetching Google Places data for: ${business.name} at (${lat}, ${lng})`);
 
+        // Wait for Google Maps API to be fully loaded
+        let retries = 0;
+        const maxRetries = 10;
+        
+        while ((!window.google || !window.google.maps || !window.google.maps.places) && retries < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+          retries++;
+        }
+
+        if (!window.google || !window.google.maps || !window.google.maps.places) {
+          throw new Error('Google Maps API not loaded');
+        }
+
         // First, search for the place to get its Place ID
         const placeId = await searchPlaceByName(business.name, lat, lng);
         
@@ -57,7 +70,10 @@ export function useGooglePlaces(business: BusinessWithCategory | null) {
       }
     };
 
-    fetchPlaceDetails();
+    // Add a small delay to ensure the component is fully mounted
+    const timeoutId = setTimeout(fetchPlaceDetails, 100);
+    
+    return () => clearTimeout(timeoutId);
   }, [business?.id, business?.name, business?.latitude, business?.longitude]);
 
   return { placeDetails, isLoading, error };
