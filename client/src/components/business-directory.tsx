@@ -51,9 +51,7 @@ export function BusinessDirectory({
   return (
     <div className="h-full bg-white flex flex-col md:h-screen">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200 bg-white sticky top-0 z-10 md:static">
-        <h2 className="text-lg font-semibold text-gray-900 mb-3 font-questrial">Explore Phan Rang</h2>
-        
+      <div className="p-4 border-b border-gray-200 bg-white sticky top-0 z-10 md:static">        
         {/* Search and Filter Row */}
         <div className="flex gap-2 mb-3">
           <div className="relative flex-1">
