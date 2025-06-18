@@ -112,7 +112,7 @@ export function BusinessDirectory({
 
       {/* Results Count */}
       <div className="px-4 py-2 bg-gray-50 border-b border-gray-200">
-        <p className="text-sm text-gray-600">
+        <p className="text-xs text-gray-600">
           {filteredBusinesses.length} {filteredBusinesses.length === 1 ? 'place' : 'places'} found
           {selectedCategoryName && (
             <span className="ml-1">
