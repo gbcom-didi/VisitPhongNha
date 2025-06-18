@@ -3,7 +3,7 @@ import { Wrapper, Status } from '@googlemaps/react-wrapper';
 import { GOOGLE_MAPS_CONFIG, getCategoryColor } from '@/lib/googlemaps';
 import type { BusinessWithCategory } from '@shared/schema';
 import { Button } from './button';
-import { Plus, Minus, Target, Map as MapIcon, Satellite } from 'lucide-react';
+import { Target } from 'lucide-react';
 
 interface MapProps {
   businesses: BusinessWithCategory[];
@@ -17,7 +17,6 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const [mapType, setMapType] = useState<'roadmap' | 'satellite'>('roadmap');
 
   const initializeMap = useCallback(() => {
     if (!mapContainerRef.current || !window.google) return;
@@ -27,20 +26,27 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       zoom: GOOGLE_MAPS_CONFIG.zoom,
       mapTypeControl: true,
       mapTypeControlOptions: {
-        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-        position: google.maps.ControlPosition.TOP_RIGHT
+        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+        position: google.maps.ControlPosition.TOP_RIGHT,
+        mapTypeIds: ['roadmap', 'satellite']
+      },
+      zoomControl: true,
+      zoomControlOptions: {
+        position: google.maps.ControlPosition.RIGHT_CENTER
       },
       streetViewControl: false,
-      fullscreenControl: false,
+      fullscreenControl: true,
+      fullscreenControlOptions: {
+        position: google.maps.ControlPosition.RIGHT_TOP
+      },
       gestureHandling: 'greedy',
-      mapTypeId: mapType,
-      styles: mapType === 'roadmap' ? [
+      styles: [
         {
           featureType: 'poi',
           elementType: 'labels',
           stylers: [{ visibility: 'off' }]
         }
-      ] : []
+      ]
     });
 
     mapRef.current = map;
@@ -185,20 +191,6 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
     }
   }, [hoveredBusiness]);
 
-  const handleZoomIn = () => {
-    if (mapRef.current) {
-      const currentZoom = mapRef.current.getZoom() || 10;
-      mapRef.current.setZoom(currentZoom + 1);
-    }
-  };
-
-  const handleZoomOut = () => {
-    if (mapRef.current) {
-      const currentZoom = mapRef.current.getZoom() || 10;
-      mapRef.current.setZoom(currentZoom - 1);
-    }
-  };
-
   const handleFitBounds = () => {
     if (!mapRef.current || businesses.length === 0) return;
 
@@ -217,89 +209,21 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
     mapRef.current.fitBounds(bounds);
   };
 
-  const handleMapTypeToggle = (type: 'roadmap' | 'satellite') => {
-    if (mapRef.current && type !== mapType) {
-      setMapType(type);
-      mapRef.current.setMapTypeId(type);
-      
-      // Update styles based on map type
-      if (type === 'roadmap') {
-        mapRef.current.setOptions({
-          styles: [
-            {
-              featureType: 'poi',
-              elementType: 'labels',
-              stylers: [{ visibility: 'off' }]
-            }
-          ]
-        });
-      } else {
-        mapRef.current.setOptions({ styles: [] });
-      }
-    }
-  };
-
   return (
     <div className="relative h-full">
       <div ref={mapContainerRef} className="h-full w-full" />
       
-      {/* Map Controls */}
-      <div className="absolute top-4 right-4 flex flex-col gap-2">
-        {/* Map Type Toggle */}
-        <div className="flex bg-white rounded-md shadow-md overflow-hidden">
-          <Button
-            variant={mapType === 'roadmap' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => handleMapTypeToggle('roadmap')}
-            className={`rounded-none px-3 py-2 text-xs ${
-              mapType === 'roadmap' 
-                ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                : 'bg-white text-gray-700 hover:bg-gray-50'
-            }`}
-          >
-            <MapIcon className="h-3 w-3 mr-1" />
-            Map
-          </Button>
-          <Button
-            variant={mapType === 'satellite' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => handleMapTypeToggle('satellite')}
-            className={`rounded-none px-3 py-2 text-xs ${
-              mapType === 'satellite' 
-                ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                : 'bg-white text-gray-700 hover:bg-gray-50'
-            }`}
-          >
-            <Satellite className="h-3 w-3 mr-1" />
-            Satellite
-          </Button>
-        </div>
-        
-        {/* Zoom Controls */}
+      {/* Custom Fit Bounds Control */}
+      <div className="absolute bottom-4 right-4">
         <Button
           variant="outline"
-          size="icon"
-          onClick={handleZoomIn}
-          className="bg-white shadow-md hover:bg-gray-50"
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handleZoomOut}
-          className="bg-white shadow-md hover:bg-gray-50"
-        >
-          <Minus className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
+          size="sm"
           onClick={handleFitBounds}
-          className="bg-white shadow-md hover:bg-gray-50"
+          className="bg-white shadow-md hover:bg-gray-50 px-3 py-2"
           title="Fit all markers"
         >
-          <Target className="h-4 w-4" />
+          <Target className="h-3 w-3 mr-1" />
+          <span className="text-xs">Fit All</span>
         </Button>
       </div>
     </div>
