@@ -231,24 +231,24 @@ export default function Explore() {
         )}
 
         {/* Mobile Bottom Navigation */}
-        <div className="bg-white border-t border-gray-200 p-2 flex-shrink-0 z-20">
+        <div className="bg-white border-t border-gray-200 py-1 px-2 flex-shrink-0 z-20">
           <div className="flex justify-around">
             {navigationLinks.map(({ href, label, icon: Icon }) => (
               <Link key={href} href={href}>
-                <div className={`flex flex-col items-center p-2 rounded-md transition-colors cursor-pointer ${
+                <div className={`flex flex-col items-center py-1 px-2 rounded-md transition-colors cursor-pointer ${
                   isActiveLink(href) 
                     ? 'text-chili-red' 
                     : 'text-gray-700'
                 }`}>
-                  <Icon className="w-5 h-5 mb-1" />
+                  <Icon className="w-4 h-4 mb-0.5" />
                   <span className="text-xs">{label}</span>
                 </div>
               </Link>
             ))}
             {isAuthenticated && (
               <Link href="/saved">
-                <div className="flex flex-col items-center p-2 text-gray-700 rounded-md transition-colors cursor-pointer">
-                  <Heart className="w-5 h-5 mb-1" />
+                <div className="flex flex-col items-center py-1 px-2 text-gray-700 rounded-md transition-colors cursor-pointer">
+                  <Heart className="w-4 h-4 mb-0.5" />
                   <span className="text-xs">Saved</span>
                 </div>
               </Link>
