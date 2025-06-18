@@ -15,11 +15,11 @@ export function Hero() {
       <div 
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&h=1080')`,
+          backgroundImage: `url('/images/my-hoa-love.jpg')`, // Updated image path
           backgroundBlendMode: 'overlay'
         }}
       />
-      
+
       {/* Hero Content */}
       <div className="relative z-10 flex items-center justify-center min-h-screen sm:h-full px-4 py-8 sm:py-0">
         <div className="text-center text-white max-w-4xl mx-auto">
@@ -30,7 +30,7 @@ export function Hero() {
             Your ultimate guide to kitesurfing paradise and Vietnamese culture. 
             Explore hidden gems, authentic experiences, and the best spots for adventure.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg"

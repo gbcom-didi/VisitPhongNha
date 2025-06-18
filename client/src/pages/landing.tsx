@@ -76,7 +76,29 @@ export default function Landing() {
                   backgroundImage: `url('https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400')`
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent group-hover:from-black/70 transition-all" />
+                <div 
+  className="relative h-48 bg-cover bg-center rounded-xl overflow-hidden mb-4"
+  style={{
+    backgroundImage: `url('/images/kitesurfing-vietnam-01.jpg')` // Updated image path
+  }}
+>
+  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent group-hover:from-black/70 transition-all" />
+  <div className="absolute bottom-4 left-4 text-white">
+    <h4 className="text-xl font-semibold">Kitesurfing</h4>
+    <p className="text-sm opacity-90">15+ spots</p>
+  </div>
+</div><div 
+  className="relative h-48 bg-cover bg-center rounded-xl overflow-hidden mb-4"
+  style={{
+    backgroundImage: `url('/images/my-hoa-lagoon-6.jpg')` // Updated image path
+  }}
+>
+  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent group-hover:from-black/30 transition-all" />
+  <div className="absolute bottom-4 left-4 text-white">
+    <h4 className="text-xl font-semibold">Kitesurfing</h4>
+    <p className="text-sm opacity-90">15+ spots</p>
+  </div>
+</div><div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent group-hover:from-black/30 transition-all" />
                 <div className="absolute bottom-4 left-4 text-white">
                   <h4 className="text-xl font-semibold">Kitesurfing</h4>
                   <p className="text-sm opacity-90">15+ spots</p>
@@ -90,7 +112,7 @@ export default function Landing() {
                   backgroundImage: `url('https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400')`
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent group-hover:from-black/70 transition-all" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent group-hover:from-black/30 transition-all" />
                 <div className="absolute bottom-4 left-4 text-white">
                   <h4 className="text-xl font-semibold">Food & Drink</h4>
                   <p className="text-sm opacity-90">25+ restaurants</p>
@@ -104,7 +126,7 @@ export default function Landing() {
                   backgroundImage: `url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400')`
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent group-hover:from-black/70 transition-all" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent group-hover:from-black/30 transition-all" />
                 <div className="absolute bottom-4 left-4 text-white">
                   <h4 className="text-xl font-semibold">Accommodation</h4>
                   <p className="text-sm opacity-90">12+ places</p>
@@ -115,10 +137,10 @@ export default function Landing() {
               <div 
                 className="relative h-48 bg-cover bg-center rounded-xl overflow-hidden mb-4"
                 style={{
-                  backgroundImage: `url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400')`
+                  backgroundImage: `url('/images/my-hoa-tower-2.jpg')`
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent group-hover:from-black/70 transition-all" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent group-hover:from-black/30 transition-all" />
                 <div className="absolute bottom-4 left-4 text-white">
                   <h4 className="text-xl font-semibold">Attractions</h4>
                   <p className="text-sm opacity-90">20+ places</p>
