@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Search, MapPin, Filter } from 'lucide-react';
+import { Search, MapPin, Filter, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { BusinessCard } from '@/components/ui/business-card';
@@ -59,10 +59,19 @@ export function BusinessDirectory({
             <Input
               type="text"
               placeholder="Search places..."
-              className="pl-10 pr-4 h-8"
+              className="pl-10 pr-10 h-8"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
           <Button
             variant="outline"
