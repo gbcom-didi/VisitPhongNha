@@ -35,6 +35,31 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
     return distances[Math.floor(Math.random() * distances.length)] + ' away';
   };
 
+  const getBusinessImageUrl = () => {
+    if (business.imageUrl) {
+      return business.imageUrl;
+    }
+    
+    // Provide category-based fallback images
+    const categoryName = business.category?.name?.toLowerCase();
+    
+    if (categoryName?.includes('food') || categoryName?.includes('restaurant')) {
+      return 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400';
+    }
+    if (categoryName?.includes('kite') || categoryName?.includes('sport')) {
+      return '/images/kitesurfing-vietnam-01.jpg';
+    }
+    if (categoryName?.includes('accommodation') || categoryName?.includes('hotel')) {
+      return 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400';
+    }
+    if (categoryName?.includes('attraction') || categoryName?.includes('tower')) {
+      return '/images/my-hoa-tower-2.jpg';
+    }
+    
+    // Default fallback
+    return 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400';
+  };
+
   return (
     <div 
       className="bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border border-gray-100 overflow-hidden"
@@ -44,17 +69,26 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
     >
       {/* Business Image */}
       <div className="relative aspect-[4/3] bg-gray-200 overflow-hidden">
-        {business.imageUrl ? (
-          <img 
-            src={business.imageUrl} 
-            alt={business.name}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-            <MapPin className="w-12 h-12 text-gray-400" />
-          </div>
-        )}
+        <img 
+          src={getBusinessImageUrl()} 
+          alt={business.name}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            // If image fails to load, show default placeholder
+            const target = e.target as HTMLImageElement;
+            target.style.display = 'none';
+            const parent = target.parentElement;
+            if (parent) {
+              parent.innerHTML = `
+                <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                  <svg class="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                </div>
+              `;
+            }
+          }}
+        />
         
         {/* Like Button Overlay */}
         <Button

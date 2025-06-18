@@ -11,6 +11,16 @@ interface BusinessModalProps {
   onLike?: (business: BusinessWithCategory) => void;
 }
 
+// Function to generate a fallback image URL based on business name
+const getBusinessImageUrl = (business: BusinessWithCategory | null): string => {
+  if (!business) return '';
+
+  const nameHash = business.name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const imageId = nameHash % 1000; // Ensure the ID is within a reasonable range
+
+  return `https://source.unsplash.com/random/400x400/?${business.category?.name || 'business'}&sig=${imageId}`;
+};
+
 export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessModalProps) {
   if (!business) return null;
 
@@ -43,17 +53,25 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
 
         {/* Business Image */}
         <div className="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden mb-4">
-          {business.imageUrl ? (
-            <img 
-              src={business.imageUrl} 
-              alt={business.name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-sea-blue to-tropical-aqua flex items-center justify-center">
-              <MapPin className="w-16 h-16 text-white opacity-50" />
-            </div>
-          )}
+          <img 
+            src={business.imageUrl || getBusinessImageUrl(business)} 
+            alt={business.name}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+              const parent = target.parentElement;
+              if (parent) {
+                parent.innerHTML = `
+                  <div class="w-full h-full bg-gradient-to-br from-sea-blue to-tropical-aqua flex items-center justify-center">
+                    <svg class="w-16 h-16 text-white opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                  </div>
+                `;
+              }
+            }}
+          />
         </div>
 
         {/* Business Info */}
@@ -123,7 +141,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                     "Amazing experience! The staff was incredibly friendly and the location is perfect. Highly recommend for anyone visiting Phan Rang."
                   </p>
                 </div>
-                
+
                 <div className="border-l-4 border-sea-blue pl-4">
                   <div className="flex items-center mb-2">
                     <div className="flex text-yellow-400 text-sm mr-2">
@@ -161,7 +179,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                 <span className="text-sm">{business.address}</span>
               </div>
             )}
-            
+
             {business.phone && (
               <div className="flex items-center text-gray-600">
                 <Phone className="w-5 h-5 mr-3 flex-shrink-0" />
@@ -173,14 +191,14 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                 </a>
               </div>
             )}
-            
+
             {business.hours && (
               <div className="flex items-center text-gray-600">
                 <Clock className="w-5 h-5 mr-3 flex-shrink-0" />
                 <span className="text-sm">{business.hours}</span>
               </div>
             )}
-            
+
             {business.website && (
               <div className="flex items-center text-gray-600">
                 <Globe className="w-5 h-5 mr-3 flex-shrink-0" />
@@ -206,7 +224,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
           >
             {business.website ? 'Visit Website' : 'Book Now'}
           </Button>
-          
+
           <Button
             variant="outline"
             className="flex-1"
@@ -214,7 +232,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
           >
             Get Directions
           </Button>
-          
+
           <Button
             variant="outline"
             className={`px-4 ${
