@@ -64,6 +64,12 @@ export const businesses = pgTable("businesses", {
   isPremium: boolean("is_premium").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  googlePlaceId: varchar("google_place_id", { length: 255 }),
+  googleRating: decimal("google_rating", { precision: 2, scale: 1 }),
+  googleUserRatingsTotal: integer("google_user_ratings_total"),
+  googleOpeningHours: text("google_opening_hours"),
+  googlePhotoReference: varchar("google_photo_reference", { length: 500 }),
+  googleDescription: text("google_description"),
 });
 
 export const userLikes = pgTable("user_likes", {
