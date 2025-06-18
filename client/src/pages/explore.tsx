@@ -145,7 +145,7 @@ export default function Explore() {
       {/* Mobile Layout */}
       <div className="md:hidden h-screen flex flex-col">
         {/* Mobile Header with Navigation */}
-        <div className="bg-white border-b border-gray-200 p-4 flex items-center justify-between flex-shrink-0 z-20">
+        <div className="bg-white border-b border-gray-200 p-2 flex items-center justify-between flex-shrink-0 z-20">
           <Link href="/">
             <div className="cursor-pointer">
               <div className="w-8 h-8 bg-chili-red rounded-lg flex items-center justify-center">
