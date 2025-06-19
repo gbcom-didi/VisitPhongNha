@@ -75,7 +75,7 @@ export default function About() {
               <h2 className="text-3xl font-bold text-gray-900 mb-6 font-questrial">Our Story</h2>
               <div className="space-y-4 text-gray-600">
                 <p>
-                  ĐiĐiVui began as a passion project by a group of international kitesurfers who fell in love with Ninh Thuan's pristine beaches, consistent winds, and incredible Vietnamese hospitality. After countless trips to the region, we realized there was no comprehensive guide that truly captured the magic of this hidden gem.
+                  ĐiĐiVui began as a passion project by a group of international kitesurfers who fell in love with Phan Rang's pristine beaches, consistent winds, and incredible Vietnamese hospitality. After countless trips to the region, we realized there was no comprehensive guide that truly captured the magic of this hidden gem.
                 </p>
                 <p>
                   What started as a simple map of kitesurfing spots has evolved into Vietnam's most comprehensive travel platform for Phan Rang. We've partnered with local businesses, cultural experts, and adventure guides to create an authentic, insider's perspective on this remarkable destination.

@@ -123,6 +123,11 @@ Changelog:
   - Changed primary color theme from Chilli Red to Tropical Aqua throughout entire site
   - Updated 'Stay' category to 'Accommodation' in database
   - Modified all buttons, links, and UI elements to use tropical aqua color scheme
+- June 19, 2025. Updated site branding and location references
+  - Changed site branding to "ĐiĐiVui" in tropical aqua color with "Phan Rang Travel Hub" subtitle
+  - Updated all location references from "Ninh Thuan" to "Phan Rang" throughout the site
+  - Applied consistent branding across navigation, footer, about page, and HTML meta tags
+  - Maintained aqua color scheme for all brand elements
 ```
 
 ## User Preferences
