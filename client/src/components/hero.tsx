@@ -45,7 +45,7 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg"
-              className="bg-chili-red hover:bg-red-600 text-white px-8 py-3 text-lg"
+              className="bg-tropical-aqua hover:bg-tropical-aqua/90 text-white px-8 py-3 text-lg"
               onClick={() => window.location.href = '/explore'}
             >
               Start Exploring

@@ -174,7 +174,7 @@ export default function Contact() {
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full bg-chili-red hover:bg-red-600 text-white py-3"
+                      className="w-full bg-tropical-aqua hover:bg-tropical-aqua/90 text-white py-3"
                     >
                       {isSubmitting ? (
                         <div className="flex items-center">
