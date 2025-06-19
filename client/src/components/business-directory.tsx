@@ -90,7 +90,7 @@ export function BusinessDirectory({
             size="sm"
             onClick={() => onCategoryChange(null)}
             className={`h-6 px-2 text-xs whitespace-nowrap flex-shrink-0 min-w-fit ${
-              selectedCategory === null ? "bg-chili-red hover:bg-red-600 text-white" : ""
+              selectedCategory === null ? "bg-tropical-aqua hover:bg-tropical-aqua/90 text-white" : ""
             }`}
           >
             All
@@ -102,7 +102,7 @@ export function BusinessDirectory({
               size="sm"
               onClick={() => onCategoryChange(category.id)}
               className={`h-6 px-2 text-xs whitespace-nowrap flex-shrink-0 min-w-fit ${
-                selectedCategory === category.id ? "bg-chili-red hover:bg-red-600 text-white" : ""
+                selectedCategory === category.id ? "bg-tropical-aqua hover:bg-tropical-aqua/90 text-white" : ""
               }`}
             >
               {category.name}
