@@ -97,7 +97,7 @@ export default function Landing() {
                 </div>
               </div>
             </div>
-            <div className="group cursor-pointer" onClick={() => window.location.href = '/explore?category=accommodation'}>
+            <div className="group cursor-pointer" onClick={() => window.location.href = '/explore?category=stay'}>
               <div 
                 className="relative h-48 bg-cover bg-center rounded-xl overflow-hidden mb-4"
                 style={{
