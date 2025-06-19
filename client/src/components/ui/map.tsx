@@ -17,72 +17,35 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const animationTimersRef = useRef<Map<number, NodeJS.Timeout>>(new Map());
 
-  // Animation function for marker hover effects
+  // Animation function for marker hover effects  
   const animateMarkerHover = useCallback((marker: google.maps.Marker, categorySlug: string, isHovering: boolean) => {
     if (!marker) return;
     
-    const businessId = (marker as any).businessId;
-    
-    // Clear any existing animation for this marker
-    if (businessId && animationTimersRef.current.has(businessId)) {
-      clearTimeout(animationTimersRef.current.get(businessId));
-      animationTimersRef.current.delete(businessId);
-    }
-
     if (isHovering) {
-      // Hover in: Scale up with bounce animation
-      const scaleSteps = [1.0, 1.2, 1.4, 1.6, 1.5, 1.4, 1.45, 1.4]; // Bounce effect
-      let stepIndex = 0;
+      // Hover in: Scale up with bounce effect
+      marker.setAnimation(google.maps.Animation.BOUNCE);
       
-      const animateStep = () => {
-        if (stepIndex < scaleSteps.length) {
-          const scale = scaleSteps[stepIndex];
-          const size = Math.round(36 * scale);
-          const anchor = Math.round(size / 2);
-          
-          marker.setIcon({
-            url: createCustomMarkerIcon(categorySlug, size, true), // Pass hover state
-            scaledSize: new google.maps.Size(size, size),
-            anchor: new google.maps.Point(anchor, anchor),
-          });
-          
-          stepIndex++;
-          const timer = setTimeout(animateStep, 50);
-          if (businessId) {
-            animationTimersRef.current.set(businessId, timer);
-          }
-        }
-      };
+      // Set larger, glowing icon
+      marker.setIcon({
+        url: createCustomMarkerIcon(categorySlug, 50, true),
+        scaledSize: new google.maps.Size(50, 50),
+        anchor: new google.maps.Point(25, 25),
+      });
       
-      animateStep();
+      // Stop bounce after animation
+      setTimeout(() => {
+        marker.setAnimation(null);
+      }, 700);
+      
     } else {
-      // Hover out: Scale down smoothly
-      const scaleSteps = [1.4, 1.2, 1.1, 1.0]; // Smooth scale down
-      let stepIndex = 0;
-      
-      const animateStep = () => {
-        if (stepIndex < scaleSteps.length) {
-          const scale = scaleSteps[stepIndex];
-          const size = Math.round(36 * scale);
-          const anchor = Math.round(size / 2);
-          
-          marker.setIcon({
-            url: createCustomMarkerIcon(categorySlug, size, false), // Normal state
-            scaledSize: new google.maps.Size(size, size),
-            anchor: new google.maps.Point(anchor, anchor),
-          });
-          
-          stepIndex++;
-          const timer = setTimeout(animateStep, 60);
-          if (businessId) {
-            animationTimersRef.current.set(businessId, timer);
-          }
-        }
-      };
-      
-      animateStep();
+      // Hover out: Return to normal size
+      marker.setAnimation(null);
+      marker.setIcon({
+        url: createCustomMarkerIcon(categorySlug, 36, false),
+        scaledSize: new google.maps.Size(36, 36),
+        anchor: new google.maps.Point(18, 18),
+      });
     }
   }, []);
 
@@ -314,7 +277,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
 }
 
 // Render function for Google Maps wrapper
-const render = (status: Status) => {
+const render = (status: Status): React.ReactElement => {
   switch (status) {
     case Status.LOADING:
       return (
@@ -335,7 +298,13 @@ const render = (status: Status) => {
         </div>
       );
     default:
-      return null;
+      return (
+        <div className="h-full w-full flex items-center justify-center bg-gray-100">
+          <div className="text-center">
+            <p className="text-sm text-gray-600">Initializing map...</p>
+          </div>
+        </div>
+      );
   }
 };
 
