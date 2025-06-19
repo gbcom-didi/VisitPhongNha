@@ -118,6 +118,11 @@ Changelog:
   - Business cards and modals now display high-quality category-appropriate images
   - Database schema already included imageUrl field with proper fallback handling
   - Images sourced from Unsplash for authentic, professional appearance
+- June 19, 2025. Updated map icons and color theme
+  - Redesigned map pin icons to match category types (surf=waves, recreation=hiking, kiting=kitesurfing)
+  - Changed primary color theme from Chilli Red to Tropical Aqua throughout entire site
+  - Updated 'Stay' category to 'Accommodation' in database
+  - Modified all buttons, links, and UI elements to use tropical aqua color scheme
 ```
 
 ## User Preferences
