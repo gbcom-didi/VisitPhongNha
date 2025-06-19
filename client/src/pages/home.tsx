@@ -51,10 +51,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8 mb-12">
             <div className="text-center p-6 bg-gray-50 rounded-xl">
-              <div 
-                className="w-16 h-16 bg-tropical-aqua rounded-full flex items-center justify-center mx-auto mb-4 cursor-pointer hover:bg-cyan-600 transition-colors"
-                onClick={() => window.location.href = '/explore'}
-              >
+              <div className="w-16 h-16 bg-tropical-aqua rounded-full flex items-center justify-center mx-auto mb-4">
                 <Map className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Explore Places</h3>
