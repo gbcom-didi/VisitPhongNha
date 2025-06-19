@@ -35,8 +35,8 @@ export function Navigation() {
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex-shrink-0">
               <div>
-                <h1 className="text-2xl font-bold text-chili-red font-questrial">ĐiĐiVui</h1>
-                <p className="text-xs text-gray-500">Ninh Thuan Travel Hub</p>
+                <h1 className="text-2xl font-bold text-tropical-aqua font-questrial">ĐiĐiVui</h1>
+                <p className="text-xs text-gray-500">Phan Rang Travel Hub</p>
               </div>
             </Link>
           </div>

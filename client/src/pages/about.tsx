@@ -78,10 +78,10 @@ export default function About() {
                   ĐiĐiVui began as a passion project by a group of international kitesurfers who fell in love with Ninh Thuan's pristine beaches, consistent winds, and incredible Vietnamese hospitality. After countless trips to the region, we realized there was no comprehensive guide that truly captured the magic of this hidden gem.
                 </p>
                 <p>
-                  What started as a simple map of kitesurfing spots has evolved into Vietnam's most comprehensive travel platform for Ninh Thuan. We've partnered with local businesses, cultural experts, and adventure guides to create an authentic, insider's perspective on this remarkable destination.
+                  What started as a simple map of kitesurfing spots has evolved into Vietnam's most comprehensive travel platform for Phan Rang. We've partnered with local businesses, cultural experts, and adventure guides to create an authentic, insider's perspective on this remarkable destination.
                 </p>
                 <p>
-                  Today, ĐiĐiVui serves thousands of travelers annually, helping them discover not just the world-class kitesurfing, but also the rich Cham culture, delicious local cuisine, and stunning natural landscapes that make Ninh Thuan truly special.
+                  Today, ĐiĐiVui serves thousands of travelers annually, helping them discover not just the world-class kitesurfing, but also the rich Cham culture, delicious local cuisine, and stunning natural landscapes that make Phan Rang truly special.
                 </p>
               </div>
             </div>
@@ -109,7 +109,7 @@ export default function About() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-chili-red rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-tropical-aqua rounded-full flex items-center justify-center mx-auto mb-4">
                 <Heart className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-3">Authentic Experiences</h3>

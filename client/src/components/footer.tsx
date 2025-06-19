@@ -8,9 +8,10 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div className="md:col-span-2">
-            <h4 className="text-2xl font-bold text-chili-red mb-4 font-questrial">ĐiĐiVui</h4>
+            <h4 className="text-2xl font-bold text-tropical-aqua mb-4 font-questrial">ĐiĐiVui</h4>
+            <p className="text-xs text-gray-400 mb-2">Phan Rang Travel Hub</p>
             <p className="text-gray-300 mb-4 leading-relaxed">
-              Your ultimate guide to Ninh Thuan's kitesurfing paradise and Vietnamese culture. 
+              Your ultimate guide to Phan Rang's kitesurfing paradise and Vietnamese culture. 
               Discover, explore, and experience the best of Vietnam's hidden gems.
             </p>
             <div className="flex space-x-4">
