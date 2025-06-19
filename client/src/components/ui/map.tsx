@@ -17,6 +17,74 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const animationTimersRef = useRef<Map<number, NodeJS.Timeout>>(new Map());
+
+  // Animation function for marker hover effects
+  const animateMarkerHover = useCallback((marker: google.maps.Marker, categorySlug: string, isHovering: boolean) => {
+    if (!marker) return;
+    
+    const businessId = (marker as any).businessId;
+    
+    // Clear any existing animation for this marker
+    if (businessId && animationTimersRef.current.has(businessId)) {
+      clearTimeout(animationTimersRef.current.get(businessId));
+      animationTimersRef.current.delete(businessId);
+    }
+
+    if (isHovering) {
+      // Hover in: Scale up with bounce animation
+      const scaleSteps = [1.0, 1.2, 1.4, 1.6, 1.5, 1.4, 1.45, 1.4]; // Bounce effect
+      let stepIndex = 0;
+      
+      const animateStep = () => {
+        if (stepIndex < scaleSteps.length) {
+          const scale = scaleSteps[stepIndex];
+          const size = Math.round(36 * scale);
+          const anchor = Math.round(size / 2);
+          
+          marker.setIcon({
+            url: createCustomMarkerIcon(categorySlug, size, true), // Pass hover state
+            scaledSize: new google.maps.Size(size, size),
+            anchor: new google.maps.Point(anchor, anchor),
+          });
+          
+          stepIndex++;
+          const timer = setTimeout(animateStep, 50);
+          if (businessId) {
+            animationTimersRef.current.set(businessId, timer);
+          }
+        }
+      };
+      
+      animateStep();
+    } else {
+      // Hover out: Scale down smoothly
+      const scaleSteps = [1.4, 1.2, 1.1, 1.0]; // Smooth scale down
+      let stepIndex = 0;
+      
+      const animateStep = () => {
+        if (stepIndex < scaleSteps.length) {
+          const scale = scaleSteps[stepIndex];
+          const size = Math.round(36 * scale);
+          const anchor = Math.round(size / 2);
+          
+          marker.setIcon({
+            url: createCustomMarkerIcon(categorySlug, size, false), // Normal state
+            scaledSize: new google.maps.Size(size, size),
+            anchor: new google.maps.Point(anchor, anchor),
+          });
+          
+          stepIndex++;
+          const timer = setTimeout(animateStep, 60);
+          if (businessId) {
+            animationTimersRef.current.set(businessId, timer);
+          }
+        }
+      };
+      
+      animateStep();
+    }
+  }, []);
 
   const initializeMap = useCallback(() => {
     if (!mapContainerRef.current || !window.google) return;
@@ -56,7 +124,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
     markersRef.current.forEach(marker => marker.setMap(null));
     markersRef.current = [];
 
-    // Add new markers
+    // Add new markers with animation support
     businesses.forEach((business) => {
       if (!business.latitude || !business.longitude) return;
 
@@ -77,7 +145,11 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
           scaledSize: new google.maps.Size(36, 36),
           anchor: new google.maps.Point(18, 18),
         },
+        animation: google.maps.Animation.DROP, // Initial drop animation
       });
+
+      // Store business reference for hover effects
+      (marker as any).businessId = business.id;
 
       // Create info window
       const infoWindow = new google.maps.InfoWindow({
@@ -94,6 +166,15 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       marker.addListener('click', () => {
         onBusinessClick?.(business);
         infoWindow.open(mapRef.current, marker);
+      });
+
+      // Add hover listeners for animations
+      marker.addListener('mouseover', () => {
+        animateMarkerHover(marker, categorySlug, true);
+      });
+
+      marker.addListener('mouseout', () => {
+        animateMarkerHover(marker, categorySlug, false);
       });
 
       markersRef.current.push(marker);

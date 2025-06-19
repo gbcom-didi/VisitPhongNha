@@ -64,19 +64,54 @@ export const getCategoryIconPath = (categorySlug: string): string => {
   return iconPaths[categorySlug] || 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z';
 };
 
-export const createCustomMarkerIcon = (categorySlug: string, size: number = 40): string => {
+export const createCustomMarkerIcon = (categorySlug: string, size: number = 40, isHovered: boolean = false): string => {
   const color = getCategoryColor(categorySlug);
   const iconPath = getCategoryIconPath(categorySlug);
 
-  // Create SVG marker with circular background and vector icon
+  // Enhanced colors and effects for hover state
+  const fillColor = isHovered ? color : color;
+  const strokeColor = isHovered ? '#ffdd00' : '#ffffff';
+  const strokeWidth = isHovered ? '3' : '2';
+  const shadowOpacity = isHovered ? '0.4' : '0.2';
+  const shadowOffset = isHovered ? '4' : '2';
+
+  // Create SVG marker with circular background, vector icon, and drop shadow
   const svg = `
     <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="${size/2}" cy="${size/2}" r="${(size-4)/2}" fill="${color}" stroke="#ffffff" stroke-width="2"/>
+      <defs>
+        <filter id="shadow-${categorySlug}-${size}" x="-50%" y="-50%" width="200%" height="200%">
+          <feDropShadow dx="0" dy="${shadowOffset}" stdDeviation="${shadowOffset}" flood-opacity="${shadowOpacity}"/>
+        </filter>
+        ${isHovered ? `
+        <filter id="glow-${categorySlug}-${size}" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+          <feMerge> 
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        ` : ''}
+      </defs>
+      <circle cx="${size/2}" cy="${size/2}" r="${(size-4)/2}" 
+              fill="${fillColor}" 
+              stroke="${strokeColor}" 
+              stroke-width="${strokeWidth}"
+              filter="url(#shadow-${categorySlug}-${size})${isHovered ? ` url(#glow-${categorySlug}-${size})` : ''}"
+              ${isHovered ? `style="animation: pulse 1.5s ease-in-out infinite alternate;"` : ''}/>
       <g transform="translate(${size * 0.25}, ${size * 0.25}) scale(${size * 0.02})">
-        <path d="${iconPath}" fill="white"/>
+        <path d="${iconPath}" fill="white" ${isHovered ? `filter="url(#glow-${categorySlug}-${size})"` : ''}/>
       </g>
+      ${isHovered ? `
+      <style>
+        @keyframes pulse {
+          0% { transform: scale(1); }
+          100% { transform: scale(1.05); }
+        }
+      </style>
+      ` : ''}
     </svg>
   `;
 
+  // Convert SVG to data URL
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 };
