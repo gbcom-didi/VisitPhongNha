@@ -15,7 +15,7 @@
   --card-foreground: hsl(20, 14.3%, 4.1%);
   --border: hsl(20, 5.9%, 90%);
   --input: hsl(20, 5.9%, 90%);
-  --primary: hsl(181, 59%, 49%);
+  --primary: hsl(207, 90%, 54%);
   --primary-foreground: hsl(211, 100%, 99%);
   --secondary: hsl(60, 4.8%, 95.9%);
   --secondary-foreground: hsl(24, 9.8%, 10%);
@@ -25,7 +25,7 @@
   --destructive-foreground: hsl(60, 9.1%, 97.8%);
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
-
+  
   /* Brand colors */
   --chili-red: hsl(6, 70%, 52%);
   --peach-blush: hsl(13, 85%, 83%);
@@ -57,7 +57,7 @@
   --card-foreground: hsl(0, 0%, 98%);
   --border: hsl(240, 3.7%, 15.9%);
   --input: hsl(240, 3.7%, 15.9%);
-  --primary: hsl(181, 59%, 49%);
+  --primary: hsl(207, 90%, 54%);
   --primary-foreground: hsl(211, 100%, 99%);
   --secondary: hsl(240, 3.7%, 15.9%);
   --secondary-foreground: hsl(0, 0%, 98%);
@@ -84,91 +84,91 @@
   .text-chili-red {
     color: var(--chili-red);
   }
-
+  
   .text-peach-blush {
     color: var(--peach-blush);
   }
-
+  
   .text-soft-clay {
     color: var(--soft-clay);
   }
-
+  
   .text-sea-blue {
     color: var(--sea-blue);
   }
-
+  
   .text-tropical-aqua {
     color: var(--tropical-aqua);
   }
-
+  
   .text-coastal-mist {
     color: var(--coastal-mist);
   }
-
+  
   .bg-chili-red {
     background-color: var(--chili-red);
   }
-
+  
   .bg-peach-blush {
     background-color: var(--peach-blush);
   }
-
+  
   .bg-soft-clay {
     background-color: var(--soft-clay);
   }
-
+  
   .bg-sea-blue {
     background-color: var(--sea-blue);
   }
-
+  
   .bg-tropical-aqua {
     background-color: var(--tropical-aqua);
   }
-
+  
   .bg-coastal-mist {
     background-color: var(--coastal-mist);
   }
-
+  
   .border-chili-red {
     border-color: var(--chili-red);
   }
-
+  
   .border-peach-blush {
     border-color: var(--peach-blush);
   }
-
+  
   .border-soft-clay {
     border-color: var(--soft-clay);
   }
-
+  
   .border-sea-blue {
     border-color: var(--sea-blue);
   }
-
+  
   .border-tropical-aqua {
     border-color: var(--tropical-aqua);
   }
-
+  
   .border-coastal-mist {
     border-color: var(--coastal-mist);
   }
-
+  
   .hover\:bg-chili-red:hover {
     background-color: var(--chili-red);
   }
-
+  
   .hover\:bg-sea-blue:hover {
     background-color: var(--sea-blue);
   }
-
+  
   .hover\:bg-tropical-aqua:hover {
     background-color: var(--tropical-aqua);
   }
-
+  
   .hover\:text-chili-red:hover {
     color: var(--chili-red);
   }
-
+  
   .font-questrial {
     font-family: 'Questrial', sans-serif;
   }
