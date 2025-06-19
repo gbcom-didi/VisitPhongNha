@@ -6,10 +6,12 @@ import { useToast } from '@/hooks/use-toast';
 import { Hero } from '@/components/hero';
 import { Button } from '@/components/ui/button';
 import { Heart, Map, TrendingUp } from 'lucide-react';
+import { useLocation } from 'wouter';
 
 export default function Home() {
   const { user, isLoading } = useAuth();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     if (!isLoading && user) {
@@ -53,7 +55,7 @@ export default function Home() {
             <div className="text-center p-6 bg-gray-50 rounded-xl">
               <div 
                 className="w-16 h-16 bg-tropical-aqua rounded-full flex items-center justify-center mx-auto mb-4 cursor-pointer hover:bg-cyan-600 transition-colors"
-                onClick={() => window.location.href = '/explore'}
+                onClick={() => setLocation('/explore')}
               >
                 <Map className="w-8 h-8 text-white" />
               </div>
@@ -63,7 +65,7 @@ export default function Home() {
               </p>
               <Button 
                 className="bg-tropical-aqua hover:bg-cyan-600 text-white"
-                onClick={() => window.location.href = '/explore'}
+                onClick={() => setLocation('/explore')}
               >
                 Start Exploring
               </Button>
@@ -80,7 +82,7 @@ export default function Home() {
               <Button 
                 variant="outline"
                 className="border-chili-red text-chili-red hover:bg-chili-red hover:text-white"
-                onClick={() => window.location.href = '/explore'}
+                onClick={() => setLocation('/explore')}
               >
                 Find Places to Save
               </Button>
@@ -97,7 +99,7 @@ export default function Home() {
               <Button 
                 variant="outline"
                 className="border-sea-blue text-sea-blue hover:bg-sea-blue hover:text-white"
-                onClick={() => window.location.href = '/getting-here'}
+                onClick={() => setLocation('/getting-here')}
               >
                 Plan Your Trip
               </Button>
@@ -117,7 +119,7 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-6">
             <div 
               className="group cursor-pointer bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
-              onClick={() => window.location.href = '/explore?category=kiting'}
+              onClick={() => setLocation('/explore?category=kiting')}
             >
               <div className="flex items-center mb-4">
                 <div 
@@ -138,7 +140,7 @@ export default function Home() {
 
             <div 
               className="group cursor-pointer bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
-              onClick={() => window.location.href = '/explore?category=food-drink'}
+              onClick={() => setLocation('/explore?category=food-drink')}
             >
               <div className="flex items-center mb-4">
                 <div 
