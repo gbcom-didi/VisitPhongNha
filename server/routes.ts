@@ -52,14 +52,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user?.claims?.sub;
       const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
-      
+
       let businesses;
       if (categoryId) {
         businesses = await storage.getBusinessesByCategory(categoryId);
       } else {
         businesses = await storage.getBusinessesWithUserLikes(userId);
       }
-      
+
       res.json(businesses);
     } catch (error) {
       console.error("Error fetching businesses:", error);
@@ -129,7 +129,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Clear all existing businesses
       await storage.clearAllBusinesses();
-      
+
       res.json({ message: "Data reset successfully" });
     } catch (error) {
       console.error("Error resetting data:", error);
@@ -142,7 +142,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Create categories
       const categoriesData = [
-        { name: "Stay", slug: "stay", color: "#DDB097", icon: "bed" },
+        { name: "Accommodation", slug: "accommodation", color: "#DDB097", icon: "bed" },
         { name: "Food & Drink", slug: "food-drink", color: "#F7BAAD", icon: "utensils" },
         { name: "Kiting", slug: "kiting", color: "#3FC1C4", icon: "wind" },
         { name: "Surf", slug: "surf", color: "#35949B", icon: "waves" },
@@ -208,9 +208,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         { name: "Quang Hanh Seafood Restaurant", longitude: "109.14582943558244", latitude: "11.609608802765214", category: "food-drink" },
         { name: "Supermarket My Hoa", longitude: "109.14580080674735", latitude: "11.609490858914706", category: "supermarket" },
         { name: "Thanh Hoa Spa & Massage", longitude: "109.14505174907715", latitude: "11.605285261608342", category: "massage" },
-        { name: "Hoàng Sáng Residence & Restaurant", longitude: "109.14495518956126", latitude: "11.6071664563042", category: "stay" },
+        { name: "Hoàng Sáng Residence & Restaurant", longitude: "109.14495518956126", latitude: "11.6071664563042", category: "accommodation" },
         { name: "Com Restaurant", longitude: "109.14840539562361", latitude: "11.617250037323663", category: "food-drink" },
-        { name: "Farobe - Farmstay & Homestay", longitude: "109.14671994559635", latitude: "11.611912978543582", category: "stay" },
+        { name: "Farobe - Farmstay & Homestay", longitude: "109.14671994559635", latitude: "11.611912978543582", category: "accommodation" },
         { name: "Bánh xèo cô Luỹ", longitude: "109.11173238018986", latitude: "11.586167219121084", category: "food-drink" },
         { name: "Siêu thị Bách hoá XANH Nhơn Hải", longitude: "109.11243973954154", latitude: "11.588450691379888", category: "supermarket" },
         { name: "Hospital of Ninh Hai District", longitude: "109.0295103887739", latitude: "11.598916185548248", category: "medical" },
@@ -231,16 +231,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         { name: "Vịnh Vĩnh Hy", longitude: "109.19663654896006", latitude: "11.725978025751777", category: "attractions" },
         { name: "Khu du lịch Hang Rái", longitude: "109.1827376151634", latitude: "11.678165496573625", category: "attractions" },
         { name: "Hồ Đá Hang", longitude: "109.16376388534367", latitude: "11.689800966904574", category: "attractions" },
-        { name: "Amanoi", longitude: "109.1976847957338", latitude: "11.709837045045854", category: "stay" },
+        { name: "Amanoi", longitude: "109.1976847957338", latitude: "11.709837045045854", category: "accommodation" },
         { name: "Bãi tắm Hòn Rùa", longitude: "109.22075421600371", latitude: "11.716869956167146", category: "attractions" },
         { name: "Bãi biển Bình Tiên", longitude: "109.18503012285544", latitude: "11.80177473447905", category: "surf" },
         { name: "ANARA Binh Tien Golf Club", longitude: "109.17903711197583", latitude: "11.802903447069856", category: "attractions" },
         { name: "Binh Lap", longitude: "109.1729761411355", latitude: "11.85096635323411", category: "attractions" },
-        { name: "Tropixblue Guesthouse", longitude: "109.17362049927166", latitude: "11.665360718681976", category: "stay" },
+        { name: "Tropixblue Guesthouse", longitude: "109.17362049927166", latitude: "11.665360718681976", category: "accommodation" },
         { name: "Thái An", longitude: "109.1714127513966", latitude: "11.662841953976537", category: "attractions" },
         { name: "Vườn Nho Thái Đạt", longitude: "109.15968477003852", latitude: "11.654418870955856", category: "attractions" },
         { name: "Công viên stone", longitude: "109.16571543322603", latitude: "11.625042206202346", category: "recreation" },
-        { name: "Color Inn", longitude: "109.14817137791222", latitude: "11.61414969263561", category: "stay" },
+        { name: "Color Inn", longitude: "109.14817137791222", latitude: "11.61414969263561", category: "accommodation" },
         { name: "MyHoa Lagoon - Kiting Town", longitude: "109.14634747562955", latitude: "11.608411627264813", category: "kiting" },
         { name: "Phan Rang Kite Center", longitude: "109.14642087584058", latitude: "11.605324725762694", category: "kiting" },
         { name: "OzFarm-Kiteboarding School", longitude: "109.14567214191531", latitude: "11.603593017195797", category: "kiting" },
@@ -248,7 +248,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         { name: "PHONG GYM MỸ TƯỜNG", longitude: "109.11039284819316", latitude: "11.588982291748032", category: "gym" },
         { name: "Quán ăn hải sản Mỹ Nhân Ngư", longitude: "109.12844139753118", latitude: "11.579622833264818", category: "food-drink" },
         { name: "Bến Tàu Cá Mỹ Tân (PIER)", longitude: "109.13352593086559", latitude: "11.58173668249799", category: "attractions" },
-        { name: "Nomad Homestay", longitude: "109.12991492393363", latitude: "11.580856015240307", category: "stay" },
+        { name: "Nomad Homestay", longitude: "109.12991492393363", latitude: "11.580856015240307", category: "accommodation" },
         { name: "Bờ kè Ninh Hải", longitude: "109.06058569969743", latitude: "11.583225679894348", category: "attractions" },
         { name: "Mirro Salt Lake", longitude: "109.06011549994085", latitude: "11.58477276996619", category: "attractions" },
         { name: "Jo Garden Coffee", longitude: "109.050042711024", latitude: "11.59575152452612", category: "food-drink" },
@@ -274,7 +274,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           try {
             const categoryId = categoryMap[biz.category];
             if (!categoryId) return null;
-            
+
             return await storage.createBusiness({
               name: biz.name,
               latitude: biz.latitude,
