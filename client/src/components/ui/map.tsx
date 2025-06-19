@@ -18,37 +18,6 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
   const markersRef = useRef<google.maps.Marker[]>([]);
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
-  // Animation function for marker hover effects  
-  const animateMarkerHover = useCallback((marker: google.maps.Marker, categorySlug: string, isHovering: boolean) => {
-    if (!marker) return;
-    
-    if (isHovering) {
-      // Hover in: Scale up with bounce effect
-      marker.setAnimation(google.maps.Animation.BOUNCE);
-      
-      // Set larger, glowing icon
-      marker.setIcon({
-        url: createCustomMarkerIcon(categorySlug, 50, true),
-        scaledSize: new google.maps.Size(50, 50),
-        anchor: new google.maps.Point(25, 25),
-      });
-      
-      // Stop bounce after animation
-      setTimeout(() => {
-        marker.setAnimation(null);
-      }, 700);
-      
-    } else {
-      // Hover out: Return to normal size
-      marker.setAnimation(null);
-      marker.setIcon({
-        url: createCustomMarkerIcon(categorySlug, 36, false),
-        scaledSize: new google.maps.Size(36, 36),
-        anchor: new google.maps.Point(18, 18),
-      });
-    }
-  }, []);
-
   const initializeMap = useCallback(() => {
     if (!mapContainerRef.current || !window.google) return;
 
@@ -87,7 +56,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
     markersRef.current.forEach(marker => marker.setMap(null));
     markersRef.current = [];
 
-    // Add new markers with animation support
+    // Add new markers
     businesses.forEach((business) => {
       if (!business.latitude || !business.longitude) return;
 
@@ -108,11 +77,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
           scaledSize: new google.maps.Size(36, 36),
           anchor: new google.maps.Point(18, 18),
         },
-        animation: google.maps.Animation.DROP, // Initial drop animation
       });
-
-      // Store business reference for hover effects
-      (marker as any).businessId = business.id;
 
       // Create info window
       const infoWindow = new google.maps.InfoWindow({
@@ -129,15 +94,6 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       marker.addListener('click', () => {
         onBusinessClick?.(business);
         infoWindow.open(mapRef.current, marker);
-      });
-
-      // Add hover listeners for animations
-      marker.addListener('mouseover', () => {
-        animateMarkerHover(marker, categorySlug, true);
-      });
-
-      marker.addListener('mouseout', () => {
-        animateMarkerHover(marker, categorySlug, false);
       });
 
       markersRef.current.push(marker);
@@ -277,7 +233,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
 }
 
 // Render function for Google Maps wrapper
-const render = (status: Status): React.ReactElement => {
+const render = (status: Status) => {
   switch (status) {
     case Status.LOADING:
       return (
@@ -298,13 +254,7 @@ const render = (status: Status): React.ReactElement => {
         </div>
       );
     default:
-      return (
-        <div className="h-full w-full flex items-center justify-center bg-gray-100">
-          <div className="text-center">
-            <p className="text-sm text-gray-600">Initializing map...</p>
-          </div>
-        </div>
-      );
+      return null;
   }
 };
 
