@@ -67,7 +67,7 @@ export default function Home() {
             </div>
 
             <div className="text-center p-6 bg-gray-50 rounded-xl">
-              <div className="w-16 h-16 bg-chili-red rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-tropical-aqua rounded-full flex items-center justify-center mx-auto mb-4">
                 <Heart className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Save Favorites</h3>
@@ -76,7 +76,7 @@ export default function Home() {
               </p>
               <Button 
                 variant="outline"
-                className="border-chili-red text-chili-red hover:bg-chili-red hover:text-white"
+                className="border-tropical-aqua text-tropical-aqua hover:bg-tropical-aqua hover:text-white"
                 onClick={() => window.location.href = '/explore'}
               >
                 Find Places to Save

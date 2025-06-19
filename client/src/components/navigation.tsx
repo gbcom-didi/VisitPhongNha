@@ -46,8 +46,8 @@ export function Navigation() {
             {navigationLinks.map(({ href, label }) => (
               <Link key={href} href={href} className={`transition-colors ${
                 isActiveLink(href)
-                  ? 'text-chili-red font-medium'
-                  : 'text-gray-700 hover:text-chili-red'
+                  ? 'text-tropical-aqua font-medium'
+                  : 'text-gray-700 hover:text-tropical-aqua'
               }`}>
                 {label}
               </Link>
@@ -57,7 +57,7 @@ export function Navigation() {
           {/* User Actions */}
           <div className="flex items-center space-x-3">
             {isAuthenticated && (
-              <Button variant="ghost" size="sm" className="hidden md:flex text-gray-700 hover:text-chili-red">
+              <Button variant="ghost" size="sm" className="hidden md:flex text-gray-700 hover:text-tropical-aqua">
                 <Heart className="w-5 h-5" />
               </Button>
             )}
@@ -81,7 +81,7 @@ export function Navigation() {
               </div>
             ) : (
               <Button 
-                className="bg-chili-red text-white hover:bg-red-600"
+                className="bg-tropical-aqua text-white hover:bg-tropical-aqua/90"
                 onClick={() => window.location.href = '/api/login'}
               >
                 Sign In
@@ -114,8 +114,8 @@ export function Navigation() {
                   href={href}
                   className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
                     isActiveLink(href)
-                      ? 'text-chili-red bg-red-50'
-                      : 'text-gray-700 hover:text-chili-red hover:bg-gray-50'
+                      ? 'text-tropical-aqua bg-teal-50'
+                      : 'text-gray-700 hover:text-tropical-aqua hover:bg-gray-50'
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >

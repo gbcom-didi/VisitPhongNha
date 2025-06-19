@@ -155,7 +155,7 @@ export default function About() {
             <Card className="p-6">
               <CardContent className="p-0">
                 <div className="flex items-center mb-4">
-                  <Map className="w-8 h-8 text-chili-red mr-3" />
+                  <Map className="w-8 h-8 text-tropical-aqua mr-3" />
                   <h3 className="text-xl font-semibold">Expanding Coverage</h3>
                 </div>
                 <p className="text-gray-600">
