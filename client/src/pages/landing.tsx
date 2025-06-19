@@ -16,12 +16,11 @@ export default function Landing() {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       <Hero />
-
       {/* How It Works Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">How ĐiĐiVui Works</h3>
+            <h3 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">How ĐiĐi VUi Works</h3>
             <p className="text-gray-600 max-w-2xl mx-auto">
               Discover, save, and experience the best of Phan Rang with our interactive travel platform 
               designed for adventurers and culture seekers. Soon you'll be able to chat with ĐiĐi! Our intelligent, AI-powered travel assistant to help you explore, plan, and personalise your next adventure.
@@ -58,7 +57,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* Featured Categories Section */}
       <section id="explore" className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -138,7 +136,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* Getting Here Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -198,7 +195,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       <Footer />
     </div>
   );
