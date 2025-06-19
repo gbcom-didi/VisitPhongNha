@@ -43,7 +43,7 @@ export const getCategoryIconPath = (categorySlug: string): string => {
   const iconPaths: Record<string, string> = {
     'stay': 'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z', // Building icon
     'food-drink': 'M8.1 13.34l2.83-2.83L3.91 3.5c-1.56 1.56-1.56 4.09 0 5.66l4.19 4.18zm6.78-1.81c1.53.71 3.68.21 5.27-1.38 1.91-1.91 2.28-4.65.81-6.12-1.46-1.46-4.2-1.1-6.12.81-1.59 1.59-2.09 3.74-1.38 5.27L3.7 19.87l1.41 1.41L12 14.41l6.88 6.88 1.41-1.41L13.41 13l1.47-1.47z', // Knife and fork
-    'kiting': 'M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zM8 8h8l-1 2h-6L8 8zm4 4c-.6 0-1 .4-1 1v3l-2 1v1h6v-1l-2-1v-3c0-.6-.4-1-1-1zM4 18c2-1 4-1 6 0s4 1 6 0 4-1 6 0', // Kitesurfing person with control bar over waves
+    'kiting': 'M12 2l-4 6h2l-2 4 8-6h-2l2-4zM10 14l1-2 2 2-1 2-2-2zm6 4l-2-2 2-2 2 2-2 2z', // Diamond kite with tail streamers
     'surf': 'M2 14c2-1 4-1 6 0s4 1 6 0 4-1 6 0 4 1 6 0M2 18c2-1 4-1 6 0s4 1 6 0 4-1 6 0 4 1 6 0', // Wave pattern
     'things-to-do': 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z', // Star
     'atm': 'M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm-1 14H5v-8h14v8z', // Credit card
