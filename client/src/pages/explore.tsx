@@ -237,7 +237,7 @@ export default function Explore() {
               <Link key={href} href={href}>
                 <div className={`w-12 h-12 flex items-center justify-center rounded-md transition-colors cursor-pointer ${
                   isActiveLink(href) 
-                    ? 'bg-chili-red text-white' 
+                    ? 'bg-tropical-aqua text-white' 
                     : 'text-gray-700 hover:bg-gray-100'
                 }`} title={label}>
                   <Icon className="w-5 h-5" />
@@ -267,7 +267,7 @@ export default function Explore() {
               </button>
             ) : (
               <button 
-                className="w-12 h-12 flex items-center justify-center bg-chili-red text-white rounded-md hover:bg-red-600 transition-colors"
+                className="w-12 h-12 flex items-center justify-center bg-tropical-aqua text-white rounded-md hover:bg-tropical-aqua/90 transition-colors"
                 onClick={() => window.location.href = '/api/login'}
                 title="Sign In"
               >

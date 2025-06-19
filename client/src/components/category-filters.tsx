@@ -15,7 +15,7 @@ export function CategoryFilters({ categories, selectedCategory, onCategoryChange
           variant={selectedCategory === null ? "default" : "outline"}
           size="sm"
           onClick={() => onCategoryChange(null)}
-          className={`h-7 px-3 text-xs ${selectedCategory === null ? "bg-chili-red hover:bg-red-600" : ""}`}
+          className={`h-7 px-3 text-xs ${selectedCategory === null ? "bg-tropical-aqua hover:bg-tropical-aqua/90" : ""}`}
         >
           All
         </Button>
@@ -25,7 +25,7 @@ export function CategoryFilters({ categories, selectedCategory, onCategoryChange
             variant={selectedCategory === category.id ? "default" : "outline"}
             size="sm"
             onClick={() => onCategoryChange(category.id)}
-            className={`h-7 px-3 text-xs ${selectedCategory === category.id ? "bg-chili-red hover:bg-red-600" : ""}`}
+            className={`h-7 px-3 text-xs ${selectedCategory === category.id ? "bg-tropical-aqua hover:bg-tropical-aqua/90" : ""}`}
           >
             {category.name}
           </Button>
