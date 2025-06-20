@@ -88,13 +88,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/businesses', isAuthenticated, requireBusinessOwner, async (req: any, res) => {
+  app.post('/api/businesses', isAuthenticated, async (req: any, res) => {
     try {
       // Extract categoryIds from the request body and validate the rest with the schema
       const { categoryIds, ...businessFields } = req.body;
       const businessData = insertBusinessSchema.parse(businessFields);
       const userId = req.user.claims.sub;
       const userRole = req.user.role;
+      
+      // Permission check: Only business owners and admins can create businesses
+      if (userRole === 'viewer') {
+        return res.status(403).json({ message: "Viewers cannot create businesses" });
+      }
       
       // Business owners can only create businesses for themselves unless they're admin
       if (userRole === 'business_owner' && !businessData.ownerId) {
@@ -117,7 +122,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update business route
-  app.put('/api/businesses/:id', isAuthenticated, requireBusinessOwner, async (req: any, res) => {
+  app.put('/api/businesses/:id', isAuthenticated, async (req: any, res) => {
     try {
       const businessId = parseInt(req.params.id);
       const { categoryIds, ...businessFields } = req.body;
@@ -125,15 +130,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.claims.sub;
       const userRole = req.user.role;
       
-      // Check if business exists and user has permission to edit it
+      // Check if business exists
       const existingBusiness = await storage.getBusiness(businessId);
       if (!existingBusiness) {
         return res.status(404).json({ message: "Business not found" });
       }
       
-      // Business owners can only edit their own businesses unless they're admin
+      // Permission check: Admin can edit any business, business owners can only edit their own
       if (userRole === 'business_owner' && existingBusiness.ownerId !== userId) {
         return res.status(403).json({ message: "You can only edit your own businesses" });
+      } else if (userRole === 'viewer') {
+        return res.status(403).json({ message: "Viewers cannot edit businesses" });
       }
       
       // Include categoryIds in the business update
