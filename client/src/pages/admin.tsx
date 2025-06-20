@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { BusinessModal } from "@/components/business-modal";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Plus, Trash2, Save, Eye, X, Edit } from "lucide-react";
+import { Plus, Trash2, Save, Eye, X, Edit, Search } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { Category, Business, BusinessWithCategory } from "@shared/schema";
@@ -62,6 +62,7 @@ export default function Admin() {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
@@ -280,6 +281,10 @@ export default function Admin() {
     setIsBusinessModalOpen(false);
     setViewingBusiness(null);
   };
+
+  const filteredBusinesses = businesses.filter((business) =>
+    business.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -573,67 +578,103 @@ export default function Admin() {
           <TabsContent value="manage-businesses" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Existing Businesses ({businesses.length})</CardTitle>
+                <CardTitle>Existing Businesses ({filteredBusinesses.length} of {businesses.length})</CardTitle>
                 <CardDescription>
                   View and manage current business listings
                 </CardDescription>
               </CardHeader>
               <CardContent>
+                {/* Search Input */}
+                <div className="mb-6">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Input
+                      placeholder="Search businesses by name..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+
                 <div className="grid gap-4">
-                  {businesses.map((business) => (
-                    <div key={business.id} className="border rounded-lg p-4 hover:bg-gray-50">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <h4 className="font-semibold">{business.name}</h4>
-                          <div className="text-sm text-gray-600 mb-2">
-                            {business.categories?.map(cat => cat.name).join(', ') || business.category?.name || 'No category'}
+                  {filteredBusinesses.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500">
+                      {searchQuery ? (
+                        <>
+                          <Search className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                          <p className="text-lg font-medium mb-2">No businesses found</p>
+                          <p className="text-sm">Try adjusting your search term</p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-lg font-medium mb-2">No businesses yet</p>
+                          <p className="text-sm">Add your first business listing</p>
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    filteredBusinesses.map((business) => (
+                      <div key={business.id} className="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer" onClick={() => editBusiness(business)}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <h4 className="font-semibold">{business.name}</h4>
+                            <div className="text-sm text-gray-600 mb-2">
+                              {business.categories?.map(cat => cat.name).join(', ') || business.category?.name || 'No category'}
+                            </div>
+                            <div className="flex gap-2 mt-2">
+                              {business.isPremium && <Badge variant="secondary">Premium</Badge>}
+                              {business.isVerified && <Badge variant="outline">Verified</Badge>}
+                              {business.isRecommended && <Badge className="bg-tropical-aqua text-white">Recommended</Badge>}
+                              {!business.isActive && <Badge variant="destructive">Inactive</Badge>}
+                            </div>
                           </div>
-                          <div className="flex gap-2 mt-2">
-                            {business.isPremium && <Badge variant="secondary">Premium</Badge>}
-                            {business.isVerified && <Badge variant="outline">Verified</Badge>}
-                            {business.isRecommended && <Badge className="bg-tropical-aqua text-white">Recommended</Badge>}
-                            {!business.isActive && <Badge variant="destructive">Inactive</Badge>}
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleView(business);
+                              }}
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button size="sm" variant="outline" onClick={(e) => {
+                              e.stopPropagation();
+                              editBusiness(business);
+                            }}>
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700" onClick={(e) => e.stopPropagation()}>
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Delete Business</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Are you sure you want to delete "{business.name}"? This action cannot be undone.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => deleteBusinessMutation.mutate(business.id)}
+                                    className="bg-red-600 hover:bg-red-700"
+                                  >
+                                    Delete
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
                           </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleView(business)}
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                          <Button size="sm" variant="outline" onClick={() => editBusiness(business)}>
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Business</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Are you sure you want to delete "{business.name}"? This action cannot be undone.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() => deleteBusinessMutation.mutate(business.id)}
-                                  className="bg-red-600 hover:bg-red-700"
-                                >
-                                  Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>
