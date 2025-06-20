@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useRBAC } from "@/hooks/useRBAC";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -54,6 +55,7 @@ const businessFormSchema = z.object({
 type BusinessFormData = z.infer<typeof businessFormSchema>;
 
 export default function Admin() {
+  const { permissions, isAuthenticated } = useRBAC();
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);
   const [editingBusiness, setEditingBusiness] = useState<BusinessWithCategory | null>(null);
   const [viewingBusiness, setViewingBusiness] = useState<BusinessWithCategory | null>(null);
@@ -63,6 +65,18 @@ export default function Admin() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Check admin access
+  if (!isAuthenticated || !permissions.canAccessAdminPanel) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
+          <p className="text-gray-600">You need admin or business owner privileges to access this page.</p>
+        </div>
+      </div>
+    );
+  }
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],

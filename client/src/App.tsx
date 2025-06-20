@@ -18,24 +18,12 @@ function Router() {
 
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <>
-          <Route path="/" component={Landing} />
-          <Route path="/explore" component={Explore} />
-          <Route path="/getting-here" component={GettingHere} />
-          <Route path="/about" component={About} />
-          <Route path="/contact" component={Contact} />
-        </>
-      ) : (
-        <>
-          <Route path="/" component={Home} />
-          <Route path="/explore" component={Explore} />
-          <Route path="/getting-here" component={GettingHere} />
-          <Route path="/about" component={About} />
-          <Route path="/contact" component={Contact} />
-          <Route path="/admin" component={Admin} />
-        </>
-      )}
+      <Route path="/" component={isAuthenticated ? Home : Landing} />
+      <Route path="/explore" component={Explore} />
+      <Route path="/getting-here" component={GettingHere} />
+      <Route path="/about" component={About} />
+      <Route path="/contact" component={Contact} />
+      <Route path="/admin" component={Admin} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
