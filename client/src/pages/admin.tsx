@@ -462,6 +462,51 @@ export default function Admin() {
                       <Input {...form.register("directBookingContact")} placeholder="Phone, WhatsApp, or email" />
                     </div>
 
+                    <div>
+                      <Label htmlFor="featuredText">Featured Text</Label>
+                      <Input {...form.register("featuredText")} placeholder="Special highlight or promotional text" />
+                    </div>
+
+                    {/* Rating and Reviews Section */}
+                    <div className="space-y-4 border-t pt-4">
+                      <h4 className="text-md font-semibold text-gray-900">Rating & Reviews</h4>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="rating">Rating (1-5)</Label>
+                          <Input 
+                            {...form.register("rating")} 
+                            type="number" 
+                            min="1" 
+                            max="5" 
+                            step="0.1" 
+                            placeholder="4.5" 
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="reviewCount">Review Count</Label>
+                          <Input 
+                            {...form.register("reviewCount")} 
+                            type="number" 
+                            min="0" 
+                            placeholder="150" 
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="reviews">Reviews (JSON format)</Label>
+                        <Textarea 
+                          {...form.register("reviews")} 
+                          rows={4} 
+                          placeholder={`[{"author_name": "John Smith", "rating": 5, "text": "Amazing experience!", "time": 1640995200}]`}
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Enter reviews in JSON format. Each review should have author_name, rating, text, and time fields.
+                        </p>
+                      </div>
+                    </div>
+
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <div className="flex items-center space-x-2">
                         <Switch {...form.register("enquiryFormEnabled")} />
@@ -681,6 +726,46 @@ export default function Admin() {
                 <div>
                   <Label htmlFor="gallery">Gallery URLs (comma-separated)</Label>
                   <Textarea {...form.register("gallery")} rows={2} placeholder="https://image1.jpg, https://image2.jpg, ..." />
+                </div>
+
+                {/* Rating and Reviews Section */}
+                <div className="space-y-4 border-t pt-4">
+                  <h4 className="text-md font-semibold text-gray-900">Rating & Reviews</h4>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="rating">Rating (1-5)</Label>
+                      <Input 
+                        {...form.register("rating")} 
+                        type="number" 
+                        min="1" 
+                        max="5" 
+                        step="0.1" 
+                        placeholder="4.5" 
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="reviewCount">Review Count</Label>
+                      <Input 
+                        {...form.register("reviewCount")} 
+                        type="number" 
+                        min="0" 
+                        placeholder="150" 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="reviews">Reviews (JSON format)</Label>
+                    <Textarea 
+                      {...form.register("reviews")} 
+                      rows={4} 
+                      placeholder={`[{"author_name": "John Smith", "rating": 5, "text": "Amazing experience!", "time": 1640995200}]`}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Enter reviews in JSON format. Each review should have author_name, rating, text, and time fields.
+                    </p>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">

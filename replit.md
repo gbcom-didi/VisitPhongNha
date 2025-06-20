@@ -144,6 +144,13 @@ Changelog:
   - Created admin routes for user management and role assignment
   - Business owners can only manage their own businesses unless they're admin
   - Added frontend RBAC hook for permission checking and role-based UI
+- June 20, 2025. Enhanced rating and reviews system with admin management
+  - Added rating and reviewCount fields to business schema for Google Places data
+  - Integrated authentic Google Places ratings and reviews in business cards and modals
+  - Fixed category filtering issues in frontend query handling
+  - Added comprehensive Rating & Reviews section to admin pages for manual management
+  - Admins can now manually add/edit ratings, review counts, and review JSON data
+  - System displays Google Places imported data alongside manually managed reviews
 ```
 
 ## User Preferences
