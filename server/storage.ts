@@ -108,6 +108,7 @@ export class DatabaseStorage implements IStorage {
         imageUrl: businesses.imageUrl,
         gallery: businesses.gallery,
         categoryId: businesses.categoryId,
+        ownerId: businesses.ownerId,
         tags: businesses.tags,
         priceRange: businesses.priceRange,
         amenities: businesses.amenities,
@@ -148,6 +149,7 @@ export class DatabaseStorage implements IStorage {
         imageUrl: businesses.imageUrl,
         gallery: businesses.gallery,
         categoryId: businesses.categoryId,
+        ownerId: businesses.ownerId,
         tags: businesses.tags,
         priceRange: businesses.priceRange,
         amenities: businesses.amenities,
@@ -196,6 +198,56 @@ export class DatabaseStorage implements IStorage {
   async createBusiness(business: InsertBusiness): Promise<Business> {
     const [newBusiness] = await db.insert(businesses).values(business).returning();
     return newBusiness;
+  }
+
+  async getBusinessesByOwner(ownerId: string): Promise<BusinessWithCategory[]> {
+    const result = await db
+      .select({
+        id: businesses.id,
+        name: businesses.name,
+        description: businesses.description,
+        latitude: businesses.latitude,
+        longitude: businesses.longitude,
+        address: businesses.address,
+        phone: businesses.phone,
+        email: businesses.email,
+        website: businesses.website,
+        hours: businesses.hours,
+        imageUrl: businesses.imageUrl,
+        gallery: businesses.gallery,
+        categoryId: businesses.categoryId,
+        ownerId: businesses.ownerId,
+        tags: businesses.tags,
+        priceRange: businesses.priceRange,
+        amenities: businesses.amenities,
+        bookingType: businesses.bookingType,
+        affiliateLink: businesses.affiliateLink,
+        directBookingContact: businesses.directBookingContact,
+        enquiryFormEnabled: businesses.enquiryFormEnabled,
+        featuredText: businesses.featuredText,
+        isActive: businesses.isActive,
+        isPremium: businesses.isPremium,
+        isVerified: businesses.isVerified,
+        isRecommended: businesses.isRecommended,
+        createdAt: businesses.createdAt,
+        updatedAt: businesses.updatedAt,
+        category: categories,
+      })
+      .from(businesses)
+      .leftJoin(categories, eq(businesses.categoryId, categories.id))
+      .where(eq(businesses.ownerId, ownerId))
+      .orderBy(desc(businesses.isPremium), desc(businesses.isRecommended), asc(businesses.name));
+
+    return result;
+  }
+
+  async updateBusiness(id: number, business: Partial<InsertBusiness>): Promise<Business> {
+    const [updatedBusiness] = await db
+      .update(businesses)
+      .set({ ...business, updatedAt: new Date() })
+      .where(eq(businesses.id, id))
+      .returning();
+    return updatedBusiness;
   }
 
   // User likes operations

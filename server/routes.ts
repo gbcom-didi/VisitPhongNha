@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { requireAdmin, requireBusinessOwner, permissions } from "./rbac";
 import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -14,6 +15,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
+      if (user) {
+        // Attach user role to the session for middleware
+        req.user.role = user.role;
+        req.user.isActive = user.isActive;
+      }
       res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -81,9 +87,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/businesses', isAuthenticated, async (req, res) => {
+  app.post('/api/businesses', isAuthenticated, requireBusinessOwner, async (req: any, res) => {
     try {
       const businessData = insertBusinessSchema.parse(req.body);
+      const userId = req.user.claims.sub;
+      const userRole = req.user.role;
+      
+      // Business owners can only create businesses for themselves unless they're admin
+      if (userRole === 'business_owner' && !businessData.ownerId) {
+        businessData.ownerId = userId;
+      } else if (userRole === 'business_owner' && businessData.ownerId !== userId) {
+        return res.status(403).json({ message: "Business owners can only create businesses for themselves" });
+      }
+      
       const business = await storage.createBusiness(businessData);
       res.status(201).json(business);
     } catch (error) {
@@ -93,6 +109,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         res.status(500).json({ message: "Failed to create business" });
       }
+    }
+  });
+
+  // Admin routes for user management
+  app.get('/api/admin/users', isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const { role } = req.query;
+      let users;
+      if (role) {
+        users = await storage.getUsersByRole(role as string);
+      } else {
+        // Get all users - implement this method if needed
+        users = await storage.getUsersByRole('viewer').then(async viewers => {
+          const businessOwners = await storage.getUsersByRole('business_owner');
+          const admins = await storage.getUsersByRole('admin');
+          return [...viewers, ...businessOwners, ...admins];
+        });
+      }
+      res.json(users);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  app.put('/api/admin/users/:id/role', isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const { role } = req.body;
+      
+      if (!['admin', 'business_owner', 'viewer'].includes(role)) {
+        return res.status(400).json({ message: "Invalid role" });
+      }
+      
+      const user = await storage.updateUserRole(userId, role);
+      res.json(user);
+    } catch (error) {
+      console.error("Error updating user role:", error);
+      res.status(500).json({ message: "Failed to update user role" });
+    }
+  });
+
+  // Business owner routes
+  app.get('/api/owner/businesses', isAuthenticated, requireBusinessOwner, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const businesses = await storage.getBusinessesByOwner(userId);
+      res.json(businesses);
+    } catch (error) {
+      console.error("Error fetching owner businesses:", error);
+      res.status(500).json({ message: "Failed to fetch businesses" });
     }
   });
 
