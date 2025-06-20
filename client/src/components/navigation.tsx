@@ -17,6 +17,10 @@ export function Navigation() {
     { href: '/contact', label: 'Contact' },
   ];
 
+  const adminLinks = [
+    { href: '/admin', label: 'Admin' },
+  ];
+
   const isActiveLink = (href: string) => {
     if (href === '/' && location === '/') return true;
     if (href !== '/' && location.startsWith(href)) return true;
@@ -44,6 +48,15 @@ export function Navigation() {
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
             {navigationLinks.map(({ href, label }) => (
+              <Link key={href} href={href} className={`transition-colors ${
+                isActiveLink(href)
+                  ? 'text-tropical-aqua font-medium'
+                  : 'text-gray-700 hover:text-tropical-aqua'
+              }`}>
+                {label}
+              </Link>
+            ))}
+            {isAuthenticated && adminLinks.map(({ href, label }) => (
               <Link key={href} href={href} className={`transition-colors ${
                 isActiveLink(href)
                   ? 'text-tropical-aqua font-medium'
