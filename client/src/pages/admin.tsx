@@ -113,9 +113,19 @@ export default function Admin() {
         gallery: data.gallery ? data.gallery.split(',').map(url => url.trim()) : null,
         tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : null,
         amenities: data.amenities ? data.amenities.split(',').map(amenity => amenity.trim()) : null,
+        latitude: data.latitude || null,
+        longitude: data.longitude || null,
+        rating: data.rating || null,
         reviewCount: data.reviewCount ? parseInt(data.reviewCount) : null,
         reviews: data.reviews ? JSON.parse(data.reviews) : null,
       };
+      
+      // Remove empty string values that would cause numeric field errors
+      Object.keys(payload).forEach(key => {
+        if ((payload as any)[key] === '') {
+          (payload as any)[key] = null;
+        }
+      });
       return apiRequest("POST", "/api/businesses", payload);
     },
     onSuccess: () => {
@@ -143,10 +153,20 @@ export default function Admin() {
         gallery: data.gallery ? data.gallery.split(',').map(url => url.trim()) : null,
         tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : null,
         amenities: data.amenities ? data.amenities.split(',').map(amenity => amenity.trim()) : null,
+        latitude: data.latitude || null,
+        longitude: data.longitude || null,
+        rating: data.rating || null,
         reviewCount: data.reviewCount ? parseInt(data.reviewCount) : null,
         reviews: data.reviews ? JSON.parse(data.reviews) : null,
         categoryIds: selectedCategoryIds,
       };
+      
+      // Remove empty string values that would cause numeric field errors
+      Object.keys(payload).forEach(key => {
+        if ((payload as any)[key] === '') {
+          (payload as any)[key] = null;
+        }
+      });
       return apiRequest("PUT", `/api/businesses/${data.id}`, payload);
     },
     onSuccess: () => {
