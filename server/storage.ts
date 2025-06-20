@@ -2,6 +2,7 @@ import {
   users,
   businesses,
   categories,
+  businessCategories,
   userLikes,
   type User,
   type UpsertUser,
@@ -14,7 +15,7 @@ import {
   type InsertUserLike,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, asc } from "drizzle-orm";
+import { eq, and, desc, asc, inArray } from "drizzle-orm";
 
 // Interface for storage operations
 export interface IStorage {
@@ -93,85 +94,91 @@ export class DatabaseStorage implements IStorage {
 
   // Business operations
   async getBusinesses(): Promise<BusinessWithCategory[]> {
-    const result = await db
-      .select({
-        id: businesses.id,
-        name: businesses.name,
-        description: businesses.description,
-        latitude: businesses.latitude,
-        longitude: businesses.longitude,
-        address: businesses.address,
-        phone: businesses.phone,
-        email: businesses.email,
-        website: businesses.website,
-        hours: businesses.hours,
-        imageUrl: businesses.imageUrl,
-        gallery: businesses.gallery,
-        categoryId: businesses.categoryId,
-        ownerId: businesses.ownerId,
-        tags: businesses.tags,
-        priceRange: businesses.priceRange,
-        amenities: businesses.amenities,
-        bookingType: businesses.bookingType,
-        affiliateLink: businesses.affiliateLink,
-        directBookingContact: businesses.directBookingContact,
-        enquiryFormEnabled: businesses.enquiryFormEnabled,
-        featuredText: businesses.featuredText,
-        isActive: businesses.isActive,
-        isPremium: businesses.isPremium,
-        isVerified: businesses.isVerified,
-        isRecommended: businesses.isRecommended,
-        createdAt: businesses.createdAt,
-        updatedAt: businesses.updatedAt,
-        category: categories,
-      })
+    // First get all businesses
+    const businessesData = await db
+      .select()
       .from(businesses)
-      .leftJoin(categories, eq(businesses.categoryId, categories.id))
       .where(eq(businesses.isActive, true))
       .orderBy(desc(businesses.isPremium), desc(businesses.isRecommended), asc(businesses.name));
 
-    return result;
+    // Get all business-category relationships
+    const businessCategoryData = await db
+      .select({
+        businessId: businessCategories.businessId,
+        category: categories,
+      })
+      .from(businessCategories)
+      .leftJoin(categories, eq(businessCategories.categoryId, categories.id));
+
+    // Group categories by business ID
+    const businessCategoryMap = new Map<number, Category[]>();
+    businessCategoryData.forEach(({ businessId, category }) => {
+      if (!businessCategoryMap.has(businessId)) {
+        businessCategoryMap.set(businessId, []);
+      }
+      if (category) {
+        businessCategoryMap.get(businessId)!.push(category);
+      }
+    });
+
+    // Combine businesses with their categories
+    return businessesData.map(business => ({
+      ...business,
+      categories: businessCategoryMap.get(business.id) || [],
+      category: businessCategoryMap.get(business.id)?.[0] || null, // For backward compatibility
+    }));
   }
 
   async getBusinessesByCategory(categoryId: number): Promise<BusinessWithCategory[]> {
-    const result = await db
-      .select({
-        id: businesses.id,
-        name: businesses.name,
-        description: businesses.description,
-        latitude: businesses.latitude,
-        longitude: businesses.longitude,
-        address: businesses.address,
-        phone: businesses.phone,
-        email: businesses.email,
-        website: businesses.website,
-        hours: businesses.hours,
-        imageUrl: businesses.imageUrl,
-        gallery: businesses.gallery,
-        categoryId: businesses.categoryId,
-        ownerId: businesses.ownerId,
-        tags: businesses.tags,
-        priceRange: businesses.priceRange,
-        amenities: businesses.amenities,
-        bookingType: businesses.bookingType,
-        affiliateLink: businesses.affiliateLink,
-        directBookingContact: businesses.directBookingContact,
-        enquiryFormEnabled: businesses.enquiryFormEnabled,
-        featuredText: businesses.featuredText,
-        isActive: businesses.isActive,
-        isPremium: businesses.isPremium,
-        isVerified: businesses.isVerified,
-        isRecommended: businesses.isRecommended,
-        createdAt: businesses.createdAt,
-        updatedAt: businesses.updatedAt,
-        category: categories,
-      })
+    // Get business IDs that have the specified category
+    const businessIds = await db
+      .select({ businessId: businessCategories.businessId })
+      .from(businessCategories)
+      .where(eq(businessCategories.categoryId, categoryId));
+
+    const businessIdsList = businessIds.map(b => b.businessId);
+
+    if (businessIdsList.length === 0) {
+      return [];
+    }
+
+    // Get businesses with those IDs
+    const businessesData = await db
+      .select()
       .from(businesses)
-      .leftJoin(categories, eq(businesses.categoryId, categories.id))
-      .where(and(eq(businesses.isActive, true), eq(businesses.categoryId, categoryId)))
+      .where(and(
+        eq(businesses.isActive, true),
+        inArray(businesses.id, businessIdsList)
+      ))
       .orderBy(desc(businesses.isPremium), desc(businesses.isRecommended), asc(businesses.name));
 
-    return result;
+    // Get all business-category relationships for these businesses
+    const businessCategoryData = await db
+      .select({
+        businessId: businessCategories.businessId,
+        category: categories,
+      })
+      .from(businessCategories)
+      .leftJoin(categories, eq(businessCategories.categoryId, categories.id))
+      .where(inArray(businessCategories.businessId, businessIdsList));
+
+    // Group categories by business ID
+    const businessCategoryMap = new Map<number, Category[]>();
+    businessCategoryData.forEach(({ businessId, category }) => {
+      if (!businessCategoryMap.has(businessId)) {
+        businessCategoryMap.set(businessId, []);
+      }
+      if (category) {
+        businessCategoryMap.get(businessId)!.push(category);
+      }
+    });
+
+    // Combine businesses with their categories
+    return businessesData.map(business => ({
+      ...business,
+      categories: businessCategoryMap.get(business.id) || [],
+      category: businessCategoryMap.get(business.id)?.[0] || null, // For backward compatibility
+    }));
   }
 
   async getBusinessesWithUserLikes(userId?: string): Promise<BusinessWithCategory[]> {
@@ -195,50 +202,70 @@ export class DatabaseStorage implements IStorage {
     return business;
   }
 
-  async createBusiness(business: InsertBusiness): Promise<Business> {
-    const [newBusiness] = await db.insert(businesses).values(business).returning();
+  async createBusiness(business: InsertBusiness & { categoryIds?: number[] }): Promise<Business> {
+    const { categoryIds, ...businessData } = business;
+    
+    // Create the business
+    const [newBusiness] = await db.insert(businesses).values(businessData).returning();
+    
+    // If categoryIds are provided, create the business-category relationships
+    if (categoryIds && categoryIds.length > 0) {
+      const businessCategoryData = categoryIds.map(categoryId => ({
+        businessId: newBusiness.id,
+        categoryId,
+      }));
+      
+      await db.insert(businessCategories).values(businessCategoryData);
+    }
+    
     return newBusiness;
   }
 
   async getBusinessesByOwner(ownerId: string): Promise<BusinessWithCategory[]> {
-    const result = await db
-      .select({
-        id: businesses.id,
-        name: businesses.name,
-        description: businesses.description,
-        latitude: businesses.latitude,
-        longitude: businesses.longitude,
-        address: businesses.address,
-        phone: businesses.phone,
-        email: businesses.email,
-        website: businesses.website,
-        hours: businesses.hours,
-        imageUrl: businesses.imageUrl,
-        gallery: businesses.gallery,
-        categoryId: businesses.categoryId,
-        ownerId: businesses.ownerId,
-        tags: businesses.tags,
-        priceRange: businesses.priceRange,
-        amenities: businesses.amenities,
-        bookingType: businesses.bookingType,
-        affiliateLink: businesses.affiliateLink,
-        directBookingContact: businesses.directBookingContact,
-        enquiryFormEnabled: businesses.enquiryFormEnabled,
-        featuredText: businesses.featuredText,
-        isActive: businesses.isActive,
-        isPremium: businesses.isPremium,
-        isVerified: businesses.isVerified,
-        isRecommended: businesses.isRecommended,
-        createdAt: businesses.createdAt,
-        updatedAt: businesses.updatedAt,
-        category: categories,
-      })
+    // Get businesses owned by the user
+    const businessesData = await db
+      .select()
       .from(businesses)
-      .leftJoin(categories, eq(businesses.categoryId, categories.id))
       .where(eq(businesses.ownerId, ownerId))
       .orderBy(desc(businesses.isPremium), desc(businesses.isRecommended), asc(businesses.name));
 
-    return result;
+    const businessIds = businessesData.map(b => b.id);
+
+    if (businessIds.length === 0) {
+      return businessesData.map(business => ({
+        ...business,
+        categories: [],
+        category: null,
+      }));
+    }
+
+    // Get all business-category relationships for these businesses
+    const businessCategoryData = await db
+      .select({
+        businessId: businessCategories.businessId,
+        category: categories,
+      })
+      .from(businessCategories)
+      .leftJoin(categories, eq(businessCategories.categoryId, categories.id))
+      .where(inArray(businessCategories.businessId, businessIds));
+
+    // Group categories by business ID
+    const businessCategoryMap = new Map<number, Category[]>();
+    businessCategoryData.forEach(({ businessId, category }) => {
+      if (!businessCategoryMap.has(businessId)) {
+        businessCategoryMap.set(businessId, []);
+      }
+      if (category) {
+        businessCategoryMap.get(businessId)!.push(category);
+      }
+    });
+
+    // Combine businesses with their categories
+    return businessesData.map(business => ({
+      ...business,
+      categories: businessCategoryMap.get(business.id) || [],
+      category: businessCategoryMap.get(business.id)?.[0] || null, // For backward compatibility
+    }));
   }
 
   async updateBusiness(id: number, business: Partial<InsertBusiness>): Promise<Business> {
@@ -287,6 +314,8 @@ export class DatabaseStorage implements IStorage {
   async clearAllBusinesses(): Promise<void> {
     // Delete all user likes first
     await db.delete(userLikes);
+    // Delete all business categories
+    await db.delete(businessCategories);
     // Delete all businesses
     await db.delete(businesses);
   }

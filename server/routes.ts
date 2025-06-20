@@ -89,7 +89,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/businesses', isAuthenticated, requireBusinessOwner, async (req: any, res) => {
     try {
-      const businessData = insertBusinessSchema.parse(req.body);
+      // Extract categoryIds from the request body and validate the rest with the schema
+      const { categoryIds, ...businessFields } = req.body;
+      const businessData = insertBusinessSchema.parse(businessFields);
       const userId = req.user.claims.sub;
       const userRole = req.user.role;
       
@@ -100,7 +102,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Business owners can only create businesses for themselves" });
       }
       
-      const business = await storage.createBusiness(businessData);
+      // Include categoryIds in the business creation
+      const business = await storage.createBusiness({ ...businessData, categoryIds });
       res.status(201).json(business);
     } catch (error) {
       console.error("Error creating business:", error);
@@ -346,7 +349,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               name: biz.name,
               latitude: biz.latitude,
               longitude: biz.longitude,
-              categoryId,
+              categoryIds: [categoryId], // Use categoryIds array instead of categoryId
               isActive: true,
               isPremium: false,
             });
