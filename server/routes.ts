@@ -128,7 +128,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const businessId = parseInt(req.params.id);
       const { categoryIds, ...businessFields } = req.body;
       
-      const businessData = insertBusinessSchema.partial().parse(businessFields);
+      // Filter out empty strings and undefined values
+      const filteredFields = Object.fromEntries(
+        Object.entries(businessFields).filter(([key, value]) => 
+          value !== '' && value !== undefined && value !== null
+        )
+      );
+      
+      const businessData = insertBusinessSchema.partial().parse(filteredFields);
       const userId = req.user.claims.sub;
       const userRole = req.user.role;
       
