@@ -30,14 +30,20 @@ export default function Explore() {
   // Fetch businesses
   const { data: businesses = [], isLoading: businessesLoading } = useQuery<BusinessWithCategory[]>({
     queryKey: selectedCategory 
-      ? ['/api/businesses', { categoryId: selectedCategory }]
+      ? ['/api/businesses', selectedCategory]
       : ['/api/businesses'],
+    queryFn: async () => {
+      const url = selectedCategory 
+        ? `/api/businesses?categoryId=${selectedCategory}`
+        : '/api/businesses';
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Failed to fetch businesses');
+      return response.json();
+    }
   });
 
-  // Filter businesses based on selected category for consistent filtering across directory and map
-  const filteredBusinesses = businesses.filter((business) => {
-    return selectedCategory === null || business.categoryId === selectedCategory;
-  });
+  // Use businesses directly since filtering is done server-side
+  const filteredBusinesses = businesses;
 
   // Like/unlike mutation
   const likeMutation = useMutation({

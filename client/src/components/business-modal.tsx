@@ -160,7 +160,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                   Recent Reviews
                 </h4>
                 <div className="space-y-4">
-                  {business.reviews.slice(0, 3).map((review: any, index: number) => (
+                  {(business.reviews as any[]).slice(0, 3).map((review: any, index: number) => (
                     <div key={index} className="border-l-4 border-tropical-aqua pl-4">
                       <div className="flex items-center mb-2">
                         <div className="flex mr-2">
@@ -175,14 +175,14 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                             />
                           ))}
                         </div>
-                        <span className="text-sm font-medium text-gray-700">{review.author_name}</span>
+                        <span className="text-sm font-medium text-gray-700">{String(review.author_name)}</span>
                         <span className="text-xs text-gray-500 ml-2">
                           {new Date(review.time * 1000).toLocaleDateString()}
                         </span>
                       </div>
                       {review.text && (
                         <p className="text-sm text-gray-600">
-                          {review.text.length > 200 ? `${review.text.substring(0, 200)}...` : review.text}
+                          {String(review.text).length > 200 ? `${String(review.text).substring(0, 200)}...` : String(review.text)}
                         </p>
                       )}
                     </div>
