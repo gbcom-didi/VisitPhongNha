@@ -50,6 +50,8 @@ type BusinessFormData = z.infer<typeof businessFormSchema>;
 
 export default function Admin() {
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);
+  const [editingBusiness, setEditingBusiness] = useState<BusinessWithCategory | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -105,6 +107,7 @@ export default function Admin() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/businesses"] });
       form.reset();
+      setSelectedCategoryIds([]);
       toast({
         title: "Success",
         description: "Business created successfully",
@@ -119,8 +122,60 @@ export default function Admin() {
     },
   });
 
+  const updateBusinessMutation = useMutation({
+    mutationFn: async (data: BusinessFormData & { id: number }) => {
+      const payload = {
+        ...data,
+        gallery: data.gallery ? data.gallery.split(',').map(url => url.trim()) : null,
+        tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : null,
+        amenities: data.amenities ? data.amenities.split(',').map(amenity => amenity.trim()) : null,
+      };
+      return apiRequest(`/api/businesses/${data.id}`, "PUT", payload);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/businesses"] });
+      setIsEditDialogOpen(false);
+      setEditingBusiness(null);
+      toast({
+        title: "Success",
+        description: "Business updated successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update business",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteBusinessMutation = useMutation({
+    mutationFn: async (businessId: number) => {
+      return apiRequest(`/api/businesses/${businessId}`, "DELETE");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/businesses"] });
+      toast({
+        title: "Success",
+        description: "Business deleted successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete business",
+        variant: "destructive",
+      });
+    },
+  });
+
   const onSubmit = (data: BusinessFormData) => {
-    createBusinessMutation.mutate(data);
+    if (editingBusiness) {
+      updateBusinessMutation.mutate({ ...data, id: editingBusiness.id });
+    } else {
+      createBusinessMutation.mutate(data);
+    }
   };
 
   const loadBusiness = (business: BusinessWithCategory) => {
@@ -153,6 +208,43 @@ export default function Admin() {
       isVerified: business.isVerified || false,
       isRecommended: business.isRecommended || false,
     });
+  };
+
+  const editBusiness = (business: BusinessWithCategory) => {
+    setEditingBusiness(business);
+    loadBusiness(business);
+    setIsEditDialogOpen(true);
+  };
+
+  const resetForm = () => {
+    form.reset({
+      name: "",
+      description: "",
+      latitude: "",
+      longitude: "",
+      address: "",
+      phone: "",
+      email: "",
+      website: "",
+      hours: "",
+      imageUrl: "",
+      gallery: "",
+      tags: "",
+      priceRange: "",
+      amenities: "",
+      bookingType: "none",
+      affiliateLink: "",
+      directBookingContact: "",
+      enquiryFormEnabled: false,
+      featuredText: "",
+      isPremium: false,
+      isActive: true,
+      isVerified: false,
+      isRecommended: false,
+      categoryIds: [],
+    });
+    setSelectedCategoryIds([]);
+    setEditingBusiness(null);
   };
 
   return (
@@ -423,6 +515,33 @@ export default function Admin() {
                           <Button size="sm" variant="outline" onClick={() => loadBusiness(business)}>
                             <Eye className="w-4 h-4" />
                           </Button>
+                          <Button size="sm" variant="outline" onClick={() => editBusiness(business)}>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Business</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to delete "{business.name}"? This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => deleteBusinessMutation.mutate(business.id)}
+                                  className="bg-red-600 hover:bg-red-700"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
                       </div>
                     </div>
@@ -432,6 +551,151 @@ export default function Admin() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Edit Business Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Edit Business: {editingBusiness?.name}</DialogTitle>
+            </DialogHeader>
+            
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* Business Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Business Information</h3>
+                
+                <div>
+                  <Label htmlFor="name">Business Name *</Label>
+                  <Input {...form.register("name")} placeholder="Enter business name" />
+                  {form.formState.errors.name && (
+                    <p className="text-sm text-red-600">{form.formState.errors.name.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea {...form.register("description")} rows={3} placeholder="Brief description of the business" />
+                </div>
+
+                <div>
+                  <Label>Categories *</Label>
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap gap-2">
+                      {selectedCategoryIds.map(categoryId => {
+                        const category = categories.find(c => c.id === categoryId);
+                        return category ? (
+                          <Badge key={categoryId} variant="secondary" className="flex items-center gap-1">
+                            {category.name}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newIds = selectedCategoryIds.filter(id => id !== categoryId);
+                                setSelectedCategoryIds(newIds);
+                                form.setValue("categoryIds", newIds);
+                              }}
+                              className="ml-1 hover:bg-gray-300 rounded-full p-0.5"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </Badge>
+                        ) : null;
+                      })}
+                    </div>
+                    <Select onValueChange={(value) => {
+                      const categoryId = parseInt(value);
+                      if (!selectedCategoryIds.includes(categoryId)) {
+                        const newIds = [...selectedCategoryIds, categoryId];
+                        setSelectedCategoryIds(newIds);
+                        form.setValue("categoryIds", newIds);
+                      }
+                    }}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Add category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.filter(category => !selectedCategoryIds.includes(category.id)).map((category) => (
+                          <SelectItem key={category.id} value={category.id.toString()}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="latitude">Latitude *</Label>
+                    <Input {...form.register("latitude")} placeholder="12.345678" />
+                  </div>
+                  <div>
+                    <Label htmlFor="longitude">Longitude *</Label>
+                    <Input {...form.register("longitude")} placeholder="109.123456" />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="address">Address</Label>
+                  <Textarea {...form.register("address")} rows={2} />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input {...form.register("phone")} />
+                  </div>
+                  <div>
+                    <Label htmlFor="email">Email</Label>
+                    <Input {...form.register("email")} type="email" />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="website">Website</Label>
+                  <Input {...form.register("website")} placeholder="https://" />
+                </div>
+
+                <div>
+                  <Label htmlFor="imageUrl">Main Image URL</Label>
+                  <Input {...form.register("imageUrl")} placeholder="https://..." />
+                </div>
+
+                <div>
+                  <Label htmlFor="gallery">Gallery URLs (comma-separated)</Label>
+                  <Textarea {...form.register("gallery")} rows={2} placeholder="https://image1.jpg, https://image2.jpg, ..." />
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="flex items-center space-x-2">
+                    <Switch {...form.register("isActive")} />
+                    <Label>Active</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Switch {...form.register("isPremium")} />
+                    <Label>Premium</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Switch {...form.register("isVerified")} />
+                    <Label>Verified</Label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-4 border-t">
+                <Button type="button" variant="outline" onClick={() => {
+                  setIsEditDialogOpen(false);
+                  setEditingBusiness(null);
+                }}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={updateBusinessMutation.isPending}>
+                  <Save className="w-4 h-4 mr-2" />
+                  {updateBusinessMutation.isPending ? "Updating..." : "Update Business"}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
