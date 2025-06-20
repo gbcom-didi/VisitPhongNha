@@ -60,7 +60,7 @@ export const businesses = pgTable("businesses", {
   email: varchar("email", { length: 255 }),
   website: varchar("website", { length: 500 }),
   hours: text("hours"),
-  imageUrl: varchar("image_url", { length: 500 }),
+  imageUrl: varchar("image_url", { length: 1000 }),
   gallery: text("gallery").array(),
   ownerId: varchar("owner_id").references(() => users.id), // Business owner reference
   tags: text("tags").array(),
