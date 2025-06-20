@@ -95,17 +95,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Handle data type conversions before validation
       const processedFields = { ...businessFields };
-      if (processedFields.rating && typeof processedFields.rating === 'number') {
-        processedFields.rating = processedFields.rating.toString();
+      if (processedFields.rating && typeof processedFields.rating === 'string') {
+        processedFields.rating = parseFloat(processedFields.rating);
       }
-      if (processedFields.reviewCount && typeof processedFields.reviewCount === 'number') {
-        processedFields.reviewCount = processedFields.reviewCount.toString();
+      if (processedFields.reviewCount && typeof processedFields.reviewCount === 'string') {
+        processedFields.reviewCount = parseInt(processedFields.reviewCount);
       }
-      if (processedFields.latitude && typeof processedFields.latitude === 'number') {
-        processedFields.latitude = processedFields.latitude.toString();
+      if (processedFields.latitude && typeof processedFields.latitude === 'string') {
+        processedFields.latitude = parseFloat(processedFields.latitude);
       }
-      if (processedFields.longitude && typeof processedFields.longitude === 'number') {
-        processedFields.longitude = processedFields.longitude.toString();
+      if (processedFields.longitude && typeof processedFields.longitude === 'string') {
+        processedFields.longitude = parseFloat(processedFields.longitude);
       }
       
       const businessData = insertBusinessSchema.parse(processedFields);
@@ -145,17 +145,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Handle data type conversions before validation
       const processedFields = { ...businessFields };
-      if (processedFields.rating && typeof processedFields.rating === 'number') {
-        processedFields.rating = processedFields.rating.toString();
+      if (processedFields.rating && typeof processedFields.rating === 'string') {
+        processedFields.rating = parseFloat(processedFields.rating);
       }
-      if (processedFields.reviewCount && typeof processedFields.reviewCount === 'number') {
-        processedFields.reviewCount = processedFields.reviewCount.toString();
+      if (processedFields.reviewCount && typeof processedFields.reviewCount === 'string') {
+        processedFields.reviewCount = parseInt(processedFields.reviewCount);
       }
-      if (processedFields.latitude && typeof processedFields.latitude === 'number') {
-        processedFields.latitude = processedFields.latitude.toString();
+      if (processedFields.latitude && typeof processedFields.latitude === 'string') {
+        processedFields.latitude = parseFloat(processedFields.latitude);
       }
-      if (processedFields.longitude && typeof processedFields.longitude === 'number') {
-        processedFields.longitude = processedFields.longitude.toString();
+      if (processedFields.longitude && typeof processedFields.longitude === 'string') {
+        processedFields.longitude = parseFloat(processedFields.longitude);
       }
       
       const businessData = insertBusinessSchema.partial().parse(processedFields);
