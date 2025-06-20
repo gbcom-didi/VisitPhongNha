@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { BusinessModal } from "@/components/business-modal";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Plus, Trash2, Save, Eye, X, Edit } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
@@ -54,6 +55,8 @@ type BusinessFormData = z.infer<typeof businessFormSchema>;
 export default function Admin() {
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);
   const [editingBusiness, setEditingBusiness] = useState<BusinessWithCategory | null>(null);
+  const [viewingBusiness, setViewingBusiness] = useState<BusinessWithCategory | null>(null);
+  const [isBusinessModalOpen, setIsBusinessModalOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
   const { toast } = useToast();
@@ -265,6 +268,16 @@ export default function Admin() {
     setEditingBusiness(null);
   };
 
+    const handleView = (business: BusinessWithCategory) => {
+    setViewingBusiness(business);
+    setIsBusinessModalOpen(true);
+  };
+
+  const handleCloseBusinessModal = () => {
+    setIsBusinessModalOpen(false);
+    setViewingBusiness(null);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -293,7 +306,7 @@ export default function Admin() {
                     {/* Basic Information */}
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold">Basic Information</h3>
-                      
+
                       <div>
                         <Label htmlFor="name">Business Name *</Label>
                         <Input {...form.register("name")} />
@@ -365,7 +378,7 @@ export default function Admin() {
                     {/* Location & Contact */}
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold">Location & Contact</h3>
-                      
+
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <Label htmlFor="latitude">Latitude *</Label>
@@ -407,7 +420,7 @@ export default function Admin() {
                   {/* Media & Content */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Media & Content</h3>
-                    
+
                     <div>
                       <Label htmlFor="imageUrl">Main Image URL</Label>
                       <Input {...form.register("imageUrl")} placeholder="https://" />
@@ -437,7 +450,7 @@ export default function Admin() {
                   {/* Booking & Settings */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Booking & Settings</h3>
-                    
+
                     <div>
                       <Label htmlFor="bookingType">Booking Type</Label>
                       <Select onValueChange={(value) => form.setValue("bookingType", value as "none" | "direct" | "affiliate")}>
@@ -470,7 +483,7 @@ export default function Admin() {
                     {/* Rating and Reviews Section */}
                     <div className="space-y-4 border-t pt-4">
                       <h4 className="text-md font-semibold text-gray-900">Rating & Reviews</h4>
-                      
+
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <Label htmlFor="rating">Rating (1-5)</Label>
@@ -605,6 +618,14 @@ export default function Admin() {
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
+                                                    <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-8 w-8 p-0"
+                                onClick={() => handleView(business)}
+                              >
+                                <Eye className="w-4 h-4" />
+                              </Button>
                         </div>
                       </div>
                     </div>
@@ -621,12 +642,12 @@ export default function Admin() {
             <DialogHeader>
               <DialogTitle>Edit Business: {editingBusiness?.name}</DialogTitle>
             </DialogHeader>
-            
+
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {/* Business Information */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Business Information</h3>
-                
+
                 <div>
                   <Label htmlFor="name">Business Name *</Label>
                   <Input {...form.register("name")} placeholder="Enter business name" />
@@ -731,7 +752,7 @@ export default function Admin() {
                 {/* Rating and Reviews Section */}
                 <div className="space-y-4 border-t pt-4">
                   <h4 className="text-md font-semibold text-gray-900">Rating & Reviews</h4>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="rating">Rating (1-5)</Label>
@@ -799,6 +820,13 @@ export default function Admin() {
             </form>
           </DialogContent>
         </Dialog>
+                  {viewingBusiness && (
+        <BusinessModal
+          isOpen={isBusinessModalOpen}
+          onClose={handleCloseBusinessModal}
+          business={viewingBusiness}
+        />
+      )}
       </div>
     </div>
   );
