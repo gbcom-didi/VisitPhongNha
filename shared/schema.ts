@@ -74,6 +74,7 @@ export const businesses = pgTable("businesses", {
   rating: decimal("rating", { precision: 3, scale: 2 }), // e.g., 4.50
   reviewCount: integer("review_count").default(0),
   reviews: jsonb("reviews"), // Array of review objects from Google Places
+  googleMapsUrl: varchar("google_maps_url", { length: 500 }),
   isActive: boolean("is_active").default(true),
   isPremium: boolean("is_premium").default(false),
   isVerified: boolean("is_verified").default(false),
