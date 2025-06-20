@@ -114,7 +114,7 @@ export default function Admin() {
         reviewCount: data.reviewCount ? parseInt(data.reviewCount) : null,
         reviews: data.reviews ? JSON.parse(data.reviews) : null,
       };
-      return apiRequest("/api/businesses", "POST", payload);
+      return apiRequest("POST", "/api/businesses", payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/businesses"] });
@@ -145,7 +145,7 @@ export default function Admin() {
         reviewCount: data.reviewCount ? parseInt(data.reviewCount) : null,
         reviews: data.reviews ? JSON.parse(data.reviews) : null,
       };
-      return apiRequest(`/api/businesses/${data.id}`, "PUT", payload);
+      return apiRequest("PUT", `/api/businesses/${data.id}`, payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/businesses"] });
@@ -167,7 +167,7 @@ export default function Admin() {
 
   const deleteBusinessMutation = useMutation({
     mutationFn: async (businessId: number) => {
-      return apiRequest(`/api/businesses/${businessId}`, "DELETE");
+      return apiRequest("DELETE", `/api/businesses/${businessId}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/businesses"] });
