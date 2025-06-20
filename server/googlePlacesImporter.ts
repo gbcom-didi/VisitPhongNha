@@ -209,6 +209,21 @@ class GooglePlacesImporter {
         updateData.rating = placeDetails.rating;
       }
 
+      if (placeDetails.user_ratings_total) {
+        updateData.reviewCount = placeDetails.user_ratings_total;
+      }
+
+      // Reviews data
+      if (placeDetails.reviews && placeDetails.reviews.length > 0) {
+        const processedReviews = placeDetails.reviews.slice(0, 5).map(review => ({
+          author_name: review.author_name,
+          rating: review.rating,
+          text: review.text ? review.text.substring(0, 500) : '', // Limit text length
+          time: review.time
+        }));
+        updateData.reviews = processedReviews;
+      }
+
       // Price range
       if (placeDetails.price_level !== undefined) {
         updateData.priceRange = this.mapPriceLevelToRange(placeDetails.price_level);

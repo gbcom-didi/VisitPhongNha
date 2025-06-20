@@ -71,6 +71,9 @@ export const businesses = pgTable("businesses", {
   directBookingContact: varchar("direct_booking_contact", { length: 255 }),
   enquiryFormEnabled: boolean("enquiry_form_enabled").default(false),
   featuredText: varchar("featured_text", { length: 255 }),
+  rating: decimal("rating", { precision: 3, scale: 2 }), // e.g., 4.50
+  reviewCount: integer("review_count").default(0),
+  reviews: jsonb("reviews"), // Array of review objects from Google Places
   isActive: boolean("is_active").default(true),
   isPremium: boolean("is_premium").default(false),
   isVerified: boolean("is_verified").default(false),
@@ -139,6 +142,8 @@ export const insertBusinessSchema = createInsertSchema(businesses).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  categoryIds: z.array(z.number()).optional(),
 });
 
 export const insertBusinessCategorySchema = createInsertSchema(businessCategories).omit({
