@@ -45,15 +45,37 @@ class GooglePlacesImporter {
 
   async searchPlace(businessName: string, location: string = "Phan Rang, Vietnam"): Promise<string | null> {
     try {
-      const query = `${businessName} ${location}`;
-      const searchUrl = `${this.baseUrl}/textsearch/json?query=${encodeURIComponent(query)}&key=${this.apiKey}`;
-      
-      const response = await fetch(searchUrl);
-      const data = await response.json();
+      // Try multiple search variations for better matching
+      const searchQueries = [
+        `${businessName} ${location}`,
+        `${businessName} Ninh Thuan Vietnam`,
+        `${businessName} Phan Rang Ninh Thuan`,
+        businessName, // Try just the business name
+      ];
 
-      if (data.status === 'OK' && data.results?.length > 0) {
-        return data.results[0].place_id;
+      for (const query of searchQueries) {
+        const searchUrl = `${this.baseUrl}/textsearch/json?query=${encodeURIComponent(query)}&key=${this.apiKey}`;
+        
+        const response = await fetch(searchUrl);
+        const data = await response.json();
+
+        if (data.status === 'OK' && data.results?.length > 0) {
+          // Filter results to prioritize those in Vietnam or with relevant location
+          const vietnamResults = data.results.filter((result: any) => 
+            result.formatted_address?.includes('Vietnam') ||
+            result.formatted_address?.includes('Ninh Thuan') ||
+            result.formatted_address?.includes('Phan Rang')
+          );
+          
+          if (vietnamResults.length > 0) {
+            return vietnamResults[0].place_id;
+          }
+          
+          // Fallback to first result if no Vietnam-specific results
+          return data.results[0].place_id;
+        }
       }
+      
       return null;
     } catch (error) {
       console.error(`Error searching for ${businessName}:`, error);
@@ -254,20 +276,35 @@ class GooglePlacesImporter {
       let successCount = 0;
       let errorCount = 0;
 
+      // Focus on businesses more likely to be found in Google Places
+      const priorityBusinesses = [
+        'Amanoi', 'Ninh Chu beach', 'Phan Rang Market', 'Ninh Thuan Hospital',
+        'Ninh Thuận Museum', 'ANARA Binh Tien Golf Club', 'Khu du lịch Hang Rái'
+      ];
+
+      // Try priority businesses first
       for (const business of businesses) {
         try {
           // Add delay to respect API rate limits
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise(resolve => setTimeout(resolve, 200));
           
           const success = await this.updateBusinessWithGoogleData(business.id, business.name);
           if (success) {
             successCount++;
+            console.log(`✓ Successfully updated: ${business.name}`);
           } else {
             errorCount++;
+            console.log(`✗ Failed to find: ${business.name}`);
           }
         } catch (error) {
           console.error(`Failed to update ${business.name}:`, error);
           errorCount++;
+        }
+
+        // Stop after processing 20 businesses to avoid timeout
+        if (successCount + errorCount >= 20) {
+          console.log('Stopping after 20 businesses to avoid timeout...');
+          break;
         }
       }
 

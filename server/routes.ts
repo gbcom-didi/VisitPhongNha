@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { requireAdmin, requireBusinessOwner, permissions } from "./rbac";
 import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema } from "@shared/schema";
+import { googlePlacesImporter } from "./googlePlacesImporter";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -163,6 +164,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching owner businesses:", error);
       res.status(500).json({ message: "Failed to fetch businesses" });
+    }
+  });
+
+  // Google Places import route (admin only)
+  app.post('/api/admin/import-google-places', isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      console.log('Starting Google Places import...');
+      res.json({ message: 'Import started', status: 'processing' });
+      
+      // Run import in background
+      googlePlacesImporter.importAllBusinesses().catch(error => {
+        console.error('Google Places import failed:', error);
+      });
+    } catch (error) {
+      console.error("Error starting Google Places import:", error);
+      res.status(500).json({ message: "Failed to start import" });
+    }
+  });
+
+  // Single business Google Places update
+  app.post('/api/admin/businesses/:id/import-google', isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const businessId = parseInt(req.params.id);
+      const business = await storage.getBusiness(businessId);
+      
+      if (!business) {
+        return res.status(404).json({ message: "Business not found" });
+      }
+      
+      const success = await googlePlacesImporter.updateBusinessWithGoogleData(businessId, business.name);
+      
+      if (success) {
+        const updatedBusiness = await storage.getBusiness(businessId);
+        res.json({ message: 'Business updated successfully', business: updatedBusiness });
+      } else {
+        res.status(400).json({ message: 'Failed to find or update business data from Google' });
+      }
+    } catch (error) {
+      console.error("Error importing Google data for business:", error);
+      res.status(500).json({ message: "Failed to import Google data" });
     }
   });
 
