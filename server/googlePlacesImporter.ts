@@ -231,6 +231,15 @@ class GooglePlacesImporter {
         updateData.imageUrl = gallery[0];
       }
 
+      // Truncate long text fields to prevent database errors
+      if (updateData.address && updateData.address.length > 500) {
+        updateData.address = updateData.address.substring(0, 497) + '...';
+      }
+      
+      if (updateData.website && updateData.website.length > 500) {
+        updateData.website = updateData.website.substring(0, 500);
+      }
+
       // Amenities based on place types
       const amenities = this.extractAmenities(placeDetails.types);
       if (amenities.length > 0) {
