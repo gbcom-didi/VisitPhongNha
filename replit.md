@@ -136,6 +136,14 @@ Changelog:
   - Created admin page with tabbed interface for adding and managing businesses
   - Added admin navigation link for authenticated users
   - System now ready for real business data population with complete listing information
+- June 20, 2025. Implemented role-based access control (RBAC) system
+  - Added user roles: admin, business_owner, viewer with hierarchical permissions
+  - Created RBAC middleware and permission system for API endpoints
+  - Added owner_id field to businesses table for business ownership tracking
+  - Implemented role-based navigation and UI component visibility
+  - Created admin routes for user management and role assignment
+  - Business owners can only manage their own businesses unless they're admin
+  - Added frontend RBAC hook for permission checking and role-based UI
 ```
 
 ## User Preferences

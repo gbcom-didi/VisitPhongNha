@@ -3,10 +3,12 @@ import { Link, useLocation } from 'wouter';
 import { Heart, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { useRBAC } from '@/hooks/useRBAC';
 
 export function Navigation() {
   const [location] = useLocation();
   const { user, isAuthenticated } = useAuth();
+  const { permissions } = useRBAC();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationLinks = [
@@ -56,7 +58,7 @@ export function Navigation() {
                 {label}
               </Link>
             ))}
-            {isAuthenticated && adminLinks.map(({ href, label }) => (
+            {isAuthenticated && permissions.canAccessAdminPanel && adminLinks.map(({ href, label }) => (
               <Link key={href} href={href} className={`transition-colors ${
                 isActiveLink(href)
                   ? 'text-tropical-aqua font-medium'
