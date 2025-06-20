@@ -449,16 +449,19 @@ export default function Admin() {
                     <div>
                       <Label htmlFor="tags">Tags</Label>
                       <Input {...form.register("tags")} placeholder="budget, kitesurf, beachfront" />
+                      <p className="text-xs text-gray-500 mt-1">Comma-separated tags to help users find this business</p>
                     </div>
 
                     <div>
                       <Label htmlFor="amenities">Amenities</Label>
                       <Input {...form.register("amenities")} placeholder="WiFi, Free breakfast, Surf rental" />
+                      <p className="text-xs text-gray-500 mt-1">Comma-separated list of amenities and services</p>
                     </div>
 
                     <div>
                       <Label htmlFor="priceRange">Price Range</Label>
                       <Input {...form.register("priceRange")} placeholder="200k-400k VND or $$" />
+                      <p className="text-xs text-gray-500 mt-1">Price range in local currency or dollar signs</p>
                     </div>
                   </div>
 
@@ -483,16 +486,19 @@ export default function Admin() {
                     <div>
                       <Label htmlFor="affiliateLink">Affiliate Link</Label>
                       <Input {...form.register("affiliateLink")} placeholder="https://booking.com/..." />
+                      <p className="text-xs text-gray-500 mt-1">Third-party booking website URL</p>
                     </div>
 
                     <div>
                       <Label htmlFor="directBookingContact">Direct Booking Contact</Label>
                       <Input {...form.register("directBookingContact")} placeholder="Phone, WhatsApp, or email" />
+                      <p className="text-xs text-gray-500 mt-1">Contact information for direct bookings</p>
                     </div>
 
                     <div>
                       <Label htmlFor="featuredText">Featured Text</Label>
                       <Input {...form.register("featuredText")} placeholder="Special highlight or promotional text" />
+                      <p className="text-xs text-gray-500 mt-1">Short marketing tagline or special offer</p>
                     </div>
 
                     {/* Rating and Reviews Section */}
@@ -808,6 +814,69 @@ export default function Admin() {
                 <div>
                   <Label htmlFor="gallery">Gallery URLs (comma-separated)</Label>
                   <Textarea {...form.register("gallery")} rows={2} placeholder="https://image1.jpg, https://image2.jpg, ..." />
+                </div>
+
+                {/* Tags, Amenities & Price Range */}
+                <div className="space-y-4 border-t pt-4">
+                  <h4 className="text-md font-semibold text-gray-900">Tags & Details</h4>
+                  
+                  <div>
+                    <Label htmlFor="tags">Tags</Label>
+                    <Input {...form.register("tags")} placeholder="budget, kitesurf, beachfront" />
+                    <p className="text-xs text-gray-500 mt-1">Comma-separated tags to help users find this business</p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="amenities">Amenities</Label>
+                    <Input {...form.register("amenities")} placeholder="WiFi, Free breakfast, Surf rental" />
+                    <p className="text-xs text-gray-500 mt-1">Comma-separated list of amenities and services</p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="priceRange">Price Range</Label>
+                    <Input {...form.register("priceRange")} placeholder="200k-400k VND or $$" />
+                    <p className="text-xs text-gray-500 mt-1">Price range in local currency or dollar signs</p>
+                  </div>
+                </div>
+
+                {/* Booking & Settings */}
+                <div className="space-y-4 border-t pt-4">
+                  <h4 className="text-md font-semibold text-gray-900">Booking & Settings</h4>
+
+                  <div>
+                    <Label htmlFor="bookingType">Booking Type</Label>
+                    <Select 
+                      value={form.watch("bookingType")} 
+                      onValueChange={(value) => form.setValue("bookingType", value as "none" | "direct" | "affiliate")}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select booking type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">No Booking</SelectItem>
+                        <SelectItem value="direct">Direct Booking</SelectItem>
+                        <SelectItem value="affiliate">Affiliate Link</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="affiliateLink">Affiliate Link</Label>
+                    <Input {...form.register("affiliateLink")} placeholder="https://booking.com/..." />
+                    <p className="text-xs text-gray-500 mt-1">Third-party booking website URL</p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="directBookingContact">Direct Booking Contact</Label>
+                    <Input {...form.register("directBookingContact")} placeholder="Phone, WhatsApp, or email" />
+                    <p className="text-xs text-gray-500 mt-1">Contact information for direct bookings</p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="featuredText">Featured Text</Label>
+                    <Input {...form.register("featuredText")} placeholder="Special highlight or promotional text" />
+                    <p className="text-xs text-gray-500 mt-1">Short marketing tagline or special offer</p>
+                  </div>
                 </div>
 
                 {/* Rating and Reviews Section */}
