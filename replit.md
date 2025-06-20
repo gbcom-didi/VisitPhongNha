@@ -151,6 +151,12 @@ Changelog:
   - Added comprehensive Rating & Reviews section to admin pages for manual management
   - Admins can now manually add/edit ratings, review counts, and review JSON data
   - System displays Google Places imported data alongside manually managed reviews
+- June 20, 2025. Fixed admin permission and form persistence issues
+  - Resolved role-based access control blocking admin operations
+  - Added missing PUT route for business updates with proper category relationship handling
+  - Enhanced authentication middleware to dynamically fetch user roles from database
+  - Fixed admin form persistence so category assignments and business updates now save properly
+  - Admin users can now create and edit any business without permission restrictions
 ```
 
 ## User Preferences

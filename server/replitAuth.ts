@@ -138,6 +138,17 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
 
   const now = Math.floor(Date.now() / 1000);
   if (now <= user.expires_at) {
+    // Fetch current user role from database to ensure it's up to date
+    try {
+      const userId = user.claims.sub;
+      const dbUser = await storage.getUser(userId);
+      if (dbUser) {
+        user.role = dbUser.role || 'viewer'; // Default to viewer if no role set
+      }
+    } catch (error) {
+      console.error("Error fetching user role:", error);
+      user.role = 'viewer'; // Default fallback
+    }
     return next();
   }
 
@@ -151,6 +162,19 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
     const config = await getOidcConfig();
     const tokenResponse = await client.refreshTokenGrant(config, refreshToken);
     updateUserSession(user, tokenResponse);
+    
+    // Also fetch updated role after token refresh
+    try {
+      const userId = user.claims.sub;
+      const dbUser = await storage.getUser(userId);
+      if (dbUser) {
+        user.role = dbUser.role || 'viewer';
+      }
+    } catch (error) {
+      console.error("Error fetching user role after refresh:", error);
+      user.role = 'viewer';
+    }
+    
     return next();
   } catch (error) {
     res.status(401).json({ message: "Unauthorized" });
