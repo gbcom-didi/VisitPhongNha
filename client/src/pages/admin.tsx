@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Trash2, Save, Eye } from "lucide-react";
+import { Plus, Trash2, Save, Eye, X } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { Category, Business, BusinessWithCategory } from "@shared/schema";
@@ -29,7 +29,7 @@ const businessFormSchema = z.object({
   hours: z.string().optional(),
   imageUrl: z.string().url().optional().or(z.literal("")),
   gallery: z.string().optional(),
-  categoryId: z.number().min(1, "Category is required"),
+  categoryIds: z.array(z.number()).min(1, "At least one category is required"),
   tags: z.string().optional(),
   priceRange: z.string().optional(),
   amenities: z.string().optional(),
@@ -48,6 +48,7 @@ type BusinessFormData = z.infer<typeof businessFormSchema>;
 
 export default function Admin() {
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -73,6 +74,7 @@ export default function Admin() {
       hours: "",
       imageUrl: "",
       gallery: "",
+      categoryIds: [],
       tags: "",
       priceRange: "",
       amenities: "",
@@ -121,6 +123,8 @@ export default function Admin() {
 
   const loadBusiness = (business: BusinessWithCategory) => {
     setSelectedBusiness(business);
+    const categoryIds = business.categories?.map(c => c.id) || (business.category ? [business.category.id] : []);
+    setSelectedCategoryIds(categoryIds);
     form.reset({
       name: business.name,
       description: business.description || "",
@@ -133,7 +137,7 @@ export default function Admin() {
       hours: business.hours || "",
       imageUrl: business.imageUrl || "",
       gallery: business.gallery?.join(', ') || "",
-      categoryId: business.categoryId || 0,
+      categoryIds: categoryIds,
       tags: business.tags?.join(', ') || "",
       priceRange: business.priceRange || "",
       amenities: business.amenities?.join(', ') || "",
@@ -192,21 +196,51 @@ export default function Admin() {
                       </div>
 
                       <div>
-                        <Label htmlFor="categoryId">Category *</Label>
-                        <Select onValueChange={(value) => form.setValue("categoryId", parseInt(value))}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select category" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {categories.map((category) => (
-                              <SelectItem key={category.id} value={category.id.toString()}>
-                                {category.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {form.formState.errors.categoryId && (
-                          <p className="text-sm text-red-600">{form.formState.errors.categoryId.message}</p>
+                        <Label htmlFor="categories">Categories *</Label>
+                        <div className="space-y-2">
+                          <div className="flex flex-wrap gap-2">
+                            {selectedCategoryIds.map(categoryId => {
+                              const category = categories.find(c => c.id === categoryId);
+                              return category ? (
+                                <Badge key={categoryId} variant="secondary" className="flex items-center gap-1">
+                                  {category.name}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const newIds = selectedCategoryIds.filter(id => id !== categoryId);
+                                      setSelectedCategoryIds(newIds);
+                                      form.setValue("categoryIds", newIds);
+                                    }}
+                                    className="ml-1 hover:bg-gray-300 rounded-full p-0.5"
+                                  >
+                                    <X className="w-3 h-3" />
+                                  </button>
+                                </Badge>
+                              ) : null;
+                            })}
+                          </div>
+                          <Select onValueChange={(value) => {
+                            const categoryId = parseInt(value);
+                            if (!selectedCategoryIds.includes(categoryId)) {
+                              const newIds = [...selectedCategoryIds, categoryId];
+                              setSelectedCategoryIds(newIds);
+                              form.setValue("categoryIds", newIds);
+                            }
+                          }}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Add category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {categories.filter(category => !selectedCategoryIds.includes(category.id)).map((category) => (
+                                <SelectItem key={category.id} value={category.id.toString()}>
+                                  {category.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        {form.formState.errors.categoryIds && (
+                          <p className="text-sm text-red-600">{form.formState.errors.categoryIds.message}</p>
                         )}
                       </div>
 
@@ -342,7 +376,10 @@ export default function Admin() {
                   </div>
 
                   <div className="flex justify-end space-x-4">
-                    <Button type="button" variant="outline" onClick={() => form.reset()}>
+                    <Button type="button" variant="outline" onClick={() => {
+                      form.reset();
+                      setSelectedCategoryIds([]);
+                    }}>
                       Clear Form
                     </Button>
                     <Button type="submit" disabled={createBusinessMutation.isPending}>
@@ -370,7 +407,9 @@ export default function Admin() {
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <h4 className="font-semibold">{business.name}</h4>
-                          <p className="text-sm text-gray-600">{business.category?.name}</p>
+                          <div className="text-sm text-gray-600 mb-2">
+                            {business.categories?.map(cat => cat.name).join(', ') || business.category?.name || 'No category'}
+                          </div>
                           <div className="flex gap-2 mt-2">
                             {business.isPremium && <Badge variant="secondary">Premium</Badge>}
                             {business.isVerified && <Badge variant="outline">Verified</Badge>}

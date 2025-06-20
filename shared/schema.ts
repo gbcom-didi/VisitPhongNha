@@ -62,7 +62,6 @@ export const businesses = pgTable("businesses", {
   hours: text("hours"),
   imageUrl: varchar("image_url", { length: 500 }),
   gallery: text("gallery").array(),
-  categoryId: integer("category_id").references(() => categories.id),
   ownerId: varchar("owner_id").references(() => users.id), // Business owner reference
   tags: text("tags").array(),
   priceRange: varchar("price_range", { length: 100 }),
@@ -80,6 +79,13 @@ export const businesses = pgTable("businesses", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const businessCategories = pgTable("business_categories", {
+  id: serial("id").primaryKey(),
+  businessId: integer("business_id").references(() => businesses.id).notNull(),
+  categoryId: integer("category_id").references(() => categories.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const userLikes = pgTable("user_likes", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").references(() => users.id).notNull(),
@@ -88,16 +94,24 @@ export const userLikes = pgTable("user_likes", {
 });
 
 // Relations
-export const businessesRelations = relations(businesses, ({ one, many }) => ({
-  category: one(categories, {
-    fields: [businesses.categoryId],
-    references: [categories.id],
-  }),
+export const businessesRelations = relations(businesses, ({ many }) => ({
+  businessCategories: many(businessCategories),
   likes: many(userLikes),
 }));
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
-  businesses: many(businesses),
+  businessCategories: many(businessCategories),
+}));
+
+export const businessCategoriesRelations = relations(businessCategories, ({ one }) => ({
+  business: one(businesses, {
+    fields: [businessCategories.businessId],
+    references: [businesses.id],
+  }),
+  category: one(categories, {
+    fields: [businessCategories.categoryId],
+    references: [categories.id],
+  }),
 }));
 
 export const userLikesRelations = relations(userLikes, ({ one }) => ({
@@ -127,6 +141,11 @@ export const insertBusinessSchema = createInsertSchema(businesses).omit({
   updatedAt: true,
 });
 
+export const insertBusinessCategorySchema = createInsertSchema(businessCategories).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertUserLikeSchema = createInsertSchema(userLikes).omit({
   id: true,
   createdAt: true,
@@ -139,11 +158,14 @@ export type Category = typeof categories.$inferSelect;
 export type InsertCategory = z.infer<typeof insertCategorySchema>;
 export type Business = typeof businesses.$inferSelect;
 export type InsertBusiness = z.infer<typeof insertBusinessSchema>;
+export type BusinessCategory = typeof businessCategories.$inferSelect;
+export type InsertBusinessCategory = z.infer<typeof insertBusinessCategorySchema>;
 export type UserLike = typeof userLikes.$inferSelect;
 export type InsertUserLike = z.infer<typeof insertUserLikeSchema>;
 
 // Business with category info
 export type BusinessWithCategory = Business & {
-  category: Category | null;
+  categories?: Category[];
+  category?: Category | null; // Keep for backward compatibility
   isLiked?: boolean;
 };
