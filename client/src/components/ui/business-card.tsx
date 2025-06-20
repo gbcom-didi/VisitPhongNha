@@ -1,4 +1,4 @@
-import { Heart, MapPin, Clock, Phone } from 'lucide-react';
+import { Heart, MapPin, Clock, Phone, Star } from 'lucide-react';
 import { Button } from './button';
 import { Badge } from './badge';
 import type { BusinessWithCategory } from '@shared/schema';
@@ -143,6 +143,19 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
           <p className="text-sm text-gray-600 line-clamp-2 mb-2">
             {business.description}
           </p>
+        )}
+
+        {/* Rating */}
+        {business.rating && (
+          <div className="flex items-center mb-2">
+            <div className="flex items-center">
+              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
+              <span className="text-sm font-medium text-gray-900">{business.rating}</span>
+            </div>
+            {business.reviewCount && business.reviewCount > 0 && (
+              <span className="text-xs text-gray-500 ml-1">({business.reviewCount} reviews)</span>
+            )}
+          </div>
         )}
 
         {/* Additional Info */}

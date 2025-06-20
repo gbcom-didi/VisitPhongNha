@@ -1,4 +1,4 @@
-import { X, MapPin, Phone, Clock, Globe, Heart, ExternalLink } from 'lucide-react';
+import { X, MapPin, Phone, Clock, Globe, Heart, ExternalLink, Star, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -100,6 +100,33 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
               {business.description || `Experience the best of ${business.name} in Phan Rang. This highly-rated establishment offers exceptional service and authentic local experiences that showcase the unique culture and hospitality of the region.`}
             </p>
 
+            {/* Rating Section */}
+            {business.rating && (
+              <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+                <div className="flex items-center mb-3">
+                  <div className="flex items-center">
+                    <Star className="w-5 h-5 fill-yellow-400 text-yellow-400 mr-2" />
+                    <span className="text-xl font-bold text-gray-900">{business.rating}</span>
+                  </div>
+                  {business.reviewCount && business.reviewCount > 0 && (
+                    <span className="text-sm text-gray-600 ml-2">({business.reviewCount} reviews)</span>
+                  )}
+                </div>
+                <div className="flex">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star 
+                      key={star}
+                      className={`w-4 h-4 ${
+                        star <= Math.floor(parseFloat(business.rating || '0'))
+                          ? 'fill-yellow-400 text-yellow-400'
+                          : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Opening Hours Section */}
             <div className="bg-gray-50 rounded-lg p-4">
               <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
@@ -126,49 +153,43 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
             </div>
 
             {/* Reviews Section */}
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-3">Recent Reviews</h4>
-              <div className="space-y-4">
-                <div className="border-l-4 border-chili-red pl-4">
-                  <div className="flex items-center mb-2">
-                    <div className="flex text-yellow-400 text-sm mr-2">
-                      ★★★★★
+            {business.reviews && Array.isArray(business.reviews) && business.reviews.length > 0 && (
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                  <User className="w-5 h-5 mr-2 text-gray-600" />
+                  Recent Reviews
+                </h4>
+                <div className="space-y-4">
+                  {business.reviews.slice(0, 3).map((review: any, index: number) => (
+                    <div key={index} className="border-l-4 border-tropical-aqua pl-4">
+                      <div className="flex items-center mb-2">
+                        <div className="flex mr-2">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star 
+                              key={star}
+                              className={`w-4 h-4 ${
+                                star <= review.rating
+                                  ? 'fill-yellow-400 text-yellow-400'
+                                  : 'text-gray-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-sm font-medium text-gray-700">{review.author_name}</span>
+                        <span className="text-xs text-gray-500 ml-2">
+                          {new Date(review.time * 1000).toLocaleDateString()}
+                        </span>
+                      </div>
+                      {review.text && (
+                        <p className="text-sm text-gray-600">
+                          {review.text.length > 200 ? `${review.text.substring(0, 200)}...` : review.text}
+                        </p>
+                      )}
                     </div>
-                    <span className="text-sm font-medium text-gray-700">Sarah M.</span>
-                    <span className="text-xs text-gray-500 ml-2">2 days ago</span>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    "Amazing experience! The staff was incredibly friendly and the location is perfect. Highly recommend for anyone visiting Phan Rang."
-                  </p>
-                </div>
-
-                <div className="border-l-4 border-sea-blue pl-4">
-                  <div className="flex items-center mb-2">
-                    <div className="flex text-yellow-400 text-sm mr-2">
-                      ★★★★☆
-                    </div>
-                    <span className="text-sm font-medium text-gray-700">Minh T.</span>
-                    <span className="text-xs text-gray-500 ml-2">5 days ago</span>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    "Great value for money. Clean, comfortable, and the local recommendations were spot on. Will definitely come back!"
-                  </p>
-                </div>
-
-                <div className="border-l-4 border-tropical-aqua pl-4">
-                  <div className="flex items-center mb-2">
-                    <div className="flex text-yellow-400 text-sm mr-2">
-                      ★★★★★
-                    </div>
-                    <span className="text-sm font-medium text-gray-700">Emma L.</span>
-                    <span className="text-xs text-gray-500 ml-2">1 week ago</span>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    "Authentic local experience with modern amenities. The team went above and beyond to make our stay memorable."
-                  </p>
+                  ))}
                 </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Contact Information */}
