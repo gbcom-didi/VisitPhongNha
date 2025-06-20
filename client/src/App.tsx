@@ -11,6 +11,7 @@ import Explore from "@/pages/explore";
 import GettingHere from "@/pages/getting-here";
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
+import Admin from "@/pages/admin";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -32,6 +33,7 @@ function Router() {
           <Route path="/getting-here" component={GettingHere} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />
+          <Route path="/admin" component={Admin} />
         </>
       )}
       {/* Fallback to 404 */}

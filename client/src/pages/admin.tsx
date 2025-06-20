@@ -96,10 +96,7 @@ export default function Admin() {
         tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : null,
         amenities: data.amenities ? data.amenities.split(',').map(amenity => amenity.trim()) : null,
       };
-      return apiRequest("/api/businesses", {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
+      return apiRequest("/api/businesses", "POST", payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/businesses"] });
