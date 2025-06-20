@@ -37,9 +37,9 @@ class GooglePlacesImporter {
   private baseUrl = 'https://maps.googleapis.com/maps/api/place';
 
   constructor() {
-    this.apiKey = process.env.GOOGLE_PLACES_API_KEY!;
+    this.apiKey = process.env.GOOGLE_PLACES_API_KEY_VALID || process.env.GOOGLE_PLACES_API_KEY_UNRESTRICTED || process.env.GOOGLE_PLACES_API_KEY!;
     if (!this.apiKey) {
-      throw new Error('GOOGLE_PLACES_API_KEY is required');
+      throw new Error('Valid Google Places API key is required');
     }
   }
 
