@@ -34,6 +34,8 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+  role: varchar("role", { length: 20 }).default("viewer"), // 'admin', 'business_owner', 'viewer'
+  isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -61,6 +63,7 @@ export const businesses = pgTable("businesses", {
   imageUrl: varchar("image_url", { length: 500 }),
   gallery: text("gallery").array(),
   categoryId: integer("category_id").references(() => categories.id),
+  ownerId: varchar("owner_id").references(() => users.id), // Business owner reference
   tags: text("tags").array(),
   priceRange: varchar("price_range", { length: 100 }),
   amenities: text("amenities").array(),

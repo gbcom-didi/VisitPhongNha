@@ -22,6 +22,8 @@ export interface IStorage {
   // (IMPORTANT) these user operations are mandatory for Replit Auth.
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  updateUserRole(userId: string, role: string): Promise<User>;
+  getUsersByRole(role: string): Promise<User[]>;
   
   // Category operations
   getCategories(): Promise<Category[]>;
@@ -31,8 +33,10 @@ export interface IStorage {
   getBusinesses(): Promise<BusinessWithCategory[]>;
   getBusinessesByCategory(categoryId: number): Promise<BusinessWithCategory[]>;
   getBusinessesWithUserLikes(userId?: string): Promise<BusinessWithCategory[]>;
+  getBusinessesByOwner(ownerId: string): Promise<BusinessWithCategory[]>;
   getBusiness(id: number): Promise<Business | undefined>;
   createBusiness(business: InsertBusiness): Promise<Business>;
+  updateBusiness(id: number, business: Partial<InsertBusiness>): Promise<Business>;
   
   // User likes operations
   getUserLikes(userId: string): Promise<UserLike[]>;
@@ -62,6 +66,19 @@ export class DatabaseStorage implements IStorage {
       })
       .returning();
     return user;
+  }
+
+  async updateUserRole(userId: string, role: string): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({ role, updatedAt: new Date() })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async getUsersByRole(role: string): Promise<User[]> {
+    return await db.select().from(users).where(eq(users.role, role));
   }
 
   // Category operations
