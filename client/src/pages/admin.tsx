@@ -110,12 +110,9 @@ export default function Admin() {
     mutationFn: async (data: BusinessFormData) => {
       const payload = {
         ...data,
-        gallery: data.gallery ? data.gallery.split(',').map(url => url.trim()) : null,
-        tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : null,
-        amenities: data.amenities ? data.amenities.split(',').map(amenity => amenity.trim()) : null,
-        latitude: data.latitude || undefined,
-        longitude: data.longitude || undefined,
-        rating: data.rating || undefined,
+        gallery: data.gallery ? data.gallery.split(',').map(url => url.trim()) : undefined,
+        tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : undefined,
+        amenities: data.amenities ? data.amenities.split(',').map(amenity => amenity.trim()) : undefined,
         reviewCount: data.reviewCount ? parseInt(data.reviewCount) : undefined,
         reviews: data.reviews ? JSON.parse(data.reviews) : undefined,
       };
@@ -144,12 +141,9 @@ export default function Admin() {
     mutationFn: async (data: BusinessFormData & { id: number }) => {
       const payload = {
         ...data,
-        gallery: data.gallery ? data.gallery.split(',').map(url => url.trim()) : null,
-        tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : null,
-        amenities: data.amenities ? data.amenities.split(',').map(amenity => amenity.trim()) : null,
-        latitude: data.latitude || undefined,
-        longitude: data.longitude || undefined,
-        rating: data.rating || undefined,
+        gallery: data.gallery ? data.gallery.split(',').map(url => url.trim()) : undefined,
+        tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : undefined,
+        amenities: data.amenities ? data.amenities.split(',').map(amenity => amenity.trim()) : undefined,
         reviewCount: data.reviewCount ? parseInt(data.reviewCount) : undefined,
         reviews: data.reviews ? JSON.parse(data.reviews) : undefined,
         categoryIds: selectedCategoryIds,
