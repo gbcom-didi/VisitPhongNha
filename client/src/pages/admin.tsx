@@ -262,6 +262,7 @@ export default function Admin() {
       rating: "",
       reviewCount: "",
       reviews: "",
+      googleMapsUrl: "",
       isPremium: false,
       isActive: true,
       isVerified: false,
@@ -412,6 +413,11 @@ export default function Admin() {
                       <div>
                         <Label htmlFor="website">Website</Label>
                         <Input {...form.register("website")} placeholder="https://" />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="googleMapsUrl">Google Maps URL</Label>
+                        <Input {...form.register("googleMapsUrl")} placeholder="https://maps.google.com/..." />
                       </div>
 
                       <div>
@@ -737,6 +743,11 @@ export default function Admin() {
                 <div>
                   <Label htmlFor="website">Website</Label>
                   <Input {...form.register("website")} placeholder="https://" />
+                </div>
+
+                <div>
+                  <Label htmlFor="googleMapsUrl">Google Maps URL</Label>
+                  <Input {...form.register("googleMapsUrl")} placeholder="https://maps.google.com/..." />
                 </div>
 
                 <div>

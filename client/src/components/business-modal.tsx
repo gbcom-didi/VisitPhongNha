@@ -234,6 +234,21 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                 </a>
               </div>
             )}
+
+            {business.googleMapsUrl && (
+              <div className="flex items-center text-gray-600">
+                <MapPin className="w-5 h-5 mr-3 flex-shrink-0" />
+                <a 
+                  href={business.googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm hover:text-chili-red transition-colors flex items-center"
+                >
+                  View on Google Maps
+                  <ExternalLink className="w-3 h-3 ml-1" />
+                </a>
+              </div>
+            )}
           </div>
         </div>
 
