@@ -89,9 +89,20 @@ export class DatabaseStorage implements IStorage {
         website: businesses.website,
         hours: businesses.hours,
         imageUrl: businesses.imageUrl,
+        gallery: businesses.gallery,
         categoryId: businesses.categoryId,
+        tags: businesses.tags,
+        priceRange: businesses.priceRange,
+        amenities: businesses.amenities,
+        bookingType: businesses.bookingType,
+        affiliateLink: businesses.affiliateLink,
+        directBookingContact: businesses.directBookingContact,
+        enquiryFormEnabled: businesses.enquiryFormEnabled,
+        featuredText: businesses.featuredText,
         isActive: businesses.isActive,
         isPremium: businesses.isPremium,
+        isVerified: businesses.isVerified,
+        isRecommended: businesses.isRecommended,
         createdAt: businesses.createdAt,
         updatedAt: businesses.updatedAt,
         category: categories,
@@ -99,7 +110,7 @@ export class DatabaseStorage implements IStorage {
       .from(businesses)
       .leftJoin(categories, eq(businesses.categoryId, categories.id))
       .where(eq(businesses.isActive, true))
-      .orderBy(desc(businesses.isPremium), asc(businesses.name));
+      .orderBy(desc(businesses.isPremium), desc(businesses.isRecommended), asc(businesses.name));
 
     return result;
   }
@@ -118,9 +129,20 @@ export class DatabaseStorage implements IStorage {
         website: businesses.website,
         hours: businesses.hours,
         imageUrl: businesses.imageUrl,
+        gallery: businesses.gallery,
         categoryId: businesses.categoryId,
+        tags: businesses.tags,
+        priceRange: businesses.priceRange,
+        amenities: businesses.amenities,
+        bookingType: businesses.bookingType,
+        affiliateLink: businesses.affiliateLink,
+        directBookingContact: businesses.directBookingContact,
+        enquiryFormEnabled: businesses.enquiryFormEnabled,
+        featuredText: businesses.featuredText,
         isActive: businesses.isActive,
         isPremium: businesses.isPremium,
+        isVerified: businesses.isVerified,
+        isRecommended: businesses.isRecommended,
         createdAt: businesses.createdAt,
         updatedAt: businesses.updatedAt,
         category: categories,
@@ -128,7 +150,7 @@ export class DatabaseStorage implements IStorage {
       .from(businesses)
       .leftJoin(categories, eq(businesses.categoryId, categories.id))
       .where(and(eq(businesses.isActive, true), eq(businesses.categoryId, categoryId)))
-      .orderBy(desc(businesses.isPremium), asc(businesses.name));
+      .orderBy(desc(businesses.isPremium), desc(businesses.isRecommended), asc(businesses.name));
 
     return result;
   }
