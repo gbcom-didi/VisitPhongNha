@@ -93,22 +93,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Extract categoryIds from the request body and validate the rest with the schema
       const { categoryIds, ...businessFields } = req.body;
       
-      // Handle data type conversions before validation
-      const processedFields = { ...businessFields };
-      if (processedFields.rating && typeof processedFields.rating === 'string') {
-        processedFields.rating = parseFloat(processedFields.rating);
-      }
-      if (processedFields.reviewCount && typeof processedFields.reviewCount === 'string') {
-        processedFields.reviewCount = parseInt(processedFields.reviewCount);
-      }
-      if (processedFields.latitude && typeof processedFields.latitude === 'string') {
-        processedFields.latitude = parseFloat(processedFields.latitude);
-      }
-      if (processedFields.longitude && typeof processedFields.longitude === 'string') {
-        processedFields.longitude = parseFloat(processedFields.longitude);
-      }
-      
-      const businessData = insertBusinessSchema.parse(processedFields);
+      const businessData = insertBusinessSchema.parse(businessFields);
       const userId = req.user.claims.sub;
       const userRole = req.user.role;
       
@@ -143,22 +128,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const businessId = parseInt(req.params.id);
       const { categoryIds, ...businessFields } = req.body;
       
-      // Handle data type conversions before validation
-      const processedFields = { ...businessFields };
-      if (processedFields.rating && typeof processedFields.rating === 'string') {
-        processedFields.rating = parseFloat(processedFields.rating);
-      }
-      if (processedFields.reviewCount && typeof processedFields.reviewCount === 'string') {
-        processedFields.reviewCount = parseInt(processedFields.reviewCount);
-      }
-      if (processedFields.latitude && typeof processedFields.latitude === 'string') {
-        processedFields.latitude = parseFloat(processedFields.latitude);
-      }
-      if (processedFields.longitude && typeof processedFields.longitude === 'string') {
-        processedFields.longitude = parseFloat(processedFields.longitude);
-      }
-      
-      const businessData = insertBusinessSchema.partial().parse(processedFields);
+      const businessData = insertBusinessSchema.partial().parse(businessFields);
       const userId = req.user.claims.sub;
       const userRole = req.user.role;
       
