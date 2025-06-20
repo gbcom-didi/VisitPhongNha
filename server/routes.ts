@@ -92,7 +92,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Extract categoryIds from the request body and validate the rest with the schema
       const { categoryIds, ...businessFields } = req.body;
-      const businessData = insertBusinessSchema.parse(businessFields);
+      
+      // Handle data type conversions before validation
+      const processedFields = { ...businessFields };
+      if (processedFields.rating && typeof processedFields.rating === 'number') {
+        processedFields.rating = processedFields.rating.toString();
+      }
+      if (processedFields.reviewCount && typeof processedFields.reviewCount === 'number') {
+        processedFields.reviewCount = processedFields.reviewCount.toString();
+      }
+      if (processedFields.latitude && typeof processedFields.latitude === 'number') {
+        processedFields.latitude = processedFields.latitude.toString();
+      }
+      if (processedFields.longitude && typeof processedFields.longitude === 'number') {
+        processedFields.longitude = processedFields.longitude.toString();
+      }
+      
+      const businessData = insertBusinessSchema.parse(processedFields);
       const userId = req.user.claims.sub;
       const userRole = req.user.role;
       
@@ -126,7 +142,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const businessId = parseInt(req.params.id);
       const { categoryIds, ...businessFields } = req.body;
-      const businessData = insertBusinessSchema.partial().parse(businessFields);
+      
+      // Handle data type conversions before validation
+      const processedFields = { ...businessFields };
+      if (processedFields.rating && typeof processedFields.rating === 'number') {
+        processedFields.rating = processedFields.rating.toString();
+      }
+      if (processedFields.reviewCount && typeof processedFields.reviewCount === 'number') {
+        processedFields.reviewCount = processedFields.reviewCount.toString();
+      }
+      if (processedFields.latitude && typeof processedFields.latitude === 'number') {
+        processedFields.latitude = processedFields.latitude.toString();
+      }
+      if (processedFields.longitude && typeof processedFields.longitude === 'number') {
+        processedFields.longitude = processedFields.longitude.toString();
+      }
+      
+      const businessData = insertBusinessSchema.partial().parse(processedFields);
       const userId = req.user.claims.sub;
       const userRole = req.user.role;
       
