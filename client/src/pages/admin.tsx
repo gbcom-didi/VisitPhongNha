@@ -588,7 +588,11 @@ export default function Admin() {
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline" onClick={() => loadBusiness(business)}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleView(business)}
+                          >
                             <Eye className="w-4 h-4" />
                           </Button>
                           <Button size="sm" variant="outline" onClick={() => editBusiness(business)}>
@@ -618,14 +622,6 @@ export default function Admin() {
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
-                                                    <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-8 w-8 p-0"
-                                onClick={() => handleView(business)}
-                              >
-                                <Eye className="w-4 h-4" />
-                              </Button>
                         </div>
                       </div>
                     </div>
