@@ -66,18 +66,6 @@ export default function Admin() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Check admin access
-  if (!isAuthenticated || !permissions.canAccessAdminPanel) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
-          <p className="text-gray-600">You need admin or business owner privileges to access this page.</p>
-        </div>
-      </div>
-    );
-  }
-
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
   });
@@ -301,6 +289,18 @@ export default function Admin() {
   const filteredBusinesses = businesses.filter((business) =>
     business.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Check admin access after all hooks are called
+  if (!isAuthenticated || !permissions.canAccessAdminPanel) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
+          <p className="text-gray-600">You need admin or business owner privileges to access this page.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
