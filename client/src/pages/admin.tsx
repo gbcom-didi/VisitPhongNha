@@ -144,6 +144,7 @@ export default function Admin() {
         rating: data.rating ? parseFloat(data.rating) : null,
         reviewCount: data.reviewCount ? parseInt(data.reviewCount) : null,
         reviews: data.reviews ? JSON.parse(data.reviews) : null,
+        categoryIds: selectedCategoryIds,
       };
       return apiRequest("PUT", `/api/businesses/${data.id}`, payload);
     },

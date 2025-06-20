@@ -268,12 +268,34 @@ export class DatabaseStorage implements IStorage {
     }));
   }
 
-  async updateBusiness(id: number, business: Partial<InsertBusiness>): Promise<Business> {
+  async updateBusiness(id: number, business: Partial<InsertBusiness> & { categoryIds?: number[] }): Promise<Business> {
+    // Extract categoryIds from business data
+    const { categoryIds, ...businessData } = business;
+    
+    // Update the business record
     const [updatedBusiness] = await db
       .update(businesses)
-      .set({ ...business, updatedAt: new Date() })
+      .set({ ...businessData, updatedAt: new Date() })
       .where(eq(businesses.id, id))
       .returning();
+
+    // Handle category associations if provided
+    if (categoryIds !== undefined) {
+      // Remove existing category associations
+      await db
+        .delete(businessCategories)
+        .where(eq(businessCategories.businessId, id));
+
+      // Add new category associations
+      if (categoryIds.length > 0) {
+        const categoryAssociations = categoryIds.map(categoryId => ({
+          businessId: id,
+          categoryId,
+        }));
+        await db.insert(businessCategories).values(categoryAssociations);
+      }
+    }
+
     return updatedBusiness;
   }
 

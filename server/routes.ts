@@ -116,6 +116,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update business route
+  app.put('/api/businesses/:id', isAuthenticated, requireBusinessOwner, async (req: any, res) => {
+    try {
+      const businessId = parseInt(req.params.id);
+      const { categoryIds, ...businessFields } = req.body;
+      const businessData = insertBusinessSchema.partial().parse(businessFields);
+      const userId = req.user.claims.sub;
+      const userRole = req.user.role;
+      
+      // Check if business exists and user has permission to edit it
+      const existingBusiness = await storage.getBusiness(businessId);
+      if (!existingBusiness) {
+        return res.status(404).json({ message: "Business not found" });
+      }
+      
+      // Business owners can only edit their own businesses unless they're admin
+      if (userRole === 'business_owner' && existingBusiness.ownerId !== userId) {
+        return res.status(403).json({ message: "You can only edit your own businesses" });
+      }
+      
+      // Include categoryIds in the business update
+      const updatedBusiness = await storage.updateBusiness(businessId, { ...businessData, categoryIds });
+      res.json(updatedBusiness);
+    } catch (error) {
+      console.error("Error updating business:", error);
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid business data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Failed to update business" });
+      }
+    }
+  });
+
   // Admin routes for user management
   app.get('/api/admin/users', isAuthenticated, requireAdmin, async (req, res) => {
     try {
