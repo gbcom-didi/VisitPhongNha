@@ -1,45 +1,51 @@
 
-const fetch = require('node-fetch');
+const postgres = require('postgres');
 
 async function updateUserRole() {
   try {
-    // First, get your user ID by email
-    const response = await fetch('http://localhost:5000/api/admin/users', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      console.log('Note: This requires admin access. You may need to manually update the database.');
+    // Use the DATABASE_URL from environment
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) {
+      console.log('DATABASE_URL not found. Please set your database connection string.');
       return;
     }
-
-    const users = await response.json();
-    const user = users.find(u => u.email === 'glenbowdencom@gmail.com');
     
-    if (!user) {
-      console.log('User not found');
-      return;
-    }
-
-    // Update role to admin
-    const updateResponse = await fetch(`http://localhost:5000/api/admin/users/${user.id}/role`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ role: 'admin' }),
-    });
-
-    if (updateResponse.ok) {
-      console.log('Role updated successfully to admin');
+    const sql = postgres(connectionString, { max: 1 });
+    
+    // Update user role directly in database
+    const result = await sql`
+      UPDATE users 
+      SET role = 'admin', updated_at = NOW() 
+      WHERE email = 'glenbowdencom@gmail.com'
+      RETURNING id, email, role, "firstName", "lastName"
+    `;
+    
+    if (result.length > 0) {
+      console.log('✅ Successfully updated role to admin!');
+      console.log('User details:', {
+        id: result[0].id,
+        email: result[0].email,
+        role: result[0].role,
+        name: `${result[0].firstName || ''} ${result[0].lastName || ''}`.trim()
+      });
     } else {
-      console.log('Failed to update role');
+      console.log('❌ User not found with email: glenbowdencom@gmail.com');
+      
+      // Let's check what users exist
+      const users = await sql`
+        SELECT id, email, role, "firstName", "lastName" 
+        FROM users 
+        LIMIT 5
+      `;
+      console.log('Existing users:');
+      users.forEach(user => {
+        console.log(`- ${user.email} (${user.role})`);
+      });
     }
+    
+    await sql.end();
   } catch (error) {
-    console.error('Error:', error.message);
+    console.error('❌ Error updating role:', error.message);
   }
 }
 
