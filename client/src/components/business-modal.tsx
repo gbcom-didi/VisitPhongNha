@@ -100,93 +100,44 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
               {business.description || `Experience the best of ${business.name} in Phan Rang. This highly-rated establishment offers exceptional service and authentic local experiences that showcase the unique culture and hospitality of the region.`}
             </p>
 
-            {/* Rating Section */}
-            {business.rating && (
-              <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-                <div className="flex items-center mb-3">
-                  <div className="flex items-center">
-                    <Star className="w-5 h-5 fill-yellow-400 text-yellow-400 mr-2" />
-                    <span className="text-xl font-bold text-gray-900">{business.rating}</span>
-                  </div>
-                  {business.reviewCount && business.reviewCount > 0 && (
-                    <span className="text-sm text-gray-600 ml-2">({business.reviewCount} reviews)</span>
-                  )}
-                </div>
-                <div className="flex">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star 
-                      key={star}
-                      className={`w-4 h-4 ${
-                        star <= Math.floor(parseFloat(business.rating || '0'))
-                          ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-gray-300'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Opening Hours Section */}
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                <Clock className="w-5 h-5 mr-2 text-gray-600" />
-                Opening Hours
-              </h4>
-              <div className="space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Monday - Friday</span>
-                  <span className="font-medium">8:00 AM - 10:00 PM</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Saturday</span>
-                  <span className="font-medium">9:00 AM - 11:00 PM</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Sunday</span>
-                  <span className="font-medium">10:00 AM - 9:00 PM</span>
-                </div>
-                <div className="mt-2 pt-2 border-t border-gray-200">
-                  <span className="text-green-600 font-medium text-xs">● Open Now</span>
-                </div>
-              </div>
-            </div>
-
             {/* Reviews Section */}
-            {business.reviews && Array.isArray(business.reviews) && business.reviews.length > 0 && (
+            {business.rating && (
               <div>
-                <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                  <User className="w-5 h-5 mr-2 text-gray-600" />
-                  Recent Reviews
-                </h4>
-                <div className="space-y-4">
-                  {(business.reviews as any[]).slice(0, 3).map((review: any, index: number) => (
-                    <div key={index} className="border-l-4 border-tropical-aqua pl-4">
-                      <div className="flex items-center mb-2">
-                        <div className="flex mr-2">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <Star 
-                              key={star}
-                              className={`w-4 h-4 ${
-                                star <= review.rating
-                                  ? 'fill-yellow-400 text-yellow-400'
-                                  : 'text-gray-300'
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-sm font-medium text-gray-700">{String(review.author_name)}</span>
-                        <span className="text-xs text-gray-500 ml-2">
-                          {new Date(review.time * 1000).toLocaleDateString()}
+                <h4 className="font-semibold text-gray-900 mb-4 text-lg">Reviews</h4>
+                <div className="flex items-start gap-4">
+                  <div className="text-5xl font-bold text-gray-900">
+                    {business.rating}
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-lg font-semibold text-gray-900">Excellent</div>
+                    <div className="flex items-center text-gray-600 mb-2">
+                      <Star className="w-4 h-4 fill-gray-800 text-gray-800 mr-1" />
+                      <span className="text-sm">
+                        {business.reviewCount && business.reviewCount > 0 
+                          ? `${business.reviewCount.toLocaleString()} reviews`
+                          : '2.5k reviews'}
+                      </span>
+                    </div>
+                    <div className="bg-white border border-gray-200 rounded-lg p-3 inline-block">
+                      <div className="flex items-center gap-2">
+                        <span className="text-blue-600 font-semibold text-sm">G</span>
+                        <span className="text-green-600 font-semibold text-sm">o</span>
+                        <span className="text-yellow-600 font-semibold text-sm">o</span>
+                        <span className="text-blue-600 font-semibold text-sm">g</span>
+                        <span className="text-red-600 font-semibold text-sm">l</span>
+                        <span className="text-green-600 font-semibold text-sm">e</span>
+                        <ExternalLink className="w-3 h-3 text-gray-400 ml-1" />
+                      </div>
+                      <div className="text-sm text-gray-700 mt-1">
+                        <span className="font-semibold">{business.rating}/5</span>
+                        <span className="text-gray-500 ml-1">
+                          · {business.reviewCount && business.reviewCount > 0 
+                            ? `${business.reviewCount.toLocaleString()} reviews`
+                            : '2.5k reviews'}
                         </span>
                       </div>
-                      {review.text && (
-                        <p className="text-sm text-gray-600">
-                          {String(review.text).length > 200 ? `${String(review.text).substring(0, 200)}...` : String(review.text)}
-                        </p>
-                      )}
                     </div>
-                  ))}
+                  </div>
                 </div>
               </div>
             )}
