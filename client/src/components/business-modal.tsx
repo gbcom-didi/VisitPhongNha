@@ -102,18 +102,18 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
 
             {/* Reviews Section */}
             {business.rating && (
-              <div className="bg-gray-50 rounded-lg p-4 border">
-                <h4 className="font-semibold text-gray-900 mb-3 text-lg">Reviews</h4>
-                <div className="flex items-center gap-6">
+              <div className="bg-gray-50 rounded-lg p-3 border">
+                <h4 className="font-semibold text-gray-900 mb-2">Reviews</h4>
+                <div className="flex items-center gap-4">
                   <div className="flex flex-col items-center">
-                    <div className="text-4xl font-bold text-gray-900 mb-1">
+                    <div className="text-3xl font-bold text-gray-900">
                       {business.rating}
                     </div>
                     <div className="flex items-center">
                       {[...Array(5)].map((_, i) => (
                         <Star 
                           key={i} 
-                          className={`w-4 h-4 ${
+                          className={`w-3 h-3 ${
                             i < Math.floor(business.rating) 
                               ? 'fill-yellow-400 text-yellow-400' 
                               : 'fill-gray-200 text-gray-200'
@@ -123,9 +123,9 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                     </div>
                   </div>
                   <div className="flex-1">
-                    <div className="flex items-center text-gray-600 mb-2">
-                      <User className="w-4 h-4 mr-2" />
-                      <span className="text-sm font-medium">
+                    <div className="flex items-center text-gray-600 mb-1">
+                      <User className="w-3 h-3 mr-1" />
+                      <span className="text-sm">
                         {business.reviewCount && business.reviewCount > 0 
                           ? `${business.reviewCount.toLocaleString()} reviews`
                           : '6 reviews'}
@@ -136,7 +136,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                         href={business.googleMapsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center text-sm text-tropical-aqua hover:text-tropical-aqua-800 transition-colors font-medium"
+                        className="inline-flex items-center text-sm text-tropical-aqua hover:text-tropical-aqua-800 transition-colors"
                       >
                         View on Google Maps
                         <ExternalLink className="w-3 h-3 ml-1" />
