@@ -61,23 +61,11 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
     <>
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white border border-tropical-aqua-200">
-        <div className="sticky top-0 z-50 flex justify-end p-2 bg-white/95 backdrop-blur-sm">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full shadow-md border border-gray-200 hover:bg-gray-100"
-            onClick={onClose}
-          >
-            <X className="w-4 h-4" />
-          </Button>
-        </div>
-        
-        <div className="px-6 pb-6 -mt-2">
-          <DialogHeader>
-            <DialogTitle className="sr-only">Business Details</DialogTitle>
-          </DialogHeader>
+        <DialogHeader>
+          <DialogTitle className="sr-only">Business Details</DialogTitle>
+        </DialogHeader>
 
-          {/* Business Image Gallery */}
+        {/* Business Image Gallery */}
         <div className="w-full h-64 mb-4 relative">
           {hasMultipleImages ? (
             <div className="flex gap-2 h-full">
@@ -345,7 +333,6 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
           >
             <Heart className={`w-4 h-4 ${business.isLiked ? 'fill-current' : ''}`} />
           </Button>
-          </div>
         </div>
       </DialogContent>
     </Dialog>
