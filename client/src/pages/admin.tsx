@@ -69,8 +69,12 @@ export default function Admin() {
     queryKey: ["/api/categories"],
   });
 
-  const { data: businesses = [] } = useQuery<BusinessWithCategory[]>({
-    queryKey: ["/api/businesses"],
+  const { data: businesses = [], isLoading: businessesLoading } = useQuery<BusinessWithCategory[]>({
+    queryKey: ["/api/businesses", { showAll: true }],
+    queryFn: () => fetch("/api/businesses?showAll=true").then(res => {
+      if (!res.ok) throw new Error('Failed to fetch businesses');
+      return res.json();
+    }),
   });
 
   const form = useForm<BusinessFormData>({
@@ -285,9 +289,9 @@ export default function Admin() {
     setViewingBusiness(null);
   };
 
-  const filteredBusinesses = businesses.filter((business) =>
+  const filteredBusinesses = Array.isArray(businesses) ? businesses.filter((business) =>
     business.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ) : [];
 
   // Call useRBAC after all other hooks to maintain hook order
   const { permissions, isAuthenticated } = useRBAC();
@@ -656,10 +660,14 @@ export default function Admin() {
                               {business.categories?.map(cat => cat.name).join(', ') || business.category?.name || 'No category'}
                             </div>
                             <div className="flex gap-2 mt-2">
+                              {business.isActive ? (
+                                <Badge variant="default" className="bg-green-600 text-white">Active</Badge>
+                              ) : (
+                                <Badge variant="destructive">Inactive</Badge>
+                              )}
                               {business.isPremium && <Badge variant="secondary">Premium</Badge>}
                               {business.isVerified && <Badge variant="outline">Verified</Badge>}
                               {business.isRecommended && <Badge className="bg-tropical-aqua text-white">Recommended</Badge>}
-                              {!business.isActive && <Badge variant="destructive">Inactive</Badge>}
                             </div>
                           </div>
                           <div className="flex gap-2">

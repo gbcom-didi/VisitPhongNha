@@ -32,6 +32,7 @@ export interface IStorage {
   
   // Business operations
   getBusinesses(): Promise<BusinessWithCategory[]>;
+  getAllBusinesses(): Promise<BusinessWithCategory[]>;
   getBusinessesByCategory(categoryId: number): Promise<BusinessWithCategory[]>;
   getBusinessesWithUserLikes(userId?: string): Promise<BusinessWithCategory[]>;
   getBusinessesByOwner(ownerId: string): Promise<BusinessWithCategory[]>;
@@ -100,6 +101,21 @@ export class DatabaseStorage implements IStorage {
       .from(businesses)
       .where(eq(businesses.isActive, true))
       .orderBy(desc(businesses.isPremium), desc(businesses.isRecommended), asc(businesses.name));
+
+    return this.attachCategoriesToBusinesses(businessesData);
+  }
+
+  async getAllBusinesses(): Promise<BusinessWithCategory[]> {
+    // Get ALL businesses (including inactive) for admin use
+    const businessesData = await db
+      .select()
+      .from(businesses)
+      .orderBy(desc(businesses.isPremium), desc(businesses.isRecommended), asc(businesses.name));
+
+    return this.attachCategoriesToBusinesses(businessesData);
+  }
+
+  private async attachCategoriesToBusinesses(businessesData: any[]): Promise<BusinessWithCategory[]> {
 
     // Get all business-category relationships
     const businessCategoryData = await db

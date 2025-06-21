@@ -59,9 +59,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user?.claims?.sub;
       const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
+      const showAll = req.query.showAll === 'true';
 
       let businesses;
-      if (categoryId) {
+      if (showAll) {
+        // For admin use - get all businesses including inactive
+        const allBusinesses = await db
+          .select()
+          .from(businessesTable)
+          .orderBy(desc(businessesTable.isPremium), desc(businessesTable.isRecommended), asc(businessesTable.name));
+        
+        // Get categories for each business
+        const businessCategoryData = await db
+          .select({
+            businessId: businessCategories.businessId,
+            category: categories,
+          })
+          .from(businessCategories)
+          .leftJoin(categories, eq(businessCategories.categoryId, categories.id));
+
+        const businessCategoryMap = new Map();
+        businessCategoryData.forEach(({ businessId, category }) => {
+          if (!businessCategoryMap.has(businessId)) {
+            businessCategoryMap.set(businessId, []);
+          }
+          if (category) {
+            businessCategoryMap.get(businessId).push(category);
+          }
+        });
+
+        businesses = allBusinesses.map(business => ({
+          ...business,
+          categories: businessCategoryMap.get(business.id) || [],
+          category: businessCategoryMap.get(business.id)?.[0] || null,
+        }));
+      } else if (categoryId) {
         businesses = await storage.getBusinessesByCategory(categoryId);
       } else {
         businesses = await storage.getBusinessesWithUserLikes(userId);
@@ -70,7 +102,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(businesses);
     } catch (error) {
       console.error("Error fetching businesses:", error);
-      res.status(500).json({ message: "Failed to fetch businesses" });
+      res.status(500).json({ error: "Failed to fetch businesses" });
     }
   });
 
