@@ -55,7 +55,6 @@ const businessFormSchema = z.object({
 type BusinessFormData = z.infer<typeof businessFormSchema>;
 
 export default function Admin() {
-  const { permissions, isAuthenticated } = useRBAC();
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);
   const [editingBusiness, setEditingBusiness] = useState<BusinessWithCategory | null>(null);
   const [viewingBusiness, setViewingBusiness] = useState<BusinessWithCategory | null>(null);
@@ -289,6 +288,9 @@ export default function Admin() {
   const filteredBusinesses = businesses.filter((business) =>
     business.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Call useRBAC after all other hooks to maintain hook order
+  const { permissions, isAuthenticated } = useRBAC();
 
   // Check admin access after all hooks are called
   if (!isAuthenticated || !permissions.canAccessAdminPanel) {
@@ -935,15 +937,24 @@ export default function Admin() {
 
                 <div className="grid grid-cols-3 gap-4">
                   <div className="flex items-center space-x-2">
-                    <Switch {...form.register("isActive")} />
+                    <Switch 
+                      checked={form.watch("isActive")}
+                      onCheckedChange={(checked) => form.setValue("isActive", checked)}
+                    />
                     <Label>Active</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Switch {...form.register("isPremium")} />
+                    <Switch 
+                      checked={form.watch("isPremium")}
+                      onCheckedChange={(checked) => form.setValue("isPremium", checked)}
+                    />
                     <Label>Premium</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Switch {...form.register("isVerified")} />
+                    <Switch 
+                      checked={form.watch("isVerified")}
+                      onCheckedChange={(checked) => form.setValue("isVerified", checked)}
+                    />
                     <Label>Verified</Label>
                   </div>
                 </div>
