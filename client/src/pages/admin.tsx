@@ -115,9 +115,9 @@ export default function Admin() {
     mutationFn: async (data: BusinessFormData) => {
       const payload = {
         ...data,
-        gallery: data.gallery ? data.gallery.split(',').map(url => url.trim()) : undefined,
-        tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : undefined,
-        amenities: data.amenities ? data.amenities.split(',').map(amenity => amenity.trim()) : undefined,
+        gallery: data.gallery ? data.gallery.split(',').map(url => url.trim()).filter(url => url.length > 0) : [],
+        tags: data.tags ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0) : [],
+        amenities: data.amenities ? data.amenities.split(',').map(amenity => amenity.trim()).filter(amenity => amenity.length > 0) : [],
         reviewCount: data.reviewCount ? parseInt(data.reviewCount) : undefined,
         reviews: data.reviews ? JSON.parse(data.reviews) : undefined,
       };
@@ -146,9 +146,9 @@ export default function Admin() {
     mutationFn: async (data: BusinessFormData & { id: number }) => {
       const payload = {
         ...data,
-        gallery: data.gallery ? data.gallery.split(',').map(url => url.trim()) : undefined,
-        tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : undefined,
-        amenities: data.amenities ? data.amenities.split(',').map(amenity => amenity.trim()) : undefined,
+        gallery: data.gallery ? data.gallery.split(',').map(url => url.trim()).filter(url => url.length > 0) : [],
+        tags: data.tags ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0) : [],
+        amenities: data.amenities ? data.amenities.split(',').map(amenity => amenity.trim()).filter(amenity => amenity.length > 0) : [],
         reviewCount: data.reviewCount ? parseInt(data.reviewCount) : undefined,
         reviews: data.reviews ? JSON.parse(data.reviews) : undefined,
         categoryIds: selectedCategoryIds,
