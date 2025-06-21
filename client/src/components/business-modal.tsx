@@ -60,10 +60,20 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
   return (
     <>
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white border border-tropical-aqua-200">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white border border-tropical-aqua-200 relative">
         <DialogHeader>
           <DialogTitle className="sr-only">Business Details</DialogTitle>
         </DialogHeader>
+
+        {/* Floating Close Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-2 right-2 z-50 bg-white/80 hover:bg-white rounded-full shadow-md border border-gray-200"
+          onClick={onClose}
+        >
+          <X className="w-4 h-4" />
+        </Button>
 
         {/* Business Image Gallery */}
         <div className="w-full h-64 mb-4 relative">
