@@ -46,7 +46,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-tropical-aqua-50">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white border border-tropical-aqua-200">
         <DialogHeader>
           <DialogTitle className="sr-only">Business Details</DialogTitle>
         </DialogHeader>
@@ -197,7 +197,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
           <Button
-            className="flex-1 bg-chili-red hover:bg-red-600 text-white"
+            className="flex-1 bg-tropical-aqua hover:bg-tropical-aqua-600 text-white"
             onClick={handleBookClick}
           >
             {business.website ? 'Visit Website' : 'Book Now'}
