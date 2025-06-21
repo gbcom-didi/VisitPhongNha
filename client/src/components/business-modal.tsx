@@ -46,7 +46,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-tropical-aqua-50">
         <DialogHeader>
           <DialogTitle className="sr-only">Business Details</DialogTitle>
         </DialogHeader>
@@ -105,13 +105,12 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
               <div>
                 <h4 className="font-semibold text-gray-900 mb-4 text-lg">Reviews</h4>
                 <div className="flex items-start gap-4">
-                  <div className="text-5xl font-bold text-gray-900">
+                  <div className="text-4xl font-bold text-gray-900">
                     {business.rating}
                   </div>
                   <div className="flex-1">
-                    <div className="text-lg font-semibold text-gray-900">Excellent</div>
                     <div className="flex items-center text-gray-600 mb-2">
-                      <Star className="w-4 h-4 fill-gray-800 text-gray-800 mr-1" />
+                      <Star className="w-3 h-3 fill-gray-800 text-gray-800 mr-1" />
                       <span className="text-sm">
                         {business.reviewCount && business.reviewCount > 0 
                           ? `${business.reviewCount.toLocaleString()} reviews`
@@ -123,7 +122,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                         href={business.googleMapsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-blue-600 hover:text-blue-800 transition-colors flex items-center"
+                        className="text-sm text-tropical-aqua hover:text-tropical-aqua-800 transition-colors flex items-center"
                       >
                         View on Google Maps
                         <ExternalLink className="w-3 h-3 ml-1" />
@@ -149,7 +148,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                 <Phone className="w-5 h-5 mr-3 flex-shrink-0" />
                 <a 
                   href={`tel:${business.phone}`}
-                  className="text-sm hover:text-chili-red transition-colors"
+                  className="text-sm hover:text-tropical-aqua transition-colors"
                 >
                   {business.phone}
                 </a>
@@ -170,7 +169,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                   href={business.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm hover:text-chili-red transition-colors flex items-center"
+                  className="text-sm hover:text-tropical-aqua transition-colors flex items-center"
                 >
                   Visit Website
                   <ExternalLink className="w-3 h-3 ml-1" />
@@ -185,7 +184,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                   href={business.googleMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm hover:text-chili-red transition-colors flex items-center"
+                  className="text-sm hover:text-tropical-aqua transition-colors flex items-center"
                 >
                   View on Google Maps
                   <ExternalLink className="w-3 h-3 ml-1" />
