@@ -312,7 +312,7 @@ export default function Admin() {
           <p className="text-gray-600">Manage business listings and content</p>
         </div>
 
-        <Tabs defaultValue="add-business" className="space-y-6">
+        <Tabs defaultValue="manage-businesses" className="space-y-6">
           <TabsList>
             <TabsTrigger value="add-business">Add Business</TabsTrigger>
             <TabsTrigger value="manage-businesses">Manage Businesses</TabsTrigger>
