@@ -118,25 +118,17 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                           : '2.5k reviews'}
                       </span>
                     </div>
-                    <div className="bg-white border border-gray-200 rounded-lg p-3 inline-block">
-                      <div className="flex items-center gap-2">
-                        <span className="text-blue-600 font-semibold text-sm">G</span>
-                        <span className="text-green-600 font-semibold text-sm">o</span>
-                        <span className="text-yellow-600 font-semibold text-sm">o</span>
-                        <span className="text-blue-600 font-semibold text-sm">g</span>
-                        <span className="text-red-600 font-semibold text-sm">l</span>
-                        <span className="text-green-600 font-semibold text-sm">e</span>
-                        <ExternalLink className="w-3 h-3 text-gray-400 ml-1" />
-                      </div>
-                      <div className="text-sm text-gray-700 mt-1">
-                        <span className="font-semibold">{business.rating}/5</span>
-                        <span className="text-gray-500 ml-1">
-                          · {business.reviewCount && business.reviewCount > 0 
-                            ? `${business.reviewCount.toLocaleString()} reviews`
-                            : '2.5k reviews'}
-                        </span>
-                      </div>
-                    </div>
+                    {business.googleMapsUrl && (
+                      <a 
+                        href={business.googleMapsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:text-blue-800 transition-colors flex items-center"
+                      >
+                        View on Google Maps
+                        <ExternalLink className="w-3 h-3 ml-1" />
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
