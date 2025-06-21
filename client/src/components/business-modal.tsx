@@ -1,7 +1,8 @@
-import { X, MapPin, Phone, Clock, Globe, Heart, ExternalLink, Star, User } from 'lucide-react';
+import { X, MapPin, Phone, Clock, Globe, Heart, ExternalLink, Star, User, Images, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useState, useEffect } from 'react';
 import type { BusinessWithCategory } from '@shared/schema';
 
 interface BusinessModalProps {
@@ -24,6 +25,9 @@ const getBusinessImageUrl = (business: BusinessWithCategory | null): string => {
 export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessModalProps) {
   if (!business) return null;
 
+  const [showGallery, setShowGallery] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
   const handleLikeClick = () => {
     onLike?.(business);
   };
@@ -44,34 +48,127 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
     }
   };
 
+  // Combine main image and gallery images
+  const allImages = [
+    business.imageUrl || getBusinessImageUrl(business),
+    ...(business.gallery || [])
+  ].filter(Boolean);
+
+  const hasMultipleImages = allImages.length > 1;
+  const thumbnailImages = allImages.slice(1, 5); // Show max 4 thumbnails
+
   return (
+    <>
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white border border-tropical-aqua-200">
         <DialogHeader>
           <DialogTitle className="sr-only">Business Details</DialogTitle>
         </DialogHeader>
 
-        {/* Business Image */}
-        <div className="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden mb-4">
-          <img 
-            src={business.imageUrl || getBusinessImageUrl(business)} 
-            alt={business.name}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-              const parent = target.parentElement;
-              if (parent) {
-                parent.innerHTML = `
-                  <div class="w-full h-full bg-gradient-to-br from-sea-blue to-tropical-aqua flex items-center justify-center">
-                    <svg class="w-16 h-16 text-white opacity-50" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                    </svg>
+        {/* Business Image Gallery */}
+        <div className="w-full h-64 mb-4 relative">
+          {hasMultipleImages ? (
+            <div className="flex gap-2 h-full">
+              {/* Main Image */}
+              <div className="flex-1 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden relative">
+                <img 
+                  src={allImages[0]} 
+                  alt={business.name}
+                  className="w-full h-full object-cover cursor-pointer"
+                  onClick={() => setShowGallery(true)}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    const parent = target.parentElement;
+                    if (parent) {
+                      parent.innerHTML = `
+                        <div class="w-full h-full bg-gradient-to-br from-sea-blue to-tropical-aqua flex items-center justify-center">
+                          <svg class="w-16 h-16 text-white opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                          </svg>
+                        </div>
+                      `;
+                    }
+                  }}
+                />
+              </div>
+              
+              {/* Thumbnail Grid */}
+              <div className="w-32 flex flex-col gap-2">
+                {thumbnailImages.slice(0, 3).map((image, index) => (
+                  <div key={index} className="h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden">
+                    <img 
+                      src={image} 
+                      alt={`${business.name} - Image ${index + 2}`}
+                      className="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => {
+                        setSelectedImageIndex(index + 1);
+                        setShowGallery(true);
+                      }}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                      }}
+                    />
                   </div>
-                `;
-              }
-            }}
-          />
+                ))}
+                
+                {/* Show All Photos Button */}
+                {allImages.length > 4 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-20 flex flex-col items-center justify-center text-xs border-tropical-aqua-200 hover:bg-tropical-aqua-50"
+                    onClick={() => setShowGallery(true)}
+                  >
+                    <Images className="w-4 h-4 mb-1" />
+                    Show all photos
+                  </Button>
+                )}
+                
+                {allImages.length === 4 && (
+                  <div className="h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden">
+                    <img 
+                      src={thumbnailImages[3]} 
+                      alt={`${business.name} - Image 4`}
+                      className="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => {
+                        setSelectedImageIndex(3);
+                        setShowGallery(true);
+                      }}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            /* Single Image */
+            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden">
+              <img 
+                src={allImages[0]} 
+                alt={business.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  const parent = target.parentElement;
+                  if (parent) {
+                    parent.innerHTML = `
+                      <div class="w-full h-full bg-gradient-to-br from-sea-blue to-tropical-aqua flex items-center justify-center">
+                        <svg class="w-16 h-16 text-white opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                      </div>
+                    `;
+                  }
+                }}
+              />
+            </div>
+          )}
         </div>
 
         {/* Business Info */}
@@ -239,5 +336,97 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
         </div>
       </DialogContent>
     </Dialog>
+
+    {/* Full Screen Gallery Modal */}
+    {showGallery && (
+      <Dialog open={showGallery} onOpenChange={setShowGallery}>
+        <DialogContent className="max-w-6xl max-h-[95vh] w-[95vw] p-0 bg-black border-none">
+          <DialogHeader className="sr-only">
+            <DialogTitle>Photo Gallery</DialogTitle>
+          </DialogHeader>
+          
+          <div className="relative w-full h-full flex items-center justify-center">
+            {/* Close Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-4 right-4 z-50 text-white hover:bg-white/20 rounded-full"
+              onClick={() => setShowGallery(false)}
+            >
+              <X className="w-6 h-6" />
+            </Button>
+
+            {/* Navigation Arrows */}
+            {allImages.length > 1 && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute left-4 z-50 text-white hover:bg-white/20 rounded-full"
+                  onClick={() => setSelectedImageIndex(selectedImageIndex > 0 ? selectedImageIndex - 1 : allImages.length - 1)}
+                >
+                  <ChevronLeft className="w-8 h-8" />
+                </Button>
+                
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-4 z-50 text-white hover:bg-white/20 rounded-full"
+                  onClick={() => setSelectedImageIndex(selectedImageIndex < allImages.length - 1 ? selectedImageIndex + 1 : 0)}
+                >
+                  <ChevronRight className="w-8 h-8" />
+                </Button>
+              </>
+            )}
+
+            {/* Main Gallery Image */}
+            <div className="w-full h-full flex items-center justify-center p-8">
+              <img
+                src={allImages[selectedImageIndex]}
+                alt={`${business.name} - Image ${selectedImageIndex + 1}`}
+                className="max-w-full max-h-full object-contain rounded-lg"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                }}
+              />
+            </div>
+
+            {/* Image Counter */}
+            {allImages.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                {selectedImageIndex + 1} / {allImages.length}
+              </div>
+            )}
+
+            {/* Thumbnail Strip */}
+            {allImages.length > 1 && (
+              <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 flex gap-2 max-w-full overflow-x-auto px-4">
+                {allImages.map((image, index) => (
+                  <div
+                    key={index}
+                    className={`w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${
+                      index === selectedImageIndex ? 'border-tropical-aqua' : 'border-transparent opacity-60 hover:opacity-80'
+                    }`}
+                    onClick={() => setSelectedImageIndex(index)}
+                  >
+                    <img
+                      src={image}
+                      alt={`Thumbnail ${index + 1}`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    )}
+    </>
   );
 }
