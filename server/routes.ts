@@ -55,29 +55,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Businesses routes
-  // Get businesses (with optional category filter) - for public pages
-  app.get("/api/businesses", async (req, res) => {
+  app.get('/api/businesses', async (req: any, res) => {
     try {
-      const categoryId = req.query.categoryId;
-      const includeInactive = req.query.includeInactive === 'true';
+      const userId = req.user?.claims?.sub;
+      const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
 
-      let businesses: any[];
-
+      let businesses;
       if (categoryId) {
-        businesses = await storage.getBusinessesByCategory(parseInt(categoryId as string));
+        businesses = await storage.getBusinessesByCategory(categoryId);
       } else {
-        businesses = await storage.getAllBusinesses();
-      }
-
-      // Filter out inactive businesses for public pages unless specifically requested
-      if (!includeInactive) {
-        businesses = businesses.filter(business => business.isActive !== false);
+        businesses = await storage.getBusinessesWithUserLikes(userId);
       }
 
       res.json(businesses);
     } catch (error) {
       console.error("Error fetching businesses:", error);
-      res.status(500).json({ error: "Failed to fetch businesses" });
+      res.status(500).json({ message: "Failed to fetch businesses" });
     }
   });
 
@@ -99,23 +92,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Extract categoryIds from the request body and validate the rest with the schema
       const { categoryIds, ...businessFields } = req.body;
-
+      
       const businessData = insertBusinessSchema.parse(businessFields);
       const userId = req.user.claims.sub;
       const userRole = req.user.role;
-
+      
       // Permission check: Only business owners and admins can create businesses
       if (userRole === 'viewer') {
         return res.status(403).json({ message: "Viewers cannot create businesses" });
       }
-
+      
       // Business owners can only create businesses for themselves unless they're admin
       if (userRole === 'business_owner' && !businessData.ownerId) {
         businessData.ownerId = userId;
       } else if (userRole === 'business_owner' && businessData.ownerId !== userId) {
         return res.status(403).json({ message: "Business owners can only create businesses for themselves" });
       }
-
+      
       // Include categoryIds in the business creation
       const business = await storage.createBusiness({ ...businessData, categoryIds });
       res.status(201).json(business);
@@ -134,31 +127,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const businessId = parseInt(req.params.id);
       const { categoryIds, ...businessFields } = req.body;
-
+      
       // Filter out empty strings and undefined values
       const filteredFields = Object.fromEntries(
         Object.entries(businessFields).filter(([key, value]) => 
           value !== '' && value !== undefined && value !== null
         )
       );
-
+      
       const businessData = insertBusinessSchema.partial().parse(filteredFields);
       const userId = req.user.claims.sub;
       const userRole = req.user.role;
-
+      
       // Check if business exists
       const existingBusiness = await storage.getBusiness(businessId);
       if (!existingBusiness) {
         return res.status(404).json({ message: "Business not found" });
       }
-
+      
       // Permission check: Admin can edit any business, business owners can only edit their own
       if (userRole === 'business_owner' && existingBusiness.ownerId !== userId) {
         return res.status(403).json({ message: "You can only edit your own businesses" });
       } else if (userRole === 'viewer') {
         return res.status(403).json({ message: "Viewers cannot edit businesses" });
       }
-
+      
       // Include categoryIds in the business update
       const updatedBusiness = await storage.updateBusiness(businessId, { ...businessData, categoryIds });
       res.json(updatedBusiness);
@@ -198,11 +191,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.params.id;
       const { role } = req.body;
-
+      
       if (!['admin', 'business_owner', 'viewer'].includes(role)) {
         return res.status(400).json({ message: "Invalid role" });
       }
-
+      
       const user = await storage.updateUserRole(userId, role);
       res.json(user);
     } catch (error) {
@@ -228,7 +221,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log('Starting Google Places import...');
       res.json({ message: 'Import started', status: 'processing' });
-
+      
       // Run import in background
       googlePlacesImporter.importAllBusinesses().catch(error => {
         console.error('Google Places import failed:', error);
@@ -244,13 +237,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const businessId = parseInt(req.params.id);
       const business = await storage.getBusiness(businessId);
-
+      
       if (!business) {
         return res.status(404).json({ message: "Business not found" });
       }
-
+      
       const success = await googlePlacesImporter.updateBusinessWithGoogleData(businessId, business.name);
-
+      
       if (success) {
         const updatedBusiness = await storage.getBusiness(businessId);
         res.json({ message: 'Business updated successfully', business: updatedBusiness });

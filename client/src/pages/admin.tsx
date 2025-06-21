@@ -70,8 +70,7 @@ export default function Admin() {
   });
 
   const { data: businesses = [] } = useQuery<BusinessWithCategory[]>({
-    queryKey: ["/api/businesses", "admin"],
-    queryFn: () => apiRequest("GET", "/api/businesses?includeInactive=true"),
+    queryKey: ["/api/businesses"],
   });
 
   const form = useForm<BusinessFormData>({

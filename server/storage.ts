@@ -25,11 +25,11 @@ export interface IStorage {
   upsertUser(user: UpsertUser): Promise<User>;
   updateUserRole(userId: string, role: string): Promise<User>;
   getUsersByRole(role: string): Promise<User[]>;
-
+  
   // Category operations
   getCategories(): Promise<Category[]>;
   createCategory(category: InsertCategory): Promise<Category>;
-
+  
   // Business operations
   getBusinesses(): Promise<BusinessWithCategory[]>;
   getBusinessesByCategory(categoryId: number): Promise<BusinessWithCategory[]>;
@@ -38,7 +38,7 @@ export interface IStorage {
   getBusiness(id: number): Promise<Business | undefined>;
   createBusiness(business: InsertBusiness): Promise<Business>;
   updateBusiness(id: number, business: Partial<InsertBusiness>): Promise<Business>;
-
+  
   // User likes operations
   getUserLikes(userId: string): Promise<UserLike[]>;
   toggleUserLike(userId: string, businessId: number): Promise<{ liked: boolean }>;
@@ -98,6 +98,7 @@ export class DatabaseStorage implements IStorage {
     const businessesData = await db
       .select()
       .from(businesses)
+      .where(eq(businesses.isActive, true))
       .orderBy(desc(businesses.isPremium), desc(businesses.isRecommended), asc(businesses.name));
 
     // Get all business-category relationships
@@ -182,7 +183,7 @@ export class DatabaseStorage implements IStorage {
 
   async getBusinessesWithUserLikes(userId?: string): Promise<BusinessWithCategory[]> {
     const businessesData = await this.getBusinesses();
-
+    
     if (!userId) {
       return businessesData;
     }
@@ -203,20 +204,20 @@ export class DatabaseStorage implements IStorage {
 
   async createBusiness(business: InsertBusiness & { categoryIds?: number[] }): Promise<Business> {
     const { categoryIds, ...businessData } = business;
-
+    
     // Create the business
     const [newBusiness] = await db.insert(businesses).values(businessData).returning();
-
+    
     // If categoryIds are provided, create the business-category relationships
     if (categoryIds && categoryIds.length > 0) {
       const businessCategoryData = categoryIds.map(categoryId => ({
         businessId: newBusiness.id,
         categoryId,
       }));
-
+      
       await db.insert(businessCategories).values(businessCategoryData);
     }
-
+    
     return newBusiness;
   }
 
@@ -270,7 +271,7 @@ export class DatabaseStorage implements IStorage {
   async updateBusiness(id: number, business: Partial<InsertBusiness> & { categoryIds?: number[] }): Promise<Business> {
     // Extract categoryIds from business data
     const { categoryIds, ...businessData } = business;
-
+    
     // Update the business record
     const [updatedBusiness] = await db
       .update(businesses)
