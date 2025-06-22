@@ -102,9 +102,9 @@ export function Favorites() {
             <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <Heart className="w-12 h-12 text-gray-400" />
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">No Favorites Yet</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">No Saved Places Yet</h2>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
-              Start exploring Phan Rang and save your favorite places by clicking the heart icon on any business.
+              Start exploring Phan Rang and save places you love by clicking the heart icon on any business.
             </p>
             <Button 
               className="bg-tropical-aqua text-white hover:bg-tropical-aqua/90"
