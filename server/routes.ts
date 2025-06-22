@@ -305,16 +305,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/user/likes/toggle', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const { businessId } = insertUserLikeSchema.parse(req.body);
+      const { businessId } = req.body;
+      
+      if (!businessId || typeof businessId !== 'number') {
+        return res.status(400).json({ message: "Valid businessId is required" });
+      }
+      
       const result = await storage.toggleUserLike(userId, businessId);
       res.json(result);
     } catch (error) {
       console.error("Error toggling user like:", error);
-      if (error instanceof z.ZodError) {
-        res.status(400).json({ message: "Invalid like data", errors: error.errors });
-      } else {
-        res.status(500).json({ message: "Failed to toggle like" });
-      }
+      res.status(500).json({ message: "Failed to toggle like" });
     }
   });
 

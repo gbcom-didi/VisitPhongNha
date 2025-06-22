@@ -72,7 +72,12 @@ export function Navigation() {
           {/* User Actions */}
           <div className="flex items-center space-x-3">
             {isAuthenticated && (
-              <Button variant="ghost" size="sm" className="hidden md:flex text-gray-700 hover:text-tropical-aqua">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="hidden md:flex text-gray-700 hover:text-tropical-aqua"
+                onClick={() => window.location.href = '/favorites'}
+              >
                 <Heart className="w-5 h-5" />
               </Button>
             )}
