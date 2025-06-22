@@ -289,7 +289,7 @@ export default function Explore() {
                   location === '/favorites' 
                     ? 'bg-tropical-aqua text-white' 
                     : 'text-gray-700 hover:bg-gray-100'
-                }`} title="My Favorites">
+                }`} title="Saved Places">
                   <Heart className="w-5 h-5" />
                 </div>
               </Link>

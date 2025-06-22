@@ -37,7 +37,7 @@ export function Favorites() {
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Sign In Required</h1>
           <p className="text-gray-600 mb-6">
-            Please sign in to view and manage your favorite places in Phan Rang.
+            Please sign in to view and manage your saved places in Phan Rang.
           </p>
           <Button 
             className="w-full bg-tropical-aqua text-white hover:bg-tropical-aqua/90"
@@ -72,7 +72,7 @@ export function Favorites() {
               <Heart className="w-6 h-6 text-white fill-current" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">My Favorites</h1>
+              <h1 className="text-3xl font-bold text-gray-900">Saved Places</h1>
               <p className="text-gray-600">Your saved places in Phan Rang</p>
             </div>
           </div>
@@ -81,7 +81,7 @@ export function Favorites() {
             <div className="bg-white rounded-lg shadow-sm border p-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">
-                  {favoriteBusinesses.length} favorite{favoriteBusinesses.length !== 1 ? 's' : ''} saved
+                  {favoriteBusinesses.length} place{favoriteBusinesses.length !== 1 ? 's' : ''} saved
                 </span>
                 <Button 
                   variant="outline" 
