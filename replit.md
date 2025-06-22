@@ -166,6 +166,13 @@ Changelog:
   - Added error handling and authentication checks for all like operations
   - Updated heart icon colors to consistent red theme for better visual feedback
   - Renamed "favorites" to "saved places" throughout entire application with /saved URL
+- June 22, 2025. Added "Street Food" category with comprehensive integration
+  - Added Street Food category to database with orange color scheme (#FF6B35)
+  - Created custom map icon for Street Food category (food cart/stand design)
+  - Integrated category throughout UI components (filters, business cards, modal)
+  - Added Street Food emoji (🍜) to filter dialogs and category displays
+  - Updated business card image fallbacks to include Street Food imagery
+  - Category now available in admin pages and forms for business management
 ```
 
 ## User Preferences

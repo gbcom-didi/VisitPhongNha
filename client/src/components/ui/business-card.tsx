@@ -46,6 +46,9 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
     if (categoryName?.includes('food') || categoryName?.includes('restaurant')) {
       return 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400';
     }
+    if (categoryName?.includes('street food')) {
+      return 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400';
+    }
     if (categoryName?.includes('kite') || categoryName?.includes('sport')) {
       return '/images/kitesurfing-vietnam-01.jpg';
     }

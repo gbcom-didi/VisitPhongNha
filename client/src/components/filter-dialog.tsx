@@ -82,6 +82,7 @@ function getCategoryIcon(slug: string): string {
   const iconMap: Record<string, string> = {
     'kiting': '🪁',
     'food-drink': '🍽',
+    'street-food': '🍜',
     'accommodation': '🏠',
     'transport': '🚗',
     'activities': '⚡',
