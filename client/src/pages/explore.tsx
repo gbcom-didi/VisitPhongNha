@@ -48,31 +48,40 @@ export default function Explore() {
   // Like/unlike mutation
   const likeMutation = useMutation({
     mutationFn: async (businessId: number) => {
-      const response = await apiRequest('POST', '/api/user/likes/toggle', { businessId });
-      return response.json();
+      return apiRequest('POST', '/api/user/likes/toggle', { businessId });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/businesses'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/likes'] });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       if (isUnauthorizedError(error)) {
         toast({
-          title: "Sign in required",
-          description: "Please sign in to save places to your favorites.",
+          title: "Please sign in",
+          description: "You need to be signed in to like businesses",
           variant: "destructive",
         });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 1500);
-        return;
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to update favorite",
+          variant: "destructive",
+        });
       }
-      toast({
-        title: "Error",
-        description: "Failed to update favorite. Please try again.",
-        variant: "destructive",
-      });
     },
   });
+
+  const handleLikeBusiness = (business: BusinessWithCategory) => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Please sign in",
+        description: "You need to be signed in to like businesses",
+        variant: "destructive",
+      });
+      return;
+    }
+    likeMutation.mutate(business.id);
+  };
 
   const handleBusinessClick = (business: BusinessWithCategory) => {
     setSelectedBusiness(business);

@@ -294,8 +294,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/user/likes', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const likes = await storage.getUserLikes(userId);
-      res.json(likes);
+      const businesses = await storage.getBusinessesWithUserLikes(userId);
+      const favoriteBusinesses = businesses.filter(business => business.isLiked);
+      res.json(favoriteBusinesses);
     } catch (error) {
       console.error("Error fetching user likes:", error);
       res.status(500).json({ message: "Failed to fetch user likes" });
