@@ -45,16 +45,35 @@ export default function Explore() {
   // Use businesses directly since filtering is done server-side
   const filteredBusinesses = businesses;
 
-  // Like/unlike mutation
+  // Like/unlike mutation with optimistic updates
   const likeMutation = useMutation({
     mutationFn: async (businessId: number) => {
       return apiRequest('POST', '/api/user/likes/toggle', { businessId });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/businesses'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/user/likes'] });
+    onMutate: async (businessId: number) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['/api/businesses'] });
+      
+      // Snapshot the previous value
+      const previousBusinesses = queryClient.getQueryData(['/api/businesses']);
+      
+      // Optimistically update to the new value
+      queryClient.setQueryData(['/api/businesses'], (old: BusinessWithCategory[] | undefined) => {
+        if (!old) return old;
+        return old.map(business => 
+          business.id === businessId 
+            ? { ...business, isLiked: !business.isLiked }
+            : business
+        );
+      });
+      
+      // Return a context object with the snapshotted value
+      return { previousBusinesses };
     },
-    onError: (error: any) => {
+    onError: (error: any, businessId: number, context: any) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      queryClient.setQueryData(['/api/businesses'], context?.previousBusinesses);
+      
       if (isUnauthorizedError(error)) {
         toast({
           title: "Please sign in",
@@ -68,6 +87,11 @@ export default function Explore() {
           variant: "destructive",
         });
       }
+    },
+    onSettled: () => {
+      // Always refetch after error or success to ensure server state
+      queryClient.invalidateQueries({ queryKey: ['/api/businesses'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/likes'] });
     },
   });
 
@@ -260,8 +284,12 @@ export default function Explore() {
               </Link>
             ))}
             {isAuthenticated && (
-              <Link href="/saved">
-                <div className="w-12 h-12 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors cursor-pointer" title="Saved Places">
+              <Link href="/favorites">
+                <div className={`w-12 h-12 flex items-center justify-center rounded-md transition-colors cursor-pointer ${
+                  location === '/favorites' 
+                    ? 'bg-tropical-aqua text-white' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`} title="My Favorites">
                   <Heart className="w-5 h-5" />
                 </div>
               </Link>

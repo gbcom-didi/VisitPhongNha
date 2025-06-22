@@ -96,8 +96,8 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
           size="sm"
           className={`absolute top-3 right-3 p-2 bg-white/80 hover:bg-white/90 backdrop-blur-sm rounded-full ${
             business.isLiked 
-              ? 'text-chili-red hover:text-red-600' 
-              : 'text-gray-600 hover:text-chili-red'
+              ? 'text-red-500 hover:text-red-600' 
+              : 'text-gray-600 hover:text-red-500'
           }`}
           onClick={handleLikeClick}
         >

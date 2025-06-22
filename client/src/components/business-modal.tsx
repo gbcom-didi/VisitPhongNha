@@ -326,8 +326,8 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
             variant="outline"
             className={`px-4 ${
               business.isLiked 
-                ? 'text-tropical-aqua border-tropical-aqua hover:bg-teal-50' 
-                : 'text-gray-600 hover:text-tropical-aqua hover:border-tropical-aqua'
+                ? 'text-red-500 border-red-500 hover:bg-red-50' 
+                : 'text-gray-600 hover:text-red-500 hover:border-red-500'
             }`}
             onClick={handleLikeClick}
           >
