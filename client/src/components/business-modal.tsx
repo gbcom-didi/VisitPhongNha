@@ -3,6 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useState, useEffect } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
+import { isUnauthorizedError } from '@/lib/authUtils';
+import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { BusinessWithCategory } from '@shared/schema';
 
 interface BusinessModalProps {
@@ -25,11 +30,83 @@ const getBusinessImageUrl = (business: BusinessWithCategory | null): string => {
 export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessModalProps) {
   if (!business) return null;
 
+  const { isAuthenticated } = useAuth();
+  const { toast } = useToast();
   const [showGallery, setShowGallery] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [localIsLiked, setLocalIsLiked] = useState(business.isLiked);
+
+  // Update local state when business prop changes
+  useEffect(() => {
+    setLocalIsLiked(business.isLiked);
+  }, [business.isLiked]);
+
+  // Like/unlike mutation with optimistic updates
+  const likeMutation = useMutation({
+    mutationFn: async (businessId: number) => {
+      return apiRequest('POST', '/api/user/likes/toggle', { businessId });
+    },
+    onMutate: async (businessId: number) => {
+      // Optimistically update local state
+      setLocalIsLiked(prev => !prev);
+      
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['/api/businesses'] });
+      
+      // Snapshot the previous value
+      const previousBusinesses = queryClient.getQueryData(['/api/businesses']);
+      
+      // Optimistically update to the new value
+      queryClient.setQueryData(['/api/businesses'], (old: BusinessWithCategory[] | undefined) => {
+        if (!old) return old;
+        return old.map(b => 
+          b.id === businessId 
+            ? { ...b, isLiked: !b.isLiked }
+            : b
+        );
+      });
+      
+      // Return a context object with the snapshotted value
+      return { previousBusinesses, previousIsLiked: business.isLiked };
+    },
+    onError: (error: any, businessId: number, context: any) => {
+      // Rollback local state
+      setLocalIsLiked(context?.previousIsLiked || false);
+      
+      // If the mutation fails, use the context returned from onMutate to roll back
+      queryClient.setQueryData(['/api/businesses'], context?.previousBusinesses);
+      
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Please sign in",
+          description: "You need to be signed in to like businesses",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to update favorite",
+          variant: "destructive",
+        });
+      }
+    },
+    onSettled: () => {
+      // Always refetch after error or success to ensure server state
+      queryClient.invalidateQueries({ queryKey: ['/api/businesses'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/likes'] });
+    },
+  });
 
   const handleLikeClick = () => {
-    onLike?.(business);
+    if (!isAuthenticated) {
+      toast({
+        title: "Please sign in",
+        description: "You need to be signed in to like businesses",
+        variant: "destructive",
+      });
+      return;
+    }
+    likeMutation.mutate(business.id);
   };
 
   const handleBookClick = () => {
@@ -325,13 +402,14 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
           <Button
             variant="outline"
             className={`px-4 ${
-              business.isLiked 
+              localIsLiked 
                 ? 'text-red-500 border-red-500 hover:bg-red-50' 
                 : 'text-gray-600 hover:text-red-500 hover:border-red-500'
             }`}
             onClick={handleLikeClick}
+            disabled={likeMutation.isPending}
           >
-            <Heart className={`w-4 h-4 ${business.isLiked ? 'fill-current' : ''}`} />
+            <Heart className={`w-4 h-4 ${localIsLiked ? 'fill-current' : ''}`} />
           </Button>
         </div>
       </DialogContent>
