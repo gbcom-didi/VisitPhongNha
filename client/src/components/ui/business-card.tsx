@@ -106,12 +106,7 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
           />
         </Button>
 
-        {/* Info Button */}
-        <div className="absolute bottom-3 right-3">
-          <div className="w-6 h-6 bg-black/40 rounded-full flex items-center justify-center">
-            <span className="text-white text-xs font-bold">i</span>
-          </div>
-        </div>
+        
       </div>
 
       {/* Business Info */}
