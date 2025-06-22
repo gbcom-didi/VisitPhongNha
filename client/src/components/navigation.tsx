@@ -76,7 +76,7 @@ export function Navigation() {
                 variant="ghost" 
                 size="sm" 
                 className="hidden md:flex text-gray-700 hover:text-tropical-aqua"
-                onClick={() => window.location.href = '/favorites'}
+                onClick={() => window.location.href = '/saved'}
               >
                 <Heart className="w-5 h-5" />
               </Button>

@@ -157,14 +157,15 @@ Changelog:
   - Enhanced authentication middleware to dynamically fetch user roles from database
   - Fixed admin form persistence so category assignments and business updates now save properly
   - Admin users can now create and edit any business without permission restrictions
-- June 22, 2025. Completed favorites system with optimized user experience
-  - Fixed favorites/like system authentication errors and API route issues
-  - Created comprehensive favorites page with beautiful grid layout and empty states
+- June 22, 2025. Completed saved places system with optimized user experience
+  - Fixed saved places/like system authentication errors and API route issues
+  - Created comprehensive saved places page with beautiful grid layout and empty states
   - Implemented optimistic updates for instant heart icon color changes on like/unlike
-  - Added proper navigation from heart icon in explore sidebar to favorites page
+  - Added proper navigation from heart icon in explore sidebar to saved places page
   - Connected like functionality across business cards, modals, and explore page
   - Added error handling and authentication checks for all like operations
   - Updated heart icon colors to consistent red theme for better visual feedback
+  - Renamed "favorites" to "saved places" throughout entire application with /saved URL
 ```
 
 ## User Preferences

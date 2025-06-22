@@ -248,7 +248,7 @@ export default function Explore() {
             {isAuthenticated && (
               <Link href="/saved">
                 <div className={`flex flex-col items-center py-1 px-2 rounded-md transition-colors cursor-pointer ${
-                  isActiveLink('/saved') || isActiveLink('/favorites')
+                  isActiveLink('/saved')
                     ? 'text-chili-red' 
                     : 'text-gray-700'
                 }`}>
@@ -290,7 +290,7 @@ export default function Explore() {
             {isAuthenticated && (
               <Link href="/saved">
                 <div className={`w-12 h-12 flex items-center justify-center rounded-md transition-colors cursor-pointer ${
-                  location === '/saved' || location === '/favorites'
+                  location === '/saved'
                     ? 'bg-tropical-aqua text-white' 
                     : 'text-gray-700 hover:bg-gray-100'
                 }`} title="Saved Places">

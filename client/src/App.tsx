@@ -25,7 +25,6 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
       <Route path="/admin" component={Admin} />
-      <Route path="/favorites" component={Favorites} />
       <Route path="/saved" component={Favorites} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
