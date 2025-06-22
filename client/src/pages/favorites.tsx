@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { BusinessModal } from '@/components/business-modal';
+import { Navigation } from '@/components/navigation';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import type { BusinessWithCategory } from '@shared/schema';
@@ -64,6 +65,7 @@ export function Favorites() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Navigation />
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
