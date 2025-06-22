@@ -2,7 +2,6 @@ import { X, MapPin, Phone, Clock, Globe, Heart, ExternalLink, Star, User, Images
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { SocialShare } from '@/components/social-share';
 import { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';

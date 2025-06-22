@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { BusinessModal } from '@/components/business-modal';
 import { Navigation } from '@/components/navigation';
-import { SocialShare, ShareAllSaved } from '@/components/social-share';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import type { BusinessWithCategory } from '@shared/schema';
@@ -82,21 +81,18 @@ export function Favorites() {
           
           {favoriteBusinesses.length > 0 && (
             <div className="bg-white rounded-lg shadow-sm border p-4">
-              <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">
                   {favoriteBusinesses.length} place{favoriteBusinesses.length !== 1 ? 's' : ''} saved
                 </span>
-                <div className="flex gap-2">
-                  <ShareAllSaved businesses={favoriteBusinesses} />
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => window.location.href = '/explore'}
-                    className="text-tropical-aqua border-tropical-aqua hover:bg-tropical-aqua hover:text-white"
-                  >
-                    Discover More Places
-                  </Button>
-                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => window.location.href = '/explore'}
+                  className="text-tropical-aqua border-tropical-aqua hover:bg-tropical-aqua hover:text-white"
+                >
+                  Discover More Places
+                </Button>
               </div>
             </div>
           )}
