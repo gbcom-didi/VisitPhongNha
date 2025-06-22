@@ -166,6 +166,13 @@ Changelog:
   - Added error handling and authentication checks for all like operations
   - Updated heart icon colors to consistent red theme for better visual feedback
   - Renamed "favorites" to "saved places" throughout entire application with /saved URL
+- June 22, 2025. Added comprehensive social sharing feature
+  - Created social share component with Facebook, Twitter, WhatsApp sharing
+  - Added native Web Share API support for mobile devices
+  - Implemented copy link functionality with user feedback
+  - Added share button to business modal for individual places
+  - Added "Share My List" feature to saved places page for sharing entire collection
+  - Share URLs include business IDs for direct linking to specific places
 ```
 
 ## User Preferences
