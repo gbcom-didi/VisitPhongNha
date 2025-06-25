@@ -20,7 +20,7 @@ export default function Explore() {
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-    const [showMapInMobile, setShowMapInMobile] = useState(true);
+  const [showMapInMobile, setShowMapInMobile] = useState(true);
   const [hoveredBusiness, setHoveredBusiness] = useState<BusinessWithCategory | null>(null);
 
   // Fetch categories
@@ -30,35 +30,18 @@ export default function Explore() {
 
   // Fetch businesses
   const { data: businesses = [], isLoading: businessesLoading } = useQuery<BusinessWithCategory[]>({
-    queryKey: selectedCategory 
-      ? ['/api/businesses', selectedCategory]
-      : ['/api/businesses'],
-    queryFn: async () => {
-      const url = selectedCategory 
-        ? `/api/businesses?categoryId=${selectedCategory}`
-        : '/api/businesses';
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Failed to fetch businesses');
-      return response.json();
-    }
+    queryKey: ['/api/businesses'],
   });
 
-  // Use businesses directly since filtering is done server-side
-  const filteredBusinesses = businesses;
-
-  // Like/unlike mutation with optimistic updates
+  // Like/Unlike mutation
   const likeMutation = useMutation({
-    mutationFn: async (businessId: number) => {
-      return apiRequest('POST', '/api/user/likes/toggle', { businessId });
-    },
+    mutationFn: (businessId: number) => apiRequest(`/api/businesses/${businessId}/like`, {
+      method: 'POST'
+    }),
     onMutate: async (businessId: number) => {
-      // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: ['/api/businesses'] });
-      
-      // Snapshot the previous value
       const previousBusinesses = queryClient.getQueryData(['/api/businesses']);
       
-      // Optimistically update to the new value
       queryClient.setQueryData(['/api/businesses'], (old: BusinessWithCategory[] | undefined) => {
         if (!old) return old;
         return old.map(business => 
@@ -68,11 +51,9 @@ export default function Explore() {
         );
       });
       
-      // Return a context object with the snapshotted value
       return { previousBusinesses };
     },
     onError: (error: any, businessId: number, context: any) => {
-      // If the mutation fails, use the context returned from onMutate to roll back
       queryClient.setQueryData(['/api/businesses'], context?.previousBusinesses);
       
       if (isUnauthorizedError(error)) {
@@ -90,37 +71,18 @@ export default function Explore() {
       }
     },
     onSettled: () => {
-      // Always refetch after error or success to ensure server state
       queryClient.invalidateQueries({ queryKey: ['/api/businesses'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/user/likes'] });
     },
   });
 
-  const handleLikeBusiness = (business: BusinessWithCategory) => {
-    if (!isAuthenticated) {
-      toast({
-        title: "Please sign in",
-        description: "You need to be signed in to like businesses",
-        variant: "destructive",
-      });
-      return;
-    }
-    likeMutation.mutate(business.id);
-  };
+  // Filter businesses by selected category
+  const filteredBusinesses = selectedCategory 
+    ? businesses.filter(business => business.category?.id === selectedCategory)
+    : businesses;
 
   const handleBusinessClick = (business: BusinessWithCategory) => {
     setSelectedBusiness(business);
     setIsModalOpen(true);
-  };
-
-  const handleBusinessHover = (business: BusinessWithCategory) => {
-    // Set hovered business for map zoom animation
-    setHoveredBusiness(business);
-  };
-
-  const handleBusinessLeave = () => {
-    // Clear hovered business and return to normal zoom
-    setHoveredBusiness(null);
   };
 
   const handleMapPinClick = (business: BusinessWithCategory) => {
@@ -128,41 +90,33 @@ export default function Explore() {
     setIsModalOpen(true);
   };
 
-  const handleBusinessLike = async (business: BusinessWithCategory) => {
-    if (!isAuthenticated) {
-      toast({
-        title: "Sign in required",
-        description: "Please sign in to save places to your favorites.",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 1500);
-      return;
-    }
-
-    likeMutation.mutate(business.id);
-  };
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedBusiness(null);
+  };
+
+  const handleBusinessLike = (businessId: number) => {
+    likeMutation.mutate(businessId);
+  };
+
+  const handleBusinessHover = (business: BusinessWithCategory | null) => {
+    setHoveredBusiness(business);
+  };
+
+  const handleBusinessLeave = () => {
+    setHoveredBusiness(null);
   };
 
   const handleCategoryChange = (categoryId: number | null) => {
     setSelectedCategory(categoryId);
   };
 
-
-
   if (businessesLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex">
-        <div className="flex items-center justify-center flex-1">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-mango-yellow mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading places to explore...</p>
-          </div>
+        <SidebarNavigation />
+        <div className="flex-1 ml-16 flex items-center justify-center">
+          <div className="text-lg text-gray-600">Loading businesses...</div>
         </div>
       </div>
     );
@@ -171,31 +125,70 @@ export default function Explore() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Mobile Layout */}
-      <div className="md:hidden h-screen flex flex-col">
-
-        {/* Mobile Business Directory */}
-        {!showMapInMobile && (
-            <div className="flex-1 bg-white overflow-hidden flex flex-col relative">
-              <BusinessDirectory
-                businesses={filteredBusinesses}
-                categories={categories}
-                onBusinessClick={handleBusinessClick}
-                onBusinessLike={handleBusinessLike}
-                onBusinessHover={handleBusinessHover}
-                onBusinessLeave={handleBusinessLeave}
-                selectedCategory={selectedCategory}
-                onCategoryChange={handleCategoryChange}
-              />
-              
-              {/* Floating Map Button */}
+      <div className="md:hidden flex flex-col h-screen">
+        {/* Mobile Header */}
+        <div className="bg-white border-b border-gray-200">
+          <div className="flex justify-between items-center p-4">
+            <div className="flex items-center">
+              <div className="w-8 h-8 mr-2">
+                <img 
+                  src="/images/VisitPhongNha-Logo-02.png" 
+                  alt="Visit Phong Nha Logo"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <span className="text-xl font-bold text-gray-900">Visit Phong Nha</span>
+            </div>
+            
+            <div className="flex space-x-2">
               <button
-                className="fixed bottom-16 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded-full flex items-center space-x-1 shadow-lg z-30"
-                onClick={() => setShowMapInMobile(true)}
+                onClick={() => setShowMapInMobile(false)}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                  !showMapInMobile 
+                    ? 'bg-mango-yellow text-white' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
               >
-                <MapIcon className="w-4 h-4" />
-                <span className="font-medium text-sm">Map</span>
+                <List className="w-4 h-4 inline mr-1" />
+                List
+              </button>
+              <button
+                onClick={() => setShowMapInMobile(true)}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                  showMapInMobile 
+                    ? 'bg-mango-yellow text-white' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <MapIcon className="w-4 h-4 inline mr-1" />
+                Map
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* Mobile List */}
+        {!showMapInMobile && (
+          <div className="flex-1 bg-white relative">
+            <BusinessDirectory
+              businesses={filteredBusinesses}
+              categories={categories}
+              onBusinessClick={handleBusinessClick}
+              onBusinessLike={handleBusinessLike}
+              onBusinessHover={handleBusinessHover}
+              onBusinessLeave={handleBusinessLeave}
+              selectedCategory={selectedCategory}
+              onCategoryChange={handleCategoryChange}
+            />
+            
+            <button
+              className="fixed bottom-16 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded-full flex items-center space-x-1 shadow-lg z-30"
+              onClick={() => setShowMapInMobile(true)}
+            >
+              <MapIcon className="w-4 h-4" />
+              <span className="font-medium text-sm">Map</span>
+            </button>
+          </div>
         )}
 
         {/* Mobile Map */}
@@ -208,7 +201,6 @@ export default function Explore() {
               hoveredBusiness={hoveredBusiness}
             />
             
-            {/* Floating List Button */}
             <button
               className="fixed bottom-16 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded-full flex items-center space-x-1 shadow-lg z-30"
               onClick={() => setShowMapInMobile(false)}
@@ -238,75 +230,10 @@ export default function Explore() {
 
       {/* Desktop Layout */}
       <div className="hidden md:flex">
-        {/* Main Navigation Sidebar */}
-        <div className="w-16 bg-white border-r border-gray-200 flex-shrink-0 h-screen">
-          <div className="p-2 border-b border-gray-200">
-            <Link href="/">
-              <div className="cursor-pointer flex justify-center">
-                <div className="w-12 h-12">
-                  <img 
-                    src="/images/VisitPhongNha-Logo-02.png" 
-                    alt="Visit Phong Nha Logo"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              </div>
-            </Link>
-          </div>
-
-          <div className="p-2 flex flex-col items-center space-y-2">
-            {navigationLinks.map(({ href, label, icon: Icon }) => (
-              <Link key={href} href={href}>
-                <div className={`w-12 h-12 flex items-center justify-center rounded-md transition-colors cursor-pointer ${
-                  isActiveLink(href) 
-                    ? 'bg-mango-yellow text-white' 
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`} title={label}>
-                  <Icon className="w-5 h-5" />
-                </div>
-              </Link>
-            ))}
-            {isAuthenticated && (
-              <Link href="/saved">
-                <div className={`w-12 h-12 flex items-center justify-center rounded-md transition-colors cursor-pointer ${
-                  location === '/saved'
-                    ? 'bg-mango-yellow text-white' 
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`} title="Saved Places">
-                  <Heart className="w-5 h-5" />
-                </div>
-              </Link>
-            )}
-          </div>
-
-          {/* Auth Section */}
-          <div className="mt-8 pt-8 border-t border-gray-200 px-2">
-            {isAuthenticated ? (
-              <button 
-                className="w-12 h-12 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
-                onClick={() => window.location.href = '/api/logout'}
-                title="Sign Out"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-              </button>
-            ) : (
-              <button 
-                className="w-12 h-12 flex items-center justify-center bg-mango-yellow text-white rounded-md hover:bg-mango-yellow/90 transition-colors"
-                onClick={() => window.location.href = '/api/login'}
-                title="Sign In"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                </svg>
-              </button>
-            )}
-          </div>
-        </div>
+        <SidebarNavigation />
 
         {/* Business Directory Panel */}
-        <div className="w-96 bg-white border-r border-gray-200 flex-shrink-0 h-screen overflow-hidden">
+        <div className="fixed left-16 top-0 w-80 h-full bg-white border-r border-gray-200 overflow-y-auto z-40">
           <BusinessDirectory
             businesses={filteredBusinesses}
             categories={categories}
