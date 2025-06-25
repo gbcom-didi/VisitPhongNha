@@ -1,8 +1,8 @@
-# ĐiĐiVui - Phan Rang Travel Hub Replit.md
+# Visit Phong Nha - Phong Nha Travel Hub Replit.md
 
 ## Overview
 
-ĐiĐiVui is a comprehensive travel platform designed to showcase Phan Rang province in Vietnam, particularly focusing on its kitesurfing opportunities and Vietnamese culture. The application serves as an interactive guide for travelers to discover accommodations, restaurants, attractions, and adventure activities in the region.
+Visit Phong Nha is a comprehensive travel platform designed to showcase Phong Nha region in Vietnam, particularly focusing on its cave exploration opportunities and Vietnamese culture. The application serves as an interactive guide for travelers to discover accommodations, restaurants, attractions, and adventure activities in the region.
 
 ## System Architecture
 

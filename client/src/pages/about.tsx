@@ -103,7 +103,7 @@ export default function About() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">Our Values</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              These principles guide everything we do at ĐiĐi VUi
+              These principles guide everything we do at Visit Phong Nha
             </p>
           </div>
 
@@ -145,9 +145,9 @@ export default function About() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6 font-questrial">The Future of ĐiĐiVui</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-6 font-questrial">The Future of Visit Phong Nha</h2>
             <p className="text-lg text-gray-600 leading-relaxed">
-              Our vision extends beyond Phan Rang. We're building a scalable network of regional tourism hubs across Vietnam, each celebrating the unique character and opportunities of different provinces. From the mountains of Sapa to the beaches of Phu Quoc, we aim to become Vietnam's most trusted travel companion.
+              Our vision extends beyond Phong Nha. We're building a scalable network of regional tourism hubs across Vietnam, each celebrating the unique character and opportunities of different provinces. From the mountains of Sapa to the beaches of Phu Quoc, we aim to become Vietnam's most trusted travel companion.
             </p>
           </div>
 
