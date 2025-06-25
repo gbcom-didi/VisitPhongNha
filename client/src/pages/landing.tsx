@@ -28,7 +28,7 @@ export default function Landing() {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-tropical-aqua rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-mango-yellow rounded-full flex items-center justify-center mx-auto mb-4">
                 <Map className="w-8 h-8 text-white" />
               </div>
               <h4 className="text-xl font-semibold mb-2">Explore Interactive Map</h4>
@@ -46,7 +46,7 @@ export default function Landing() {
               </p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-tropical-aqua rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-jade-green rounded-full flex items-center justify-center mx-auto mb-4">
                 <NavigationIcon className="w-8 h-8 text-white" />
               </div>
               <h4 className="text-xl font-semibold mb-2">Get Directions</h4>

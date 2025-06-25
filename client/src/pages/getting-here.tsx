@@ -10,7 +10,7 @@ export default function GettingHere() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="relative h-64 bg-gradient-to-r from-sea-blue to-tropical-aqua">
+      <section className="relative h-64 bg-gradient-to-r from-coral-sunset to-mango-yellow">
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -33,7 +33,7 @@ export default function GettingHere() {
             {/* By Air */}
             <Card className="shadow-lg hover:shadow-xl transition-shadow">
               <CardHeader className="text-center">
-                <div className="w-16 h-16 bg-chili-red rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-coral-sunset rounded-full flex items-center justify-center mx-auto mb-4">
                   <Plane className="w-8 h-8 text-white" />
                 </div>
                 <CardTitle className="text-2xl text-gray-900">By Air</CardTitle>
@@ -73,7 +73,7 @@ export default function GettingHere() {
             {/* By Bus */}
             <Card className="shadow-lg hover:shadow-xl transition-shadow">
               <CardHeader className="text-center">
-                <div className="w-16 h-16 bg-sea-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-jade-green rounded-full flex items-center justify-center mx-auto mb-4">
                   <Bus className="w-8 h-8 text-white" />
                 </div>
                 <CardTitle className="text-2xl text-gray-900">By Bus</CardTitle>
@@ -120,7 +120,7 @@ export default function GettingHere() {
             {/* By Car */}
             <Card className="shadow-lg hover:shadow-xl transition-shadow">
               <CardHeader className="text-center">
-                <div className="w-16 h-16 bg-tropical-aqua rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-mango-yellow rounded-full flex items-center justify-center mx-auto mb-4">
                   <Car className="w-8 h-8 text-white" />
                 </div>
                 <CardTitle className="text-2xl text-gray-900">By Car</CardTitle>

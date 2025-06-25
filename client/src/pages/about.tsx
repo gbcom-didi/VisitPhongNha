@@ -9,7 +9,7 @@ export default function About() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="relative h-64 bg-gradient-to-r from-sea-blue to-tropical-aqua">
+      <section className="relative h-64 bg-gradient-to-r from-coral-sunset to-mango-yellow">
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -39,7 +39,7 @@ export default function About() {
             <Card className="p-6 shadow-lg">
               <CardContent className="p-0">
                 <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-chili-red rounded-lg flex items-center justify-center mr-4">
+                  <div className="w-12 h-12 bg-coral-sunset rounded-lg flex items-center justify-center mr-4">
                     <Wind className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900">For the Cave Exploration Community</h3>
@@ -53,7 +53,7 @@ export default function About() {
             <Card className="p-6 shadow-lg">
               <CardContent className="p-0">
                 <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-tropical-aqua rounded-lg flex items-center justify-center mr-4">
+                  <div className="w-12 h-12 bg-jade-green rounded-lg flex items-center justify-center mr-4">
                     <Heart className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900">Supporting Local Businesses</h3>
