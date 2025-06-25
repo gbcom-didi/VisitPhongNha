@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { firebaseAuthMiddleware, optionalFirebaseAuth } from "./firebaseAuth";
 import { requireAdmin, requireBusinessOwner, permissions } from "./rbac";
 import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema, insertArticleSchema, businesses as businessesTable, businessCategories, categories, articles } from "@shared/schema";
 import { googlePlacesImporter } from "./googlePlacesImporter";
@@ -13,17 +14,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  // Auth routes - support Firebase auth
+  app.get('/api/auth/user', optionalFirebaseAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
+      const user = req.user;
       if (user) {
-        // Attach user role to the session for middleware
-        req.user.role = user.role;
-        req.user.isActive = user.isActive;
+        // For Firebase users, return the Firebase user data
+        res.json({
+          id: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+          role: 'viewer' // Default role for Firebase users
+        });
+      } else {
+        res.status(401).json({ message: "Unauthorized" });
       }
-      res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
