@@ -4,6 +4,7 @@ import {
   categories,
   businessCategories,
   userLikes,
+  articles,
   type User,
   type UpsertUser,
   type Category,
@@ -13,6 +14,8 @@ import {
   type BusinessWithCategory,
   type UserLike,
   type InsertUserLike,
+  type Article,
+  type InsertArticle,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, asc, inArray } from "drizzle-orm";
@@ -44,6 +47,22 @@ export interface IStorage {
   getUserLikes(userId: string): Promise<UserLike[]>;
   toggleUserLike(userId: string, businessId: number): Promise<{ liked: boolean }>;
   isBusinessLiked(userId: string, businessId: number): Promise<boolean>;
+  
+  // Article operations
+  getArticles(): Promise<Article[]>;
+  getFeaturedArticles(): Promise<Article[]>;
+  getArticlesByTag(tag: string): Promise<Article[]>;
+  getArticle(id: number): Promise<Article | undefined>;
+  createArticle(article: InsertArticle): Promise<Article>;
+  updateArticle(id: number, article: Partial<InsertArticle>): Promise<Article>;
+  
+  // Article operations
+  getArticles(): Promise<Article[]>;
+  getFeaturedArticles(): Promise<Article[]>;
+  getArticlesByTag(tag: string): Promise<Article[]>;
+  getArticle(id: number): Promise<Article | undefined>;
+  createArticle(article: InsertArticle): Promise<Article>;
+  updateArticle(id: number, article: Partial<InsertArticle>): Promise<Article>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -356,6 +375,57 @@ export class DatabaseStorage implements IStorage {
     await db.delete(businessCategories);
     // Delete all businesses
     await db.delete(businesses);
+  }
+
+  // Article operations
+  async getArticles(): Promise<Article[]> {
+    return await db
+      .select()
+      .from(articles)
+      .where(eq(articles.isActive, true))
+      .orderBy(desc(articles.publicationDate));
+  }
+
+  async getFeaturedArticles(): Promise<Article[]> {
+    return await db
+      .select()
+      .from(articles)
+      .where(and(eq(articles.isActive, true), eq(articles.isFeatured, true)))
+      .orderBy(desc(articles.publicationDate));
+  }
+
+  async getArticlesByTag(tag: string): Promise<Article[]> {
+    return await db
+      .select()
+      .from(articles)
+      .where(and(eq(articles.isActive, true)))
+      .orderBy(desc(articles.publicationDate));
+  }
+
+  async getArticle(id: number): Promise<Article | undefined> {
+    const [article] = await db
+      .select()
+      .from(articles)
+      .where(and(eq(articles.id, id), eq(articles.isActive, true)))
+      .limit(1);
+    return article;
+  }
+
+  async createArticle(article: InsertArticle): Promise<Article> {
+    const [newArticle] = await db
+      .insert(articles)
+      .values(article)
+      .returning();
+    return newArticle;
+  }
+
+  async updateArticle(id: number, article: Partial<InsertArticle>): Promise<Article> {
+    const [updatedArticle] = await db
+      .update(articles)
+      .set({ ...article, updatedAt: new Date() })
+      .where(eq(articles.id, id))
+      .returning();
+    return updatedArticle;
   }
 }
 

@@ -169,9 +169,40 @@ export type InsertBusinessCategory = z.infer<typeof insertBusinessCategorySchema
 export type UserLike = typeof userLikes.$inferSelect;
 export type InsertUserLike = z.infer<typeof insertUserLikeSchema>;
 
+// Articles table
+export const articles = pgTable("articles", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  author: varchar("author", { length: 100 }).notNull(),
+  summary: text("summary").notNull(),
+  mainImageUrl: varchar("main_image_url", { length: 500 }),
+  publicationDate: timestamp("publication_date").notNull(),
+  locationIds: text("location_ids"), // Comma-separated list of location IDs
+  latitude: decimal("latitude", { precision: 10, scale: 6 }).notNull(),
+  longitude: decimal("longitude", { precision: 10, scale: 6 }).notNull(),
+  tags: text("tags").array(), // Array of tags
+  contentHtml: text("content_html").notNull(),
+  mapOverlay: text("map_overlay"),
+  externalUrl: varchar("external_url", { length: 500 }),
+  isFeatured: boolean("is_featured").default(false),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertArticleSchema = createInsertSchema(articles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Business with category info
 export type BusinessWithCategory = Business & {
   categories?: Category[];
   category?: Category | null; // Keep for backward compatibility
   isLiked?: boolean;
 };
+
+// Article types
+export type Article = typeof articles.$inferSelect;
+export type InsertArticle = z.infer<typeof insertArticleSchema>;
