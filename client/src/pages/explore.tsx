@@ -171,7 +171,7 @@ export default function Explore() {
       <div className="min-h-screen bg-gray-50 flex">
         <div className="flex items-center justify-center flex-1">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-chili-red mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-mango-yellow mx-auto mb-4"></div>
             <p className="text-gray-600">Loading places to explore...</p>
           </div>
         </div>
@@ -249,7 +249,7 @@ export default function Explore() {
               <Link href="/saved">
                 <div className={`flex flex-col items-center py-1 px-2 rounded-md transition-colors cursor-pointer ${
                   isActiveLink('/saved')
-                    ? 'text-chili-red' 
+                    ? 'text-mango-yellow' 
                     : 'text-gray-700'
                 }`}>
                   <Heart className="w-4 h-4 mb-0.5" />
@@ -265,11 +265,16 @@ export default function Explore() {
       <div className="hidden md:flex">
         {/* Main Navigation Sidebar */}
         <div className="w-16 bg-white border-r border-gray-200 flex-shrink-0 h-screen">
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-2 border-b border-gray-200">
             <Link href="/">
-              <div className="cursor-pointer flex justify-center">
-                <div className="w-8 h-8 bg-tropical-aqua rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">Đ</span>
+              <div className="cursor-pointer flex flex-col items-center">
+                <div className="w-10 h-10 bg-mango-yellow rounded-lg flex items-center justify-center mb-1">
+                  <span className="text-white font-bold text-sm">V</span>
+                </div>
+                <div className="text-xs text-center leading-tight">
+                  <div className="text-mango-yellow font-semibold">Visit</div>
+                  <div className="text-mango-yellow font-semibold">Phong</div>
+                  <div className="text-mango-yellow font-semibold">Nha</div>
                 </div>
               </div>
             </Link>
@@ -280,7 +285,7 @@ export default function Explore() {
               <Link key={href} href={href}>
                 <div className={`w-12 h-12 flex items-center justify-center rounded-md transition-colors cursor-pointer ${
                   isActiveLink(href) 
-                    ? 'bg-tropical-aqua text-white' 
+                    ? 'bg-mango-yellow text-white' 
                     : 'text-gray-700 hover:bg-gray-100'
                 }`} title={label}>
                   <Icon className="w-5 h-5" />
@@ -291,7 +296,7 @@ export default function Explore() {
               <Link href="/saved">
                 <div className={`w-12 h-12 flex items-center justify-center rounded-md transition-colors cursor-pointer ${
                   location === '/saved'
-                    ? 'bg-tropical-aqua text-white' 
+                    ? 'bg-mango-yellow text-white' 
                     : 'text-gray-700 hover:bg-gray-100'
                 }`} title="Saved Places">
                   <Heart className="w-5 h-5" />
@@ -314,7 +319,7 @@ export default function Explore() {
               </button>
             ) : (
               <button 
-                className="w-12 h-12 flex items-center justify-center bg-tropical-aqua text-white rounded-md hover:bg-tropical-aqua/90 transition-colors"
+                className="w-12 h-12 flex items-center justify-center bg-mango-yellow text-white rounded-md hover:bg-mango-yellow/90 transition-colors"
                 onClick={() => window.location.href = '/api/login'}
                 title="Sign In"
               >
