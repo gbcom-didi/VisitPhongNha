@@ -14,7 +14,6 @@ export function Navigation() {
   const navigationLinks = [
     { href: '/', label: 'Home' },
     { href: '/explore', label: 'Explore' },
-    { href: '/inspiration', label: 'Inspiration' },
     { href: '/getting-here', label: 'Getting Here' },
     { href: '/about', label: 'About' },
     { href: '/contact', label: 'Contact' },
@@ -112,7 +111,7 @@ export function Navigation() {
               </div>
             ) : (
               <Button 
-                className="bg-tropical-aqua text-white hover:bg-tropical-aqua/90"
+                className="bg-mango-yellow text-white hover:bg-mango-yellow/90 font-medium shadow-sm"
                 onClick={() => window.location.href = '/api/login'}
               >
                 Sign In

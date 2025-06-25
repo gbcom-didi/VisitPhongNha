@@ -48,12 +48,14 @@ export function SidebarNavigation() {
 
       {/* User/Login at bottom */}
       <div className="mt-auto">
-        <Link href="/login">
-          <div className="w-10 h-10 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors cursor-pointer">
-            <User className="w-5 h-5" />
-            <span className="sr-only">Login</span>
-          </div>
-        </Link>
+        <button
+          onClick={() => window.location.href = '/api/login'}
+          className="w-10 h-10 rounded-lg flex items-center justify-center bg-mango-yellow text-white hover:bg-mango-yellow/90 transition-colors cursor-pointer shadow-sm"
+          title="Sign In"
+        >
+          <User className="w-5 h-5" />
+          <span className="sr-only">Sign In</span>
+        </button>
       </div>
     </div>
   );
