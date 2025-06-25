@@ -10,7 +10,7 @@ import { isUnauthorizedError } from '@/lib/authUtils';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { BusinessWithCategory, Category } from '@shared/schema';
 
-import { useLocation } from 'wouter';
+import { useLocation, Link } from 'wouter';
 import { Heart, Map as MapIcon, List } from 'lucide-react';
 
 export default function Explore() {
