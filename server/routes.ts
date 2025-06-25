@@ -1,8 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
-import { requireAdmin, requireBusinessOwner, permissions } from "./rbac";
+import { setupFirebaseAuth, verifyFirebaseToken, requireFirebaseAdmin, requireFirebaseBusinessOwner, requireFirebaseViewer } from "./firebaseAuth";
+import { permissions } from "./rbac";
 import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema, insertArticleSchema, businesses as businessesTable, businessCategories, categories, articles } from "@shared/schema";
 import { googlePlacesImporter } from "./googlePlacesImporter";
 import { z } from "zod";
@@ -11,24 +11,10 @@ import { eq, desc, asc } from "drizzle-orm";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
-  await setupAuth(app);
+  await setupFirebaseAuth(app);
 
   // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (user) {
-        // Attach user role to the session for middleware
-        req.user.role = user.role;
-        req.user.isActive = user.isActive;
-      }
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
+  // Firebase auth already handles user endpoints
 
   // Categories routes
   app.get('/api/categories', async (req, res) => {
@@ -41,7 +27,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/categories', isAuthenticated, async (req, res) => {
+  app.post('/api/categories', requireFirebaseAdmin, async (req, res) => {
     try {
       const categoryData = insertCategorySchema.parse(req.body);
       const category = await storage.createCategory(categoryData);
@@ -122,7 +108,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/businesses', isAuthenticated, async (req: any, res) => {
+  app.post('/api/businesses', requireFirebaseBusinessOwner, async (req: any, res) => {
     try {
       // Extract categoryIds from the request body and validate the rest with the schema
       const { categoryIds, ...businessFields } = req.body;
@@ -157,7 +143,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update business route
-  app.put('/api/businesses/:id', isAuthenticated, async (req: any, res) => {
+  app.put('/api/businesses/:id', requireFirebaseBusinessOwner, async (req: any, res) => {
     try {
       const businessId = parseInt(req.params.id);
       const { categoryIds, ...businessFields } = req.body;
