@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, User, MapPin, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Map } from '@/components/ui/map';
+import { Navigation } from '@/components/navigation';
 import type { Article } from '@shared/schema';
 
 export function InspirationArticlePage() {
@@ -62,29 +63,22 @@ export function InspirationArticlePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+      <Navigation />
+
+      {/* Back to Inspiration Button */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center space-x-2">
-              <div>
-                <h1 className="text-xl font-bold text-mango-yellow font-questrial">Visit Phong Nha</h1>
-                <p className="text-xs text-gray-500">Phong Nha Travel Hub</p>
-              </div>
-            </Link>
-            
-            <Link href="/inspiration">
-              <Button variant="outline" className="flex items-center space-x-2">
-                <ArrowLeft className="w-4 h-4" />
-                <span>Back to Inspiration</span>
-              </Button>
-            </Link>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <Link href="/inspiration">
+            <Button variant="outline" className="flex items-center space-x-2">
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Inspiration</span>
+            </Button>
+          </Link>
         </div>
       </div>
 
       {/* Split Screen Layout */}
-      <div className="flex h-[calc(100vh-4rem)]">
+      <div className="flex h-[calc(100vh-8rem)]">
         {/* Left Side - Article Content */}
         <div className="flex-1 overflow-y-auto bg-white">
           <div className="max-w-4xl mx-auto px-6 py-8">

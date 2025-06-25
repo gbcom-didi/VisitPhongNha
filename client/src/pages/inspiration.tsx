@@ -5,6 +5,8 @@ import { Search, Filter, Calendar, MapPin, User, Tag } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Navigation } from '@/components/navigation';
+import { Footer } from '@/components/footer';
 import type { Article } from '@shared/schema';
 
 export function InspirationPage() {
@@ -48,27 +50,7 @@ export function InspirationPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center space-x-2">
-              <div>
-                <h1 className="text-xl font-bold text-mango-yellow font-questrial">Visit Phong Nha</h1>
-                <p className="text-xs text-gray-500">Phong Nha Travel Hub</p>
-              </div>
-            </Link>
-            
-            <nav className="flex space-x-8">
-              <Link href="/" className="text-gray-600 hover:text-mango-yellow transition-colors">Home</Link>
-              <Link href="/explore" className="text-gray-600 hover:text-mango-yellow transition-colors">Explore</Link>
-              <Link href="/inspiration" className="text-mango-yellow font-medium">Inspiration</Link>
-              <Link href="/getting-here" className="text-gray-600 hover:text-mango-yellow transition-colors">Getting Here</Link>
-              <Link href="/about" className="text-gray-600 hover:text-mango-yellow transition-colors">About</Link>
-            </nav>
-          </div>
-        </div>
-      </div>
+      <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
@@ -163,6 +145,8 @@ export function InspirationPage() {
           )}
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 }
