@@ -105,11 +105,15 @@ export class DatabaseStorage implements IStorage {
           .limit(1);
 
         if (existingUserByEmail.length > 0) {
-          // Update existing user by email but change the id
+          // Update existing user by email - only update safe fields, not the ID
           const [user] = await db
             .update(users)
             .set({
-              ...userData,
+              firstName: userData.firstName,
+              lastName: userData.lastName,
+              profileImageUrl: userData.profileImageUrl,
+              role: userData.role || existingUserByEmail[0].role,
+              isActive: userData.isActive !== undefined ? userData.isActive : existingUserByEmail[0].isActive,
               updatedAt: new Date(),
             })
             .where(eq(users.email, userData.email!))
@@ -139,13 +143,12 @@ export class DatabaseStorage implements IStorage {
             const [user] = await db
               .update(users)
               .set({
-                id: userData.id, // Update to new Firebase UID
                 firstName: userData.firstName,
                 lastName: userData.lastName,
                 profileImageUrl: userData.profileImageUrl,
                 updatedAt: new Date(),
               })
-              .where(eq(users.id, existingUser[0].id))
+              .where(eq(users.email, userData.email))
               .returning();
             return user;
           }

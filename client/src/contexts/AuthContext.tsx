@@ -212,12 +212,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const canAccessAdmin = (): boolean => hasRole(UserRole.BUSINESS_OWNER);
 
   useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+    
     const initAuth = async () => {
       try {
         await initializeFirebaseAuth();
         const authInstance = getAuthInstance();
         
-        const unsubscribe = onAuthStateChanged(authInstance, async (user) => {
+        unsubscribe = onAuthStateChanged(authInstance, async (user) => {
           if (user) {
             const syncedUser = await syncUserWithBackend(user);
             setCurrentUser(syncedUser);
@@ -226,8 +228,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
           setLoading(false);
         });
-
-        return unsubscribe;
       } catch (error) {
         console.error('Auth initialization error:', error);
         setLoading(false);
@@ -235,6 +235,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     initAuth();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, []);
 
   const value: AuthContextType = {

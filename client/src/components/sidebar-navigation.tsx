@@ -1,9 +1,15 @@
 import { Link, useLocation } from 'wouter';
-import { Home, Compass, BookOpen, Plane, Info, Phone, User } from 'lucide-react';
+import { Home, Compass, BookOpen, Plane, Info, Phone, User, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
+import { SignInModal } from '@/components/auth/SignInModal';
+import { useState } from 'react';
 
 export function SidebarNavigation() {
   const [location] = useLocation();
+  
+  const { isAuthenticated, logout } = useAuth();
+  const [showSignInModal, setShowSignInModal] = useState(false);
 
   const navItems = [
     { href: '/', icon: Home, label: 'Home' },
@@ -48,15 +54,32 @@ export function SidebarNavigation() {
 
       {/* User/Login at bottom */}
       <div className="mt-auto">
-        <button
-          onClick={() => window.location.href = '/api/login'}
-          className="w-10 h-10 rounded-lg flex items-center justify-center bg-mango-yellow text-white hover:bg-mango-yellow/90 transition-colors cursor-pointer shadow-sm"
-          title="Sign In"
-        >
-          <User className="w-5 h-5" />
-          <span className="sr-only">Sign In</span>
-        </button>
+        {isAuthenticated ? (
+          <button
+            onClick={logout}
+            className="w-10 h-10 rounded-lg flex items-center justify-center bg-red-500 text-white hover:bg-red-600 transition-colors cursor-pointer shadow-sm"
+            title="Sign Out"
+          >
+            <LogOut className="w-5 h-5" />
+            <span className="sr-only">Sign Out</span>
+          </button>
+        ) : (
+          <button
+            onClick={() => setShowSignInModal(true)}
+            className="w-10 h-10 rounded-lg flex items-center justify-center bg-mango-yellow text-white hover:bg-mango-yellow/90 transition-colors cursor-pointer shadow-sm"
+            title="Sign In"
+          >
+            <User className="w-5 h-5" />
+            <span className="sr-only">Sign In</span>
+          </button>
+        )}
       </div>
+
+      {/* Sign In Modal */}
+      <SignInModal 
+        isOpen={showSignInModal} 
+        onClose={() => setShowSignInModal(false)} 
+      />
     </div>
   );
 }
