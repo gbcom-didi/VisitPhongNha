@@ -12,7 +12,7 @@ export function InspirationArticlePage() {
   const articleId = params?.id ? parseInt(params.id) : null;
 
   const { data: article, isLoading, error } = useQuery<Article>({
-    queryKey: ['/api/articles', articleId],
+    queryKey: [`/api/articles/${articleId}`],
     enabled: !!articleId,
   });
 
@@ -55,8 +55,8 @@ export function InspirationArticlePage() {
   const articleLocation = {
     id: article.id,
     name: article.title,
-    latitude: parseFloat(article.latitude),
-    longitude: parseFloat(article.longitude),
+    latitude: parseFloat(article.latitude.toString()),
+    longitude: parseFloat(article.longitude.toString()),
     description: article.summary,
     category: { name: 'Article Location', color: '#F4B942' }
   };
@@ -152,7 +152,7 @@ export function InspirationArticlePage() {
                 <p className="text-sm text-gray-600 mb-2">{article.title}</p>
                 <div className="flex items-center text-xs text-gray-500">
                   <MapPin className="w-3 h-3 mr-1" />
-                  <span>Lat: {article.latitude}, Lng: {article.longitude}</span>
+                  <span>Lat: {article.latitude.toString()}, Lng: {article.longitude.toString()}</span>
                 </div>
               </div>
             </div>
@@ -163,8 +163,8 @@ export function InspirationArticlePage() {
               selectedBusiness={null}
               hoveredBusiness={null}
               center={{
-                lat: parseFloat(article.latitude),
-                lng: parseFloat(article.longitude)
+                lat: parseFloat(article.latitude.toString()),
+                lng: parseFloat(article.longitude.toString())
               }}
               zoom={14}
             />
