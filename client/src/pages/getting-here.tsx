@@ -50,8 +50,8 @@ export default function GettingHere() {
                   <div className="flex items-start">
                     <MapPin className="w-5 h-5 text-chili-red mt-0.5 mr-3 flex-shrink-0" />
                     <div>
-                      <h4 className="font-semibold">Ho Chi Minh City Airport</h4>
-                      <p className="text-sm text-gray-600">4 hours drive to Phan Rang</p>
+                      <h4 className="font-semibold">Hanoi Noi Bai Airport</h4>
+                      <p className="text-sm text-gray-600">4 hours drive to Phong Nha</p>
                     </div>
                   </div>
                 </div>
@@ -83,22 +83,22 @@ export default function GettingHere() {
                   <div className="flex items-start">
                     <Clock className="w-5 h-5 text-sea-blue mt-0.5 mr-3 flex-shrink-0" />
                     <div>
-                      <h4 className="font-semibold">From Ho Chi Minh City</h4>
-                      <p className="text-sm text-gray-600">6-7 hours, multiple daily departures</p>
+                      <h4 className="font-semibold">From Hanoi</h4>
+                      <p className="text-sm text-gray-600">8-9 hours, multiple daily departures</p>
                     </div>
                   </div>
                   <div className="flex items-start">
                     <Clock className="w-5 h-5 text-sea-blue mt-0.5 mr-3 flex-shrink-0" />
                     <div>
-                      <h4 className="font-semibold">From Nha Trang</h4>
-                      <p className="text-sm text-gray-600">2-3 hours, hourly departures</p>
+                      <h4 className="font-semibold">From Hue</h4>
+                      <p className="text-sm text-gray-600">3-4 hours, regular departures</p>
                     </div>
                   </div>
                   <div className="flex items-start">
                     <Clock className="w-5 h-5 text-sea-blue mt-0.5 mr-3 flex-shrink-0" />
                     <div>
-                      <h4 className="font-semibold">From Da Lat</h4>
-                      <p className="text-sm text-gray-600">3-4 hours, 3 daily departures</p>
+                      <h4 className="font-semibold">From Da Nang</h4>
+                      <p className="text-sm text-gray-600">5-6 hours, daily departures</p>
                     </div>
                   </div>
                 </div>

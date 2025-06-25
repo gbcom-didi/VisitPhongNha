@@ -75,13 +75,13 @@ export default function About() {
               <h2 className="text-3xl font-bold text-gray-900 mb-6 font-questrial">Our Story</h2>
               <div className="space-y-4 text-gray-600">
                 <p>
-                  ĐiĐi VUi began as a passion project by a group of international kitesurfers who fell in love with Phan Rang's pristine beaches, consistent winds, and incredible Vietnamese hospitality. After countless trips to the region, we realized there was no comprehensive guide that truly captured the magic of this hidden gem.
+                  Visit Phong Nha began as a passion project by a group of international cave explorers who fell in love with Phong Nha's incredible cave systems, pristine nature, and incredible Vietnamese hospitality. After countless trips to the region, we realized there was no comprehensive guide that truly captured the magic of this hidden gem.
                 </p>
                 <p>
-                  What started as a simple map of kitesurfing spots has evolved into Vietnam's most comprehensive travel platform for Phan Rang. We've partnered with local businesses, cultural experts, and adventure guides to create an authentic, insider's perspective on this remarkable destination.
+                  What started as a simple map of cave sites has evolved into Vietnam's most comprehensive travel platform for Phong Nha. We've partnered with local businesses, cultural experts, and adventure guides to create an authentic, insider's perspective on this remarkable destination.
                 </p>
                 <p>
-                  Today, ĐiĐi VUi serves thousands of travelers annually, helping them discover not just the world-class kitesurfing, but also the rich Cham culture, delicious local cuisine, and stunning natural landscapes that make Phan Rang truly special.
+                  Today, Visit Phong Nha serves thousands of travelers annually, helping them discover not just the world-class cave exploration, but also the rich local culture, delicious local cuisine, and stunning natural landscapes that make Phong Nha truly special.
                 </p>
               </div>
             </div>

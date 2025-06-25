@@ -43,13 +43,13 @@ class GooglePlacesImporter {
     }
   }
 
-  async searchPlace(businessName: string, location: string = "Phan Rang, Vietnam"): Promise<string | null> {
+  async searchPlace(businessName: string, location: string = "Phong Nha, Vietnam"): Promise<string | null> {
     try {
       // Try multiple search variations for better matching
       const searchQueries = [
         `${businessName} ${location}`,
-        `${businessName} Ninh Thuan Vietnam`,
-        `${businessName} Phan Rang Ninh Thuan`,
+        `${businessName} Quang Binh Vietnam`,
+        `${businessName} Phong Nha Quang Binh`,
         businessName, // Try just the business name
       ];
 

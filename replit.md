@@ -128,6 +128,13 @@ Changelog:
   - Updated all location references from "Ninh Thuan" to "Phan Rang" throughout the site
   - Applied consistent branding across navigation, footer, about page, and HTML meta tags
   - Maintained aqua color scheme for all brand elements
+- June 25, 2025. Complete rebranding from ĐiĐi VUi to Visit Phong Nha
+  - Changed all site branding from "ĐiĐi VUi" to "Visit Phong Nha" 
+  - Updated subtitle from "Phan Rang Travel Hub" to "Phong Nha Travel Hub"
+  - Changed location references from "Phan Rang" to "Phong Nha" throughout
+  - Updated province references from "Ninh Thuan" to "Quang Binh Province"
+  - Modified content focus from kitesurfing to cave exploration
+  - Updated transportation information for Phong Nha region
 - June 19, 2025. Implemented comprehensive business listing schema
   - Added comprehensive business schema with 27 fields including gallery, tags, amenities, booking options
   - Created admin interface at /admin for managing business listings with all schema fields
