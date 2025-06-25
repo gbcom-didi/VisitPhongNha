@@ -69,6 +69,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (response.ok) {
         const userData = await response.json();
+        
+        // Store the token for future API requests
+        localStorage.setItem('firebaseToken', idToken);
+        
         return {
           uid: user.uid,
           email: user.email,

@@ -1,6 +1,9 @@
 import admin from 'firebase-admin';
 import type { Express, RequestHandler } from "express";
 import { storage } from "./storage";
+import { db } from "./db";
+import { users } from "@shared/schema";
+import { eq } from "drizzle-orm";
 
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
@@ -48,18 +51,40 @@ export async function setupFirebaseAuth(app: Express) {
     try {
       const { uid, email, firstName, lastName, profileImageUrl } = req.body;
       
-      await storage.upsertUser({
-        id: uid,
-        email,
-        firstName,
-        lastName,
-        profileImageUrl,
-        role: "viewer", // Default role for new users
-        isActive: true,
-      });
-
-      const user = await storage.getUser(uid);
-      res.json(user);
+      // Check if user exists by Firebase UID first
+      let user = await storage.getUser(uid);
+      
+      if (user) {
+        // User exists with Firebase UID, just return current data
+        res.json(user);
+      } else {
+        // Try to create new user with Firebase UID
+        try {
+          const newUser = await storage.upsertUser({
+            id: uid,
+            email,
+            firstName,
+            lastName,
+            profileImageUrl,
+            role: "viewer",
+            isActive: true,
+          });
+          
+          res.json(newUser);
+        } catch (createError: any) {
+          // If user exists by email but different ID, return that user
+          if (createError.code === '23505') {
+            const existingUser = await db.select().from(users).where(eq(users.email, email)).limit(1);
+            if (existingUser.length > 0) {
+              res.json(existingUser[0]);
+            } else {
+              throw createError;
+            }
+          } else {
+            throw createError;
+          }
+        }
+      }
     } catch (error) {
       console.error('Error syncing user:', error);
       res.status(500).json({ message: 'Error syncing user data' });

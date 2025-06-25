@@ -39,10 +39,11 @@ The application uses several core tables:
 - **userLikes**: User favorites/likes system
 
 ### Authentication System
-- **Provider**: Replit Auth with OpenID Connect
-- **Session Storage**: PostgreSQL-backed sessions using connect-pg-simple
-- **User Management**: Automatic user creation and profile management
-- **Protected Routes**: Middleware-based route protection
+- **Provider**: Firebase Authentication with Google, Facebook, and email/password options
+- **Backend Integration**: Firebase Admin SDK for server-side token verification
+- **User Management**: Automatic user creation, role assignment, and profile management
+- **Protected Routes**: Firebase token-based middleware protection
+- **Role System**: Admin, business owner, and viewer roles with hierarchical permissions
 
 ### Frontend Features
 - **Interactive Map**: Google Maps API integration for location visualization
@@ -52,10 +53,11 @@ The application uses several core tables:
 - **SEO Optimization**: Meta tags and structured data for search engines
 
 ### API Endpoints
-- **Auth Routes**: User authentication and profile management
-- **Business Routes**: CRUD operations for business listings
+- **Firebase Auth Routes**: User authentication, token verification, and profile sync
+- **Firebase Config**: Secure configuration endpoint for client-side Firebase setup
+- **Business Routes**: CRUD operations for business listings with role-based access
 - **Category Routes**: Category management and filtering
-- **Like Routes**: User favorites management
+- **Like Routes**: User favorites management with Firebase authentication
 
 ## Data Flow
 
@@ -98,9 +100,12 @@ The application uses several core tables:
 
 ### Environment Variables
 - **DATABASE_URL**: PostgreSQL connection string (required)
-- **REPLIT_DOMAINS**: Allowed domains for Replit Auth
-- **SESSION_SECRET**: Session encryption secret
-- **ISSUER_URL**: OpenID Connect issuer URL
+- **FIREBASE_API_KEY**: Firebase API key for server-side operations
+- **FIREBASE_AUTH_DOMAIN**: Firebase authentication domain
+- **FIREBASE_PROJECT_ID**: Firebase project identifier
+- **FIREBASE_STORAGE_BUCKET**: Firebase storage bucket URL
+- **FIREBASE_MESSAGING_SENDER_ID**: Firebase messaging sender ID
+- **FIREBASE_APP_ID**: Firebase application ID
 - **VITE_GOOGLE_MAPS_API_KEY**: Google Maps JavaScript API key (required for maps)
 - **VITE_GOOGLE_MAPS_MAP_ID**: Google Maps Map ID for custom styling (optional)
 
@@ -187,6 +192,16 @@ Changelog:
   - Added Street Food emoji (🍜) to filter dialogs and category displays
   - Updated business card image fallbacks to include Street Food imagery
   - Category now available in admin pages and forms for business management
+- June 25, 2025. Implemented Firebase authentication system
+  - Replaced Replit Auth with Firebase Authentication
+  - Added Google, Facebook, and email/password sign-in options
+  - Created Firebase Admin SDK integration for server-side authentication
+  - Built comprehensive authentication context with role-based permissions
+  - Updated all navigation components and login links throughout the site
+  - Implemented secure Firebase configuration endpoint for client access
+  - Added user synchronization between Firebase and PostgreSQL database
+  - Created sign-in modal with multiple authentication methods
+  - Integrated Firebase tokens for authenticated API requests
 ```
 
 ## User Preferences
