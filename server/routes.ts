@@ -186,7 +186,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin routes for user management
-  app.get('/api/admin/users', isAuthenticated, requireAdmin, async (req, res) => {
+  app.get('/api/admin/users', requireFirebaseAdmin, async (req, res) => {
     try {
       const { role } = req.query;
       let users;
@@ -207,7 +207,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/admin/users/:id/role', isAuthenticated, requireAdmin, async (req, res) => {
+  app.put('/api/admin/users/:id/role', requireFirebaseAdmin, async (req, res) => {
     try {
       const userId = req.params.id;
       const { role } = req.body;
@@ -225,7 +225,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Business owner routes
-  app.get('/api/owner/businesses', isAuthenticated, requireBusinessOwner, async (req: any, res) => {
+  app.get('/api/owner/businesses', requireFirebaseBusinessOwner, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const businesses = await storage.getBusinessesByOwner(userId);
@@ -237,7 +237,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Google Places import route (admin only)
-  app.post('/api/admin/import-google-places', isAuthenticated, requireAdmin, async (req, res) => {
+  app.post('/api/admin/import-google-places', requireFirebaseAdmin, async (req, res) => {
     try {
       console.log('Starting Google Places import...');
       res.json({ message: 'Import started', status: 'processing' });
@@ -253,7 +253,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Single business Google Places update
-  app.post('/api/admin/businesses/:id/import-google', isAuthenticated, requireAdmin, async (req, res) => {
+  app.post('/api/admin/businesses/:id/import-google', requireFirebaseAdmin, async (req, res) => {
     try {
       const businessId = parseInt(req.params.id);
       const business = await storage.getBusiness(businessId);
@@ -277,7 +277,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // User likes routes
-  app.get('/api/user/likes', isAuthenticated, async (req: any, res) => {
+  app.get('/api/user/likes', verifyFirebaseToken, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const businesses = await storage.getBusinessesWithUserLikes(userId);
@@ -289,7 +289,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/user/likes/toggle', isAuthenticated, async (req: any, res) => {
+  app.post('/api/user/likes/toggle', verifyFirebaseToken, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const { businessId } = req.body;
@@ -520,7 +520,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/articles', isAuthenticated, requireAdmin, async (req, res) => {
+  app.post('/api/articles', requireFirebaseAdmin, async (req, res) => {
     try {
       const articleData = insertArticleSchema.parse(req.body);
       const article = await storage.createArticle(articleData);
@@ -531,7 +531,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/articles/:id', isAuthenticated, requireAdmin, async (req, res) => {
+  app.put('/api/articles/:id', requireFirebaseAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const articleData = insertArticleSchema.partial().parse(req.body);
