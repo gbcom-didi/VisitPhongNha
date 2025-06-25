@@ -13,7 +13,6 @@ export function InspirationPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [showFeatured, setShowFeatured] = useState(false);
-  const [currentLocation] = useLocation();
 
   const { data: articles = [], isLoading } = useQuery<Article[]>({
     queryKey: ['/api/articles', { tag: selectedTag, featured: showFeatured }],
