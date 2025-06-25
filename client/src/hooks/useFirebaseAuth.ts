@@ -13,12 +13,14 @@ export function useFirebaseAuth() {
 
     // Listen for auth state changes
     const unsubscribe = onAuthStateChange(async (user) => {
+      console.log('Firebase auth state changed:', user ? 'logged in' : 'logged out');
       setUser(user);
       
       if (user) {
         try {
           // Get the ID token for API calls
           const token = await user.getIdToken();
+          console.log('Got Firebase ID token, length:', token.length);
           setIdToken(token);
           
           // Store token in localStorage for persistence across page reloads

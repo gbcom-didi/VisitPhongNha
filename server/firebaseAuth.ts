@@ -12,9 +12,35 @@ export interface FirebaseUser {
 // This is a simplified approach - in production you'd want proper token verification
 export async function verifyFirebaseToken(idToken: string): Promise<FirebaseUser | null> {
   try {
-    // For now, we'll decode the JWT payload without verification
-    // This is NOT secure for production but will work for development
-    const payload = JSON.parse(atob(idToken.split('.')[1]));
+    console.log('Attempting to decode Firebase token...');
+    
+    // Split the JWT token into parts
+    const parts = idToken.split('.');
+    if (parts.length !== 3) {
+      console.error('Invalid JWT format');
+      return null;
+    }
+    
+    // Decode the payload (middle part)
+    const payload = JSON.parse(atob(parts[1]));
+    console.log('Decoded Firebase payload:', {
+      sub: payload.sub,
+      email: payload.email,
+      name: payload.name,
+      iss: payload.iss
+    });
+    
+    // Basic validation - check if it's a Firebase token
+    if (!payload.iss || !payload.iss.includes('firebase')) {
+      console.error('Not a Firebase token');
+      return null;
+    }
+    
+    // Check expiration
+    if (payload.exp && payload.exp < Date.now() / 1000) {
+      console.error('Token expired');
+      return null;
+    }
     
     return {
       uid: payload.sub || payload.user_id,
@@ -55,15 +81,22 @@ export const firebaseAuthMiddleware = async (req: Request, res: Response, next: 
 export const optionalFirebaseAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
+    console.log('Auth header:', authHeader ? 'Bearer token present' : 'No auth header');
+    
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const idToken = authHeader.split('Bearer ')[1];
+      console.log('Verifying Firebase token...');
       const user = await verifyFirebaseToken(idToken);
       if (user) {
+        console.log('Firebase user verified:', user.uid);
         (req as any).user = user;
+      } else {
+        console.log('Firebase token verification failed');
       }
     }
     next();
   } catch (error) {
+    console.error('Firebase auth error:', error);
     // For optional auth, we don't return an error, just continue without user
     next();
   }

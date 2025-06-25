@@ -41,6 +41,9 @@ export const getQueryFn: <T>(options: {
     
     if (token) {
       headers.Authorization = `Bearer ${token}`;
+      console.log('Sending request with Firebase token to:', queryKey[0]);
+    } else {
+      console.log('No Firebase token found for request to:', queryKey[0]);
     }
 
     const res = await fetch(queryKey[0] as string, {
