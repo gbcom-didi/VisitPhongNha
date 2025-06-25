@@ -63,12 +63,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (authHeader && authHeader.startsWith('Bearer ')) {
         try {
           const token = authHeader.split(' ')[1];
-          const admin = await import('firebase-admin');
-          const decodedToken = await admin.auth().verifyIdToken(token);
-          const user = await storage.getUser(decodedToken.uid);
+          const decodedToken = await auth.verifyIdToken(token);
+          
+          // Try to get user by Firebase UID first
+          let user = await storage.getUser(decodedToken.uid);
+          
+          // If not found by UID, try by email
+          if (!user && decodedToken.email) {
+            const existingUser = await db.select().from(users).where(eq(users.email, decodedToken.email)).limit(1);
+            if (existingUser.length > 0) {
+              user = existingUser[0];
+            }
+          }
+          
           userId = user?.id;
         } catch (authError) {
-          // Continue without user ID if authentication fails
           console.log("Authentication failed, continuing without user context");
         }
       }
