@@ -187,14 +187,6 @@ Changelog:
   - Added Street Food emoji (🍜) to filter dialogs and category displays
   - Updated business card image fallbacks to include Street Food imagery
   - Category now available in admin pages and forms for business management
-- June 25, 2025. Implemented Firebase Authentication system
-  - Replaced Replit Auth with Firebase Google authentication
-  - Added Firebase SDK integration with configuration management
-  - Created useFirebaseAuth hook for authentication state management
-  - Updated navigation components to use Firebase auth methods
-  - Implemented Google sign-in with redirect flow
-  - Updated user interface to display Firebase user profiles (photoURL, displayName)
-  - Maintained existing UI/UX patterns while switching auth providers
 ```
 
 ## User Preferences

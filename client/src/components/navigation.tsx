@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Heart, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
+import { useAuth } from '@/hooks/useAuth';
+import { useRBAC } from '@/hooks/useRBAC';
 
 export function Navigation() {
   const [location] = useLocation();
-  const { user, isAuthenticated, login, logout } = useFirebaseAuth();
+  const { user, isAuthenticated } = useAuth();
+  const { permissions } = useRBAC();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationLinks = [
@@ -18,8 +20,9 @@ export function Navigation() {
     { href: '/contact', label: 'Contact' },
   ];
 
-  // Remove admin links for now - will implement role-based access later
-  const adminLinks: any[] = [];
+  const adminLinks = [
+    { href: '/admin', label: 'Admin' },
+  ];
 
   const isActiveLink = (href: string) => {
     if (href === '/' && location === '/') return true;
@@ -80,22 +83,21 @@ export function Navigation() {
           {/* User Actions */}
           <div className="flex items-center space-x-3">
             {isAuthenticated && (
-              <Link href="/saved">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="hidden md:flex text-gray-700 hover:text-mango-yellow"
-                >
-                  <Heart className="w-5 h-5" />
-                </Button>
-              </Link>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="hidden md:flex text-gray-700 hover:text-tropical-aqua"
+                onClick={() => window.location.href = '/saved'}
+              >
+                <Heart className="w-5 h-5" />
+              </Button>
             )}
             
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
-                {user?.photoURL && (
+                {user?.profileImageUrl && (
                   <img
-                    src={user.photoURL}
+                    src={user.profileImageUrl}
                     alt="Profile"
                     className="w-8 h-8 rounded-full object-cover"
                   />
@@ -103,7 +105,7 @@ export function Navigation() {
                 <Button 
                   variant="outline" 
                   size="sm"
-                  onClick={logout}
+                  onClick={() => window.location.href = '/api/logout'}
                 >
                   Sign Out
                 </Button>
@@ -111,7 +113,7 @@ export function Navigation() {
             ) : (
               <Button 
                 className="bg-mango-yellow text-white hover:bg-mango-yellow/90 font-medium shadow-sm"
-                onClick={login}
+                onClick={() => window.location.href = '/api/login'}
               >
                 Sign In
               </Button>
