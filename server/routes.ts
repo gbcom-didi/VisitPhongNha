@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { requireAdmin, requireBusinessOwner, permissions } from "./rbac";
-import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema, businesses as businessesTable, businessCategories, categories } from "@shared/schema";
+import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema, insertArticleSchema, businesses as businessesTable, businessCategories, categories, articles } from "@shared/schema";
 import { googlePlacesImporter } from "./googlePlacesImporter";
 import { z } from "zod";
 import { db } from "./db";

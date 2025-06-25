@@ -8,6 +8,8 @@ import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import Home from "@/pages/home";
 import Explore from "@/pages/explore";
+import { InspirationPage } from "@/pages/inspiration";
+import { InspirationArticlePage } from "@/pages/inspiration-article";
 import GettingHere from "@/pages/getting-here";
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
@@ -21,6 +23,8 @@ function Router() {
     <Switch>
       <Route path="/" component={isAuthenticated ? Home : Landing} />
       <Route path="/explore" component={Explore} />
+      <Route path="/inspiration" component={InspirationPage} />
+      <Route path="/inspiration/:id" component={InspirationArticlePage} />
       <Route path="/getting-here" component={GettingHere} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
