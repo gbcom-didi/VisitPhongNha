@@ -10,10 +10,12 @@ interface MapProps {
   onBusinessClick?: (business: BusinessWithCategory) => void;
   selectedBusiness?: BusinessWithCategory | null;
   hoveredBusiness?: BusinessWithCategory | null;
+  center?: { lat: number; lng: number };
+  zoom?: number;
 }
 
 // Google Maps component
-function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hoveredBusiness }: MapProps) {
+function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hoveredBusiness, center, zoom }: MapProps) {
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -22,8 +24,8 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
     if (!mapContainerRef.current || !window.google) return;
 
     const map = new google.maps.Map(mapContainerRef.current, {
-      center: GOOGLE_MAPS_CONFIG.center,
-      zoom: GOOGLE_MAPS_CONFIG.zoom,
+      center: center || GOOGLE_MAPS_CONFIG.center,
+      zoom: zoom || GOOGLE_MAPS_CONFIG.zoom,
       mapTypeControl: true,
       mapTypeControlOptions: {
         style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
@@ -192,8 +194,8 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
 
   const centerMap = () => {
     if (mapRef.current) {
-      mapRef.current.panTo(GOOGLE_MAPS_CONFIG.center);
-      mapRef.current.setZoom(GOOGLE_MAPS_CONFIG.zoom);
+      mapRef.current.panTo(center || GOOGLE_MAPS_CONFIG.center);
+      mapRef.current.setZoom(zoom || GOOGLE_MAPS_CONFIG.zoom);
     }
   };
 

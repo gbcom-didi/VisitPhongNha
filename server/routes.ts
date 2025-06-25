@@ -497,6 +497,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Article routes
+  app.get('/api/articles', async (req, res) => {
+    try {
+      const { tag, featured } = req.query;
+      let articles;
+      
+      if (featured === 'true') {
+        articles = await storage.getFeaturedArticles();
+      } else if (tag) {
+        articles = await storage.getArticlesByTag(tag as string);
+      } else {
+        articles = await storage.getArticles();
+      }
+      
+      res.json(articles);
+    } catch (error) {
+      console.error("Error fetching articles:", error);
+      res.status(500).json({ message: "Failed to fetch articles" });
+    }
+  });
+
+  app.get('/api/articles/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const article = await storage.getArticle(id);
+      
+      if (!article) {
+        return res.status(404).json({ message: "Article not found" });
+      }
+      
+      res.json(article);
+    } catch (error) {
+      console.error("Error fetching article:", error);
+      res.status(500).json({ message: "Failed to fetch article" });
+    }
+  });
+
+  app.post('/api/articles', isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const articleData = insertArticleSchema.parse(req.body);
+      const article = await storage.createArticle(articleData);
+      res.status(201).json(article);
+    } catch (error) {
+      console.error("Error creating article:", error);
+      res.status(500).json({ message: "Failed to create article" });
+    }
+  });
+
+  app.put('/api/articles/:id', isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const articleData = insertArticleSchema.partial().parse(req.body);
+      const article = await storage.updateArticle(id, articleData);
+      res.json(article);
+    } catch (error) {
+      console.error("Error updating article:", error);
+      res.status(500).json({ message: "Failed to update article" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

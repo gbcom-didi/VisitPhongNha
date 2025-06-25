@@ -3,7 +3,7 @@ import { useRoute, Link } from 'wouter';
 import { ArrowLeft, Calendar, User, MapPin, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Map } from '@/components/map';
+import { Map } from '@/components/ui/map';
 import type { Article } from '@shared/schema';
 
 export function InspirationArticlePage() {
