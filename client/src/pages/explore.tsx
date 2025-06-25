@@ -36,9 +36,7 @@ export default function Explore() {
 
   // Like/Unlike mutation
   const likeMutation = useMutation({
-    mutationFn: (businessId: number) => apiRequest(`/api/businesses/${businessId}/like`, {
-      method: 'POST'
-    }),
+    mutationFn: (businessId: number) => apiRequest('POST', '/api/user/likes/toggle', { businessId }),
     onMutate: async (businessId: number) => {
       await queryClient.cancelQueries({ queryKey: ['/api/businesses'] });
       const previousBusinesses = queryClient.getQueryData(['/api/businesses']);
@@ -73,6 +71,7 @@ export default function Explore() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/businesses'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/likes'] });
     },
   });
 
@@ -96,8 +95,8 @@ export default function Explore() {
     setSelectedBusiness(null);
   };
 
-  const handleBusinessLike = (businessId: number) => {
-    likeMutation.mutate(businessId);
+  const handleBusinessLike = (business: BusinessWithCategory) => {
+    likeMutation.mutate(business.id);
   };
 
   const handleBusinessHover = (business: BusinessWithCategory | null) => {
