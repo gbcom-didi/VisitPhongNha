@@ -20,13 +20,12 @@ export function Footer() {
               </div>
               <div>
                 <h4 className="text-2xl font-bold text-jade-green mb-1 font-questrial">Visit Phong Nha</h4>
-                <p className="text-sm text-gray-600">Phong Nha Travel Hub</p>
+                <p className="text-sm text-gray-600">Quang Binh Travel Hub</p>
               </div>
             </div>
             
             <p className="text-gray-700 mb-6 leading-relaxed max-w-md">
-              Your ultimate guide to Phong Nha's cave paradise and Vietnamese culture. 
-              Discover, explore, and experience the best of Vietnam's hidden gems.
+              Your local guide to the heart of Phong Nha, where adventure meets Vietnamese charm.
             </p>
             
             <div className="flex space-x-4">
@@ -120,7 +119,7 @@ export function Footer() {
         <div className="border-t border-gray-200 mt-12 pt-8">
           <div className="text-center">
             <p className="text-gray-500 text-sm">
-              &copy; 2025 Visit Phong Nha. All rights reserved. Built for the cave exploration community in Quang Binh Province, Vietnam.
+              &copy; 2025 Visit Phong Nha. All rights reserved. Built for the tourism community in Quang Binh Province, Vietnam.
             </p>
           </div>
         </div>

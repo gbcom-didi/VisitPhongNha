@@ -51,7 +51,7 @@ export function Navigation() {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-mango-yellow font-questrial">Visit Phong Nha</h1>
-                  <p className="text-xs text-gray-500">Phong Nha Travel Hub</p>
+                  <p className="text-xs text-gray-500">Quang Binh Travel Hub</p>
                 </div>
               </div>
             </Link>
