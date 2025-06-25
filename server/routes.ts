@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupFirebaseAuth, verifyFirebaseToken, requireFirebaseAdmin, requireFirebaseBusinessOwner, requireFirebaseViewer, auth } from "./firebaseAuth";
 import { permissions } from "./rbac";
-import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema, insertArticleSchema, businesses as businessesTable, businessCategories, categories, articles } from "@shared/schema";
+import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema, insertArticleSchema, businesses as businessesTable, businessCategories, categories, articles, users } from "@shared/schema";
 import { googlePlacesImporter } from "./googlePlacesImporter";
 import { z } from "zod";
 import { db } from "./db";
@@ -322,9 +322,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const firebaseUid = req.user.uid;
       
       // Get the database user ID for this Firebase user
-      const user = await storage.getUser(firebaseUid);
+      let user = await storage.getUser(firebaseUid);
+      
+      // If user not found by Firebase UID, try to find by email
+      if (!user && req.user.email) {
+        const existingUser = await db.select().from(users).where(eq(users.email, req.user.email)).limit(1);
+        if (existingUser.length > 0) {
+          user = existingUser[0];
+        }
+      }
+      
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        return res.json([]); // Return empty array instead of error for better UX
       }
       
       const businesses = await storage.getBusinessesWithUserLikes(user.id);
@@ -346,7 +355,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Get the database user ID for this Firebase user
-      const user = await storage.getUser(firebaseUid);
+      let user = await storage.getUser(firebaseUid);
+      
+      // If user not found by Firebase UID, try to find by email
+      if (!user && req.user.email) {
+        const existingUser = await db.select().from(users).where(eq(users.email, req.user.email)).limit(1);
+        if (existingUser.length > 0) {
+          user = existingUser[0];
+        }
+      }
+      
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
