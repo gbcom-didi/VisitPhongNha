@@ -41,7 +41,7 @@ export function FilterDialog({
               variant={selectedCategory === null ? "default" : "outline"}
               className={`w-full justify-start h-8 text-left text-sm ${
                 selectedCategory === null 
-                  ? "bg-tropical-aqua hover:bg-tropical-aqua/90 text-white border-tropical-aqua" 
+                  ? "bg-mango-yellow hover:bg-mango-yellow/90 text-white border-mango-yellow" 
                   : "border-gray-200 hover:bg-gray-50"
               }`}
               onClick={() => handleCategorySelect(null)}
@@ -59,7 +59,7 @@ export function FilterDialog({
                     variant={isSelected ? "default" : "outline"}
                     className={`justify-start h-8 text-left text-sm px-2 ${
                       isSelected 
-                        ? "bg-tropical-aqua hover:bg-tropical-aqua/90 text-white border-tropical-aqua" 
+                        ? "bg-mango-yellow hover:bg-mango-yellow/90 text-white border-mango-yellow" 
                         : "border-gray-200 hover:bg-gray-50"
                     }`}
                     onClick={() => handleCategorySelect(category.id)}

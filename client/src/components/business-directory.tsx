@@ -89,8 +89,8 @@ export function BusinessDirectory({
             variant={selectedCategory === null ? "default" : "outline"}
             size="sm"
             onClick={() => onCategoryChange(null)}
-            className={`h-6 px-2 text-xs whitespace-nowrap flex-shrink-0 min-w-fit ${
-              selectedCategory === null ? "bg-tropical-aqua hover:bg-tropical-aqua/90 text-white" : ""
+            className={`h-8 px-3 text-sm whitespace-nowrap flex-shrink-0 min-w-fit ${
+              selectedCategory === null ? "bg-mango-yellow hover:bg-mango-yellow/90 text-white border-mango-yellow" : ""
             }`}
           >
             All
@@ -101,8 +101,8 @@ export function BusinessDirectory({
               variant={selectedCategory === category.id ? "default" : "outline"}
               size="sm"
               onClick={() => onCategoryChange(category.id)}
-              className={`h-6 px-2 text-xs whitespace-nowrap flex-shrink-0 min-w-fit ${
-                selectedCategory === category.id ? "bg-tropical-aqua hover:bg-tropical-aqua/90 text-white" : ""
+              className={`h-8 px-3 text-sm whitespace-nowrap flex-shrink-0 min-w-fit ${
+                selectedCategory === category.id ? "bg-mango-yellow hover:bg-mango-yellow/90 text-white" : ""
               }`}
             >
               {category.name}
@@ -112,7 +112,7 @@ export function BusinessDirectory({
             variant="outline"
             size="sm"
             onClick={() => setIsFilterDialogOpen(true)}
-            className="h-6 px-2 text-xs whitespace-nowrap flex-shrink-0 min-w-fit"
+            className="h-8 px-3 text-sm whitespace-nowrap flex-shrink-0 min-w-fit"
           >
             Filters
           </Button>
