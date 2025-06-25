@@ -1,21 +1,21 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
+import { initializeApp, type FirebaseApp } from 'firebase/app';
+import { getAuth, GoogleAuthProvider, FacebookAuthProvider, type Auth } from 'firebase/auth';
 
 // Firebase configuration - will be initialized by auth context
-let app: any = null;
-let auth: any = null;
+let firebaseApp: FirebaseApp | null = null;
+let firebaseAuth: Auth | null = null;
 
 export const initializeFirebase = async () => {
   try {
     const response = await fetch('/api/firebase-config');
     const firebaseConfig = await response.json();
     
-    if (!app) {
-      app = initializeApp(firebaseConfig);
-      auth = getAuth(app);
+    if (!firebaseApp) {
+      firebaseApp = initializeApp(firebaseConfig);
+      firebaseAuth = getAuth(firebaseApp);
     }
     
-    return { app, auth };
+    return { app: firebaseApp, auth: firebaseAuth };
   } catch (error) {
     console.error('Failed to initialize Firebase:', error);
     throw error;
@@ -38,10 +38,10 @@ facebookProvider.setCustomParameters({
 
 // Get auth instance (must be called after initialization)
 export const getAuthInstance = () => {
-  if (!auth) {
+  if (!firebaseAuth) {
     throw new Error('Firebase not initialized. Call initializeFirebase first.');
   }
-  return auth;
+  return firebaseAuth;
 };
 
-export { app as default };
+export { firebaseApp as default };
