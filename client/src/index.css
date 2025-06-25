@@ -6,7 +6,7 @@
 
 :root {
   --background: hsl(0, 0%, 100%);
-  --foreground: hsl(20, 14.3%, 4.1%);
+  --foreground: #333333;
   --muted: hsl(60, 4.8%, 95.9%);
   --muted-foreground: hsl(25, 5.3%, 44.7%);
   --popover: hsl(0, 0%, 100%);
@@ -27,12 +27,11 @@
   --radius: 0.5rem;
   
   /* Brand colors */
-  --chili-red: hsl(6, 70%, 52%);
-  --peach-blush: hsl(13, 85%, 83%);
-  --soft-clay: hsl(27, 48%, 72%);
-  --sea-blue: hsl(184, 49%, 41%);
-  --tropical-aqua: hsl(181, 59%, 49%);
-  --coastal-mist: hsl(181, 32%, 73%);
+  --mango-yellow: #F4B942;
+  --coral-sunset: #F87D51;
+  --jade-green: #6DBFB3;
+  --text-primary: #333333;
+  --text-secondary: #555555;
 }
 
 /* Hide scrollbars */
@@ -81,92 +80,72 @@
 
 /* Custom brand color utilities */
 @layer utilities {
-  .text-chili-red {
-    color: var(--chili-red);
+  .text-mango-yellow {
+    color: var(--mango-yellow);
   }
   
-  .text-peach-blush {
-    color: var(--peach-blush);
+  .text-coral-sunset {
+    color: var(--coral-sunset);
   }
   
-  .text-soft-clay {
-    color: var(--soft-clay);
+  .text-jade-green {
+    color: var(--jade-green);
   }
   
-  .text-sea-blue {
-    color: var(--sea-blue);
+  .text-primary {
+    color: var(--text-primary);
   }
   
-  .text-tropical-aqua {
-    color: var(--tropical-aqua);
+  .text-secondary {
+    color: var(--text-secondary);
   }
   
-  .text-coastal-mist {
-    color: var(--coastal-mist);
+  .bg-mango-yellow {
+    background-color: var(--mango-yellow);
   }
   
-  .bg-chili-red {
-    background-color: var(--chili-red);
+  .bg-coral-sunset {
+    background-color: var(--coral-sunset);
   }
   
-  .bg-peach-blush {
-    background-color: var(--peach-blush);
+  .bg-jade-green {
+    background-color: var(--jade-green);
   }
   
-  .bg-soft-clay {
-    background-color: var(--soft-clay);
+  .border-mango-yellow {
+    border-color: var(--mango-yellow);
   }
   
-  .bg-sea-blue {
-    background-color: var(--sea-blue);
+  .border-coral-sunset {
+    border-color: var(--coral-sunset);
   }
   
-  .bg-tropical-aqua {
-    background-color: var(--tropical-aqua);
+  .border-jade-green {
+    border-color: var(--jade-green);
   }
   
-  .bg-coastal-mist {
-    background-color: var(--coastal-mist);
+  .hover\:bg-mango-yellow:hover {
+    background-color: var(--mango-yellow);
   }
   
-  .border-chili-red {
-    border-color: var(--chili-red);
+  .hover\:bg-coral-sunset:hover {
+    background-color: var(--coral-sunset);
   }
   
-  .border-peach-blush {
-    border-color: var(--peach-blush);
+  .hover\:bg-jade-green:hover {
+    background-color: var(--jade-green);
   }
   
-  .border-soft-clay {
-    border-color: var(--soft-clay);
+  .hover\:text-mango-yellow:hover {
+    color: var(--mango-yellow);
   }
   
-  .border-sea-blue {
-    border-color: var(--sea-blue);
+  .hover\:text-coral-sunset:hover {
+    color: var(--coral-sunset);
   }
   
-  .border-tropical-aqua {
-    border-color: var(--tropical-aqua);
-  }
-  
-  .border-coastal-mist {
-    border-color: var(--coastal-mist);
-  }
-  
-  .hover\:bg-chili-red:hover {
-    background-color: var(--chili-red);
-  }
-  
-  .hover\:bg-sea-blue:hover {
-    background-color: var(--sea-blue);
-  }
-  
-  .hover\:bg-tropical-aqua:hover {
-    background-color: var(--tropical-aqua);
-  }
-  
-  .hover\:text-chili-red:hover {
-    color: var(--chili-red);
+  .hover\:text-jade-green:hover {
+    color: var(--jade-green);
   }
   
   .font-questrial {

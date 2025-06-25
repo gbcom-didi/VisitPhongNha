@@ -17,7 +17,7 @@ export function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen sm:h-96 bg-gradient-to-r from-sea-blue to-tropical-aqua">
+    <section className="relative min-h-screen sm:h-96 bg-gradient-to-r from-coral-sunset to-mango-yellow">
       {/* Hero Background */}
       <div 
         className="absolute inset-0 bg-cover bg-center"
@@ -45,7 +45,7 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg"
-              className="bg-tropical-aqua hover:bg-tropical-aqua/90 text-white px-8 py-3 text-lg"
+              className="bg-mango-yellow hover:bg-mango-yellow/90 text-white px-8 py-3 text-lg"
               onClick={() => window.location.href = '/explore'}
             >
               Start Exploring
@@ -53,7 +53,7 @@ export function Hero() {
             <Button 
               size="lg"
               variant="outline"
-              className="border-2 border-white text-white hover:bg-white hover:text-sea-blue px-8 py-3 text-lg bg-transparent"
+              className="border-2 border-white text-white hover:bg-white hover:text-coral-sunset px-8 py-3 text-lg bg-transparent"
             >
               <Play className="w-5 h-5 mr-2" />
               Watch Video

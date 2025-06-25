@@ -3,12 +3,12 @@ import { Link } from 'wouter';
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-jade-green text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid md:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div className="md:col-span-2">
-            <h4 className="text-2xl font-bold text-tropical-aqua mb-4 font-questrial">Visit Phong Nha</h4>
+            <h4 className="text-2xl font-bold text-mango-yellow mb-4 font-questrial">Visit Phong Nha</h4>
             <p className="text-xs text-gray-400 mb-2">Phong Nha Travel Hub</p>
             <p className="text-gray-300 mb-4 leading-relaxed">
               Your ultimate guide to Phong Nha's cave paradise and Vietnamese culture. 
