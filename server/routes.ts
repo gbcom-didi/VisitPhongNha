@@ -57,7 +57,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Businesses routes
   app.get('/api/businesses', async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      // Get Firebase user if authenticated
+      let userId = null;
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        try {
+          const token = authHeader.split(' ')[1];
+          const decodedToken = await auth.verifyIdToken(token);
+          const user = await storage.getUser(decodedToken.uid);
+          userId = user?.id;
+        } catch (authError) {
+          // Continue without user ID if authentication fails
+          console.log("Authentication failed, continuing without user context");
+        }
+      }
+
       const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
       const showAll = req.query.showAll === 'true';
 
@@ -134,10 +148,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Viewers cannot create businesses" });
       }
       
+      // Get the database user ID for this Firebase user
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
       // Business owners can only create businesses for themselves unless they're admin
       if (userRole === 'business_owner' && !businessData.ownerId) {
-        businessData.ownerId = userId;
-      } else if (userRole === 'business_owner' && businessData.ownerId !== userId) {
+        businessData.ownerId = user.id;
+      } else if (userRole === 'business_owner' && businessData.ownerId !== user.id) {
         return res.status(403).json({ message: "Business owners can only create businesses for themselves" });
       }
       
@@ -239,8 +259,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Business owner routes
   app.get('/api/owner/businesses', requireFirebaseBusinessOwner, async (req: any, res) => {
     try {
-      const userId = req.user.uid;
-      const businesses = await storage.getBusinessesByOwner(userId);
+      const firebaseUid = req.user.uid;
+      
+      // Get the database user ID for this Firebase user
+      const user = await storage.getUser(firebaseUid);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      const businesses = await storage.getBusinessesByOwner(user.id);
       res.json(businesses);
     } catch (error) {
       console.error("Error fetching owner businesses:", error);
@@ -291,8 +318,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User likes routes
   app.get('/api/user/likes', verifyFirebaseToken, async (req: any, res) => {
     try {
-      const userId = req.user.uid;
-      const businesses = await storage.getBusinessesWithUserLikes(userId);
+      const firebaseUid = req.user.uid;
+      
+      // Get the database user ID for this Firebase user
+      const user = await storage.getUser(firebaseUid);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      const businesses = await storage.getBusinessesWithUserLikes(user.id);
       const favoriteBusinesses = businesses.filter(business => business.isLiked);
       res.json(favoriteBusinesses);
     } catch (error) {
@@ -303,14 +337,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/user/likes/toggle', verifyFirebaseToken, async (req: any, res) => {
     try {
-      const userId = req.user.uid;
+      const firebaseUid = req.user.uid;
       const { businessId } = req.body;
       
       if (!businessId || typeof businessId !== 'number') {
         return res.status(400).json({ message: "Valid businessId is required" });
       }
       
-      const result = await storage.toggleUserLike(userId, businessId);
+      // Get the database user ID for this Firebase user
+      const user = await storage.getUser(firebaseUid);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      const result = await storage.toggleUserLike(user.id, businessId);
       res.json(result);
     } catch (error) {
       console.error("Error toggling user like:", error);

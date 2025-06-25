@@ -55,11 +55,31 @@ export async function setupFirebaseAuth(app: Express) {
       let user = await storage.getUser(uid);
       
       if (user) {
-        // User exists with Firebase UID, just return current data
-        res.json(user);
+        // User exists with Firebase UID, update and return current data
+        const updatedUser = await db.update(users).set({
+          firstName,
+          lastName,
+          profileImageUrl,
+          updatedAt: new Date(),
+        }).where(eq(users.id, uid)).returning();
+        
+        res.json(updatedUser[0]);
       } else {
-        // Try to create new user with Firebase UID
-        try {
+        // Check if user exists by email (migrating from old auth)
+        const existingUserByEmail = await db.select().from(users).where(eq(users.email, email)).limit(1);
+        
+        if (existingUserByEmail.length > 0) {
+          // User exists with different ID, update their info and return existing user
+          const migratedUser = await db.update(users).set({
+            firstName,
+            lastName,
+            profileImageUrl,
+            updatedAt: new Date(),
+          }).where(eq(users.email, email)).returning();
+          
+          res.json(migratedUser[0]);
+        } else {
+          // Create new user with Firebase UID
           const newUser = await storage.upsertUser({
             id: uid,
             email,
@@ -71,18 +91,6 @@ export async function setupFirebaseAuth(app: Express) {
           });
           
           res.json(newUser);
-        } catch (createError: any) {
-          // If user exists by email but different ID, return that user
-          if (createError.code === '23505') {
-            const existingUser = await db.select().from(users).where(eq(users.email, email)).limit(1);
-            if (existingUser.length > 0) {
-              res.json(existingUser[0]);
-            } else {
-              throw createError;
-            }
-          } else {
-            throw createError;
-          }
         }
       }
     } catch (error) {
