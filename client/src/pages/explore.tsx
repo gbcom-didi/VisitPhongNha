@@ -345,7 +345,7 @@ export default function Explore() {
         </div>
 
         {/* Map - Takes remaining space */}
-        <div className="flex-1 ml-[396px] h-screen">
+        <div className="fixed left-96 top-0 right-0 h-full">
           <Map
             businesses={filteredBusinesses}
             onBusinessClick={handleMapPinClick}
