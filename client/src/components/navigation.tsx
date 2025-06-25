@@ -2,17 +2,11 @@ import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Heart, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-// Temporarily disable Firebase auth
-// import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
+import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 
 export function Navigation() {
   const [location] = useLocation();
-  // Temporarily disable Firebase auth
-  // const { user, isAuthenticated, login, logout } = useFirebaseAuth();
-  const user = null;
-  const isAuthenticated = false;
-  const login = () => console.log('Login clicked');
-  const logout = () => console.log('Logout clicked');
+  const { user, isAuthenticated, login, logout } = useFirebaseAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationLinks = [

@@ -9,12 +9,6 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-console.log('Firebase config:', {
-  apiKey: firebaseConfig.apiKey ? 'Present' : 'Missing',
-  projectId: firebaseConfig.projectId,
-  appId: firebaseConfig.appId ? 'Present' : 'Missing'
-});
-
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
@@ -28,22 +22,15 @@ export function signInWithGoogle() {
 // Handle redirect result after sign in
 export function handleRedirect() {
   return getRedirectResult(auth)
-    .then(async (result) => {
+    .then((result) => {
       if (result) {
-        console.log('Firebase redirect result received:', result.user.uid);
-        
-        // Get the ID token immediately after successful redirect
-        const idToken = await result.user.getIdToken();
-        console.log('Got ID token from redirect, storing...');
-        localStorage.setItem('firebase_token', idToken);
-        
         // This gives you a Google Access Token. You can use it to access Google APIs.
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential?.accessToken;
         
         // The signed-in user info.
         const user = result.user;
-        return { user, token, idToken };
+        return { user, token };
       }
       return null;
     })

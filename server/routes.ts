@@ -2,7 +2,6 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { firebaseAuthMiddleware, optionalFirebaseAuth } from "./firebaseAuth";
 import { requireAdmin, requireBusinessOwner, permissions } from "./rbac";
 import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema, insertArticleSchema, businesses as businessesTable, businessCategories, categories, articles } from "@shared/schema";
 import { googlePlacesImporter } from "./googlePlacesImporter";
@@ -14,17 +13,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
-  // Auth routes - temporarily return mock user for testing
-  app.get('/api/auth/user', async (req: any, res) => {
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      // For now, return a mock user to test the UI
-      res.json({
-        id: 'mock-user-123',
-        email: 'user@example.com',
-        displayName: 'Test User',
-        photoURL: null,
-        role: 'viewer'
-      });
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (user) {
+        // Attach user role to the session for middleware
+        req.user.role = user.role;
+        req.user.isActive = user.isActive;
+      }
+      res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
@@ -60,8 +59,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Businesses routes
   app.get('/api/businesses', async (req: any, res) => {
     try {
-      // For testing, use mock user ID
-      const userId = 'mock-user-123';
+      const userId = req.user?.claims?.sub;
       const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
       const showAll = req.query.showAll === 'true';
 
@@ -293,10 +291,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // User likes routes
-  app.get('/api/user/likes', async (req: any, res) => {
+  app.get('/api/user/likes', isAuthenticated, async (req: any, res) => {
     try {
-      // For testing, use mock user ID
-      const userId = 'mock-user-123';
+      const userId = req.user.claims.sub;
       const businesses = await storage.getBusinessesWithUserLikes(userId);
       const favoriteBusinesses = businesses.filter(business => business.isLiked);
       res.json(favoriteBusinesses);
@@ -306,10 +303,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/user/likes/toggle', async (req: any, res) => {
+  app.post('/api/user/likes/toggle', isAuthenticated, async (req: any, res) => {
     try {
-      // For testing, use mock user ID
-      const userId = 'mock-user-123';
+      const userId = req.user.claims.sub;
       const { businessId } = req.body;
       
       if (!businessId || typeof businessId !== 'number') {
