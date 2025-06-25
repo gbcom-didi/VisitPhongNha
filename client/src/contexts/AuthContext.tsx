@@ -99,8 +99,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = async () => {
     if (!firebaseInitialized) await initializeFirebaseAuth();
     try {
-      const auth = getAuthInstance();
-      const result = await signInWithPopup(auth, googleProvider);
+      const authInstance = getAuthInstance();
+      const result = await signInWithPopup(authInstance, googleProvider);
       const syncedUser = await syncUserWithBackend(result.user);
       setCurrentUser(syncedUser);
     } catch (error) {
@@ -112,8 +112,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithFacebook = async () => {
     if (!firebaseInitialized) await initializeFirebaseAuth();
     try {
-      const auth = getAuthInstance();
-      const result = await signInWithPopup(auth, facebookProvider);
+      const authInstance = getAuthInstance();
+      const result = await signInWithPopup(authInstance, facebookProvider);
       const syncedUser = await syncUserWithBackend(result.user);
       setCurrentUser(syncedUser);
     } catch (error) {
@@ -125,8 +125,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithEmail = async (email: string, password: string) => {
     if (!firebaseInitialized) await initializeFirebaseAuth();
     try {
-      const auth = getAuthInstance();
-      const result = await signInWithEmailAndPassword(auth, email, password);
+      const authInstance = getAuthInstance();
+      const result = await signInWithEmailAndPassword(authInstance, email, password);
       const syncedUser = await syncUserWithBackend(result.user);
       setCurrentUser(syncedUser);
     } catch (error) {
@@ -138,8 +138,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUpWithEmail = async (email: string, password: string, firstName?: string, lastName?: string) => {
     if (!firebaseInitialized) await initializeFirebaseAuth();
     try {
-      const auth = getAuthInstance();
-      const result = await createUserWithEmailAndPassword(auth, email, password);
+      const authInstance = getAuthInstance();
+      const result = await createUserWithEmailAndPassword(authInstance, email, password);
       
       // Update profile with name
       if (firstName || lastName) {
@@ -157,8 +157,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      const auth = getAuthInstance();
-      await signOut(auth);
+      const authInstance = getAuthInstance();
+      await signOut(authInstance);
       setCurrentUser(null);
     } catch (error) {
       console.error('Logout error:', error);
@@ -169,8 +169,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const resetPassword = async (email: string) => {
     if (!firebaseInitialized) await initializeFirebaseAuth();
     try {
-      const auth = getAuthInstance();
-      await sendPasswordResetEmail(auth, email);
+      const authInstance = getAuthInstance();
+      await sendPasswordResetEmail(authInstance, email);
     } catch (error) {
       console.error('Password reset error:', error);
       throw error;
@@ -215,9 +215,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const initAuth = async () => {
       try {
         await initializeFirebaseAuth();
-        const auth = getAuthInstance();
+        const authInstance = getAuthInstance();
         
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        const unsubscribe = onAuthStateChanged(authInstance, async (user) => {
           if (user) {
             const syncedUser = await syncUserWithBackend(user);
             setCurrentUser(syncedUser);
