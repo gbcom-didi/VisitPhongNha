@@ -11,7 +11,7 @@ import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { BusinessWithCategory, Category } from '@shared/schema';
 
 import { useLocation, Link } from 'wouter';
-import { Heart, Map as MapIcon, List } from 'lucide-react';
+import { Heart, Map as MapIcon, List, Menu, Navigation } from 'lucide-react';
 
 export default function Explore() {
   const { isAuthenticated } = useAuth();
@@ -22,6 +22,7 @@ export default function Explore() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showMapInMobile, setShowMapInMobile] = useState(true);
   const [hoveredBusiness, setHoveredBusiness] = useState<BusinessWithCategory | null>(null);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   // Fetch categories
   const { data: categories = [] } = useQuery<Category[]>({
@@ -140,31 +141,66 @@ export default function Explore() {
               <span className="text-xl font-bold text-gray-900">Visit Phong Nha</span>
             </div>
             
-            <div className="flex space-x-2">
-              <button
-                onClick={() => setShowMapInMobile(false)}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                  !showMapInMobile 
-                    ? 'bg-mango-yellow text-white' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                <List className="w-4 h-4 inline mr-1" />
-                List
-              </button>
-              <button
-                onClick={() => setShowMapInMobile(true)}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                  showMapInMobile 
-                    ? 'bg-mango-yellow text-white' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                <MapIcon className="w-4 h-4 inline mr-1" />
-                Map
-              </button>
-            </div>
+            <button
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="p-2 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
           </div>
+
+          {/* Mobile Menu Dropdown */}
+          {showMobileMenu && (
+            <div className="border-t border-gray-200 bg-white">
+              <div className="p-4 space-y-3">
+                <button
+                  onClick={() => {
+                    setShowMapInMobile(false);
+                    setShowMobileMenu(false);
+                  }}
+                  className={`w-full flex items-center justify-center py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                    !showMapInMobile 
+                      ? 'bg-mango-yellow text-white' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  <List className="w-4 h-4 mr-2" />
+                  List View
+                </button>
+                <button
+                  onClick={() => {
+                    setShowMapInMobile(true);
+                    setShowMobileMenu(false);
+                  }}
+                  className={`w-full flex items-center justify-center py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                    showMapInMobile 
+                      ? 'bg-mango-yellow text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  <Navigation className="w-4 h-4 mr-2" />
+                  Map View
+                </button>
+                
+                {/* Authentication Button */}
+                {isAuthenticated ? (
+                  <button 
+                    className="w-full py-2 px-4 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors font-medium"
+                    onClick={() => window.location.href = '/api/logout'}
+                  >
+                    Sign Out
+                  </button>
+                ) : (
+                  <button 
+                    className="w-full py-2 px-4 bg-mango-yellow text-white rounded-md hover:bg-mango-yellow/90 transition-colors font-medium"
+                    onClick={() => window.location.href = '/api/login'}
+                  >
+                    Sign In
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Mobile List */}
