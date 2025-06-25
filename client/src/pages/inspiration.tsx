@@ -13,6 +13,7 @@ export function InspirationPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [showFeatured, setShowFeatured] = useState(false);
+  const [currentLocation] = useLocation();
 
   const { data: articles = [], isLoading } = useQuery<Article[]>({
     queryKey: ['/api/articles', { tag: selectedTag, featured: showFeatured }],
@@ -72,7 +73,7 @@ export function InspirationPage() {
           <nav className="space-y-2 mb-8">
             <Link href="/" className={cn(
               "flex items-center space-x-3 w-full p-3 rounded-lg transition-colors",
-              location === "/" ? "bg-mango-yellow text-white" : "text-gray-600 hover:bg-gray-100"
+              currentLocation === "/" ? "bg-mango-yellow text-white" : "text-gray-600 hover:bg-gray-100"
             )}>
               <Home className="w-5 h-5" />
               <span className="font-medium">Home</span>
@@ -80,7 +81,7 @@ export function InspirationPage() {
 
             <Link href="/explore" className={cn(
               "flex items-center space-x-3 w-full p-3 rounded-lg transition-colors",
-              location.startsWith("/explore") ? "bg-mango-yellow text-white" : "text-gray-600 hover:bg-gray-100"
+              currentLocation?.startsWith("/explore") ? "bg-mango-yellow text-white" : "text-gray-600 hover:bg-gray-100"
             )}>
               <Compass className="w-5 h-5" />
               <span className="font-medium">Explore</span>
@@ -88,7 +89,7 @@ export function InspirationPage() {
 
             <Link href="/inspiration" className={cn(
               "flex items-center space-x-3 w-full p-3 rounded-lg transition-colors",
-              location.startsWith("/inspiration") ? "bg-mango-yellow text-white" : "text-gray-600 hover:bg-gray-100"
+              currentLocation?.startsWith("/inspiration") ? "bg-mango-yellow text-white" : "text-gray-600 hover:bg-gray-100"
             )}>
               <BookOpen className="w-5 h-5" />
               <span className="font-medium">Inspiration</span>
