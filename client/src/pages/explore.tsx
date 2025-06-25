@@ -272,7 +272,7 @@ export default function Explore() {
         <SidebarNavigation />
 
         {/* Business Directory Panel */}
-        <div className="fixed left-16 top-0 w-80 h-full bg-white border-r border-gray-200 overflow-y-auto z-40">
+        <div className="fixed left-16 top-0 w-96 h-full bg-white border-r border-gray-200 overflow-y-auto z-40">
           <BusinessDirectory
             businesses={filteredBusinesses}
             categories={categories}
@@ -286,7 +286,7 @@ export default function Explore() {
         </div>
 
         {/* Map - Takes remaining space */}
-        <div className="fixed left-96 top-0 right-0 h-full">
+        <div className="fixed left-[28rem] top-0 right-0 h-full">
           <Map
             businesses={filteredBusinesses}
             onBusinessClick={handleMapPinClick}
