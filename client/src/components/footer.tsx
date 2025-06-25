@@ -10,45 +10,13 @@ export function Footer() {
           {/* Brand Section with Logo */}
           <div className="lg:col-span-2">
             <div className="flex items-center mb-6">
-              {/* Logo SVG */}
+              {/* Logo Image */}
               <div className="w-16 h-16 mr-4">
-                <svg viewBox="0 0 400 400" className="w-full h-full">
-                  <defs>
-                    <radialGradient id="skyGradient" cx="50%" cy="30%" r="70%">
-                      <stop offset="0%" stopColor="#FFB366" />
-                      <stop offset="100%" stopColor="#FF8C42" />
-                    </radialGradient>
-                  </defs>
-                  
-                  {/* Sky background */}
-                  <circle cx="200" cy="200" r="200" fill="url(#skyGradient)" />
-                  
-                  {/* Mountains */}
-                  <path d="M 0 280 Q 100 180 200 200 Q 300 220 400 160 L 400 400 L 0 400 Z" fill="#4A9B8A" opacity="0.9" />
-                  <path d="M 50 320 Q 150 220 250 240 Q 350 260 400 200 L 400 400 L 50 400 Z" fill="#3D8B7A" opacity="0.8" />
-                  <path d="M 100 360 Q 200 260 300 280 Q 350 290 400 240 L 400 400 L 100 400 Z" fill="#2E6B5A" opacity="0.7" />
-                  
-                  {/* Vietnamese woman silhouette */}
-                  <g transform="translate(160, 240)">
-                    {/* Body */}
-                    <ellipse cx="20" cy="60" rx="25" ry="45" fill="#F5E6D3" />
-                    
-                    {/* Head */}
-                    <circle cx="20" cy="0" r="18" fill="#F5E6D3" />
-                    
-                    {/* Traditional hat (non la) */}
-                    <ellipse cx="20" cy="-8" rx="28" ry="12" fill="#F5E6D3" />
-                    <ellipse cx="20" cy="-12" rx="32" ry="8" fill="#F5E6D3" />
-                    
-                    {/* Arms */}
-                    <ellipse cx="5" cy="40" rx="8" ry="20" fill="#F5E6D3" transform="rotate(-20)" />
-                    <ellipse cx="35" cy="40" rx="8" ry="20" fill="#F5E6D3" transform="rotate(20)" />
-                  </g>
-                  
-                  {/* Text */}
-                  <text x="200" y="80" textAnchor="middle" className="text-3xl font-light" fill="#F5E6D3" fontFamily="Arial, sans-serif">PHONG</text>
-                  <text x="200" y="120" textAnchor="middle" className="text-3xl font-light" fill="#F5E6D3" fontFamily="Arial, sans-serif">NHA</text>
-                </svg>
+                <img 
+                  src="/images/VisitPhongNha-Logo-02.png" 
+                  alt="Visit Phong Nha Logo"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
                 <h4 className="text-2xl font-bold text-jade-green mb-1 font-questrial">Visit Phong Nha</h4>
