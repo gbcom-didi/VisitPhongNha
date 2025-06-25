@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Heart, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
+// Temporarily disable Firebase auth
+// import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 
 export function Navigation() {
   const [location] = useLocation();

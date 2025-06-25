@@ -14,22 +14,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
-  // Auth routes - support Firebase auth
-  app.get('/api/auth/user', optionalFirebaseAuth, async (req: any, res) => {
+  // Auth routes - temporarily return mock user for testing
+  app.get('/api/auth/user', async (req: any, res) => {
     try {
-      const user = req.user;
-      if (user) {
-        // For Firebase users, return the Firebase user data
-        res.json({
-          id: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-          role: 'viewer' // Default role for Firebase users
-        });
-      } else {
-        res.status(401).json({ message: "Unauthorized" });
-      }
+      // For now, return a mock user to test the UI
+      res.json({
+        id: 'mock-user-123',
+        email: 'user@example.com',
+        displayName: 'Test User',
+        photoURL: null,
+        role: 'viewer'
+      });
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
