@@ -60,7 +60,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Businesses routes
   app.get('/api/businesses', async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      // For testing, use mock user ID
+      const userId = 'mock-user-123';
       const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
       const showAll = req.query.showAll === 'true';
 
@@ -292,9 +293,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // User likes routes
-  app.get('/api/user/likes', isAuthenticated, async (req: any, res) => {
+  app.get('/api/user/likes', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      // For testing, use mock user ID
+      const userId = 'mock-user-123';
       const businesses = await storage.getBusinessesWithUserLikes(userId);
       const favoriteBusinesses = businesses.filter(business => business.isLiked);
       res.json(favoriteBusinesses);
@@ -304,9 +306,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/user/likes/toggle', isAuthenticated, async (req: any, res) => {
+  app.post('/api/user/likes/toggle', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      // For testing, use mock user ID
+      const userId = 'mock-user-123';
       const { businessId } = req.body;
       
       if (!businessId || typeof businessId !== 'number') {

@@ -7,7 +7,12 @@ import { Button } from '@/components/ui/button';
 
 export function Navigation() {
   const [location] = useLocation();
-  const { user, isAuthenticated, login, logout } = useFirebaseAuth();
+  // Temporarily disable Firebase auth
+  // const { user, isAuthenticated, login, logout } = useFirebaseAuth();
+  const user = null;
+  const isAuthenticated = false;
+  const login = () => console.log('Login clicked');
+  const logout = () => console.log('Logout clicked');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationLinks = [
