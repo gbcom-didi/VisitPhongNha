@@ -264,12 +264,16 @@ export default function Explore() {
       {/* Desktop Layout */}
       <div className="hidden md:flex">
         {/* Main Navigation Sidebar */}
-        <div className="w-16 bg-white border-r border-gray-200 flex-shrink-0 h-screen">
-          <div className="p-4 border-b border-gray-200">
+        <div className="w-16 bg-white border-r border-gray-200 flex-shrink-0 h-screen relative">
+          <div className="p-2 border-b border-gray-200">
             <Link href="/">
               <div className="cursor-pointer flex justify-center">
-                <div className="w-8 h-8 bg-tropical-aqua rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">Đ</span>
+                <div className="w-12 h-12">
+                  <img 
+                    src="/images/VisitPhongNha-Logo-02.png" 
+                    alt="Visit Phong Nha Logo"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
               </div>
             </Link>
@@ -301,10 +305,10 @@ export default function Explore() {
           </div>
 
           {/* Auth Section */}
-          <div className="mt-8 pt-8 border-t border-gray-200 px-2">
+          <div className="absolute bottom-4 left-2 right-2">
             {isAuthenticated ? (
               <button 
-                className="w-12 h-12 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                className="w-12 h-12 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors mx-auto"
                 onClick={() => window.location.href = '/api/logout'}
                 title="Sign Out"
               >
@@ -314,12 +318,12 @@ export default function Explore() {
               </button>
             ) : (
               <button 
-                className="w-12 h-12 flex items-center justify-center bg-tropical-aqua text-white rounded-md hover:bg-tropical-aqua/90 transition-colors"
+                className="w-12 h-12 flex items-center justify-center bg-tropical-aqua text-white rounded-md hover:bg-tropical-aqua/90 transition-colors mx-auto"
                 onClick={() => window.location.href = '/api/login'}
                 title="Sign In"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013 3v1" />
                 </svg>
               </button>
             )}
