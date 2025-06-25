@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { useRoute, Link } from 'wouter';
-import { ArrowLeft, Calendar, User, MapPin, ExternalLink, Home, Compass, BookOpen } from 'lucide-react';
+import { ArrowLeft, Calendar, User, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Map } from '@/components/ui/map';
-import { cn } from '@/lib/utils';
+import { SidebarNavigation } from '@/components/sidebar-navigation';
 import type { Article } from '@shared/schema';
 
 export function InspirationArticlePage() {
@@ -63,9 +63,10 @@ export function InspirationArticlePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar Navigation */}
-      <div className="fixed inset-y-0 left-0 w-80 bg-white border-r border-gray-200 overflow-y-auto z-30">
-        <div className="p-6">
+      <SidebarNavigation />
+
+      {/* Split Screen Layout */}
+      <div className="flex-1 ml-20 flex">
           {/* Logo */}
           <Link href="/" className="flex items-center mb-8">
             <div className="w-12 h-12 mr-3">
@@ -98,27 +99,19 @@ export function InspirationArticlePage() {
               <span className="font-medium">Inspiration</span>
             </Link>
           </nav>
-        </div>
-      </div>
-      
-      <div className="flex-1 ml-80">
-        {/* Back to Inspiration Button */}
-        <div className="bg-white border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        {/* Left Side - Article Content */}
+        <div className="w-1/2 bg-white overflow-y-auto">
+          <div className="p-8 max-w-2xl">
+            {/* Back Button */}
             <Link href="/inspiration">
-              <Button variant="outline" className="flex items-center space-x-2">
-                <ArrowLeft className="w-4 h-4" />
-                <span>Back to Inspiration</span>
+              <Button variant="ghost" className="mb-6 -ml-3">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Inspiration
               </Button>
             </Link>
-          </div>
-        </div>
 
-        {/* Split Screen Layout */}
-        <div className="flex h-[calc(100vh-8rem)]">
-        {/* Left Side - Article Content */}
-        <div className="flex-1 overflow-y-auto bg-white">
-          <div className="max-w-4xl mx-auto px-6 py-8">
+            {/* Article Header */}
+            <div className="mb-8">
             {/* Article Header */}
             <div className="mb-8">
               {article.mainImageUrl && (
@@ -177,6 +170,7 @@ export function InspirationArticlePage() {
                 </a>
               </div>
             )}
+            </div>
           </div>
         </div>
 
@@ -205,7 +199,6 @@ export function InspirationArticlePage() {
               }}
               zoom={14}
             />
-          </div>
           </div>
         </div>
       </div>
