@@ -185,17 +185,17 @@ export default function About() {
           <div className="text-center">
             <h2 className="text-3xl font-bold text-gray-900 mb-6 font-questrial">Join Our Journey</h2>
             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              ĐiĐiVui is more than a travel platform - it's a community of adventurers, culture enthusiasts, and local partners working together to showcase the best of Vietnam. Whether you're a traveler, local business owner, or fellow adventurer, we'd love to have you join our mission.
+              Visit Phong Nha is more than a travel platform - it's a community of adventurers, culture enthusiasts, and local partners working together to showcase the best of Vietnam. Whether you're a traveler, local business owner, or fellow adventurer, we'd love to have you join our mission.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
-                className="bg-chili-red hover:bg-red-600 text-white px-8 py-3 rounded-lg transition-colors"
+                className="bg-mango-yellow hover:bg-mango-yellow/90 text-white px-8 py-3 rounded-lg transition-colors"
                 onClick={() => window.location.href = '/explore'}
               >
                 Start Exploring
               </button>
               <button 
-                className="border border-sea-blue text-sea-blue hover:bg-sea-blue hover:text-white px-8 py-3 rounded-lg transition-colors"
+                className="border border-jade-green text-jade-green hover:bg-jade-green hover:text-white px-8 py-3 rounded-lg transition-colors"
                 onClick={() => window.location.href = '/contact'}
               >
                 Get In Touch

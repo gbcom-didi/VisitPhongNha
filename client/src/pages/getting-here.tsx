@@ -63,7 +63,7 @@ export default function GettingHere() {
                     <li>• Bamboo Airways</li>
                   </ul>
                 </div>
-                <Button className="w-full bg-chili-red hover:bg-red-600 text-white">
+                <Button className="w-full bg-coral-sunset hover:bg-coral-sunset/90 text-white">
                   <ExternalLink className="w-4 h-4 mr-2" />
                   Search Flights
                 </Button>
@@ -110,7 +110,7 @@ export default function GettingHere() {
                     <li>• Mai Linh Express</li>
                   </ul>
                 </div>
-                <Button variant="outline" className="w-full border-sea-blue text-sea-blue hover:bg-sea-blue hover:text-white">
+                <Button variant="outline" className="w-full border-jade-green text-jade-green hover:bg-jade-green hover:text-white">
                   <ExternalLink className="w-4 h-4 mr-2" />
                   Bus Schedules
                 </Button>
@@ -157,7 +157,7 @@ export default function GettingHere() {
                     <li>• Local operators</li>
                   </ul>
                 </div>
-                <Button variant="outline" className="w-full border-tropical-aqua text-tropical-aqua hover:bg-tropical-aqua hover:text-white">
+                <Button variant="outline" className="w-full border-mango-yellow text-mango-yellow hover:bg-mango-yellow hover:text-white">
                   <ExternalLink className="w-4 h-4 mr-2" />
                   Rental Options
                 </Button>
