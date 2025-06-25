@@ -38,18 +38,9 @@ export default function Explore() {
   const likeMutation = useMutation({
     mutationFn: (businessId: number) => apiRequest('POST', '/api/user/likes/toggle', { businessId }),
     onMutate: async (businessId: number) => {
+      // Cancel outgoing refetches to prevent race conditions
       await queryClient.cancelQueries({ queryKey: ['/api/businesses'] });
       const previousBusinesses = queryClient.getQueryData(['/api/businesses']);
-      
-      queryClient.setQueryData(['/api/businesses'], (old: BusinessWithCategory[] | undefined) => {
-        if (!old) return old;
-        return old.map(business => 
-          business.id === businessId 
-            ? { ...business, isLiked: !business.isLiked }
-            : business
-        );
-      });
-      
       return { previousBusinesses };
     },
     onError: (error: any, businessId: number, context: any) => {
@@ -68,6 +59,11 @@ export default function Explore() {
           variant: "destructive",
         });
       }
+    },
+    onSuccess: () => {
+      // Immediately refetch to get the updated like status
+      queryClient.invalidateQueries({ queryKey: ['/api/businesses'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/likes'] });
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/businesses'] });
