@@ -66,7 +66,7 @@ export function InspirationArticlePage() {
       <SidebarNavigation />
 
       {/* Split Screen Layout */}
-      <div className="flex-1 ml-20 flex">
+      <div className="flex-1 ml-16 flex">
           {/* Logo */}
           <Link href="/" className="flex items-center mb-8">
             <div className="w-12 h-12 mr-3">
