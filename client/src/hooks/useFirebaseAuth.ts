@@ -8,18 +8,33 @@ export function useFirebaseAuth() {
   const [idToken, setIdToken] = useState<string | null>(null);
 
   useEffect(() => {
-    // Handle redirect result on page load
-    handleRedirect().catch(console.error);
+    let mounted = true;
+
+    // Handle redirect result on page load first
+    const handleRedirectResult = async () => {
+      try {
+        const result = await handleRedirect();
+        if (result && mounted) {
+          console.log('Redirect handled successfully');
+        }
+      } catch (error) {
+        console.error('Redirect handling error:', error);
+      }
+    };
+
+    handleRedirectResult();
 
     // Listen for auth state changes
     const unsubscribe = onAuthStateChange(async (user) => {
-      console.log('Firebase auth state changed:', user ? 'logged in' : 'logged out');
+      if (!mounted) return;
+      
+      console.log('Firebase auth state changed:', user ? `logged in as ${user.email}` : 'logged out');
       setUser(user);
       
       if (user) {
         try {
           // Get the ID token for API calls
-          const token = await user.getIdToken();
+          const token = await user.getIdToken(true); // Force refresh
           console.log('Got Firebase ID token, length:', token.length);
           setIdToken(token);
           
@@ -38,24 +53,24 @@ export function useFirebaseAuth() {
       setIsLoading(false);
     });
 
-    // Check for stored token on page load
-    const storedToken = localStorage.getItem('firebase_token');
-    if (storedToken && !user) {
-      setIdToken(storedToken);
-    }
-
-    return () => unsubscribe();
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
   }, []);
 
   const login = () => {
+    console.log('Initiating Firebase Google sign-in...');
     signInWithGoogle();
   };
 
   const logout = async () => {
     try {
+      console.log('Signing out...');
       await signOutUser();
       setIdToken(null);
       localStorage.removeItem('firebase_token');
+      setUser(null);
     } catch (error) {
       console.error('Error signing out:', error);
     }
