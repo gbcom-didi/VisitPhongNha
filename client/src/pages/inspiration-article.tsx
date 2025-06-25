@@ -4,7 +4,6 @@ import { ArrowLeft, Calendar, User, MapPin, ExternalLink, Home, Compass, BookOpe
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Map } from '@/components/ui/map';
-import { Home, Compass, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Article } from '@shared/schema';
 
@@ -206,6 +205,7 @@ export function InspirationArticlePage() {
               }}
               zoom={14}
             />
+          </div>
           </div>
         </div>
       </div>
