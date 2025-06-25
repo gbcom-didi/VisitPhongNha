@@ -40,9 +40,19 @@ export function Navigation() {
           {/* Logo and Brand */}
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex-shrink-0">
-              <div>
-                <h1 className="text-2xl font-bold text-mango-yellow font-questrial">Visit Phong Nha</h1>
-                <p className="text-xs text-gray-500">Phong Nha Travel Hub</p>
+              <div className="flex items-center space-x-3">
+                {/* Logo Image */}
+                <div className="w-10 h-10">
+                  <img 
+                    src="/images/VisitPhongNha-Logo-02.png" 
+                    alt="Visit Phong Nha Logo"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-mango-yellow font-questrial">Visit Phong Nha</h1>
+                  <p className="text-xs text-gray-500">Phong Nha Travel Hub</p>
+                </div>
               </div>
             </Link>
           </div>
