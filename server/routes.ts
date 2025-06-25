@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupFirebaseAuth, verifyFirebaseToken, requireFirebaseAdmin, requireFirebaseBusinessOwner, requireFirebaseViewer } from "./firebaseAuth";
+import { setupFirebaseAuth, verifyFirebaseToken, requireFirebaseAdmin, requireFirebaseBusinessOwner, requireFirebaseViewer, auth } from "./firebaseAuth";
 import { permissions } from "./rbac";
 import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema, insertArticleSchema, businesses as businessesTable, businessCategories, categories, articles } from "@shared/schema";
 import { googlePlacesImporter } from "./googlePlacesImporter";
@@ -63,7 +63,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (authHeader && authHeader.startsWith('Bearer ')) {
         try {
           const token = authHeader.split(' ')[1];
-          const decodedToken = await auth.verifyIdToken(token);
+          const admin = await import('firebase-admin');
+          const decodedToken = await admin.auth().verifyIdToken(token);
           const user = await storage.getUser(decodedToken.uid);
           userId = user?.id;
         } catch (authError) {
@@ -110,7 +111,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else if (categoryId) {
         businesses = await storage.getBusinessesByCategory(categoryId);
       } else {
-        businesses = await storage.getBusinessesWithUserLikes(userId);
+        businesses = await storage.getBusinessesWithUserLikes(userId || undefined);
       }
 
       res.json(businesses);

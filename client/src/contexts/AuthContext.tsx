@@ -73,6 +73,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Store the token for future API requests
         localStorage.setItem('firebaseToken', idToken);
         
+        // Set up token refresh
+        setInterval(async () => {
+          try {
+            const refreshedToken = await user.getIdToken(true);
+            localStorage.setItem('firebaseToken', refreshedToken);
+          } catch (error) {
+            console.error('Failed to refresh token:', error);
+          }
+        }, 50 * 60 * 1000); // Refresh every 50 minutes
+        
         return {
           uid: user.uid,
           email: user.email,
