@@ -202,7 +202,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       <div ref={mapContainerRef} className="h-full w-full" />
       
       {/* Custom Map Controls */}
-      <div className="absolute top-4 right-4 flex flex-col gap-2">
+      <div className="absolute top-20 right-4 flex flex-col gap-2">
         <Button
           variant="outline"
           size="sm"
