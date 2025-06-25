@@ -1,22 +1,28 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, FacebookAuthProvider, connectAuthEmulator } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
 
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+// Firebase configuration - will be initialized by auth context
+let app: any = null;
+let auth: any = null;
+
+export const initializeFirebase = async () => {
+  try {
+    const response = await fetch('/api/firebase-config');
+    const firebaseConfig = await response.json();
+    
+    if (!app) {
+      app = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+    }
+    
+    return { app, auth };
+  } catch (error) {
+    console.error('Failed to initialize Firebase:', error);
+    throw error;
+  }
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-// Initialize Firebase Authentication and get a reference to the service
-export const auth = getAuth(app);
-
-// Configure auth providers
+// Auth providers
 export const googleProvider = new GoogleAuthProvider();
 export const facebookProvider = new FacebookAuthProvider();
 
@@ -30,4 +36,12 @@ facebookProvider.setCustomParameters({
   display: 'popup'
 });
 
-export default app;
+// Get auth instance (must be called after initialization)
+export const getAuthInstance = () => {
+  if (!auth) {
+    throw new Error('Firebase not initialized. Call initializeFirebase first.');
+  }
+  return auth;
+};
+
+export { app as default };

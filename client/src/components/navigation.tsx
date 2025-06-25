@@ -69,7 +69,7 @@ export function Navigation() {
                 {label}
               </Link>
             ))}
-            {isAuthenticated && permissions.canAccessAdminPanel && adminLinks.map(({ href, label }) => (
+            {isAuthenticated && adminLinks.map(({ href, label }) => (
               <Link key={href} href={href} className={`transition-colors ${
                 isActiveLink(href)
                   ? 'text-tropical-aqua font-medium'
@@ -167,6 +167,12 @@ export function Navigation() {
           </div>
         )}
       </div>
+
+      {/* Sign In Modal */}
+      <SignInModal 
+        isOpen={showSignInModal} 
+        onClose={() => setShowSignInModal(false)} 
+      />
     </nav>
   );
 }
