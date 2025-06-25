@@ -4,7 +4,7 @@ import { useTypewriter } from '@/hooks/useTypewriter';
 
 export function Hero() {
   const { displayText, showCursor } = useTypewriter({
-    text: 'Discover Phan Rang',
+    text: 'Discover Phong Nha',
     speed: 120,
     delay: 1000
   });
@@ -38,7 +38,7 @@ export function Hero() {
             />
           </h2>
           <p className="text-lg sm:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
-            Your ultimate guide to kitesurfing paradise and Vietnamese culture. 
+            Your ultimate guide to cave paradise and Vietnamese culture. 
             Explore hidden gems, authentic experiences, and the best spots for adventure.
           </p>
 

@@ -19,8 +19,8 @@ export default function About() {
         />
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="text-center text-white px-4">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 font-questrial">About ĐiĐiVui</h1>
-            <p className="text-xl max-w-2xl mx-auto">Connecting travelers with Vietnam's hidden kitesurfing paradise</p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 font-questrial">About Visit Phong Nha</h1>
+            <p className="text-xl max-w-2xl mx-auto">Connecting travelers with Vietnam's hidden cave paradise</p>
           </div>
         </div>
       </section>
@@ -31,7 +31,7 @@ export default function About() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-6 font-questrial">Our Mission</h2>
             <p className="text-lg text-gray-600 leading-relaxed">
-              ĐiĐiVui is Vietnam's premier travel platform dedicated to showcasing the incredible beauty and adventure opportunities of Ninh Thuan province. We're passionate about connecting international kitesurfers and curious travelers with authentic Vietnamese experiences, local businesses, and unforgettable adventures.
+              Visit Phong Nha is Vietnam's premier travel platform dedicated to showcasing the incredible beauty and adventure opportunities of Quang Binh province. We're passionate about connecting international cave explorers and curious travelers with authentic Vietnamese experiences, local businesses, and unforgettable adventures.
             </p>
           </div>
           
@@ -42,10 +42,10 @@ export default function About() {
                   <div className="w-12 h-12 bg-chili-red rounded-lg flex items-center justify-center mr-4">
                     <Wind className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">For the Kitesurfing Community</h3>
+                  <h3 className="text-xl font-semibold text-gray-900">For the Cave Exploration Community</h3>
                 </div>
                 <p className="text-gray-600">
-                  We understand the unique needs of kitesurfers - from wind conditions and equipment rental to the best spots for different skill levels. Our platform is built by riders, for riders.
+                  We understand the unique needs of cave explorers - from guided tours and safety equipment to the best caves for different experience levels. Our platform is built by adventurers, for adventurers.
                 </p>
               </CardContent>
             </Card>

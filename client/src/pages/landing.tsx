@@ -20,10 +20,10 @@ export default function Landing() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">How ĐiĐi VUi Works</h3>
+            <h3 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">How Visit Phong Nha Works</h3>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Discover, save, and experience the best of Phan Rang with our interactive travel platform 
-              designed for adventurers and culture seekers. Soon you'll be able to chat with ĐiĐi! Our intelligent, AI-powered travel assistant to help you explore, plan, and personalise your next adventure.
+              Discover, save, and experience the best of Phong Nha with our interactive travel platform 
+              designed for adventurers and culture seekers. Soon you'll be able to chat with our intelligent, AI-powered travel assistant to help you explore, plan, and personalise your next adventure.
             </p>    
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -33,7 +33,7 @@ export default function Landing() {
               </div>
               <h4 className="text-xl font-semibold mb-2">Explore Interactive Map</h4>
               <p className="text-gray-600">
-                Browse kitesurfing spots, restaurants, accommodations, and attractions on our detailed map.
+                Browse cave sites, restaurants, accommodations, and attractions on our detailed map.
               </p>
             </div>
             <div className="text-center">

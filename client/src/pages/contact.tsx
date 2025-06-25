@@ -75,7 +75,7 @@ export default function Contact() {
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="text-center text-white px-4">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 font-questrial">Contact Us</h1>
-            <p className="text-xl max-w-2xl mx-auto">Get in touch with the ĐiĐiVui team - we're here to help</p>
+            <p className="text-xl max-w-2xl mx-auto">Get in touch with the Visit Phong Nha team - we're here to help</p>
           </div>
         </div>
       </section>
@@ -237,8 +237,8 @@ export default function Contact() {
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-1">Office</h3>
-                        <p className="text-gray-600 text-sm mb-1">Phan Rang-Tháp Chàm</p>
-                        <p className="text-gray-600 text-sm">Phan Rang Province, Vietnam</p>
+                        <p className="text-gray-600 text-sm mb-1">Phong Nha-Ke Bang</p>
+                        <p className="text-gray-600 text-sm">Quang Binh Province, Vietnam</p>
                       </div>
                     </div>
                   </CardContent>

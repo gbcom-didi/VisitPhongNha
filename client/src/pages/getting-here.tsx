@@ -20,8 +20,8 @@ export default function GettingHere() {
         />
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="text-center text-white px-4">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 font-questrial">Getting to Phan Rang</h1>
-            <p className="text-xl max-w-2xl mx-auto">Your complete guide to reaching Vietnam's kitesurfing paradise</p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 font-questrial">Getting to Phong Nha</h1>
+            <p className="text-xl max-w-2xl mx-auto">Your complete guide to reaching Vietnam's cave paradise</p>
           </div>
         </div>
       </section>
@@ -43,8 +43,8 @@ export default function GettingHere() {
                   <div className="flex items-start">
                     <MapPin className="w-5 h-5 text-chili-red mt-0.5 mr-3 flex-shrink-0" />
                     <div>
-                      <h4 className="font-semibold">Cam Ranh International Airport</h4>
-                      <p className="text-sm text-gray-600">1.5 hours drive to Phan Rang</p>
+                      <h4 className="font-semibold">Dong Hoi Airport</h4>
+                      <p className="text-sm text-gray-600">1 hour drive to Phong Nha</p>
                     </div>
                   </div>
                   <div className="flex items-start">
