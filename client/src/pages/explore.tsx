@@ -4,7 +4,7 @@ import { BusinessDirectory } from '@/components/business-directory';
 import { BusinessModal } from '@/components/business-modal';
 import { Map } from '@/components/ui/map';
 import { SidebarNavigation } from '@/components/sidebar-navigation';
-import { useAuth } from '@/hooks/useAuth';
+import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 import { useToast } from '@/hooks/use-toast';
 import { isUnauthorizedError } from '@/lib/authUtils';
 import { apiRequest, queryClient } from '@/lib/queryClient';
@@ -14,7 +14,7 @@ import { useLocation, Link } from 'wouter';
 import { Heart, Map as MapIcon, List, Menu, Navigation } from 'lucide-react';
 
 export default function Explore() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useFirebaseAuth();
   const { toast } = useToast();
   const [location] = useLocation();
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);

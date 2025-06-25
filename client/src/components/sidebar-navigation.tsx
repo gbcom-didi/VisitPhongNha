@@ -1,9 +1,11 @@
 import { Link, useLocation } from 'wouter';
 import { Home, Compass, BookOpen, Plane, Info, Phone, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 
 export function SidebarNavigation() {
   const [location] = useLocation();
+  const { isAuthenticated, login, logout } = useFirebaseAuth();
 
   const navItems = [
     { href: '/', icon: Home, label: 'Home' },
@@ -48,14 +50,25 @@ export function SidebarNavigation() {
 
       {/* User/Login at bottom */}
       <div className="mt-auto">
-        <button
-          onClick={() => window.location.href = '/api/login'}
-          className="w-10 h-10 rounded-lg flex items-center justify-center bg-mango-yellow text-white hover:bg-mango-yellow/90 transition-colors cursor-pointer shadow-sm"
-          title="Sign In"
-        >
-          <User className="w-5 h-5" />
-          <span className="sr-only">Sign In</span>
-        </button>
+        {isAuthenticated ? (
+          <button
+            onClick={logout}
+            className="w-10 h-10 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors cursor-pointer"
+            title="Sign Out"
+          >
+            <User className="w-5 h-5" />
+            <span className="sr-only">Sign Out</span>
+          </button>
+        ) : (
+          <button
+            onClick={login}
+            className="w-10 h-10 rounded-lg flex items-center justify-center bg-mango-yellow text-white hover:bg-mango-yellow/90 transition-colors cursor-pointer shadow-sm"
+            title="Sign In"
+          >
+            <User className="w-5 h-5" />
+            <span className="sr-only">Sign In</span>
+          </button>
+        )}
       </div>
     </div>
   );
