@@ -267,14 +267,13 @@ export default function Explore() {
         <div className="w-16 bg-white border-r border-gray-200 flex-shrink-0 h-screen">
           <div className="p-2 border-b border-gray-200">
             <Link href="/">
-              <div className="cursor-pointer flex flex-col items-center">
-                <div className="w-10 h-10 bg-mango-yellow rounded-lg flex items-center justify-center mb-1">
-                  <span className="text-white font-bold text-sm">V</span>
-                </div>
-                <div className="text-xs text-center leading-tight">
-                  <div className="text-mango-yellow font-semibold">Visit</div>
-                  <div className="text-mango-yellow font-semibold">Phong</div>
-                  <div className="text-mango-yellow font-semibold">Nha</div>
+              <div className="cursor-pointer flex justify-center">
+                <div className="w-12 h-12">
+                  <img 
+                    src="/images/VisitPhongNha-Logo-02.png" 
+                    alt="Visit Phong Nha Logo"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
               </div>
             </Link>
