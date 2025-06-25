@@ -114,7 +114,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { categoryIds, ...businessFields } = req.body;
       
       const businessData = insertBusinessSchema.parse(businessFields);
-      const userId = req.user.claims.sub;
+      const userId = req.user.uid;
       const userRole = req.user.role;
       
       // Permission check: Only business owners and admins can create businesses
@@ -156,7 +156,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       );
       
       const businessData = insertBusinessSchema.partial().parse(filteredFields);
-      const userId = req.user.claims.sub;
+      const userId = req.user.uid;
       const userRole = req.user.role;
       
       // Check if business exists
@@ -227,7 +227,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Business owner routes
   app.get('/api/owner/businesses', requireFirebaseBusinessOwner, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.uid;
       const businesses = await storage.getBusinessesByOwner(userId);
       res.json(businesses);
     } catch (error) {
@@ -279,7 +279,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User likes routes
   app.get('/api/user/likes', verifyFirebaseToken, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.uid;
       const businesses = await storage.getBusinessesWithUserLikes(userId);
       const favoriteBusinesses = businesses.filter(business => business.isLiked);
       res.json(favoriteBusinesses);
@@ -291,7 +291,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/user/likes/toggle', verifyFirebaseToken, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.uid;
       const { businessId } = req.body;
       
       if (!businessId || typeof businessId !== 'number') {
