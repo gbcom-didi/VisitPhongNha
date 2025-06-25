@@ -135,6 +135,13 @@ Changelog:
   - Updated province references from "Ninh Thuan" to "Quang Binh Province"
   - Modified content focus from kitesurfing to cave exploration
   - Updated transportation information for Phong Nha region
+- June 25, 2025. Implemented Inspiration section with editorial articles
+  - Created article database schema with coordinates, tags, and content
+  - Built responsive article grid page with search and tag filtering
+  - Implemented split-screen article detail view with interactive map
+  - Added sample articles with authentic Phong Nha content and locations
+  - Integrated Inspiration link into sidebar navigation with BookOpen icon
+  - Updated pages to use consistent sidebar navigation (removing footer on Inspiration pages)
 - June 19, 2025. Implemented comprehensive business listing schema
   - Added comprehensive business schema with 27 fields including gallery, tags, amenities, booking options
   - Created admin interface at /admin for managing business listings with all schema fields

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, Link } from 'wouter';
-import { Search, Filter, Calendar, MapPin, User, Tag } from 'lucide-react';
+import { Search, Filter, Calendar, MapPin, User, Tag, Home, Compass, BookOpen } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Navigation } from '@/components/navigation';
-import { Footer } from '@/components/footer';
 import type { Article } from '@shared/schema';
 
 export function InspirationPage() {
@@ -49,10 +49,56 @@ export function InspirationPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation />
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Sidebar Navigation */}
+      <div className="fixed inset-y-0 left-0 w-80 bg-white border-r border-gray-200 overflow-y-auto z-30">
+        <div className="p-6">
+          {/* Logo */}
+          <Link href="/" className="flex items-center mb-8">
+            <div className="w-12 h-12 mr-3">
+              <img 
+                src="/images/VisitPhongNha-Logo-02.png" 
+                alt="Visit Phong Nha Logo"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-mango-yellow font-questrial">Visit Phong Nha</h1>
+              <p className="text-xs text-gray-500">Quang Binh Travel Hub</p>
+            </div>
+          </Link>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Navigation Links */}
+          <nav className="space-y-2 mb-8">
+            <Link href="/" className={cn(
+              "flex items-center space-x-3 w-full p-3 rounded-lg transition-colors",
+              location === "/" ? "bg-mango-yellow text-white" : "text-gray-600 hover:bg-gray-100"
+            )}>
+              <Home className="w-5 h-5" />
+              <span className="font-medium">Home</span>
+            </Link>
+
+            <Link href="/explore" className={cn(
+              "flex items-center space-x-3 w-full p-3 rounded-lg transition-colors",
+              location.startsWith("/explore") ? "bg-mango-yellow text-white" : "text-gray-600 hover:bg-gray-100"
+            )}>
+              <Compass className="w-5 h-5" />
+              <span className="font-medium">Explore</span>
+            </Link>
+
+            <Link href="/inspiration" className={cn(
+              "flex items-center space-x-3 w-full p-3 rounded-lg transition-colors",
+              location.startsWith("/inspiration") ? "bg-mango-yellow text-white" : "text-gray-600 hover:bg-gray-100"
+            )}>
+              <BookOpen className="w-5 h-5" />
+              <span className="font-medium">Inspiration</span>
+            </Link>
+          </nav>
+        </div>
+      </div>
+      
+      <div className="flex-1 ml-80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 font-questrial mb-4">Inspiration</h1>
@@ -145,8 +191,6 @@ export function InspirationPage() {
           )}
         </div>
       </div>
-      
-      <Footer />
     </div>
   );
 }

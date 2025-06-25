@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { useRoute, Link } from 'wouter';
-import { ArrowLeft, Calendar, User, MapPin, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Calendar, User, MapPin, ExternalLink, Home, Compass, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Map } from '@/components/ui/map';
-import { Navigation } from '@/components/navigation';
+import { Home, Compass, BookOpen } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import type { Article } from '@shared/schema';
 
 export function InspirationArticlePage() {
@@ -62,23 +63,60 @@ export function InspirationArticlePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation />
-
-      {/* Back to Inspiration Button */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <Link href="/inspiration">
-            <Button variant="outline" className="flex items-center space-x-2">
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back to Inspiration</span>
-            </Button>
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Sidebar Navigation */}
+      <div className="fixed inset-y-0 left-0 w-80 bg-white border-r border-gray-200 overflow-y-auto z-30">
+        <div className="p-6">
+          {/* Logo */}
+          <Link href="/" className="flex items-center mb-8">
+            <div className="w-12 h-12 mr-3">
+              <img 
+                src="/images/VisitPhongNha-Logo-02.png" 
+                alt="Visit Phong Nha Logo"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-mango-yellow font-questrial">Visit Phong Nha</h1>
+              <p className="text-xs text-gray-500">Quang Binh Travel Hub</p>
+            </div>
           </Link>
+
+          {/* Navigation Links */}
+          <nav className="space-y-2 mb-8">
+            <Link href="/" className="flex items-center space-x-3 w-full p-3 rounded-lg transition-colors text-gray-600 hover:bg-gray-100">
+              <Home className="w-5 h-5" />
+              <span className="font-medium">Home</span>
+            </Link>
+
+            <Link href="/explore" className="flex items-center space-x-3 w-full p-3 rounded-lg transition-colors text-gray-600 hover:bg-gray-100">
+              <Compass className="w-5 h-5" />
+              <span className="font-medium">Explore</span>
+            </Link>
+
+            <Link href="/inspiration" className="flex items-center space-x-3 w-full p-3 rounded-lg transition-colors bg-mango-yellow text-white">
+              <BookOpen className="w-5 h-5" />
+              <span className="font-medium">Inspiration</span>
+            </Link>
+          </nav>
         </div>
       </div>
+      
+      <div className="flex-1 ml-80">
+        {/* Back to Inspiration Button */}
+        <div className="bg-white border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <Link href="/inspiration">
+              <Button variant="outline" className="flex items-center space-x-2">
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back to Inspiration</span>
+              </Button>
+            </Link>
+          </div>
+        </div>
 
-      {/* Split Screen Layout */}
-      <div className="flex h-[calc(100vh-8rem)]">
+        {/* Split Screen Layout */}
+        <div className="flex h-[calc(100vh-8rem)]">
         {/* Left Side - Article Content */}
         <div className="flex-1 overflow-y-auto bg-white">
           <div className="max-w-4xl mx-auto px-6 py-8">
