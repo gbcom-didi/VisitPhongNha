@@ -152,52 +152,55 @@ export default function Explore() {
           {/* Mobile Menu Dropdown */}
           {showMobileMenu && (
             <div className="border-t border-gray-200 bg-white">
-              <div className="p-4 space-y-3">
-                <button
-                  onClick={() => {
-                    setShowMapInMobile(false);
-                    setShowMobileMenu(false);
-                  }}
-                  className={`w-full flex items-center justify-center py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-                    !showMapInMobile 
-                      ? 'bg-mango-yellow text-white' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  <List className="w-4 h-4 mr-2" />
-                  List View
-                </button>
-                <button
-                  onClick={() => {
-                    setShowMapInMobile(true);
-                    setShowMobileMenu(false);
-                  }}
-                  className={`w-full flex items-center justify-center py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-                    showMapInMobile 
-                      ? 'bg-mango-yellow text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  <Navigation className="w-4 h-4 mr-2" />
-                  Map View
-                </button>
-                
-                {/* Authentication Button */}
-                {isAuthenticated ? (
+              <div className="p-4 space-y-1">
+                <Link href="/">
                   <button 
-                    className="w-full py-2 px-4 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors font-medium"
-                    onClick={() => window.location.href = '/api/logout'}
+                    className="w-full text-left py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-md transition-colors font-medium"
+                    onClick={() => setShowMobileMenu(false)}
                   >
-                    Sign Out
+                    Home
                   </button>
-                ) : (
+                </Link>
+                <Link href="/explore">
                   <button 
-                    className="w-full py-2 px-4 bg-mango-yellow text-white rounded-md hover:bg-mango-yellow/90 transition-colors font-medium"
-                    onClick={() => window.location.href = '/api/login'}
+                    className="w-full text-left py-3 px-4 bg-mango-yellow text-white rounded-md font-medium"
+                    onClick={() => setShowMobileMenu(false)}
                   >
-                    Sign In
+                    Explore
                   </button>
-                )}
+                </Link>
+                <Link href="/inspiration">
+                  <button 
+                    className="w-full text-left py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-md transition-colors font-medium"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    Inspiration
+                  </button>
+                </Link>
+                <Link href="/getting-here">
+                  <button 
+                    className="w-full text-left py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-md transition-colors font-medium"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    Getting Here
+                  </button>
+                </Link>
+                <Link href="/about">
+                  <button 
+                    className="w-full text-left py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-md transition-colors font-medium"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    About
+                  </button>
+                </Link>
+                <Link href="/contact">
+                  <button 
+                    className="w-full text-left py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-md transition-colors font-medium"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    Contact
+                  </button>
+                </Link>
               </div>
             </div>
           )}
