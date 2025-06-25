@@ -3,14 +3,15 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { BusinessDirectory } from '@/components/business-directory';
 import { BusinessModal } from '@/components/business-modal';
 import { Map } from '@/components/ui/map';
+import { SidebarNavigation } from '@/components/sidebar-navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { isUnauthorizedError } from '@/lib/authUtils';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { BusinessWithCategory, Category } from '@shared/schema';
 
-import { Link, useLocation } from 'wouter';
-import { Heart, Home, Compass, Plane, Info, Phone, Map as MapIcon, List } from 'lucide-react';
+import { useLocation } from 'wouter';
+import { Heart, Map as MapIcon, List } from 'lucide-react';
 
 export default function Explore() {
   const { isAuthenticated } = useAuth();
@@ -152,19 +153,7 @@ export default function Explore() {
     setSelectedCategory(categoryId);
   };
 
-  const navigationLinks = [
-    { href: '/', label: 'Home', icon: Home },
-    { href: '/explore', label: 'Explore', icon: Compass },
-    { href: '/getting-here', label: 'Getting Here', icon: Plane },
-    { href: '/about', label: 'About', icon: Info },
-    { href: '/contact', label: 'Contact', icon: Phone },
-  ];
 
-  const isActiveLink = (href: string) => {
-    if (href === '/' && location === '/') return true;
-    if (href !== '/' && location.startsWith(href)) return true;
-    return false;
-  };
 
   if (businessesLoading) {
     return (
@@ -233,29 +222,15 @@ export default function Explore() {
         {/* Mobile Bottom Navigation */}
         <div className="bg-white border-t border-gray-200 py-1 px-2 flex-shrink-0 z-20">
           <div className="flex justify-around">
-            {navigationLinks.map(({ href, label, icon: Icon }) => (
-              <Link key={href} href={href}>
-                <div className={`flex flex-col items-center py-1 px-2 rounded-md transition-colors cursor-pointer ${
-                  isActiveLink(href) 
-                    ? 'text-chili-red' 
-                    : 'text-gray-700'
-                }`}>
-                  <Icon className="w-4 h-4 mb-0.5" />
-                  <span className="text-xs">{label}</span>
-                </div>
-              </Link>
-            ))}
             {isAuthenticated && (
-              <Link href="/saved">
-                <div className={`flex flex-col items-center py-1 px-2 rounded-md transition-colors cursor-pointer ${
-                  isActiveLink('/saved')
-                    ? 'text-mango-yellow' 
-                    : 'text-gray-700'
-                }`}>
-                  <Heart className="w-4 h-4 mb-0.5" />
-                  <span className="text-xs">Saved</span>
-                </div>
-              </Link>
+              <div className={`flex flex-col items-center py-1 px-2 rounded-md transition-colors cursor-pointer ${
+                location === '/saved'
+                  ? 'text-mango-yellow' 
+                  : 'text-gray-700'
+              }`}>
+                <Heart className="w-4 h-4 mb-0.5" />
+                <span className="text-xs">Saved</span>
+              </div>
             )}
           </div>
         </div>
