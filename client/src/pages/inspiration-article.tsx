@@ -18,10 +18,13 @@ export function InspirationArticlePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-mango-yellow mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading article...</p>
+      <div className="min-h-screen bg-gray-50 flex">
+        <SidebarNavigation />
+        <div className="flex-1 ml-16 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-mango-yellow mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading article...</p>
+          </div>
         </div>
       </div>
     );
@@ -29,15 +32,18 @@ export function InspirationArticlePage() {
 
   if (error || !article) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Article not found</h1>
-          <p className="text-gray-600 mb-4">The article you're looking for doesn't exist.</p>
-          <Link href="/inspiration">
-            <Button className="bg-mango-yellow hover:bg-mango-yellow/90 text-white">
-              Back to Inspiration
-            </Button>
-          </Link>
+      <div className="min-h-screen bg-gray-50 flex">
+        <SidebarNavigation />
+        <div className="flex-1 ml-16 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Article not found</h1>
+            <p className="text-gray-600 mb-4">The article you're looking for doesn't exist.</p>
+            <Link href="/inspiration">
+              <Button className="bg-mango-yellow hover:bg-mango-yellow/90 text-white">
+                Back to Inspiration
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -67,38 +73,6 @@ export function InspirationArticlePage() {
 
       {/* Split Screen Layout */}
       <div className="flex-1 ml-16 flex">
-          {/* Logo */}
-          <Link href="/" className="flex items-center mb-8">
-            <div className="w-12 h-12 mr-3">
-              <img 
-                src="/images/VisitPhongNha-Logo-02.png" 
-                alt="Visit Phong Nha Logo"
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-mango-yellow font-questrial">Visit Phong Nha</h1>
-              <p className="text-xs text-gray-500">Quang Binh Travel Hub</p>
-            </div>
-          </Link>
-
-          {/* Navigation Links */}
-          <nav className="space-y-2 mb-8">
-            <Link href="/" className="flex items-center space-x-3 w-full p-3 rounded-lg transition-colors text-gray-600 hover:bg-gray-100">
-              <Home className="w-5 h-5" />
-              <span className="font-medium">Home</span>
-            </Link>
-
-            <Link href="/explore" className="flex items-center space-x-3 w-full p-3 rounded-lg transition-colors text-gray-600 hover:bg-gray-100">
-              <Compass className="w-5 h-5" />
-              <span className="font-medium">Explore</span>
-            </Link>
-
-            <Link href="/inspiration" className="flex items-center space-x-3 w-full p-3 rounded-lg transition-colors bg-mango-yellow text-white">
-              <BookOpen className="w-5 h-5" />
-              <span className="font-medium">Inspiration</span>
-            </Link>
-          </nav>
         {/* Left Side - Article Content */}
         <div className="w-1/2 bg-white overflow-y-auto">
           <div className="p-8 max-w-2xl">
@@ -110,8 +84,6 @@ export function InspirationArticlePage() {
               </Button>
             </Link>
 
-            {/* Article Header */}
-            <div className="mb-8">
             {/* Article Header */}
             <div className="mb-8">
               {article.mainImageUrl && (
@@ -138,12 +110,13 @@ export function InspirationArticlePage() {
               <p className="text-xl text-gray-600 mb-6">
                 {article.summary}
               </p>
-              
+
+              {/* Tags */}
               {article.tags && article.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-6">
-                  {article.tags.map(tag => (
-                    <Badge key={tag} className="bg-mango-yellow/10 text-mango-yellow hover:bg-mango-yellow/20">
-                      {tag}
+                  {article.tags.map((tag, index) => (
+                    <Badge key={index} variant="secondary" className="bg-gray-100 text-gray-700">
+                      #{tag}
                     </Badge>
                   ))}
                 </div>
@@ -151,54 +124,50 @@ export function InspirationArticlePage() {
             </div>
 
             {/* Article Content */}
-            <div 
-              className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-a:text-mango-yellow prose-a:no-underline hover:prose-a:underline"
-              dangerouslySetInnerHTML={{ __html: article.contentHtml }}
-            />
+            <div className="prose prose-lg max-w-none">
+              <div dangerouslySetInnerHTML={{ __html: article.content }} />
+            </div>
 
-            {/* External Link */}
-            {article.externalUrl && (
-              <div className="mt-8 pt-8 border-t border-gray-200">
-                <a
-                  href={article.externalUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-2 text-mango-yellow hover:text-mango-yellow/80 transition-colors"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  <span>View original article</span>
-                </a>
+            {/* Article Footer */}
+            <div className="mt-12 pt-8 border-t border-gray-200">
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-500">
+                  Published on {formatDate(article.publicationDate)}
+                </div>
+                <Link href="/inspiration">
+                  <Button variant="outline" size="sm">
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    More Stories
+                  </Button>
+                </Link>
               </div>
-            )}
             </div>
           </div>
         </div>
 
-        {/* Right Side - Map */}
-        <div className="w-1/2 bg-gray-100 border-l border-gray-200">
-          <div className="h-full relative">
-            <div className="absolute top-4 left-4 right-4 z-10">
-              <div className="bg-white p-4 rounded-lg shadow-md">
-                <h3 className="font-semibold text-gray-900 mb-2">Article Location</h3>
-                <p className="text-sm text-gray-600 mb-2">{article.title}</p>
-                <div className="flex items-center text-xs text-gray-500">
-                  <MapPin className="w-3 h-3 mr-1" />
-                  <span>Lat: {article.latitude.toString()}, Lng: {article.longitude.toString()}</span>
-                </div>
-              </div>
-            </div>
-            
+        {/* Right Side - Interactive Map */}
+        <div className="w-1/2 bg-gray-100 relative">
+          <div className="absolute inset-0">
             <Map
-              businesses={[articleLocation as any]}
+              businesses={[articleLocation]}
               onBusinessClick={() => {}}
               selectedBusiness={null}
               hoveredBusiness={null}
-              center={{
-                lat: parseFloat(article.latitude.toString()),
-                lng: parseFloat(article.longitude.toString())
-              }}
-              zoom={14}
             />
+          </div>
+          
+          {/* Map Overlay Info */}
+          <div className="absolute top-4 left-4 right-4 z-50">
+            <div className="bg-white rounded-lg shadow-lg p-4">
+              <h3 className="font-semibold text-gray-900 mb-2">Article Location</h3>
+              <div className="flex items-center text-sm text-gray-600">
+                <MapPin className="w-4 h-4 mr-1" />
+                <span>Phong Nha, Quang Binh Province</span>
+              </div>
+              <p className="text-sm text-gray-600 mt-2">
+                Explore this location mentioned in the article
+              </p>
+            </div>
           </div>
         </div>
       </div>
