@@ -185,9 +185,7 @@ function ArticleCard({ article, featured = false }: ArticleCardProps) {
 
   return (
     <div
-      className={`bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow ${
-        featured ? 'ring-2 ring-mango-yellow ring-opacity-50' : ''
-      }`}
+      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
       onClick={handleClick}
     >
       <div className="relative">
