@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useLocation } from 'wouter';
-import { Search, Filter, MapPin, User, Tag, Clock, Calendar } from 'lucide-react';
+import { Search, Filter, MapPin, User, Tag, Clock, Calendar, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -23,17 +23,20 @@ export function InspirationPage() {
     new Set(articles.flatMap(article => article.tags || []))
   ).sort();
 
-  // Filter articles based on search query
+  // Filter articles based on search query and selected tag
   const filteredArticles = articles.filter(article => {
     const matchesSearch = !searchQuery || 
       article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       article.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
       article.summary.toLowerCase().includes(searchQuery.toLowerCase());
     
-    return matchesSearch;
+    const matchesTag = !selectedTag || (article.tags && article.tags.includes(selectedTag));
+    
+    return matchesSearch && matchesTag;
   });
 
-  // Separate featured and regular articles
+  // Separate featured and regular articles based on filters
+  const displayArticles = showFeatured ? filteredArticles.filter(article => article.isFeatured) : filteredArticles;
   const featuredArticles = filteredArticles.filter(article => article.isFeatured);
   const regularArticles = filteredArticles.filter(article => !article.isFeatured);
 
@@ -70,10 +73,18 @@ export function InspirationPage() {
               <Input
                 type="text"
                 placeholder="Search articles..."
-                className="pl-9 text-sm"
+                className="pl-9 pr-9 text-sm"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 w-4 h-4"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
             </div>
             
             <div className="flex gap-2">
@@ -114,8 +125,8 @@ export function InspirationPage() {
           )}
         </div>
 
-        {/* Featured Articles */}
-        {featuredArticles.length > 0 && !selectedTag && (
+        {/* Featured Articles - Only show when no filters are applied */}
+        {!showFeatured && !selectedTag && featuredArticles.length > 0 && (
           <div className="mb-8">
             <h2 className="text-lg font-bold text-gray-900 mb-4">Featured Guides</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -129,10 +140,11 @@ export function InspirationPage() {
         {/* All Articles */}
         <div>
           <h2 className="text-lg font-bold text-gray-900 mb-4">
-            {selectedTag ? `Articles about ${selectedTag}` : 'Latest Articles'}
+            {showFeatured ? 'Featured Articles' : 
+             selectedTag ? `Articles about ${selectedTag}` : 'Latest Articles'}
           </h2>
           
-          {filteredArticles.length === 0 ? (
+          {displayArticles.length === 0 ? (
             <div className="text-center py-8">
               <MapPin className="w-8 h-8 mx-auto text-gray-300 mb-3" />
               <h3 className="text-base font-medium text-gray-900 mb-2">No articles found</h3>
@@ -140,8 +152,9 @@ export function InspirationPage() {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {(selectedTag ? filteredArticles : regularArticles).map(article => (
-                <ArticleCard key={article.id} article={article} />
+              {(showFeatured ? displayArticles : 
+                selectedTag ? filteredArticles : regularArticles).map(article => (
+                <ArticleCard key={article.id} article={article} featured={article.isFeatured && !selectedTag && !showFeatured} />
               ))}
             </div>
           )}
