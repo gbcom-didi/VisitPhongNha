@@ -1,7 +1,4 @@
-The code changes fix the missing React imports and adjusts the text size in the mobile header, also adds a new state variable showFeatured.
-```
-```replit_final_file
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useLocation } from 'wouter';
 import { Search, Filter, MapPin, User, Tag, Clock, Calendar, X } from 'lucide-react';
@@ -31,9 +28,9 @@ export function InspirationPage() {
       article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       article.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
       article.summary.toLowerCase().includes(searchQuery.toLowerCase());
-
+    
     const matchesTag = !selectedTag || (article.tags && article.tags.includes(selectedTag));
-
+    
     return matchesSearch && matchesTag;
   });
 
@@ -55,7 +52,7 @@ export function InspirationPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <SidebarNavigation />
-
+      
       <div className="flex-1 ml-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Page Header */}
@@ -87,7 +84,7 @@ export function InspirationPage() {
                 </button>
               )}
             </div>
-
+            
 
           </div>
 
@@ -134,7 +131,7 @@ export function InspirationPage() {
           <h2 className="text-lg font-bold text-gray-900 mb-4">
             {selectedTag ? `Articles about ${selectedTag}` : 'Latest Articles'}
           </h2>
-
+          
           {filteredArticles.length === 0 ? (
             <div className="text-center py-8">
               <MapPin className="w-8 h-8 mx-auto text-gray-300 mb-3" />
@@ -203,7 +200,7 @@ function ArticleCard({ article, featured = false }: ArticleCardProps) {
           </Badge>
         )}
       </div>
-
+      
       <div className="p-4">
         <div className="flex items-center text-xs text-gray-500 mb-2">
           <User className="w-3 h-3 mr-1" />
@@ -211,15 +208,15 @@ function ArticleCard({ article, featured = false }: ArticleCardProps) {
           <Calendar className="w-3 h-3 ml-3 mr-1" />
           <span>{formatDate(article.publicationDate)}</span>
         </div>
-
+        
         <h3 className="text-sm font-semibold text-gray-900 mb-2 line-clamp-2">
           {article.title}
         </h3>
-
+        
         <p className="text-gray-600 text-xs mb-3 line-clamp-3">
           {article.summary}
         </p>
-
+        
         {article.tags && article.tags.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {article.tags.slice(0, 3).map(tag => (
