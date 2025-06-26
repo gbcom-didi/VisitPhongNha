@@ -118,7 +118,7 @@ export function InspirationArticlePage() {
                   className="w-full h-64 object-cover rounded-lg mb-6"
                 />
               )}
-
+              
               <div className="flex items-center text-sm text-gray-500 mb-4">
                 <User className="w-4 h-4 mr-1" />
                 <span className="mr-4">{article.author}</span>
@@ -127,11 +127,11 @@ export function InspirationArticlePage() {
                 <MapPin className="w-4 h-4 mr-1" />
                 <span>Phong Nha, Vietnam</span>
               </div>
-
+              
               <h1 className="text-4xl font-bold text-gray-900 mb-4 font-questrial">
                 {article.title}
               </h1>
-
+              
               <p className="text-xl text-gray-600 mb-6">
                 {article.summary}
               </p>
@@ -185,7 +185,7 @@ export function InspirationArticlePage() {
               zoom={14}
             />
           </div>
-
+          
           {/* Map Overlay Info */}
           <div className="absolute top-4 left-4 right-4 z-50">
             <div className="bg-white rounded-lg shadow-lg p-4">
