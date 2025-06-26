@@ -3,12 +3,16 @@ import { useAuth } from "./useAuth";
 export type UserRole = "admin" | "business_owner" | "viewer";
 
 export function useRBAC() {
-  const { user, isAuthenticated } = useAuth();
+  const { currentUser, isAuthenticated } = useAuth();
 
   const hasRole = (requiredRole: UserRole): boolean => {
-    if (!isAuthenticated || !user) return false;
+    if (!isAuthenticated || !currentUser) {
+      console.log('RBAC: Not authenticated or no user', { isAuthenticated, currentUser });
+      return false;
+    }
     
-    const userRole = (user as any).role as UserRole;
+    const userRole = currentUser.role as UserRole;
+    console.log('RBAC: Checking role', { userRole, requiredRole });
     
     // Role hierarchy - higher roles include permissions of lower roles
     const roleHierarchy: Record<UserRole, UserRole[]> = {
@@ -17,7 +21,9 @@ export function useRBAC() {
       viewer: ["viewer"]
     };
 
-    return roleHierarchy[userRole]?.includes(requiredRole) || false;
+    const hasPermission = roleHierarchy[userRole]?.includes(requiredRole) || false;
+    console.log('RBAC: Permission result', { hasPermission });
+    return hasPermission;
   };
 
   const permissions = {
