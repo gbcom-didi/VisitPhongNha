@@ -19,15 +19,21 @@ export const auth = admin.auth();
 export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
+    console.log('Auth header:', authHeader ? 'Present' : 'Missing');
+    
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('No valid Bearer token provided');
       return res.status(401).json({ message: 'No token provided' });
     }
 
     const idToken = authHeader.split('Bearer ')[1];
+    console.log('Attempting to verify token...');
     const decodedToken = await auth.verifyIdToken(idToken);
+    console.log('Token verified for user:', decodedToken.email);
     
     // Fetch user data from database to get role
     const dbUser = await storage.getUser(decodedToken.uid);
+    console.log('Database user found:', dbUser ? `${dbUser.email} (${dbUser.role})` : 'Not found');
     
     req.user = {
       uid: decodedToken.uid,
@@ -37,6 +43,7 @@ export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
       claims: decodedToken
     };
 
+    console.log('Request user set:', req.user.email, req.user.role);
     next();
   } catch (error) {
     console.error('Error verifying Firebase token:', error);
