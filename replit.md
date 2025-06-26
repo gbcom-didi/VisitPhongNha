@@ -219,6 +219,8 @@ Changelog:
   - Added map with correct location pin showing article coordinates
   - Removed unnecessary map overlay box for cleaner map display
   - Improved article content CSS with proper headings, paragraphs, lists, and code styling
+  - Implemented responsive mobile layout with toggleable map functionality
+  - Mobile shows complete article first with "Show/Hide Map" button for better reading experience
 ```
 
 ## User Preferences

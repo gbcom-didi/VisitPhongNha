@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRoute, Link } from 'wouter';
-import { ArrowLeft, Calendar, User, MapPin } from 'lucide-react';
+import { ArrowLeft, Calendar, User, MapPin, Map as MapIcon, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Map } from '@/components/ui/map';
@@ -10,6 +11,7 @@ import type { Article } from '@shared/schema';
 export function InspirationArticlePage() {
   const [match, params] = useRoute('/inspiration/:id');
   const articleId = params?.id ? parseInt(params.id) : null;
+  const [showMap, setShowMap] = useState(false);
 
   const { data: article, isLoading, error } = useQuery<Article>({
     queryKey: [`/api/articles/${articleId}`],
@@ -96,11 +98,103 @@ export function InspirationArticlePage() {
     <div className="min-h-screen bg-gray-50 flex">
       <SidebarNavigation />
 
-      {/* Split Screen Layout */}
-      <div className="flex-1 ml-16 flex h-screen">
-        {/* Left Side - Article Content */}
-        <div className="w-1/2 bg-white overflow-y-auto h-full">
-          <div className="p-8">
+      {/* Responsive Layout */}
+      <div className="flex-1 ml-16">
+        {/* Desktop: Split Screen Layout */}
+        <div className="hidden md:flex h-screen">
+          {/* Left Side - Article Content */}
+          <div className="w-1/2 bg-white overflow-y-auto h-full">
+            <div className="p-8">
+              {/* Back Button */}
+              <Link href="/inspiration">
+                <Button variant="ghost" size="sm" className="mb-4 -ml-2 text-xs">
+                  <ArrowLeft className="w-3 h-3 mr-1" />
+                  Back to Inspiration
+                </Button>
+              </Link>
+
+              {/* Article Header */}
+              <div className="mb-6">
+                {article.mainImageUrl && (
+                  <img
+                    src={article.mainImageUrl}
+                    alt={article.title}
+                    className="w-full h-48 object-cover rounded-lg mb-4"
+                  />
+                )}
+                
+                <div className="flex items-center text-xs text-gray-500 mb-3">
+                  <User className="w-3 h-3 mr-1" />
+                  <span className="mr-3">{article.author}</span>
+                  <Calendar className="w-3 h-3 mr-1" />
+                  <span className="mr-3">{formatDate(article.publicationDate)}</span>
+                  <MapPin className="w-3 h-3 mr-1" />
+                  <span>Phong Nha, Vietnam</span>
+                </div>
+                
+                <h1 className="text-2xl font-bold text-gray-900 mb-3 font-questrial">
+                  {article.title}
+                </h1>
+                
+                <p className="text-sm text-gray-600 mb-4">
+                  {article.summary}
+                </p>
+
+                {/* Tags */}
+                {article.tags && article.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {article.tags.map((tag, index) => (
+                      <Badge key={index} variant="secondary" className="bg-mango-yellow text-white text-xs px-2 py-0.5">
+                        #{tag}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Article Content - Full HTML Display */}
+              <div className="prose prose-sm max-w-none mb-6 article-content">
+                <div dangerouslySetInnerHTML={{ __html: article.contentHtml }} />
+              </div>
+
+              {/* Article Footer */}
+              <div className="mt-8 pt-4 border-t border-gray-200 mb-6">
+                <div className="flex items-center justify-between">
+                  <div className="text-xs text-gray-500">
+                    Published on {formatDate(article.publicationDate)}
+                  </div>
+                  <Link href="/inspiration">
+                    <Button variant="outline" size="sm" className="text-xs">
+                      <ArrowLeft className="w-3 h-3 mr-1" />
+                      More Stories
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side - Interactive Map */}
+          <div className="w-1/2 bg-gray-100 relative h-full">
+            <div className="absolute inset-0">
+              <Map
+                businesses={[articleLocation]}
+                onBusinessClick={() => {}}
+                selectedBusiness={null}
+                hoveredBusiness={null}
+                center={{
+                  lat: parseFloat(article.latitude.toString()),
+                  lng: parseFloat(article.longitude.toString())
+                }}
+                zoom={14}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile: Single Column Layout */}
+        <div className="md:hidden bg-white min-h-screen">
+          <div className="p-4">
             {/* Back Button */}
             <Link href="/inspiration">
               <Button variant="ghost" size="sm" className="mb-4 -ml-2 text-xs">
@@ -128,7 +222,7 @@ export function InspirationArticlePage() {
                 <span>Phong Nha, Vietnam</span>
               </div>
               
-              <h1 className="text-2xl font-bold text-gray-900 mb-3 font-questrial">
+              <h1 className="text-xl font-bold text-gray-900 mb-3 font-questrial">
                 {article.title}
               </h1>
               
@@ -153,37 +247,59 @@ export function InspirationArticlePage() {
               <div dangerouslySetInnerHTML={{ __html: article.contentHtml }} />
             </div>
 
+            {/* Map Toggle Button */}
+            <div className="mb-6">
+              <Button
+                onClick={() => setShowMap(!showMap)}
+                className="w-full bg-mango-yellow hover:bg-mango-yellow/90 text-white text-sm"
+              >
+                {showMap ? (
+                  <>
+                    <X className="w-4 h-4 mr-2" />
+                    Hide Map
+                  </>
+                ) : (
+                  <>
+                    <MapIcon className="w-4 h-4 mr-2" />
+                    Show Location on Map
+                  </>
+                )}
+              </Button>
+            </div>
+
+            {/* Mobile Map - Toggleable */}
+            {showMap && (
+              <div className="mb-6">
+                <div className="h-80 bg-gray-100 rounded-lg overflow-hidden">
+                  <Map
+                    businesses={[articleLocation]}
+                    onBusinessClick={() => {}}
+                    selectedBusiness={null}
+                    hoveredBusiness={null}
+                    center={{
+                      lat: parseFloat(article.latitude.toString()),
+                      lng: parseFloat(article.longitude.toString())
+                    }}
+                    zoom={14}
+                  />
+                </div>
+              </div>
+            )}
+
             {/* Article Footer */}
             <div className="mt-8 pt-4 border-t border-gray-200 mb-6">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
                 <div className="text-xs text-gray-500">
                   Published on {formatDate(article.publicationDate)}
                 </div>
                 <Link href="/inspiration">
-                  <Button variant="outline" size="sm" className="text-xs">
+                  <Button variant="outline" size="sm" className="text-xs w-full sm:w-auto">
                     <ArrowLeft className="w-3 h-3 mr-1" />
                     More Stories
                   </Button>
                 </Link>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Right Side - Interactive Map */}
-        <div className="w-1/2 bg-gray-100 relative h-full">
-          <div className="absolute inset-0">
-            <Map
-              businesses={[articleLocation]}
-              onBusinessClick={() => {}}
-              selectedBusiness={null}
-              hoveredBusiness={null}
-              center={{
-                lat: parseFloat(article.latitude.toString()),
-                lng: parseFloat(article.longitude.toString())
-              }}
-              zoom={14}
-            />
           </div>
         </div>
       </div>
