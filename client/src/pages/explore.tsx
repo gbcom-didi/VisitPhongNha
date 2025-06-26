@@ -41,6 +41,17 @@ export default function Explore() {
       // Cancel outgoing refetches to prevent race conditions
       await queryClient.cancelQueries({ queryKey: ['/api/businesses'] });
       const previousBusinesses = queryClient.getQueryData(['/api/businesses']);
+      
+      // Optimistically update the UI for immediate feedback
+      queryClient.setQueryData(['/api/businesses'], (old: BusinessWithCategory[] | undefined) => {
+        if (!old) return old;
+        return old.map(business => 
+          business.id === businessId 
+            ? { ...business, isLiked: !business.isLiked }
+            : business
+        );
+      });
+      
       return { previousBusinesses };
     },
     onError: (error: any, businessId: number, context: any) => {

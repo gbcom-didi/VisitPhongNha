@@ -47,7 +47,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
       return apiRequest('POST', '/api/user/likes/toggle', { businessId });
     },
     onMutate: async (businessId: number) => {
-      // Optimistically update local state
+      // Optimistically update local state for immediate visual feedback
       setLocalIsLiked(prev => !prev);
       
       // Cancel any outgoing refetches
