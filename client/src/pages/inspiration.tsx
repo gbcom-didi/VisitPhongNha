@@ -12,10 +12,9 @@ import type { Article } from '@shared/schema';
 export function InspirationPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [showFeatured, setShowFeatured] = useState(false);
 
   const { data: articles = [], isLoading } = useQuery<Article[]>({
-    queryKey: ['/api/articles', { tag: selectedTag, featured: showFeatured }],
+    queryKey: ['/api/articles'],
   });
 
   // Get unique tags from all articles
@@ -35,8 +34,7 @@ export function InspirationPage() {
     return matchesSearch && matchesTag;
   });
 
-  // Separate featured and regular articles based on filters
-  const displayArticles = showFeatured ? filteredArticles.filter(article => article.isFeatured) : filteredArticles;
+  // Separate featured and regular articles
   const featuredArticles = filteredArticles.filter(article => article.isFeatured);
   const regularArticles = filteredArticles.filter(article => !article.isFeatured);
 
@@ -87,16 +85,7 @@ export function InspirationPage() {
               )}
             </div>
             
-            <div className="flex gap-2">
-              <Button
-                variant={showFeatured ? "default" : "outline"}
-                size="sm"
-                onClick={() => setShowFeatured(!showFeatured)}
-                className={showFeatured ? "bg-mango-yellow hover:bg-mango-yellow/90 text-white text-sm" : "text-sm"}
-              >
-                Featured
-              </Button>
-            </div>
+
           </div>
 
           {/* Tag Filter */}
@@ -125,8 +114,8 @@ export function InspirationPage() {
           )}
         </div>
 
-        {/* Featured Articles - Only show when no filters are applied */}
-        {!showFeatured && !selectedTag && featuredArticles.length > 0 && (
+        {/* Featured Articles - Only show when no tag filter is applied */}
+        {!selectedTag && featuredArticles.length > 0 && (
           <div className="mb-8">
             <h2 className="text-lg font-bold text-gray-900 mb-4">Featured Guides</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -140,11 +129,10 @@ export function InspirationPage() {
         {/* All Articles */}
         <div>
           <h2 className="text-lg font-bold text-gray-900 mb-4">
-            {showFeatured ? 'Featured Articles' : 
-             selectedTag ? `Articles about ${selectedTag}` : 'Latest Articles'}
+            {selectedTag ? `Articles about ${selectedTag}` : 'Latest Articles'}
           </h2>
           
-          {displayArticles.length === 0 ? (
+          {filteredArticles.length === 0 ? (
             <div className="text-center py-8">
               <MapPin className="w-8 h-8 mx-auto text-gray-300 mb-3" />
               <h3 className="text-base font-medium text-gray-900 mb-2">No articles found</h3>
@@ -152,9 +140,8 @@ export function InspirationPage() {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {(showFeatured ? displayArticles : 
-                selectedTag ? filteredArticles : regularArticles).map(article => (
-                <ArticleCard key={article.id} article={article} featured={article.isFeatured && !selectedTag && !showFeatured} />
+              {(selectedTag ? filteredArticles : regularArticles).map((article: Article) => (
+                <ArticleCard key={article.id} article={article} featured={article.isFeatured && !selectedTag} />
               ))}
             </div>
           )}
@@ -239,11 +226,6 @@ function ArticleCard({ article, featured = false }: ArticleCardProps) {
                 {tag}
               </Badge>
             ))}
-            {article.tags.length > 3 && (
-              <Badge variant="secondary" className="text-xs px-2 py-0.5 bg-gray-200 text-gray-700">
-                +{article.tags.length - 3}
-              </Badge>
-            )}
           </div>
         )}
       </div>
