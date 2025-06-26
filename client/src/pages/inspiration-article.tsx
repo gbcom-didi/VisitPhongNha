@@ -49,33 +49,58 @@ export function InspirationArticlePage() {
     );
   }
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+  const formatDate = (date: Date | string) => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
   };
 
-  // Create a mock business object for the map
+  // Create a business object for the map
   const articleLocation = {
     id: article.id,
     name: article.title,
     latitude: parseFloat(article.latitude.toString()),
     longitude: parseFloat(article.longitude.toString()),
     description: article.summary,
-    category: { name: 'Article Location', color: '#F4B942' }
-  };
+    address: 'Phong Nha, Quang Binh Province',
+    phone: null,
+    website: null,
+    email: null,
+    imageUrl: article.mainImageUrl,
+    tags: article.tags,
+    priceRange: null,
+    amenities: null,
+    bookingType: null,
+    affiliateLink: null,
+    directBookingContact: null,
+    enquiryFormEnabled: false,
+    featuredText: null,
+    isVerified: false,
+    isRecommended: false,
+    ownerId: null,
+    rating: null,
+    reviewCount: null,
+    reviews: null,
+    gallery: null,
+    operatingHours: null,
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    categories: [{ id: 1, name: 'Article Location', color: '#F4B942', icon: 'map-pin', emoji: '📍' }]
+  } as any;
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <SidebarNavigation />
 
       {/* Split Screen Layout */}
-      <div className="flex-1 ml-16 flex">
+      <div className="flex-1 ml-16 flex h-screen">
         {/* Left Side - Article Content */}
-        <div className="w-1/2 bg-white overflow-y-auto">
-          <div className="p-8 max-w-2xl">
+        <div className="w-1/2 bg-white overflow-y-auto h-full">
+          <div className="p-8">
             {/* Back Button */}
             <Link href="/inspiration">
               <Button variant="ghost" className="mb-6 -ml-3">
@@ -123,13 +148,13 @@ export function InspirationArticlePage() {
               )}
             </div>
 
-            {/* Article Content */}
-            <div className="prose prose-lg max-w-none">
-              <div dangerouslySetInnerHTML={{ __html: article.content }} />
+            {/* Article Content - Full HTML Display */}
+            <div className="prose prose-lg max-w-none mb-8 article-content">
+              <div dangerouslySetInnerHTML={{ __html: article.contentHtml }} />
             </div>
 
             {/* Article Footer */}
-            <div className="mt-12 pt-8 border-t border-gray-200">
+            <div className="mt-12 pt-8 border-t border-gray-200 mb-8">
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-500">
                   Published on {formatDate(article.publicationDate)}
@@ -146,13 +171,18 @@ export function InspirationArticlePage() {
         </div>
 
         {/* Right Side - Interactive Map */}
-        <div className="w-1/2 bg-gray-100 relative">
+        <div className="w-1/2 bg-gray-100 relative h-full">
           <div className="absolute inset-0">
             <Map
               businesses={[articleLocation]}
               onBusinessClick={() => {}}
               selectedBusiness={null}
               hoveredBusiness={null}
+              center={{
+                lat: parseFloat(article.latitude.toString()),
+                lng: parseFloat(article.longitude.toString())
+              }}
+              zoom={14}
             />
           </div>
           
@@ -160,13 +190,16 @@ export function InspirationArticlePage() {
           <div className="absolute top-4 left-4 right-4 z-50">
             <div className="bg-white rounded-lg shadow-lg p-4">
               <h3 className="font-semibold text-gray-900 mb-2">Article Location</h3>
-              <div className="flex items-center text-sm text-gray-600">
+              <div className="flex items-center text-sm text-gray-600 mb-2">
                 <MapPin className="w-4 h-4 mr-1" />
                 <span>Phong Nha, Quang Binh Province</span>
               </div>
-              <p className="text-sm text-gray-600 mt-2">
+              <p className="text-sm text-gray-600">
                 Explore this location mentioned in the article
               </p>
+              <div className="text-xs text-gray-500 mt-2">
+                Lat: {article.latitude}, Lng: {article.longitude}
+              </div>
             </div>
           </div>
         </div>
