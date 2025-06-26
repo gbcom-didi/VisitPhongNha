@@ -135,7 +135,7 @@ export default function Explore() {
       <div className="md:hidden flex flex-col h-screen">
         {/* Mobile Header */}
         <div className="bg-white border-b border-gray-200">
-          <div className="flex justify-between items-center p-4">
+          <div className="flex justify-between items-center px-3 py-2">
             <div className="flex items-center">
               <div className="w-8 h-8 mr-2">
                 <img 
@@ -144,7 +144,7 @@ export default function Explore() {
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span className="text-xl font-bold text-gray-900">Visit Phong Nha</span>
+              <span className="text-mango-yellow font-bold">Visit Phong Nha</span>
             </div>
             
             <button
