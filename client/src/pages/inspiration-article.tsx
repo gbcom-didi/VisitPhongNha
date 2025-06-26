@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRoute, Link } from 'wouter';
-import { ArrowLeft, Calendar, User, MapPin, Map as MapIcon, X } from 'lucide-react';
+import { ArrowLeft, Calendar, User, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Map } from '@/components/ui/map';
@@ -11,7 +10,6 @@ import type { Article } from '@shared/schema';
 export function InspirationArticlePage() {
   const [match, params] = useRoute('/inspiration/:id');
   const articleId = params?.id ? parseInt(params.id) : null;
-  const [showMap, setShowMap] = useState(false);
 
   const { data: article, isLoading, error } = useQuery<Article>({
     queryKey: [`/api/articles/${articleId}`],
@@ -247,44 +245,22 @@ export function InspirationArticlePage() {
               <div dangerouslySetInnerHTML={{ __html: article.contentHtml }} />
             </div>
 
-            {/* Map Toggle Button */}
+            {/* Mobile Map - Always Visible */}
             <div className="mb-6">
-              <Button
-                onClick={() => setShowMap(!showMap)}
-                className="w-full bg-mango-yellow hover:bg-mango-yellow/90 text-white text-sm"
-              >
-                {showMap ? (
-                  <>
-                    <X className="w-4 h-4 mr-2" />
-                    Hide Map
-                  </>
-                ) : (
-                  <>
-                    <MapIcon className="w-4 h-4 mr-2" />
-                    Show Location on Map
-                  </>
-                )}
-              </Button>
-            </div>
-
-            {/* Mobile Map - Toggleable */}
-            {showMap && (
-              <div className="mb-6">
-                <div className="h-80 bg-gray-100 rounded-lg overflow-hidden">
-                  <Map
-                    businesses={[articleLocation]}
-                    onBusinessClick={() => {}}
-                    selectedBusiness={null}
-                    hoveredBusiness={null}
-                    center={{
-                      lat: parseFloat(article.latitude.toString()),
-                      lng: parseFloat(article.longitude.toString())
-                    }}
-                    zoom={14}
-                  />
-                </div>
+              <div className="h-80 bg-gray-100 rounded-lg overflow-hidden">
+                <Map
+                  businesses={[articleLocation]}
+                  onBusinessClick={() => {}}
+                  selectedBusiness={null}
+                  hoveredBusiness={null}
+                  center={{
+                    lat: parseFloat(article.latitude.toString()),
+                    lng: parseFloat(article.longitude.toString())
+                  }}
+                  zoom={14}
+                />
               </div>
-            )}
+            </div>
 
             {/* Article Footer */}
             <div className="mt-8 pt-4 border-t border-gray-200 mb-6">
