@@ -136,7 +136,7 @@ export default function Explore() {
         {/* Mobile Header */}
         <div className="bg-white border-b border-gray-200">
           <div className="flex justify-between items-center px-3 py-2">
-            <div className="flex items-center">
+            <Link href="/" className="flex items-center">
               <div className="w-8 h-8 mr-2">
                 <img 
                   src="/images/VisitPhongNha-Logo-02.png" 
@@ -145,7 +145,7 @@ export default function Explore() {
                 />
               </div>
               <span className="text-mango-yellow font-bold">Visit Phong Nha</span>
-            </div>
+            </Link>
             
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
