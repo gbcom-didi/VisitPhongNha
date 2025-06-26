@@ -222,12 +222,12 @@ function ArticleCard({ article, featured = false }: ArticleCardProps) {
         {article.tags && article.tags.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {article.tags.slice(0, 3).map(tag => (
-              <Badge key={tag} variant="secondary" className="text-xs px-2 py-0.5">
+              <Badge key={tag} variant="secondary" className="text-xs px-2 py-0.5 bg-mango-yellow text-white">
                 {tag}
               </Badge>
             ))}
             {article.tags.length > 3 && (
-              <Badge variant="secondary" className="text-xs px-2 py-0.5">
+              <Badge variant="secondary" className="text-xs px-2 py-0.5 bg-gray-200 text-gray-700">
                 +{article.tags.length - 3}
               </Badge>
             )}

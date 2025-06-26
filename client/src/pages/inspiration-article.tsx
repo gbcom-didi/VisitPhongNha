@@ -103,44 +103,44 @@ export function InspirationArticlePage() {
           <div className="p-8">
             {/* Back Button */}
             <Link href="/inspiration">
-              <Button variant="ghost" className="mb-6 -ml-3">
-                <ArrowLeft className="w-4 h-4 mr-2" />
+              <Button variant="ghost" size="sm" className="mb-4 -ml-2 text-xs">
+                <ArrowLeft className="w-3 h-3 mr-1" />
                 Back to Inspiration
               </Button>
             </Link>
 
             {/* Article Header */}
-            <div className="mb-8">
+            <div className="mb-6">
               {article.mainImageUrl && (
                 <img
                   src={article.mainImageUrl}
                   alt={article.title}
-                  className="w-full h-64 object-cover rounded-lg mb-6"
+                  className="w-full h-48 object-cover rounded-lg mb-4"
                 />
               )}
               
-              <div className="flex items-center text-sm text-gray-500 mb-4">
-                <User className="w-4 h-4 mr-1" />
-                <span className="mr-4">{article.author}</span>
-                <Calendar className="w-4 h-4 mr-1" />
-                <span className="mr-4">{formatDate(article.publicationDate)}</span>
-                <MapPin className="w-4 h-4 mr-1" />
+              <div className="flex items-center text-xs text-gray-500 mb-3">
+                <User className="w-3 h-3 mr-1" />
+                <span className="mr-3">{article.author}</span>
+                <Calendar className="w-3 h-3 mr-1" />
+                <span className="mr-3">{formatDate(article.publicationDate)}</span>
+                <MapPin className="w-3 h-3 mr-1" />
                 <span>Phong Nha, Vietnam</span>
               </div>
               
-              <h1 className="text-4xl font-bold text-gray-900 mb-4 font-questrial">
+              <h1 className="text-2xl font-bold text-gray-900 mb-3 font-questrial">
                 {article.title}
               </h1>
               
-              <p className="text-xl text-gray-600 mb-6">
+              <p className="text-sm text-gray-600 mb-4">
                 {article.summary}
               </p>
 
               {/* Tags */}
               {article.tags && article.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-1.5 mb-4">
                   {article.tags.map((tag, index) => (
-                    <Badge key={index} variant="secondary" className="bg-gray-100 text-gray-700">
+                    <Badge key={index} variant="secondary" className="bg-mango-yellow text-white text-xs px-2 py-0.5">
                       #{tag}
                     </Badge>
                   ))}
@@ -149,19 +149,19 @@ export function InspirationArticlePage() {
             </div>
 
             {/* Article Content - Full HTML Display */}
-            <div className="prose prose-lg max-w-none mb-8 article-content">
+            <div className="prose prose-sm max-w-none mb-6 article-content">
               <div dangerouslySetInnerHTML={{ __html: article.contentHtml }} />
             </div>
 
             {/* Article Footer */}
-            <div className="mt-12 pt-8 border-t border-gray-200 mb-8">
+            <div className="mt-8 pt-4 border-t border-gray-200 mb-6">
               <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-500">
+                <div className="text-xs text-gray-500">
                   Published on {formatDate(article.publicationDate)}
                 </div>
                 <Link href="/inspiration">
-                  <Button variant="outline" size="sm">
-                    <ArrowLeft className="w-4 h-4 mr-2" />
+                  <Button variant="outline" size="sm" className="text-xs">
+                    <ArrowLeft className="w-3 h-3 mr-1" />
                     More Stories
                   </Button>
                 </Link>
