@@ -32,7 +32,20 @@ export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
     console.log('Token verified for user:', decodedToken.email);
     
     // Fetch user data from database to get role
-    const dbUser = await storage.getUser(decodedToken.uid);
+    // First try by Firebase UID, then by email if not found
+    let dbUser = await storage.getUser(decodedToken.uid);
+    if (!dbUser && decodedToken.email) {
+      // Fallback: look up by email
+      try {
+        const userByEmail = await db.select().from(users).where(eq(users.email, decodedToken.email)).limit(1);
+        if (userByEmail.length > 0) {
+          dbUser = userByEmail[0];
+          console.log('Found user by email lookup:', dbUser.email, dbUser.role);
+        }
+      } catch (emailLookupError) {
+        console.error('Error looking up user by email:', emailLookupError);
+      }
+    }
     console.log('Database user found:', dbUser ? `${dbUser.email} (${dbUser.role})` : 'Not found');
     
     req.user = {
