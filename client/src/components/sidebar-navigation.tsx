@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'wouter';
-import { Home, Compass, BookOpen, Plane, Info, Phone, User, LogOut } from 'lucide-react';
+import { Home, Compass, BookOpen, Plane, Info, Phone, User, LogOut, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { SignInModal } from '@/components/auth/SignInModal';
@@ -50,6 +50,24 @@ export function SidebarNavigation() {
             </div>
           </Link>
         ))}
+        
+        {/* Saved Places - only for authenticated users */}
+        {isAuthenticated && (
+          <Link href="/saved">
+            <div className={cn(
+              "w-10 h-10 rounded-lg flex items-center justify-center transition-colors cursor-pointer",
+              location === '/saved'
+                ? "bg-red-500 text-white" 
+                : "text-gray-500 hover:bg-red-100 hover:text-red-500"
+            )}>
+              <Heart className={cn(
+                "w-5 h-5",
+                location === '/saved' ? "fill-current" : ""
+              )} />
+              <span className="sr-only">Saved Places</span>
+            </div>
+          </Link>
+        )}
       </nav>
 
       {/* User/Login at bottom */}
