@@ -207,6 +207,17 @@ export default function Explore() {
                     Contact
                   </button>
                 </Link>
+                {isAuthenticated && (
+                  <Link href="/saved">
+                    <button 
+                      className="w-full text-left py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-md transition-colors font-medium flex items-center"
+                      onClick={() => setShowMobileMenu(false)}
+                    >
+                      <Heart className="w-4 h-4 mr-2" />
+                      Saved Places
+                    </button>
+                  </Link>
+                )}
               </div>
             </div>
           )}
@@ -256,21 +267,7 @@ export default function Explore() {
           </div>
         )}
 
-        {/* Mobile Bottom Navigation */}
-        <div className="bg-white border-t border-gray-200 py-1 px-2 flex-shrink-0 z-20">
-          <div className="flex justify-around">
-            {isAuthenticated && (
-              <div className={`flex flex-col items-center py-1 px-2 rounded-md transition-colors cursor-pointer ${
-                location === '/saved'
-                  ? 'text-mango-yellow' 
-                  : 'text-gray-700'
-              }`}>
-                <Heart className="w-4 h-4 mb-0.5" />
-                <span className="text-xs">Saved</span>
-              </div>
-            )}
-          </div>
-        </div>
+
       </div>
 
       {/* Desktop Layout */}
