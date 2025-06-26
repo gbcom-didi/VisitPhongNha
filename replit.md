@@ -202,6 +202,11 @@ Changelog:
   - Added user synchronization between Firebase and PostgreSQL database
   - Created sign-in modal with multiple authentication methods
   - Integrated Firebase tokens for authenticated API requests
+- June 26, 2025. Enhanced navigation with saved places access
+  - Added heart icon to sidebar navigation for authenticated users
+  - Heart icon links directly to saved places page with visual feedback
+  - Icon only visible when user is logged in with red styling and fill effect
+  - Granted admin privileges to glenbowdencom@gmail.com for full system access
 ```
 
 ## User Preferences
