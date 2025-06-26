@@ -52,8 +52,8 @@ export function useRBAC() {
   };
 
   return {
-    user,
-    userRole: (user as any)?.role as UserRole,
+    user: currentUser,
+    userRole: currentUser?.role as UserRole,
     isAuthenticated,
     hasRole,
     permissions,
