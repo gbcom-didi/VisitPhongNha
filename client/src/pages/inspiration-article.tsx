@@ -185,23 +185,6 @@ export function InspirationArticlePage() {
               zoom={14}
             />
           </div>
-          
-          {/* Map Overlay Info */}
-          <div className="absolute top-4 left-4 right-4 z-50">
-            <div className="bg-white rounded-lg shadow-lg p-4">
-              <h3 className="font-semibold text-gray-900 mb-2">Article Location</h3>
-              <div className="flex items-center text-sm text-gray-600 mb-2">
-                <MapPin className="w-4 h-4 mr-1" />
-                <span>Phong Nha, Quang Binh Province</span>
-              </div>
-              <p className="text-sm text-gray-600">
-                Explore this location mentioned in the article
-              </p>
-              <div className="text-xs text-gray-500 mt-2">
-                Lat: {article.latitude}, Lng: {article.longitude}
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

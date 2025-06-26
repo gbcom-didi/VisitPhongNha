@@ -213,6 +213,12 @@ Changelog:
   - Fixed middleware ordering in PUT routes for business updates
   - Business update functionality now working correctly for admin users
   - Admin panel fully operational with proper role-based access control
+- June 26, 2025. Enhanced inspiration article split screen layout
+  - Fixed split screen layout with proper height and independent scrolling for article content
+  - Updated article content to display full HTML with enhanced typography styling
+  - Added map with correct location pin showing article coordinates
+  - Removed unnecessary map overlay box for cleaner map display
+  - Improved article content CSS with proper headings, paragraphs, lists, and code styling
 ```
 
 ## User Preferences
