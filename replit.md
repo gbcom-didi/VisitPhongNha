@@ -207,6 +207,12 @@ Changelog:
   - Heart icon links directly to saved places page with visual feedback
   - Icon only visible when user is logged in with red styling and fill effect
   - Granted admin privileges to glenbowdencom@gmail.com for full system access
+- June 26, 2025. Fixed Firebase authentication middleware chain for business updates
+  - Resolved authentication issue where Firebase token verification wasn't properly chained
+  - Added email-based user lookup fallback for existing database records
+  - Fixed middleware ordering in PUT routes for business updates
+  - Business update functionality now working correctly for admin users
+  - Admin panel fully operational with proper role-based access control
 ```
 
 ## User Preferences

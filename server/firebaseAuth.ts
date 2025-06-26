@@ -19,17 +19,13 @@ export const auth = admin.auth();
 export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    console.log('Auth header:', authHeader ? 'Present' : 'Missing');
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('No valid Bearer token provided');
       return res.status(401).json({ message: 'No token provided' });
     }
 
     const idToken = authHeader.split('Bearer ')[1];
-    console.log('Attempting to verify token...');
     const decodedToken = await auth.verifyIdToken(idToken);
-    console.log('Token verified for user:', decodedToken.email);
     
     // Fetch user data from database to get role
     // First try by Firebase UID, then by email if not found
@@ -40,13 +36,11 @@ export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
         const userByEmail = await db.select().from(users).where(eq(users.email, decodedToken.email)).limit(1);
         if (userByEmail.length > 0) {
           dbUser = userByEmail[0];
-          console.log('Found user by email lookup:', dbUser.email, dbUser.role);
         }
       } catch (emailLookupError) {
         console.error('Error looking up user by email:', emailLookupError);
       }
     }
-    console.log('Database user found:', dbUser ? `${dbUser.email} (${dbUser.role})` : 'Not found');
     
     req.user = {
       uid: decodedToken.uid,
@@ -156,9 +150,7 @@ export function requireFirebaseRole(role: string): RequestHandler {
   return async (req, res, next) => {
     try {
       const user = req.user as any;
-      console.log('requireFirebaseRole middleware - user:', user?.email, user?.role, 'required:', role);
       if (!user) {
-        console.log('requireFirebaseRole: No user found in request');
         return res.status(401).json({ message: 'Unauthorized' });
       }
 

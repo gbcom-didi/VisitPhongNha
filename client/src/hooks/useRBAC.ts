@@ -7,12 +7,10 @@ export function useRBAC() {
 
   const hasRole = (requiredRole: UserRole): boolean => {
     if (!isAuthenticated || !currentUser) {
-      console.log('RBAC: Not authenticated or no user', { isAuthenticated, currentUser });
       return false;
     }
     
     const userRole = currentUser.role as UserRole;
-    console.log('RBAC: Checking role', { userRole, requiredRole });
     
     // Role hierarchy - higher roles include permissions of lower roles
     const roleHierarchy: Record<UserRole, UserRole[]> = {
@@ -21,9 +19,7 @@ export function useRBAC() {
       viewer: ["viewer"]
     };
 
-    const hasPermission = roleHierarchy[userRole]?.includes(requiredRole) || false;
-    console.log('RBAC: Permission result', { hasPermission });
-    return hasPermission;
+    return roleHierarchy[userRole]?.includes(requiredRole) || false;
   };
 
   const permissions = {

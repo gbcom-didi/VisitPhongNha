@@ -69,7 +69,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (response.ok) {
         const userData = await response.json();
-        console.log('Backend sync response:', userData);
         
         // Store the token for future API requests
         localStorage.setItem('firebaseToken', idToken);
@@ -84,7 +83,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         }, 50 * 60 * 1000); // Refresh every 50 minutes
         
-        const authUser = {
+        return {
           uid: user.uid,
           email: user.email,
           displayName: user.displayName,
@@ -94,9 +93,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           firstName: userData.firstName,
           lastName: userData.lastName
         };
-        
-        console.log('Created AuthUser with role:', authUser.role);
-        return authUser;
       }
     } catch (error) {
       console.error('Error syncing user with backend:', error);

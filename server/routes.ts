@@ -186,7 +186,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Update business route
   app.put('/api/businesses/:id', verifyFirebaseToken, requireFirebaseBusinessOwner, async (req: any, res) => {
-    console.log('PUT /api/businesses/:id route reached with user:', req.user?.email, req.user?.role);
     try {
       const businessId = parseInt(req.params.id);
       const { categoryIds, ...businessFields } = req.body;
