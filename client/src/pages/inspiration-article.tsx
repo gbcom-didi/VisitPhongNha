@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRoute, Link } from 'wouter';
 import { ArrowLeft, Calendar, User, MapPin } from 'lucide-react';
@@ -120,7 +121,7 @@ export function InspirationArticlePage() {
                     className="w-full h-48 object-cover rounded-lg mb-4"
                   />
                 )}
-                
+
                 <div className="flex items-center text-xs text-gray-500 mb-3">
                   <User className="w-3 h-3 mr-1" />
                   <span className="mr-3">{article.author}</span>
@@ -129,11 +130,11 @@ export function InspirationArticlePage() {
                   <MapPin className="w-3 h-3 mr-1" />
                   <span>Phong Nha, Vietnam</span>
                 </div>
-                
+
                 <h1 className="text-2xl font-bold text-gray-900 mb-3 font-questrial">
                   {article.title}
                 </h1>
-                
+
                 <p className="text-sm text-gray-600 mb-4">
                   {article.summary}
                 </p>
@@ -210,7 +211,7 @@ export function InspirationArticlePage() {
                   className="w-full h-48 object-cover rounded-lg mb-4"
                 />
               )}
-              
+
               <div className="flex items-center text-xs text-gray-500 mb-3">
                 <User className="w-3 h-3 mr-1" />
                 <span className="mr-3">{article.author}</span>
@@ -219,11 +220,11 @@ export function InspirationArticlePage() {
                 <MapPin className="w-3 h-3 mr-1" />
                 <span>Phong Nha, Vietnam</span>
               </div>
-              
+
               <h1 className="text-xl font-bold text-gray-900 mb-3 font-questrial">
                 {article.title}
               </h1>
-              
+
               <p className="text-sm text-gray-600 mb-4">
                 {article.summary}
               </p>

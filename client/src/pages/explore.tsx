@@ -144,7 +144,7 @@ export default function Explore() {
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span className="text-xl font-bold text-gray-900">Visit Phong Nha</span>
+              <span className="text-sm font-bold text-gray-900">Visit Phong Nha</span>
             </div>
             
             <button
