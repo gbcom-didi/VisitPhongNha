@@ -156,7 +156,9 @@ export function requireFirebaseRole(role: string): RequestHandler {
   return async (req, res, next) => {
     try {
       const user = req.user as any;
+      console.log('requireFirebaseRole middleware - user:', user?.email, user?.role, 'required:', role);
       if (!user) {
+        console.log('requireFirebaseRole: No user found in request');
         return res.status(401).json({ message: 'Unauthorized' });
       }
 
