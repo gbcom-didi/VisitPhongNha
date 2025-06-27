@@ -18,6 +18,7 @@ interface MapProps {
 function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hoveredBusiness, center, zoom }: MapProps) {
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
+  const businessMarkersRef = useRef<{ [businessId: number]: google.maps.Marker }>({});
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
   const initializeMap = useCallback(() => {
@@ -57,6 +58,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
     // Clear existing markers
     markersRef.current.forEach(marker => marker.setMap(null));
     markersRef.current = [];
+    businessMarkersRef.current = {};
 
     // Add new markers
     businesses.forEach((business) => {
@@ -99,6 +101,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       });
 
       markersRef.current.push(marker);
+      businessMarkerMap.current.set(business.id, marker);
     });
   }, [businesses, onBusinessClick]);
 
