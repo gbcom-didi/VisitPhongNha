@@ -75,7 +75,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       const marker = new google.maps.Marker({
         position: { lat, lng },
         map: mapRef.current,
-        title: business.name,
+        title: `${business.name}|${categorySlug}`, // Store category for later use
         icon: {
           url: createCustomMarkerIcon(categorySlug, 36),
           scaledSize: new google.maps.Size(36, 36),
@@ -101,7 +101,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       });
 
       markersRef.current.push(marker);
-      businessMarkerMap.current.set(business.id, marker);
+      businessMarkersRef.current[business.id] = marker;
     });
   }, [businesses, onBusinessClick]);
 
@@ -118,65 +118,31 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
     }
   }, [selectedBusiness]);
 
-  // Handle hovered business zoom with smooth animation
+  // Handle hovered business highlighting
   useEffect(() => {
-    if (!hoveredBusiness || !mapRef.current) return;
+    // Reset all markers to normal size first
+    Object.values(businessMarkersRef.current).forEach(marker => {
+      const categorySlug = marker.getTitle()?.split('|')[1] || '';
+      marker.setIcon({
+        url: createCustomMarkerIcon(categorySlug, 36),
+        scaledSize: new google.maps.Size(36, 36),
+        anchor: new google.maps.Point(18, 18),
+      });
+    });
 
-    const lat = parseFloat(hoveredBusiness.latitude);
-    const lng = parseFloat(hoveredBusiness.longitude);
-
-    if (!isNaN(lat) && !isNaN(lng)) {
-      const currentZoom = mapRef.current.getZoom() || 10;
-      const zoomOutLevel = Math.max(9, currentZoom - 2); // Less dramatic zoom out
-      const targetZoom = 16; // Final zoom level
+    // Highlight the hovered business marker
+    if (hoveredBusiness && businessMarkersRef.current[hoveredBusiness.id]) {
+      const hoveredMarker = businessMarkersRef.current[hoveredBusiness.id];
+      const categorySlug = hoveredBusiness.category?.slug || '';
       
-      // Phase 1: Zoom out smoothly and quickly
-      let zoomOutStep = 0;
-      const zoomOutSteps = 5; // Fewer steps for faster animation
-      const zoomOutDifference = zoomOutLevel - currentZoom;
-      const zoomOutStepSize = zoomOutDifference / zoomOutSteps;
+      hoveredMarker.setIcon({
+        url: createCustomMarkerIcon(categorySlug, 48), // Larger size for highlight
+        scaledSize: new google.maps.Size(48, 48),
+        anchor: new google.maps.Point(24, 24),
+      });
       
-      const zoomOutAnimation = () => {
-        if (zoomOutStep < zoomOutSteps && mapRef.current) {
-          const newZoom = currentZoom + (zoomOutStepSize * zoomOutStep);
-          mapRef.current.setZoom(newZoom);
-          zoomOutStep++;
-          setTimeout(zoomOutAnimation, 25); // Faster timing
-        } else if (mapRef.current) {
-          // Set exact zoom out level and pan to new location
-          mapRef.current.setZoom(zoomOutLevel);
-          
-          // Minimal pause at zoom out level before panning
-          setTimeout(() => {
-            if (mapRef.current) {
-              mapRef.current.panTo({ lat, lng });
-              
-              // Phase 2: Zoom in to target location more smoothly
-              setTimeout(() => {
-                let zoomInStep = 0;
-                const zoomInSteps = 8; // More steps for smoother zoom in
-                const zoomInDifference = targetZoom - zoomOutLevel;
-                const zoomInStepSize = zoomInDifference / zoomInSteps;
-                
-                const zoomInAnimation = () => {
-                  if (zoomInStep < zoomInSteps && mapRef.current) {
-                    const newZoom = zoomOutLevel + (zoomInStepSize * zoomInStep);
-                    mapRef.current.setZoom(newZoom);
-                    zoomInStep++;
-                    setTimeout(zoomInAnimation, 40); // Slower for smoothness
-                  } else if (mapRef.current) {
-                    mapRef.current.setZoom(targetZoom);
-                  }
-                };
-                
-                zoomInAnimation();
-              }, 100); // Short pause before zoom in
-            }
-          }, 50); // Very short pause at zoom out level
-        }
-      };
-      
-      zoomOutAnimation();
+      // Bring to front
+      hoveredMarker.setZIndex(1000);
     }
   }, [hoveredBusiness]);
 
