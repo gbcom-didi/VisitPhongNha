@@ -291,7 +291,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                         <Star 
                           key={i} 
                           className={`w-3 h-3 ${
-                            i < Math.floor(business.rating || 0) 
+                            i < Math.floor(parseFloat(business.rating || '0')) 
                               ? 'fill-yellow-400 text-yellow-400' 
                               : 'fill-gray-200 text-gray-200'
                           }`} 

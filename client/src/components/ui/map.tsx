@@ -218,7 +218,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
 }
 
 // Render function for Google Maps wrapper
-const render = (status: Status) => {
+const render = (status: Status): React.ReactElement => {
   switch (status) {
     case Status.LOADING:
       return (
@@ -239,7 +239,11 @@ const render = (status: Status) => {
         </div>
       );
     default:
-      return null;
+      return (
+        <div className="h-full w-full flex items-center justify-center bg-gray-100">
+          <p className="text-sm text-gray-600">Initializing map...</p>
+        </div>
+      );
   }
 };
 
