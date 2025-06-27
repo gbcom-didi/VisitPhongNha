@@ -120,29 +120,43 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
 
   // Handle hovered business highlighting
   useEffect(() => {
-    // Reset all markers to normal size first
+    // Reset all markers to normal size and color first
     Object.values(businessMarkersRef.current).forEach(marker => {
       const categorySlug = marker.getTitle()?.split('|')[1] || '';
       marker.setIcon({
-        url: createCustomMarkerIcon(categorySlug, 36),
+        url: createCustomMarkerIcon(categorySlug, 36, false),
         scaledSize: new google.maps.Size(36, 36),
         anchor: new google.maps.Point(18, 18),
       });
+      marker.setZIndex(1);
     });
 
-    // Highlight the hovered business marker
-    if (hoveredBusiness && businessMarkersRef.current[hoveredBusiness.id]) {
+    // Highlight the hovered business marker and zoom to it
+    if (hoveredBusiness && businessMarkersRef.current[hoveredBusiness.id] && mapRef.current) {
       const hoveredMarker = businessMarkersRef.current[hoveredBusiness.id];
       const categorySlug = hoveredBusiness.category?.slug || '';
       
+      // Create black highlighted marker
       hoveredMarker.setIcon({
-        url: createCustomMarkerIcon(categorySlug, 48), // Larger size for highlight
+        url: createCustomMarkerIcon(categorySlug, 48, true), // Black highlighted marker
         scaledSize: new google.maps.Size(48, 48),
         anchor: new google.maps.Point(24, 24),
       });
       
       // Bring to front
       hoveredMarker.setZIndex(1000);
+      
+      // Zoom to show the hovered business
+      const lat = parseFloat(hoveredBusiness.latitude);
+      const lng = parseFloat(hoveredBusiness.longitude);
+      
+      if (!isNaN(lat) && !isNaN(lng)) {
+        mapRef.current.panTo({ lat, lng });
+        const currentZoom = mapRef.current.getZoom() || 10;
+        if (currentZoom < 14) {
+          mapRef.current.setZoom(14);
+        }
+      }
     }
   }, [hoveredBusiness]);
 
