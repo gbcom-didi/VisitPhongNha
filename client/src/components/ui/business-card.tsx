@@ -148,7 +148,7 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
           <div className="flex items-center mb-2">
             <div className="flex items-center">
               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-              <span className="text-sm font-medium text-gray-900">{business.rating}</span>
+              <span className="text-sm font-medium text-gray-900">{parseFloat(business.rating || '0').toFixed(1)}</span>
             </div>
             {business.reviewCount && business.reviewCount > 0 && (
               <span className="text-xs text-gray-500 ml-1">({business.reviewCount} reviews)</span>

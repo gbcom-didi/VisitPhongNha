@@ -191,7 +191,7 @@ export function Favorites() {
                       <div className="flex items-center gap-2">
                         <div className="flex items-center gap-1">
                           <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                          <span className="text-sm font-medium text-gray-900">{business.rating}</span>
+                          <span className="text-sm font-medium text-gray-900">{parseFloat(business.rating || '0').toFixed(1)}</span>
                         </div>
                         {business.reviewCount && (
                           <span className="text-sm text-gray-500">({business.reviewCount} reviews)</span>

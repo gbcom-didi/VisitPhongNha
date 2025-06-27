@@ -284,7 +284,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                 <div className="flex items-center gap-4">
                   <div className="flex flex-col items-center">
                     <div className="text-3xl font-bold text-gray-900">
-                      {business.rating || 'N/A'}
+                      {business.rating ? parseFloat(business.rating).toFixed(1) : 'N/A'}
                     </div>
                     <div className="flex items-center">
                       {[...Array(5)].map((_, i) => (
