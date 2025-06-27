@@ -221,6 +221,20 @@ Changelog:
   - Improved article content CSS with proper headings, paragraphs, lists, and code styling
   - Implemented responsive mobile layout with always-visible map below article content
   - Mobile shows complete article first followed by interactive map for optimal reading flow
+- June 26, 2025. Improved mobile navigation and explore page UX
+  - Made "Visit Phong Nha" text smaller on mobile screens while maintaining mango-yellow color
+  - Removed "Saved" section from bottom of mobile explore page for cleaner interface
+  - Added "Saved Places" option to hamburger menu for logged-in users
+  - Reduced padding and height of mobile navigation bar for more screen space
+  - Made logo and brand text clickable to link to homepage
+  - Removed Featured button and grey +1 tag bubble from inspiration page
+  - Removed blue outline highlight from featured article cards for cleaner design
+- June 26, 2025. Implemented interactive map hover highlighting
+  - Added visual highlighting for map markers when hovering over business cards
+  - Map markers turn black and increase in size (36px to 48px) when corresponding business card is hovered
+  - Map automatically pans and zooms to show hovered business location
+  - All markers reset to normal color and size when hover ends
+  - Enhanced user experience with smooth pan and zoom animations
 ```
 
 ## User Preferences

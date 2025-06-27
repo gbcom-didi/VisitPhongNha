@@ -1,0 +1,16 @@
+[vite] connecting...
+[vite] connected.
+As of February 21st, 2024, google.maps.Marker is deprecated. Please use google.maps.marker.AdvancedMarkerElement instead. At this time, google.maps.Marker is not scheduled to be discontinued, but google.maps.marker.AdvancedMarkerElement is recommended over google.maps.Marker. While google.maps.Marker will continue to receive bug fixes for any major regressions, existing bugs in google.maps.Marker will not be addressed. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/deprecations for additional details and https://developers.google.com/maps/documentation/javascript/advanced-markers/migration for the migration guide.
+Warning: Internal React error: Expected static flag was missing. Please notify the React team.
+    at BusinessModal (https://f7774c58-197b-47b8-9abd-13715868efaf-00-5jqs3ecw0tlj.sisko.replit.dev/src/components/business-modal.tsx:34:33)
+    at div
+    at Explore (https://f7774c58-197b-47b8-9abd-13715868efaf-00-5jqs3ecw0tlj.sisko.replit.dev/src/pages/explore.tsx:32:31)
+    at Route (https://f7774c58-197b-47b8-9abd-13715868efaf-00-5jqs3ecw0tlj.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=c90e5f46:323:16)
+    at Switch (https://f7774c58-197b-47b8-9abd-13715868efaf-00-5jqs3ecw0tlj.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=c90e5f46:379:17)
+    at Router (https://f7774c58-197b-47b8-9abd-13715868efaf-00-5jqs3ecw0tlj.sisko.replit.dev/src/App.tsx?v=EjqQZ2wzdA52sAphK-LOW:38:40)
+    at Provider (https://f7774c58-197b-47b8-9abd-13715868efaf-00-5jqs3ecw0tlj.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-KQC75CTR.js?v=c90e5f46:38:15)
+    at TooltipProvider (https://f7774c58-197b-47b8-9abd-13715868efaf-00-5jqs3ecw0tlj.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=c90e5f46:59:5)
+    at AuthProvider (https://f7774c58-197b-47b8-9abd-13715868efaf-00-5jqs3ecw0tlj.sisko.replit.dev/src/contexts/AuthContext.tsx:40:32)
+    at QueryClientProvider (https://f7774c58-197b-47b8-9abd-13715868efaf-00-5jqs3ecw0tlj.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=c90e5f46:2805:3)
+    at App
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.

@@ -1,7 +1,7 @@
 import { X, MapPin, Phone, Clock, Globe, Heart, ExternalLink, Star, User, Images, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
@@ -140,6 +140,9 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white border border-tropical-aqua-200">
         <DialogHeader>
           <DialogTitle className="sr-only">Business Details</DialogTitle>
+          <DialogDescription className="sr-only">
+            Information about {business.name} including location, contact details, and booking options.
+          </DialogDescription>
         </DialogHeader>
 
         {/* Business Image Gallery */}
@@ -281,14 +284,14 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                 <div className="flex items-center gap-4">
                   <div className="flex flex-col items-center">
                     <div className="text-3xl font-bold text-gray-900">
-                      {business.rating}
+                      {business.rating || 'N/A'}
                     </div>
                     <div className="flex items-center">
                       {[...Array(5)].map((_, i) => (
                         <Star 
                           key={i} 
                           className={`w-3 h-3 ${
-                            i < Math.floor(business.rating) 
+                            i < Math.floor(business.rating || 0) 
                               ? 'fill-yellow-400 text-yellow-400' 
                               : 'fill-gray-200 text-gray-200'
                           }`} 
