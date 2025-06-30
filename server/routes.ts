@@ -832,7 +832,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin-only routes for moderation
-  app.get('/api/admin/guestbook/pending', requireFirebaseAdmin, async (req, res) => {
+  app.get('/api/admin/guestbook/pending', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
     try {
       const pendingEntries = await storage.getPendingGuestbookEntries();
       res.json(pendingEntries);
@@ -842,7 +842,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/admin/guestbook/spam', requireFirebaseAdmin, async (req, res) => {
+  app.get('/api/admin/guestbook/spam', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
     try {
       const spamEntries = await storage.getSpamGuestbookEntries();
       res.json(spamEntries);
@@ -852,7 +852,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/admin/guestbook/:id/moderate', requireFirebaseAdmin, async (req, res) => {
+  app.post('/api/admin/guestbook/:id/moderate', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
     try {
       const { status, notes } = req.body;
       const entryId = parseInt(req.params.id);
@@ -870,7 +870,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/admin/guestbook/comments/:id/moderate', requireFirebaseAdmin, async (req, res) => {
+  app.post('/api/admin/guestbook/comments/:id/moderate', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
     try {
       const { status } = req.body;
       const commentId = parseInt(req.params.id);
