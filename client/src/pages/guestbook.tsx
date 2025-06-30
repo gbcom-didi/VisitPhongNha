@@ -744,8 +744,18 @@ export function Guestbook() {
                     <div className="mb-4">
                       <Badge 
                         variant="secondary" 
-                        className="bg-yellow-100 text-yellow-800 border-yellow-200 cursor-pointer hover:bg-yellow-200 transition-colors px-3 py-1.5 text-sm font-medium"
-                        style={{ backgroundColor: '#FEF3C7', color: '#92400e', borderColor: '#FDE68A' }}
+                        className="cursor-pointer transition-all duration-200 px-3 py-1.5 text-sm font-medium hover:shadow-md hover:scale-105"
+                        style={{ 
+                          backgroundColor: '#F4B942', 
+                          color: 'white', 
+                          borderColor: '#F4B942'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#E6A435';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = '#F4B942';
+                        }}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleBusinessClick(entry.relatedPlace!.id);
@@ -833,8 +843,18 @@ export function Guestbook() {
                   <div>
                     <Badge 
                       variant="secondary" 
-                      className="bg-yellow-100 text-yellow-800 border-yellow-200 cursor-pointer hover:bg-yellow-200 transition-colors px-3 py-1.5 text-sm font-medium"
-                      style={{ backgroundColor: '#FEF3C7', color: '#92400e', borderColor: '#FDE68A' }}
+                      className="cursor-pointer transition-all duration-200 px-3 py-1.5 text-sm font-medium hover:shadow-md hover:scale-105"
+                      style={{ 
+                        backgroundColor: '#F4B942', 
+                        color: 'white', 
+                        borderColor: '#F4B942'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#E6A435';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#F4B942';
+                      }}
                       onClick={() => handleBusinessClick(selectedEntry.relatedPlace!.id)}
                     >
                       <MapPin className="w-3 h-3 mr-1" />
