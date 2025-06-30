@@ -10,10 +10,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Navigation } from '@/components/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { Heart, MessageCircle, Star, MapPin, Globe, Calendar, Flag, User } from 'lucide-react';
+import { Heart, MessageCircle, Star, MapPin, Globe, Calendar, Flag, User, ChevronDown, ChevronUp } from 'lucide-react';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { BusinessWithCategory, GuestbookEntryWithRelations } from '@shared/schema';
 import { formatDistanceToNow } from 'date-fns';
@@ -43,6 +44,7 @@ export function Guestbook() {
   const { toast } = useToast();
   const [showForm, setShowForm] = useState(false);
   const [commentingOn, setCommentingOn] = useState<number | null>(null);
+  const [expandedComments, setExpandedComments] = useState<Set<number>>(new Set());
 
   // Fetch guestbook entries
   const { data: entries = [], isLoading } = useQuery<GuestbookEntryWithRelations[]>({
@@ -198,6 +200,16 @@ export function Guestbook() {
     likeCommentMutation.mutate(commentId);
   };
 
+  const toggleComments = (entryId: number) => {
+    const newExpanded = new Set(expandedComments);
+    if (newExpanded.has(entryId)) {
+      newExpanded.delete(entryId);
+    } else {
+      newExpanded.add(entryId);
+    }
+    setExpandedComments(newExpanded);
+  };
+
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
@@ -228,7 +240,7 @@ export function Guestbook() {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
@@ -245,7 +257,7 @@ export function Guestbook() {
           <div className="mb-8 text-center">
             <Button
               onClick={() => setShowForm(!showForm)}
-              className="bg-tropical-aqua text-white hover:bg-tropical-aqua/90"
+              className="bg-mango-yellow text-black hover:bg-mango-yellow/90 shadow-lg"
               size="lg"
             >
               {showForm ? 'Cancel' : 'Add Your Experience'}
@@ -255,12 +267,12 @@ export function Guestbook() {
 
         {!isAuthenticated && (
           <div className="mb-8 text-center">
-            <Card className="bg-tropical-aqua/10 border-tropical-aqua/20">
+            <Card className="bg-mango-yellow/10 border-mango-yellow/20">
               <CardContent className="pt-6">
                 <p className="text-gray-700 mb-4">
                   Sign in to share your travel experiences and connect with other travelers!
                 </p>
-                <Button className="bg-tropical-aqua text-white hover:bg-tropical-aqua/90">
+                <Button className="bg-mango-yellow text-black hover:bg-mango-yellow/90">
                   Sign In to Continue
                 </Button>
               </CardContent>
@@ -270,9 +282,9 @@ export function Guestbook() {
 
         {/* Entry Form */}
         {showForm && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle>Share Your Experience</CardTitle>
+          <Card className="mb-8 border-mango-yellow/20 shadow-lg">
+            <CardHeader className="bg-mango-yellow/10">
+              <CardTitle className="text-gray-900">Share Your Experience</CardTitle>
             </CardHeader>
             <CardContent>
               <Form {...entryForm}>
@@ -286,7 +298,7 @@ export function Guestbook() {
                         <FormControl>
                           <Textarea
                             placeholder="Share your experience, thoughts, or recommendations about Phong Nha..."
-                            className="min-h-[120px]"
+                            className="min-h-[120px] focus:ring-mango-yellow focus:border-mango-yellow"
                             {...field}
                           />
                         </FormControl>
@@ -387,7 +399,7 @@ export function Guestbook() {
                     <Button
                       type="submit"
                       disabled={createEntryMutation.isPending}
-                      className="bg-tropical-aqua text-white hover:bg-tropical-aqua/90"
+                      className="bg-mango-yellow text-black hover:bg-mango-yellow/90 shadow-lg"
                     >
                       {createEntryMutation.isPending ? 'Sharing...' : 'Share Experience'}
                     </Button>
@@ -406,19 +418,21 @@ export function Guestbook() {
         )}
 
         {/* Guestbook Entries */}
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {entries.length === 0 ? (
-            <Card>
-              <CardContent className="text-center py-12">
-                <MessageCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  No entries yet
-                </h3>
-                <p className="text-gray-600">
-                  Be the first to share your experience in Phong Nha!
-                </p>
-              </CardContent>
-            </Card>
+            <div className="lg:col-span-2">
+              <Card>
+                <CardContent className="text-center py-12">
+                  <MessageCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    No entries yet
+                  </h3>
+                  <p className="text-gray-600">
+                    Be the first to share your experience in Phong Nha!
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           ) : (
             entries.map((entry) => (
               <Card key={entry.id} className="overflow-hidden">
