@@ -831,6 +831,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin-only routes for moderation
+  app.get('/api/admin/guestbook/pending', requireFirebaseAdmin, async (req, res) => {
+    try {
+      const pendingEntries = await storage.getPendingGuestbookEntries();
+      res.json(pendingEntries);
+    } catch (error) {
+      console.error("Error fetching pending entries:", error);
+      res.status(500).json({ message: "Failed to fetch pending entries" });
+    }
+  });
+
+  app.get('/api/admin/guestbook/spam', requireFirebaseAdmin, async (req, res) => {
+    try {
+      const spamEntries = await storage.getSpamGuestbookEntries();
+      res.json(spamEntries);
+    } catch (error) {
+      console.error("Error fetching spam entries:", error);
+      res.status(500).json({ message: "Failed to fetch spam entries" });
+    }
+  });
+
+  app.post('/api/admin/guestbook/:id/moderate', requireFirebaseAdmin, async (req, res) => {
+    try {
+      const { status, notes } = req.body;
+      const entryId = parseInt(req.params.id);
+      const user = req.user as any;
+      
+      if (!['approved', 'rejected', 'spam'].includes(status)) {
+        return res.status(400).json({ message: "Invalid status" });
+      }
+
+      await storage.moderateGuestbookEntry(entryId, status, user.uid, notes);
+      res.json({ message: "Entry moderated successfully" });
+    } catch (error) {
+      console.error("Error moderating entry:", error);
+      res.status(500).json({ message: "Failed to moderate entry" });
+    }
+  });
+
+  app.post('/api/admin/guestbook/comments/:id/moderate', requireFirebaseAdmin, async (req, res) => {
+    try {
+      const { status } = req.body;
+      const commentId = parseInt(req.params.id);
+      const user = req.user as any;
+      
+      if (!['approved', 'rejected', 'spam'].includes(status)) {
+        return res.status(400).json({ message: "Invalid status" });
+      }
+
+      await storage.moderateGuestbookComment(commentId, status, user.uid);
+      res.json({ message: "Comment moderated successfully" });
+    } catch (error) {
+      console.error("Error moderating comment:", error);
+      res.status(500).json({ message: "Failed to moderate comment" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

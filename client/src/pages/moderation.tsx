@@ -47,13 +47,13 @@ export function ModerationPage() {
   }
 
   // Fetch pending entries
-  const { data: pendingEntries = [], isLoading: pendingLoading } = useQuery({
+  const { data: pendingEntries = [], isLoading: pendingLoading } = useQuery<PendingEntry[]>({
     queryKey: ['/api/admin/guestbook/pending'],
     enabled: canAccessAdmin(),
   });
 
   // Fetch spam entries
-  const { data: spamEntries = [], isLoading: spamLoading } = useQuery({
+  const { data: spamEntries = [], isLoading: spamLoading } = useQuery<PendingEntry[]>({
     queryKey: ['/api/admin/guestbook/spam'],
     enabled: canAccessAdmin(),
   });
@@ -61,13 +61,7 @@ export function ModerationPage() {
   // Moderation mutation
   const moderateMutation = useMutation({
     mutationFn: async ({ entryId, status, notes }: { entryId: number; status: string; notes?: string }) => {
-      return apiRequest(`/api/admin/guestbook/${entryId}/moderate`, {
-        method: 'POST',
-        body: JSON.stringify({ status, notes }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      return apiRequest('POST', `/api/admin/guestbook/${entryId}/moderate`, { status, notes });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/guestbook/pending'] });

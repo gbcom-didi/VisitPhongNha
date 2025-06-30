@@ -707,10 +707,7 @@ export class DatabaseStorage implements IStorage {
     return await db
       .select()
       .from(guestbookEntries)
-      .where(or(
-        eq(guestbookEntries.status, 'spam'),
-        eq(guestbookEntries.isSpam, true)
-      ))
+      .where(eq(guestbookEntries.isSpam, true))
       .orderBy(desc(guestbookEntries.createdAt));
   }
 
