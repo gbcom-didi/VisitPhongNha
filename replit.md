@@ -241,6 +241,18 @@ Changelog:
   - Updated Map component render function to always return ReactElement instead of null
   - Applied consistent rating number formatting (toFixed(1)) across business cards, modals, and favorites page
   - Resolved all React warnings and TypeScript compilation errors for cleaner console output
+- June 30, 2025. Implemented comprehensive guestbook system
+  - Created complete guestbook database schema with entries, comments, and likes functionality
+  - Added guestbook_entries table with author info, messages, nationality, location data, and business references
+  - Added guestbook_comments table for threaded discussions under entries
+  - Added guestbook_entry_likes and guestbook_comment_likes tables for user engagement
+  - Built complete REST API backend with Firebase authentication integration
+  - Created responsive frontend guestbook page with forms, comments, and like functionality
+  - Added guestbook navigation links to both main navigation and sidebar with BookOpen icon
+  - Integrated business listing references allowing travelers to tag experiences to specific places
+  - Implemented optimistic updates for instant like feedback and comprehensive error handling
+  - Added location support for both text descriptions and Google Maps URLs
+  - Restored sample business and article data after database schema updates
 ```
 
 ## User Preferences
