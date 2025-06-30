@@ -183,6 +183,14 @@ export default function Explore() {
                     Inspiration
                   </button>
                 </Link>
+                <Link href="/guestbook">
+                  <button 
+                    className="w-full text-left py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-md transition-colors font-medium"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    Guestbook
+                  </button>
+                </Link>
                 <Link href="/getting-here">
                   <button 
                     className="w-full text-left py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-md transition-colors font-medium"
