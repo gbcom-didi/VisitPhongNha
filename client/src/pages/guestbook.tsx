@@ -5,16 +5,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Navigation } from '@/components/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { Heart, MessageCircle, Star, MapPin, Globe, Calendar, Flag, User, ChevronDown, ChevronUp } from 'lucide-react';
+import { Heart, MessageCircle, Star, MapPin, Globe, Calendar, Flag, User, X } from 'lucide-react';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { BusinessWithCategory, GuestbookEntryWithRelations } from '@shared/schema';
 import { formatDistanceToNow } from 'date-fns';
@@ -44,7 +44,7 @@ export function Guestbook() {
   const { toast } = useToast();
   const [showForm, setShowForm] = useState(false);
   const [commentingOn, setCommentingOn] = useState<number | null>(null);
-  const [expandedComments, setExpandedComments] = useState<Set<number>>(new Set());
+  const [selectedEntry, setSelectedEntry] = useState<GuestbookEntryWithRelations | null>(null);
 
   // Fetch guestbook entries
   const { data: entries = [], isLoading } = useQuery<GuestbookEntryWithRelations[]>({
@@ -200,15 +200,7 @@ export function Guestbook() {
     likeCommentMutation.mutate(commentId);
   };
 
-  const toggleComments = (entryId: number) => {
-    const newExpanded = new Set(expandedComments);
-    if (newExpanded.has(entryId)) {
-      newExpanded.delete(entryId);
-    } else {
-      newExpanded.add(entryId);
-    }
-    setExpandedComments(newExpanded);
-  };
+
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -435,7 +427,11 @@ export function Guestbook() {
             </div>
           ) : (
             entries.map((entry) => (
-              <Card key={entry.id} className="overflow-hidden hover:shadow-lg transition-shadow border-l-4 border-l-mango-yellow">
+              <Card 
+                key={entry.id} 
+                className="overflow-hidden hover:shadow-lg transition-shadow border-l-4 border-l-mango-yellow cursor-pointer h-fit"
+                onClick={() => setSelectedEntry(entry)}
+              >
                 <CardContent className="p-6">
                   {/* Entry Header */}
                   <div className="flex items-start justify-between mb-4">
@@ -468,9 +464,11 @@ export function Guestbook() {
                     )}
                   </div>
 
-                  {/* Entry Content */}
+                  {/* Entry Content Preview */}
                   <div className="mb-4">
-                    <p className="text-gray-800 leading-relaxed">{entry.message}</p>
+                    <p className="text-gray-800 leading-relaxed line-clamp-3">
+                      {entry.message}
+                    </p>
                   </div>
 
                   {/* Related Place */}
@@ -483,160 +481,210 @@ export function Guestbook() {
                     </div>
                   )}
 
-                  {/* Location */}
-                  {entry.location && (
-                    <div className="mb-4">
-                      <div className="flex items-center text-sm text-gray-600">
-                        <Globe className="w-4 h-4 mr-1" />
-                        {entry.location.startsWith('http') ? (
-                          <a
-                            href={entry.location}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-mango-yellow hover:underline font-medium"
-                          >
-                            View on Google Maps
-                          </a>
-                        ) : (
-                          entry.location
-                        )}
-                      </div>
-                    </div>
-                  )}
-
                   {/* Entry Actions */}
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                     <div className="flex items-center space-x-4">
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleLikeEntry(entry.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLikeEntry(entry.id);
+                        }}
                         className="text-gray-600 hover:text-red-500"
                       >
                         <Heart className={`w-4 h-4 mr-1 ${entry.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
                         {entry.likes || 0}
                       </Button>
                       
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setCommentingOn(commentingOn === entry.id ? null : entry.id)}
-                        className="text-gray-600 hover:text-mango-yellow"
-                      >
+                      <div className="flex items-center text-gray-600">
                         <MessageCircle className="w-4 h-4 mr-1" />
                         {entry.commentCount || 0}
-                      </Button>
-
-                      {/* Comments Toggle */}
-                      {entry.comments && entry.comments.length > 0 && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => toggleComments(entry.id)}
-                          className="text-gray-600 hover:text-mango-yellow"
-                        >
-                          {expandedComments.has(entry.id) ? (
-                            <>
-                              <ChevronUp className="w-4 h-4 mr-1" />
-                              Hide Comments
-                            </>
-                          ) : (
-                            <>
-                              <ChevronDown className="w-4 h-4 mr-1" />
-                              Show Comments
-                            </>
-                          )}
-                        </Button>
-                      )}
+                      </div>
                     </div>
                   </div>
-
-                  {/* Comment Form */}
-                  {commentingOn === entry.id && isAuthenticated && (
-                    <div className="mt-4 pt-4 border-t border-gray-100">
-                      <Form {...commentForm}>
-                        <form onSubmit={commentForm.handleSubmit(onSubmitComment)} className="space-y-4">
-                          <FormField
-                            control={commentForm.control}
-                            name="comment"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormControl>
-                                  <Textarea
-                                    placeholder="Add a comment..."
-                                    className="min-h-[80px] focus:ring-mango-yellow focus:border-mango-yellow"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <div className="flex gap-2">
-                            <Button
-                              type="submit"
-                              size="sm"
-                              disabled={createCommentMutation.isPending}
-                              className="bg-mango-yellow text-black hover:bg-mango-yellow/90"
-                            >
-                              {createCommentMutation.isPending ? 'Adding...' : 'Add Comment'}
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setCommentingOn(null)}
-                            >
-                              Cancel
-                            </Button>
-                          </div>
-                        </form>
-                      </Form>
-                    </div>
-                  )}
-
-                  {/* Comments */}
-                  {entry.comments && entry.comments.length > 0 && (
-                    <Collapsible open={expandedComments.has(entry.id)} onOpenChange={() => toggleComments(entry.id)}>
-                      <CollapsibleContent>
-                        <div className="mt-4 pt-4 border-t border-gray-100 space-y-3">
-                          {entry.comments.map((comment) => (
-                            <div key={comment.id} className="bg-mango-yellow/5 rounded-lg p-3 border border-mango-yellow/10">
-                              <div className="flex items-start justify-between mb-2">
-                                <div className="flex items-center space-x-2">
-                                  <div className="w-6 h-6 bg-mango-yellow rounded-full flex items-center justify-center">
-                                    <User className="w-3 h-3 text-black" />
-                                  </div>
-                                  <span className="text-sm font-medium text-gray-900">
-                                    {comment.authorName}
-                                  </span>
-                                  <span className="text-xs text-gray-500">
-                                    {comment.createdAt ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true }) : 'Recently'}
-                                  </span>
-                                </div>
-                                
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleLikeComment(comment.id)}
-                                  className="text-gray-600 hover:text-red-500 h-6 px-2"
-                                >
-                                  <Heart className={`w-3 h-3 mr-1 ${comment.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-                                  {comment.likes || 0}
-                                </Button>
-                              </div>
-                              <p className="text-sm text-gray-700">{comment.comment}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  )}
                 </CardContent>
               </Card>
             ))
           )}
         </div>
+
+        {/* Modal for Full Entry View */}
+        {selectedEntry && (
+          <Dialog open={!!selectedEntry} onOpenChange={() => setSelectedEntry(null)}>
+            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-mango-yellow rounded-full flex items-center justify-center">
+                    <User className="w-5 h-5 text-black" />
+                  </div>
+                  <div>
+                    <span className="font-semibold text-gray-900">{selectedEntry.authorName}</span>
+                    {selectedEntry.rating && (
+                      <div className="flex items-center space-x-1 mt-1">
+                        {renderStars(selectedEntry.rating)}
+                      </div>
+                    )}
+                  </div>
+                </DialogTitle>
+              </DialogHeader>
+
+              <div className="space-y-6">
+                {/* Entry Metadata */}
+                <div className="flex items-center space-x-4 text-sm text-gray-500">
+                  <div className="flex items-center">
+                    <Calendar className="w-4 h-4 mr-1" />
+                    {selectedEntry.createdAt ? formatDistanceToNow(new Date(selectedEntry.createdAt), { addSuffix: true }) : 'Recently'}
+                  </div>
+                  {selectedEntry.nationality && (
+                    <div className="flex items-center">
+                      <Flag className="w-4 h-4 mr-1" />
+                      {selectedEntry.nationality}
+                    </div>
+                  )}
+                </div>
+
+                {/* Full Message */}
+                <div className="text-gray-800 leading-relaxed">
+                  {selectedEntry.message}
+                </div>
+
+                {/* Related Place */}
+                {selectedEntry.relatedPlace && (
+                  <div>
+                    <Badge variant="secondary" className="bg-mango-yellow/20 text-gray-800 border-mango-yellow/30">
+                      <MapPin className="w-3 h-3 mr-1" />
+                      {selectedEntry.relatedPlace.name}
+                    </Badge>
+                  </div>
+                )}
+
+                {/* Location */}
+                {selectedEntry.location && (
+                  <div>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Globe className="w-4 h-4 mr-1" />
+                      {selectedEntry.location.startsWith('http') ? (
+                        <a
+                          href={selectedEntry.location}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-mango-yellow hover:underline font-medium"
+                        >
+                          View on Google Maps
+                        </a>
+                      ) : (
+                        selectedEntry.location
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Entry Actions */}
+                <div className="flex items-center space-x-4 pt-4 border-t border-gray-100">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleLikeEntry(selectedEntry.id)}
+                    className="text-gray-600 hover:text-red-500"
+                  >
+                    <Heart className={`w-4 h-4 mr-1 ${selectedEntry.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                    {selectedEntry.likes || 0}
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setCommentingOn(commentingOn === selectedEntry.id ? null : selectedEntry.id)}
+                    className="text-gray-600 hover:text-mango-yellow"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-1" />
+                    {selectedEntry.commentCount || 0}
+                  </Button>
+                </div>
+
+                {/* Comment Form */}
+                {commentingOn === selectedEntry.id && isAuthenticated && (
+                  <div className="pt-4 border-t border-gray-100">
+                    <Form {...commentForm}>
+                      <form onSubmit={commentForm.handleSubmit(onSubmitComment)} className="space-y-4">
+                        <FormField
+                          control={commentForm.control}
+                          name="comment"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Textarea
+                                  placeholder="Add a comment..."
+                                  className="min-h-[80px] focus:ring-mango-yellow focus:border-mango-yellow"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <div className="flex gap-2">
+                          <Button
+                            type="submit"
+                            size="sm"
+                            disabled={createCommentMutation.isPending}
+                            className="bg-mango-yellow text-black hover:bg-mango-yellow/90"
+                          >
+                            {createCommentMutation.isPending ? 'Adding...' : 'Add Comment'}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCommentingOn(null)}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </form>
+                    </Form>
+                  </div>
+                )}
+
+                {/* Comments */}
+                {selectedEntry.comments && selectedEntry.comments.length > 0 && (
+                  <div className="pt-4 border-t border-gray-100 space-y-3">
+                    <h4 className="font-medium text-gray-900">Comments ({selectedEntry.comments.length})</h4>
+                    {selectedEntry.comments.map((comment) => (
+                      <div key={comment.id} className="bg-mango-yellow/5 rounded-lg p-3 border border-mango-yellow/10">
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-6 h-6 bg-mango-yellow rounded-full flex items-center justify-center">
+                              <User className="w-3 h-3 text-black" />
+                            </div>
+                            <span className="text-sm font-medium text-gray-900">
+                              {comment.authorName}
+                            </span>
+                            <span className="text-xs text-gray-500">
+                              {comment.createdAt ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true }) : 'Recently'}
+                            </span>
+                          </div>
+                          
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleLikeComment(comment.id)}
+                            className="text-gray-600 hover:text-red-500 h-6 px-2"
+                          >
+                            <Heart className="w-3 h-3 mr-1" />
+                            {comment.likes || 0}
+                          </Button>
+                        </div>
+                        <p className="text-sm text-gray-700">{comment.comment}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
     </div>
   );
