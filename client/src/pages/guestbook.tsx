@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Navigation } from '@/components/navigation';
 import { BusinessModal } from '@/components/business-modal';
+import { SignInModal } from '@/components/auth/SignInModal';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { MessageCircle, Star, MapPin, Globe, Calendar, Flag, User, Reply } from 'lucide-react';
@@ -201,6 +202,7 @@ export function Guestbook() {
   const [selectedEntry, setSelectedEntry] = useState<GuestbookEntryWithRelations | null>(null);
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);
+  const [showSignInModal, setShowSignInModal] = useState(false);
 
   // Fetch guestbook entries
   const { data: entries = [], isLoading } = useQuery<GuestbookEntryWithRelations[]>({
@@ -407,7 +409,10 @@ export function Guestbook() {
                 <p className="text-gray-700 mb-4">
                   Sign in to share your travel experiences and connect with other travelers!
                 </p>
-                <Button className="bg-mango-yellow text-black hover:bg-mango-yellow/90">
+                <Button 
+                  className="bg-mango-yellow text-black hover:bg-mango-yellow/90"
+                  onClick={() => setShowSignInModal(true)}
+                >
                   Sign In to Continue
                 </Button>
               </CardContent>
@@ -873,6 +878,12 @@ export function Guestbook() {
             onClose={() => setSelectedBusiness(null)}
           />
         )}
+
+        {/* Sign In Modal */}
+        <SignInModal
+          isOpen={showSignInModal}
+          onClose={() => setShowSignInModal(false)}
+        />
       </div>
     </div>
   );
