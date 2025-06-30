@@ -6,10 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
-import { Shield, MessageSquare, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { Shield, MessageSquare, AlertTriangle, CheckCircle, XCircle, Edit3 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 interface PendingEntry {
@@ -27,6 +31,14 @@ export function ModerationPage() {
   const { currentUser, canAccessAdmin } = useAuth();
   const { toast } = useToast();
   const [moderationNotes, setModerationNotes] = useState<{ [key: number]: string }>({});
+  const [editingEntry, setEditingEntry] = useState<PendingEntry | null>(null);
+  const [editForm, setEditForm] = useState({
+    message: '',
+    nationality: '',
+    location: '',
+    relatedPlaceId: '',
+    rating: ''
+  });
 
   // Redirect non-admin users
   if (!canAccessAdmin()) {
@@ -58,6 +70,28 @@ export function ModerationPage() {
     enabled: canAccessAdmin(),
   });
 
+  // Fetch businesses for the edit dialog
+  const { data: businesses = [] } = useQuery<any[]>({
+    queryKey: ['/api/businesses'],
+  });
+
+  // Edit entry mutation
+  const editMutation = useMutation({
+    mutationFn: async ({ entryId, updates }: { entryId: number; updates: any }) => {
+      return apiRequest('PUT', `/api/admin/guestbook/${entryId}`, updates);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/guestbook/pending'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/guestbook/spam'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
+      setEditingEntry(null);
+      toast({ title: "Entry updated successfully" });
+    },
+    onError: () => {
+      toast({ title: "Failed to update entry", variant: "destructive" });
+    },
+  });
+
   // Moderation mutation
   const moderateMutation = useMutation({
     mutationFn: async ({ entryId, status, notes }: { entryId: number; status: string; notes?: string }) => {
@@ -78,6 +112,31 @@ export function ModerationPage() {
     const notes = moderationNotes[entryId] || '';
     moderateMutation.mutate({ entryId, status, notes });
     setModerationNotes(prev => ({ ...prev, [entryId]: '' }));
+  };
+
+  const handleEditEntry = (entry: PendingEntry) => {
+    setEditingEntry(entry);
+    setEditForm({
+      message: entry.message || '',
+      nationality: entry.nationality || '',
+      location: entry.location || '',
+      relatedPlaceId: entry.relatedPlaceId?.toString() || '',
+      rating: entry.rating?.toString() || ''
+    });
+  };
+
+  const handleSaveEdit = () => {
+    if (!editingEntry) return;
+    
+    const updates = {
+      message: editForm.message,
+      nationality: editForm.nationality || null,
+      location: editForm.location || null,
+      relatedPlaceId: editForm.relatedPlaceId ? parseInt(editForm.relatedPlaceId) : null,
+      rating: editForm.rating ? parseInt(editForm.rating) : null
+    };
+
+    editMutation.mutate({ entryId: editingEntry.id, updates });
   };
 
   const EntryCard = ({ entry, showSpamScore = false }: { entry: PendingEntry; showSpamScore?: boolean }) => (
