@@ -87,7 +87,7 @@ function CommentItem({
               <User className="w-3 h-3 text-black" />
             </div>
             <span className="text-sm font-medium text-gray-900">
-              {comment.authorName}
+              {formatPrivateName(comment.authorName)}
             </span>
             <span className="text-xs text-gray-500">
               {comment.createdAt ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true }) : 'Recently'}
