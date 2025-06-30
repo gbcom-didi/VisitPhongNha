@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupFirebaseAuth, verifyFirebaseToken, requireFirebaseAdmin, requireFirebaseBusinessOwner, requireFirebaseViewer, auth } from "./firebaseAuth";
 import { permissions } from "./rbac";
-import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema, insertArticleSchema, businesses as businessesTable, businessCategories, categories, articles, users } from "@shared/schema";
+import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema, insertArticleSchema, insertGuestbookEntrySchema, insertGuestbookCommentSchema, insertGuestbookEntryLikeSchema, insertGuestbookCommentLikeSchema, businesses as businessesTable, businessCategories, categories, articles, users, guestbookEntries, guestbookComments, guestbookEntryLikes, guestbookCommentLikes } from "@shared/schema";
 import { googlePlacesImporter } from "./googlePlacesImporter";
 import { z } from "zod";
 import { db } from "./db";
@@ -620,6 +620,110 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating article:", error);
       res.status(500).json({ message: "Failed to update article" });
+    }
+  });
+
+  // Guestbook routes
+  // Get all guestbook entries with comments and related data
+  app.get('/api/guestbook', async (req, res) => {
+    try {
+      const entries = await storage.getGuestbookEntries();
+      res.json(entries);
+    } catch (error) {
+      console.error("Error fetching guestbook entries:", error);
+      res.status(500).json({ message: "Failed to fetch guestbook entries" });
+    }
+  });
+
+  // Create a new guestbook entry
+  app.post('/api/guestbook', verifyFirebaseToken, async (req, res) => {
+    try {
+      const user = req.user;
+      if (!user) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      const entryData = insertGuestbookEntrySchema.parse({
+        ...req.body,
+        authorId: user.id,
+        authorName: user.firstName && user.lastName 
+          ? `${user.firstName} ${user.lastName}` 
+          : user.email?.split('@')[0] || 'Anonymous'
+      });
+
+      const entry = await storage.createGuestbookEntry(entryData);
+      res.status(201).json(entry);
+    } catch (error) {
+      console.error("Error creating guestbook entry:", error);
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid entry data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Failed to create guestbook entry" });
+      }
+    }
+  });
+
+  // Like/unlike a guestbook entry
+  app.post('/api/guestbook/:id/like', verifyFirebaseToken, async (req, res) => {
+    try {
+      const user = req.user;
+      if (!user) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      const entryId = parseInt(req.params.id);
+      const result = await storage.toggleGuestbookEntryLike(user.id, entryId);
+      res.json(result);
+    } catch (error) {
+      console.error("Error toggling entry like:", error);
+      res.status(500).json({ message: "Failed to toggle like" });
+    }
+  });
+
+  // Add a comment to a guestbook entry
+  app.post('/api/guestbook/:id/comments', verifyFirebaseToken, async (req, res) => {
+    try {
+      const user = req.user;
+      if (!user) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      const entryId = parseInt(req.params.id);
+      const commentData = insertGuestbookCommentSchema.parse({
+        ...req.body,
+        entryId,
+        authorId: user.id,
+        authorName: user.firstName && user.lastName 
+          ? `${user.firstName} ${user.lastName}` 
+          : user.email?.split('@')[0] || 'Anonymous'
+      });
+
+      const comment = await storage.createGuestbookComment(commentData);
+      res.status(201).json(comment);
+    } catch (error) {
+      console.error("Error creating comment:", error);
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid comment data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Failed to create comment" });
+      }
+    }
+  });
+
+  // Like/unlike a comment
+  app.post('/api/guestbook/comments/:id/like', verifyFirebaseToken, async (req, res) => {
+    try {
+      const user = req.user;
+      if (!user) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      const commentId = parseInt(req.params.id);
+      const result = await storage.toggleGuestbookCommentLike(user.id, commentId);
+      res.json(result);
+    } catch (error) {
+      console.error("Error toggling comment like:", error);
+      res.status(500).json({ message: "Failed to toggle like" });
     }
   });
 

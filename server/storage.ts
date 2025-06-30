@@ -5,6 +5,10 @@ import {
   businessCategories,
   userLikes,
   articles,
+  guestbookEntries,
+  guestbookComments,
+  guestbookEntryLikes,
+  guestbookCommentLikes,
   type User,
   type UpsertUser,
   type Category,
@@ -16,9 +20,14 @@ import {
   type InsertUserLike,
   type Article,
   type InsertArticle,
+  type GuestbookEntry,
+  type InsertGuestbookEntry,
+  type GuestbookComment,
+  type InsertGuestbookComment,
+  type GuestbookEntryWithRelations,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, asc, inArray } from "drizzle-orm";
+import { eq, and, desc, asc, inArray, sql } from "drizzle-orm";
 
 // Interface for storage operations
 export interface IStorage {
@@ -56,13 +65,12 @@ export interface IStorage {
   createArticle(article: InsertArticle): Promise<Article>;
   updateArticle(id: number, article: Partial<InsertArticle>): Promise<Article>;
   
-  // Article operations
-  getArticles(): Promise<Article[]>;
-  getFeaturedArticles(): Promise<Article[]>;
-  getArticlesByTag(tag: string): Promise<Article[]>;
-  getArticle(id: number): Promise<Article | undefined>;
-  createArticle(article: InsertArticle): Promise<Article>;
-  updateArticle(id: number, article: Partial<InsertArticle>): Promise<Article>;
+  // Guestbook operations
+  getGuestbookEntries(): Promise<GuestbookEntryWithRelations[]>;
+  createGuestbookEntry(entry: InsertGuestbookEntry): Promise<GuestbookEntry>;
+  toggleGuestbookEntryLike(userId: string, entryId: number): Promise<{ liked: boolean }>;
+  createGuestbookComment(comment: InsertGuestbookComment): Promise<GuestbookComment>;
+  toggleGuestbookCommentLike(userId: string, commentId: number): Promise<{ liked: boolean }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -497,6 +505,179 @@ export class DatabaseStorage implements IStorage {
       .where(eq(articles.id, id))
       .returning();
     return updatedArticle;
+  }
+
+  // Guestbook operations
+  async getGuestbookEntries(): Promise<GuestbookEntryWithRelations[]> {
+    const entriesWithRelations = await db
+      .select({
+        id: guestbookEntries.id,
+        authorId: guestbookEntries.authorId,
+        authorName: guestbookEntries.authorName,
+        message: guestbookEntries.message,
+        nationality: guestbookEntries.nationality,
+        location: guestbookEntries.location,
+        latitude: guestbookEntries.latitude,
+        longitude: guestbookEntries.longitude,
+        relatedPlaceId: guestbookEntries.relatedPlaceId,
+        rating: guestbookEntries.rating,
+        likes: guestbookEntries.likes,
+        createdAt: guestbookEntries.createdAt,
+        author: {
+          id: users.id,
+          email: users.email,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          profileImageUrl: users.profileImageUrl,
+        },
+        relatedPlace: {
+          id: businesses.id,
+          name: businesses.name,
+          description: businesses.description,
+          imageUrl: businesses.imageUrl,
+        }
+      })
+      .from(guestbookEntries)
+      .leftJoin(users, eq(guestbookEntries.authorId, users.id))
+      .leftJoin(businesses, eq(guestbookEntries.relatedPlaceId, businesses.id))
+      .orderBy(desc(guestbookEntries.createdAt));
+
+    // Get comments for each entry
+    const entriesWithComments = await Promise.all(
+      entriesWithRelations.map(async (entry) => {
+        const comments = await db
+          .select({
+            id: guestbookComments.id,
+            entryId: guestbookComments.entryId,
+            authorId: guestbookComments.authorId,
+            authorName: guestbookComments.authorName,
+            comment: guestbookComments.comment,
+            likes: guestbookComments.likes,
+            createdAt: guestbookComments.createdAt,
+            author: {
+              id: users.id,
+              email: users.email,
+              firstName: users.firstName,
+              lastName: users.lastName,
+              profileImageUrl: users.profileImageUrl,
+            }
+          })
+          .from(guestbookComments)
+          .leftJoin(users, eq(guestbookComments.authorId, users.id))
+          .where(eq(guestbookComments.entryId, entry.id))
+          .orderBy(asc(guestbookComments.createdAt));
+
+        return {
+          ...entry,
+          comments,
+          commentCount: comments.length
+        } as GuestbookEntryWithRelations;
+      })
+    );
+
+    return entriesWithComments;
+  }
+
+  async createGuestbookEntry(entry: InsertGuestbookEntry): Promise<GuestbookEntry> {
+    const [newEntry] = await db
+      .insert(guestbookEntries)
+      .values(entry)
+      .returning();
+    return newEntry;
+  }
+
+  async toggleGuestbookEntryLike(userId: string, entryId: number): Promise<{ liked: boolean }> {
+    // Check if like already exists
+    const [existingLike] = await db
+      .select()
+      .from(guestbookEntryLikes)
+      .where(and(
+        eq(guestbookEntryLikes.userId, userId),
+        eq(guestbookEntryLikes.entryId, entryId)
+      ))
+      .limit(1);
+
+    if (existingLike) {
+      // Remove like
+      await db
+        .delete(guestbookEntryLikes)
+        .where(and(
+          eq(guestbookEntryLikes.userId, userId),
+          eq(guestbookEntryLikes.entryId, entryId)
+        ));
+
+      // Decrement likes count
+      await db
+        .update(guestbookEntries)
+        .set({ likes: db.raw('likes - 1') })
+        .where(eq(guestbookEntries.id, entryId));
+
+      return { liked: false };
+    } else {
+      // Add like
+      await db
+        .insert(guestbookEntryLikes)
+        .values({ userId, entryId });
+
+      // Increment likes count
+      await db
+        .update(guestbookEntries)
+        .set({ likes: db.raw('likes + 1') })
+        .where(eq(guestbookEntries.id, entryId));
+
+      return { liked: true };
+    }
+  }
+
+  async createGuestbookComment(comment: InsertGuestbookComment): Promise<GuestbookComment> {
+    const [newComment] = await db
+      .insert(guestbookComments)
+      .values(comment)
+      .returning();
+    return newComment;
+  }
+
+  async toggleGuestbookCommentLike(userId: string, commentId: number): Promise<{ liked: boolean }> {
+    // Check if like already exists
+    const [existingLike] = await db
+      .select()
+      .from(guestbookCommentLikes)
+      .where(and(
+        eq(guestbookCommentLikes.userId, userId),
+        eq(guestbookCommentLikes.commentId, commentId)
+      ))
+      .limit(1);
+
+    if (existingLike) {
+      // Remove like
+      await db
+        .delete(guestbookCommentLikes)
+        .where(and(
+          eq(guestbookCommentLikes.userId, userId),
+          eq(guestbookCommentLikes.commentId, commentId)
+        ));
+
+      // Decrement likes count
+      await db
+        .update(guestbookComments)
+        .set({ likes: db.raw('likes - 1') })
+        .where(eq(guestbookComments.id, commentId));
+
+      return { liked: false };
+    } else {
+      // Add like
+      await db
+        .insert(guestbookCommentLikes)
+        .values({ userId, commentId });
+
+      // Increment likes count
+      await db
+        .update(guestbookComments)
+        .set({ likes: db.raw('likes + 1') })
+        .where(eq(guestbookComments.id, commentId));
+
+      return { liked: true };
+    }
   }
 }
 
