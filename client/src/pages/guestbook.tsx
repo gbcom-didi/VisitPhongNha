@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,7 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { Navigation } from '@/components/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { Heart, MessageCircle, Star, MapPin, Globe, Calendar, Flag, User, X } from 'lucide-react';
+import { Heart, MessageCircle, Star, MapPin, Globe, Calendar, Flag, User, Reply } from 'lucide-react';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { BusinessWithCategory, GuestbookEntryWithRelations } from '@shared/schema';
 import { formatDistanceToNow } from 'date-fns';
@@ -45,6 +45,8 @@ export function Guestbook() {
   const [showForm, setShowForm] = useState(false);
   const [commentingOn, setCommentingOn] = useState<number | null>(null);
   const [selectedEntry, setSelectedEntry] = useState<GuestbookEntryWithRelations | null>(null);
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
+  const [optimisticLikes, setOptimisticLikes] = useState<{[key: string]: boolean}>({});
 
   // Fetch guestbook entries
   const { data: entries = [], isLoading } = useQuery<GuestbookEntryWithRelations[]>({
@@ -87,6 +89,8 @@ export function Guestbook() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
       setCommentingOn(null);
+      setReplyingTo(null);
+      commentForm.reset();
       toast({
         title: 'Success',
         description: 'Your comment has been added!',
@@ -168,11 +172,15 @@ export function Guestbook() {
 
   const onSubmitComment = (data: CommentForm) => {
     if (commentingOn) {
+      // If replying to a comment, prepend the reply prefix
+      const comment = replyingTo ? `@${selectedEntry?.comments?.find(c => c.id === replyingTo)?.authorName} ${data.comment}` : data.comment;
+      
       createCommentMutation.mutate({
         entryId: commentingOn,
-        comment: data.comment,
+        comment: comment,
       });
       commentForm.reset();
+      setReplyingTo(null);
     }
   };
 
@@ -185,7 +193,24 @@ export function Guestbook() {
       });
       return;
     }
-    likeEntryMutation.mutate(entryId);
+    
+    // Optimistic update
+    const key = `entry-${entryId}`;
+    setOptimisticLikes(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+    
+    likeEntryMutation.mutate(entryId, {
+      onSettled: () => {
+        // Clear optimistic state after mutation completes
+        setOptimisticLikes(prev => {
+          const newState = { ...prev };
+          delete newState[key];
+          return newState;
+        });
+      }
+    });
   };
 
   const handleLikeComment = (commentId: number) => {
@@ -197,7 +222,30 @@ export function Guestbook() {
       });
       return;
     }
-    likeCommentMutation.mutate(commentId);
+    
+    // Optimistic update
+    const key = `comment-${commentId}`;
+    setOptimisticLikes(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+    
+    likeCommentMutation.mutate(commentId, {
+      onSettled: () => {
+        // Clear optimistic state after mutation completes
+        setOptimisticLikes(prev => {
+          const newState = { ...prev };
+          delete newState[key];
+          return newState;
+        });
+      }
+    });
+  };
+
+  // Helper function to determine if something is liked (with optimistic updates)
+  const isLiked = (type: 'entry' | 'comment', id: number, currentLiked: boolean) => {
+    const key = `${type}-${id}`;
+    return optimisticLikes[key] !== undefined ? optimisticLikes[key] : currentLiked;
   };
 
 
@@ -493,7 +541,7 @@ export function Guestbook() {
                         }}
                         className="text-gray-600 hover:text-red-500"
                       >
-                        <Heart className={`w-4 h-4 mr-1 ${entry.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                        <Heart className={`w-4 h-4 mr-1 ${isLiked('entry', entry.id, entry.isLiked || false) ? 'fill-red-500 text-red-500' : ''}`} />
                         {entry.likes || 0}
                       </Button>
                       
@@ -527,6 +575,9 @@ export function Guestbook() {
                     )}
                   </div>
                 </DialogTitle>
+                <DialogDescription>
+                  Travel experience from {selectedEntry.authorName} {selectedEntry.nationality && `from ${selectedEntry.nationality}`}
+                </DialogDescription>
               </DialogHeader>
 
               <div className="space-y-6">
@@ -581,26 +632,35 @@ export function Guestbook() {
                 )}
 
                 {/* Entry Actions */}
-                <div className="flex items-center space-x-4 pt-4 border-t border-gray-100">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleLikeEntry(selectedEntry.id)}
-                    className="text-gray-600 hover:text-red-500"
-                  >
-                    <Heart className={`w-4 h-4 mr-1 ${selectedEntry.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-                    {selectedEntry.likes || 0}
-                  </Button>
-                  
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setCommentingOn(commentingOn === selectedEntry.id ? null : selectedEntry.id)}
-                    className="text-gray-600 hover:text-mango-yellow"
-                  >
-                    <MessageCircle className="w-4 h-4 mr-1" />
-                    {selectedEntry.commentCount || 0}
-                  </Button>
+                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                  <div className="flex items-center space-x-4">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleLikeEntry(selectedEntry.id)}
+                      className="text-gray-600 hover:text-red-500"
+                    >
+                      <Heart className={`w-4 h-4 mr-1 ${isLiked('entry', selectedEntry.id, selectedEntry.isLiked || false) ? 'fill-red-500 text-red-500' : ''}`} />
+                      {selectedEntry.likes || 0}
+                    </Button>
+                    
+                    <div className="flex items-center text-gray-600">
+                      <MessageCircle className="w-4 h-4 mr-1" />
+                      {selectedEntry.commentCount || 0}
+                    </div>
+                  </div>
+
+                  {isAuthenticated && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCommentingOn(commentingOn === selectedEntry.id ? null : selectedEntry.id)}
+                      className="text-mango-yellow border-mango-yellow hover:bg-mango-yellow hover:text-black"
+                    >
+                      <MessageCircle className="w-4 h-4 mr-1" />
+                      Add Comment
+                    </Button>
+                  )}
                 </div>
 
                 {/* Comment Form */}
@@ -666,17 +726,77 @@ export function Guestbook() {
                             </span>
                           </div>
                           
+                          <div className="flex items-center space-x-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleLikeComment(comment.id)}
+                              className="text-gray-600 hover:text-red-500 h-6 px-2"
+                            >
+                              <Heart className={`w-3 h-3 mr-1 ${isLiked('comment', comment.id, false) ? 'fill-red-500 text-red-500' : ''}`} />
+                              {comment.likes || 0}
+                            </Button>
+                          </div>
+                        </div>
+                        <p className="text-sm text-gray-700 mb-2">{comment.comment}</p>
+                        
+                        {/* Reply Button */}
+                        {isAuthenticated && (
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleLikeComment(comment.id)}
-                            className="text-gray-600 hover:text-red-500 h-6 px-2"
+                            onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
+                            className="text-xs text-mango-yellow hover:text-mango-yellow/80 h-6 px-2"
                           >
-                            <Heart className="w-3 h-3 mr-1" />
-                            {comment.likes || 0}
+                            <Reply className="w-3 h-3 mr-1" />
+                            Reply
                           </Button>
-                        </div>
-                        <p className="text-sm text-gray-700">{comment.comment}</p>
+                        )}
+
+                        {/* Reply Form */}
+                        {replyingTo === comment.id && isAuthenticated && (
+                          <div className="mt-3 pt-3 border-t border-mango-yellow/10">
+                            <Form {...commentForm}>
+                              <form onSubmit={commentForm.handleSubmit(onSubmitComment)} className="space-y-2">
+                                <FormField
+                                  control={commentForm.control}
+                                  name="comment"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormControl>
+                                        <Textarea
+                                          placeholder={`Reply to ${comment.authorName}...`}
+                                          className="min-h-[60px] text-sm focus:ring-mango-yellow focus:border-mango-yellow"
+                                          {...field}
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <div className="flex gap-2">
+                                  <Button
+                                    type="submit"
+                                    size="sm"
+                                    disabled={createCommentMutation.isPending}
+                                    className="bg-mango-yellow text-black hover:bg-mango-yellow/90 text-xs h-7"
+                                  >
+                                    {createCommentMutation.isPending ? 'Replying...' : 'Reply'}
+                                  </Button>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setReplyingTo(null)}
+                                    className="text-xs h-7"
+                                  >
+                                    Cancel
+                                  </Button>
+                                </div>
+                              </form>
+                            </Form>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
