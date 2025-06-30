@@ -39,6 +39,159 @@ const commentSchema = z.object({
 
 type CommentForm = z.infer<typeof commentSchema>;
 
+interface CommentItemProps {
+  comment: any;
+  selectedEntry: any;
+  isAuthenticated: boolean;
+  replyingTo: number | null;
+  setReplyingTo: (id: number | null) => void;
+  setCommentingOn: (id: number | null) => void;
+  commentForm: any;
+  onSubmitComment: (data: CommentForm) => void;
+  createCommentMutation: any;
+  handleLikeComment: (id: number) => void;
+  level: number;
+}
+
+function CommentItem({ 
+  comment, 
+  selectedEntry, 
+  isAuthenticated, 
+  replyingTo, 
+  setReplyingTo, 
+  setCommentingOn, 
+  commentForm, 
+  onSubmitComment, 
+  createCommentMutation, 
+  handleLikeComment, 
+  level 
+}: CommentItemProps) {
+  return (
+    <div className={`${level > 0 ? 'ml-8 border-l-2 border-mango-yellow/20 pl-4' : ''}`}>
+      <div className="bg-mango-yellow/5 rounded-lg p-3 border border-mango-yellow/10">
+        <div className="flex items-start justify-between mb-2">
+          <div className="flex items-center space-x-2">
+            <div className="w-6 h-6 bg-mango-yellow rounded-full flex items-center justify-center">
+              <User className="w-3 h-3 text-black" />
+            </div>
+            <span className="text-sm font-medium text-gray-900">
+              {comment.authorName}
+            </span>
+            <span className="text-xs text-gray-500">
+              {comment.createdAt ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true }) : 'Recently'}
+            </span>
+          </div>
+          
+          <div className="flex items-center space-x-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleLikeComment(comment.id)}
+              className="text-gray-600 hover:text-red-500 h-6 px-2"
+            >
+              <Heart className="w-3 h-3 mr-1" />
+              {comment.likes || 0}
+            </Button>
+          </div>
+        </div>
+        <p className="text-sm text-gray-700 mb-2">{comment.comment}</p>
+        
+        {/* Reply Button */}
+        {isAuthenticated && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              if (replyingTo === comment.id) {
+                setReplyingTo(null);
+                setCommentingOn(null);
+              } else {
+                setReplyingTo(comment.id);
+                setCommentingOn(selectedEntry.id);
+              }
+            }}
+            className="text-xs text-mango-yellow hover:text-mango-yellow/80 h-6 px-2"
+          >
+            <Reply className="w-3 h-3 mr-1" />
+            Reply
+          </Button>
+        )}
+
+        {/* Reply Form */}
+        {replyingTo === comment.id && isAuthenticated && (
+          <div className="mt-3 pt-3 border-t border-mango-yellow/10">
+            <Form {...commentForm}>
+              <form onSubmit={commentForm.handleSubmit(onSubmitComment)} className="space-y-2">
+                <FormField
+                  control={commentForm.control}
+                  name="comment"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Textarea
+                          placeholder={`Reply to ${comment.authorName}...`}
+                          className="min-h-[60px] text-sm focus:ring-mango-yellow focus:border-mango-yellow"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex gap-2">
+                  <Button
+                    type="submit"
+                    size="sm"
+                    disabled={createCommentMutation.isPending}
+                    className="bg-mango-yellow text-black hover:bg-mango-yellow/90 text-xs h-7"
+                  >
+                    {createCommentMutation.isPending ? 'Replying...' : 'Reply'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setReplyingTo(null);
+                      setCommentingOn(null);
+                      commentForm.reset();
+                    }}
+                    className="text-xs h-7"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        )}
+      </div>
+      
+      {/* Nested Replies */}
+      {comment.replies && comment.replies.length > 0 && (
+        <div className="mt-3 space-y-3">
+          {comment.replies.map((reply: any) => (
+            <CommentItem 
+              key={reply.id}
+              comment={reply}
+              selectedEntry={selectedEntry}
+              isAuthenticated={isAuthenticated}
+              replyingTo={replyingTo}
+              setReplyingTo={setReplyingTo}
+              setCommentingOn={setCommentingOn}
+              commentForm={commentForm}
+              onSubmitComment={onSubmitComment}
+              createCommentMutation={createCommentMutation}
+              handleLikeComment={handleLikeComment}
+              level={level + 1}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Guestbook() {
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
@@ -233,6 +386,7 @@ export function Guestbook() {
       createCommentMutation.mutate({
         entryId: commentingOn,
         comment: comment,
+        ...(replyingTo && { parentCommentId: replyingTo }),
       });
       commentForm.reset();
       setReplyingTo(null);
@@ -730,104 +884,20 @@ export function Guestbook() {
                   <div className="pt-4 border-t border-gray-100 space-y-3">
                     <h4 className="font-medium text-gray-900">Comments ({selectedEntry.comments.length})</h4>
                     {selectedEntry.comments.map((comment) => (
-                      <div key={comment.id} className="bg-mango-yellow/5 rounded-lg p-3 border border-mango-yellow/10">
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="flex items-center space-x-2">
-                            <div className="w-6 h-6 bg-mango-yellow rounded-full flex items-center justify-center">
-                              <User className="w-3 h-3 text-black" />
-                            </div>
-                            <span className="text-sm font-medium text-gray-900">
-                              {comment.authorName}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              {comment.createdAt ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true }) : 'Recently'}
-                            </span>
-                          </div>
-                          
-                          <div className="flex items-center space-x-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleLikeComment(comment.id)}
-                              className="text-gray-600 hover:text-red-500 h-6 px-2"
-                            >
-                              <Heart className="w-3 h-3 mr-1" />
-                              {comment.likes || 0}
-                            </Button>
-                          </div>
-                        </div>
-                        <p className="text-sm text-gray-700 mb-2">{comment.comment}</p>
-                        
-                        {/* Reply Button */}
-                        {isAuthenticated && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              if (replyingTo === comment.id) {
-                                setReplyingTo(null);
-                                setCommentingOn(null);
-                              } else {
-                                setReplyingTo(comment.id);
-                                setCommentingOn(selectedEntry.id);
-                              }
-                            }}
-                            className="text-xs text-mango-yellow hover:text-mango-yellow/80 h-6 px-2"
-                          >
-                            <Reply className="w-3 h-3 mr-1" />
-                            Reply
-                          </Button>
-                        )}
-
-                        {/* Reply Form */}
-                        {replyingTo === comment.id && isAuthenticated && (
-                          <div className="mt-3 pt-3 border-t border-mango-yellow/10">
-                            <Form {...commentForm}>
-                              <form onSubmit={commentForm.handleSubmit(onSubmitComment)} className="space-y-2">
-                                <FormField
-                                  control={commentForm.control}
-                                  name="comment"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormControl>
-                                        <Textarea
-                                          placeholder={`Reply to ${comment.authorName}...`}
-                                          className="min-h-[60px] text-sm focus:ring-mango-yellow focus:border-mango-yellow"
-                                          {...field}
-                                        />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <div className="flex gap-2">
-                                  <Button
-                                    type="submit"
-                                    size="sm"
-                                    disabled={createCommentMutation.isPending}
-                                    className="bg-mango-yellow text-black hover:bg-mango-yellow/90 text-xs h-7"
-                                  >
-                                    {createCommentMutation.isPending ? 'Replying...' : 'Reply'}
-                                  </Button>
-                                  <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => {
-                                      setReplyingTo(null);
-                                      setCommentingOn(null);
-                                      commentForm.reset();
-                                    }}
-                                    className="text-xs h-7"
-                                  >
-                                    Cancel
-                                  </Button>
-                                </div>
-                              </form>
-                            </Form>
-                          </div>
-                        )}
-                      </div>
+                      <CommentItem 
+                        key={comment.id} 
+                        comment={comment} 
+                        selectedEntry={selectedEntry}
+                        isAuthenticated={isAuthenticated}
+                        replyingTo={replyingTo}
+                        setReplyingTo={setReplyingTo}
+                        setCommentingOn={setCommentingOn}
+                        commentForm={commentForm}
+                        onSubmitComment={onSubmitComment}
+                        createCommentMutation={createCommentMutation}
+                        handleLikeComment={handleLikeComment}
+                        level={0}
+                      />
                     ))}
                   </div>
                 )}
