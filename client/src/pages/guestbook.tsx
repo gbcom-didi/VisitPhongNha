@@ -435,13 +435,13 @@ export function Guestbook() {
             </div>
           ) : (
             entries.map((entry) => (
-              <Card key={entry.id} className="overflow-hidden">
+              <Card key={entry.id} className="overflow-hidden hover:shadow-lg transition-shadow border-l-4 border-l-mango-yellow">
                 <CardContent className="p-6">
                   {/* Entry Header */}
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-tropical-aqua rounded-full flex items-center justify-center">
-                        <User className="w-5 h-5 text-white" />
+                      <div className="w-10 h-10 bg-mango-yellow rounded-full flex items-center justify-center">
+                        <User className="w-5 h-5 text-black" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900">{entry.authorName}</h3>
@@ -476,7 +476,7 @@ export function Guestbook() {
                   {/* Related Place */}
                   {entry.relatedPlace && (
                     <div className="mb-4">
-                      <Badge variant="secondary" className="bg-tropical-aqua/10 text-tropical-aqua border-tropical-aqua/20">
+                      <Badge variant="secondary" className="bg-mango-yellow/20 text-gray-800 border-mango-yellow/30">
                         <MapPin className="w-3 h-3 mr-1" />
                         {entry.relatedPlace.name}
                       </Badge>
@@ -493,7 +493,7 @@ export function Guestbook() {
                             href={entry.location}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-tropical-aqua hover:underline"
+                            className="text-mango-yellow hover:underline font-medium"
                           >
                             View on Google Maps
                           </a>
@@ -521,11 +521,33 @@ export function Guestbook() {
                         variant="ghost"
                         size="sm"
                         onClick={() => setCommentingOn(commentingOn === entry.id ? null : entry.id)}
-                        className="text-gray-600 hover:text-tropical-aqua"
+                        className="text-gray-600 hover:text-mango-yellow"
                       >
                         <MessageCircle className="w-4 h-4 mr-1" />
                         {entry.commentCount || 0}
                       </Button>
+
+                      {/* Comments Toggle */}
+                      {entry.comments && entry.comments.length > 0 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleComments(entry.id)}
+                          className="text-gray-600 hover:text-mango-yellow"
+                        >
+                          {expandedComments.has(entry.id) ? (
+                            <>
+                              <ChevronUp className="w-4 h-4 mr-1" />
+                              Hide Comments
+                            </>
+                          ) : (
+                            <>
+                              <ChevronDown className="w-4 h-4 mr-1" />
+                              Show Comments
+                            </>
+                          )}
+                        </Button>
+                      )}
                     </div>
                   </div>
 
@@ -542,7 +564,7 @@ export function Guestbook() {
                                 <FormControl>
                                   <Textarea
                                     placeholder="Add a comment..."
-                                    className="min-h-[80px]"
+                                    className="min-h-[80px] focus:ring-mango-yellow focus:border-mango-yellow"
                                     {...field}
                                   />
                                 </FormControl>
@@ -555,7 +577,7 @@ export function Guestbook() {
                               type="submit"
                               size="sm"
                               disabled={createCommentMutation.isPending}
-                              className="bg-tropical-aqua text-white hover:bg-tropical-aqua/90"
+                              className="bg-mango-yellow text-black hover:bg-mango-yellow/90"
                             >
                               {createCommentMutation.isPending ? 'Adding...' : 'Add Comment'}
                             </Button>
@@ -575,36 +597,40 @@ export function Guestbook() {
 
                   {/* Comments */}
                   {entry.comments && entry.comments.length > 0 && (
-                    <div className="mt-4 pt-4 border-t border-gray-100 space-y-4">
-                      {entry.comments.map((comment) => (
-                        <div key={comment.id} className="bg-gray-50 rounded-lg p-4">
-                          <div className="flex items-start justify-between mb-2">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-6 h-6 bg-tropical-aqua rounded-full flex items-center justify-center">
-                                <User className="w-3 h-3 text-white" />
+                    <Collapsible open={expandedComments.has(entry.id)} onOpenChange={() => toggleComments(entry.id)}>
+                      <CollapsibleContent>
+                        <div className="mt-4 pt-4 border-t border-gray-100 space-y-3">
+                          {entry.comments.map((comment) => (
+                            <div key={comment.id} className="bg-mango-yellow/5 rounded-lg p-3 border border-mango-yellow/10">
+                              <div className="flex items-start justify-between mb-2">
+                                <div className="flex items-center space-x-2">
+                                  <div className="w-6 h-6 bg-mango-yellow rounded-full flex items-center justify-center">
+                                    <User className="w-3 h-3 text-black" />
+                                  </div>
+                                  <span className="text-sm font-medium text-gray-900">
+                                    {comment.authorName}
+                                  </span>
+                                  <span className="text-xs text-gray-500">
+                                    {comment.createdAt ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true }) : 'Recently'}
+                                  </span>
+                                </div>
+                                
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleLikeComment(comment.id)}
+                                  className="text-gray-600 hover:text-red-500 h-6 px-2"
+                                >
+                                  <Heart className={`w-3 h-3 mr-1 ${comment.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                                  {comment.likes || 0}
+                                </Button>
                               </div>
-                              <span className="text-sm font-medium text-gray-900">
-                                {comment.authorName}
-                              </span>
-                              <span className="text-xs text-gray-500">
-                                {comment.createdAt ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true }) : 'Recently'}
-                              </span>
+                              <p className="text-sm text-gray-700">{comment.comment}</p>
                             </div>
-                            
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleLikeComment(comment.id)}
-                              className="text-gray-600 hover:text-red-500 h-6 px-2"
-                            >
-                              <Heart className="w-3 h-3 mr-1" />
-                              {comment.likes || 0}
-                            </Button>
-                          </div>
-                          <p className="text-sm text-gray-700">{comment.comment}</p>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </CollapsibleContent>
+                    </Collapsible>
                   )}
                 </CardContent>
               </Card>
