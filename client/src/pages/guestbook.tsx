@@ -242,8 +242,19 @@ export function Guestbook() {
       }
       return apiRequest('POST', `/api/guestbook/${entryId}/comments`, payload);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
+    onSuccess: async (newComment, variables) => {
+      // Invalidate and refetch the guestbook data to get updated comment counts and nested structure
+      await queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
+      
+      // If a modal is open for this entry, update the selected entry
+      if (selectedEntry && selectedEntry.id === variables.entryId) {
+        const updatedData = await queryClient.refetchQueries({ queryKey: ['/api/guestbook'] });
+        const updatedEntry = updatedData[0]?.data?.find((entry: any) => entry.id === variables.entryId);
+        if (updatedEntry) {
+          setSelectedEntry(updatedEntry);
+        }
+      }
+      
       setCommentingOn(null);
       setReplyingTo(null);
       commentForm.reset();
