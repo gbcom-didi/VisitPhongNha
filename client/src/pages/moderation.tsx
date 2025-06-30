@@ -133,8 +133,8 @@ export function ModerationPage() {
       message: editForm.message,
       nationality: editForm.nationality || null,
       location: editForm.location || null,
-      relatedPlaceId: editForm.relatedPlaceId ? parseInt(editForm.relatedPlaceId) : null,
-      rating: editForm.rating ? parseInt(editForm.rating) : null
+      relatedPlaceId: editForm.relatedPlaceId && editForm.relatedPlaceId !== "0" ? parseInt(editForm.relatedPlaceId) : null,
+      rating: editForm.rating && editForm.rating !== "0" ? parseInt(editForm.rating) : null
     };
 
     editMutation.mutate({ entryId: editingEntry.id, updates });
@@ -332,7 +332,7 @@ export function ModerationPage() {
                     <SelectValue placeholder="Select rating" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">No rating</SelectItem>
+                    <SelectItem value="0">No rating</SelectItem>
                     <SelectItem value="1">1 ⭐</SelectItem>
                     <SelectItem value="2">2 ⭐</SelectItem>
                     <SelectItem value="3">3 ⭐</SelectItem>
@@ -367,7 +367,7 @@ export function ModerationPage() {
                   <SelectValue placeholder="Match to a business (optional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">No business match</SelectItem>
+                  <SelectItem value="0">No business match</SelectItem>
                   {businesses.map((business: any) => (
                     <SelectItem key={business.id} value={business.id.toString()}>
                       {business.name}
