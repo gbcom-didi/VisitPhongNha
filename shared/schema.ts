@@ -119,6 +119,7 @@ export const guestbookComments = pgTable("guestbook_comments", {
   authorId: varchar("author_id").references(() => users.id).notNull(),
   authorName: varchar("author_name", { length: 255 }).notNull(),
   comment: text("comment").notNull(),
+  parentCommentId: integer("parent_comment_id").references(() => guestbookComments.id),
   likes: integer("likes").default(0),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -200,6 +201,14 @@ export const guestbookCommentsRelations = relations(guestbookComments, ({ one, m
   author: one(users, {
     fields: [guestbookComments.authorId],
     references: [users.id],
+  }),
+  parentComment: one(guestbookComments, {
+    fields: [guestbookComments.parentCommentId],
+    references: [guestbookComments.id],
+    relationName: "CommentReplies",
+  }),
+  replies: many(guestbookComments, {
+    relationName: "CommentReplies",
   }),
   likes: many(guestbookCommentLikes),
 }));

@@ -545,13 +545,14 @@ export class DatabaseStorage implements IStorage {
     // Get comments for each entry
     const entriesWithComments = await Promise.all(
       entriesWithRelations.map(async (entry) => {
-        const comments = await db
+        const allComments = await db
           .select({
             id: guestbookComments.id,
             entryId: guestbookComments.entryId,
             authorId: guestbookComments.authorId,
             authorName: guestbookComments.authorName,
             comment: guestbookComments.comment,
+            parentCommentId: guestbookComments.parentCommentId,
             likes: guestbookComments.likes,
             createdAt: guestbookComments.createdAt,
             author: {
@@ -566,6 +567,13 @@ export class DatabaseStorage implements IStorage {
           .leftJoin(users, eq(guestbookComments.authorId, users.id))
           .where(eq(guestbookComments.entryId, entry.id))
           .orderBy(asc(guestbookComments.createdAt));
+
+        // Organize comments in a nested structure
+        const topLevelComments = allComments.filter(c => !c.parentCommentId);
+        const comments = topLevelComments.map(comment => ({
+          ...comment,
+          replies: allComments.filter(c => c.parentCommentId === comment.id)
+        }));
 
         return {
           ...entry,
