@@ -71,6 +71,12 @@ export function ModerationPage() {
     enabled: canAccessAdmin(),
   });
 
+  // Fetch approved entries
+  const { data: approvedEntries = [], isLoading: approvedLoading } = useQuery<PendingEntry[]>({
+    queryKey: ['/api/admin/guestbook/approved'],
+    enabled: canAccessAdmin(),
+  });
+
   // Fetch businesses for the edit dialog
   const { data: businesses = [] } = useQuery<any[]>({
     queryKey: ['/api/businesses'],
@@ -84,6 +90,7 @@ export function ModerationPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/guestbook/pending'] });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/guestbook/spam'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/guestbook/approved'] });
       queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
       setEditingEntry(null);
       toast({ title: "Entry updated successfully" });
@@ -140,7 +147,7 @@ export function ModerationPage() {
     editMutation.mutate({ entryId: editingEntry.id, updates });
   };
 
-  const EntryCard = ({ entry, showSpamScore = false }: { entry: PendingEntry; showSpamScore?: boolean }) => (
+  const EntryCard = ({ entry, showSpamScore = false, showEditOnly = false }: { entry: PendingEntry; showSpamScore?: boolean; showEditOnly?: boolean }) => (
     <Card key={entry.id} className="mb-4">
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start">
@@ -170,12 +177,14 @@ export function ModerationPage() {
           <p className="text-sm text-gray-500 mb-4">📍 {entry.location}</p>
         )}
 
-        <Textarea
-          placeholder="Moderation notes (optional)"
-          value={moderationNotes[entry.id] || ''}
-          onChange={(e) => setModerationNotes(prev => ({ ...prev, [entry.id]: e.target.value }))}
-          className="mb-3"
-        />
+        {!showEditOnly && (
+          <Textarea
+            placeholder="Moderation notes (optional)"
+            value={moderationNotes[entry.id] || ''}
+            onChange={(e) => setModerationNotes(prev => ({ ...prev, [entry.id]: e.target.value }))}
+            className="mb-3"
+          />
+        )}
 
         <div className="flex gap-2 flex-wrap">
           <Button
@@ -187,33 +196,37 @@ export function ModerationPage() {
             <Edit3 className="w-4 h-4 mr-1" />
             Edit
           </Button>
-          <Button
-            onClick={() => handleModerate(entry.id, 'approved')}
-            disabled={moderateMutation.isPending}
-            className="bg-green-600 hover:bg-green-700"
-            size="sm"
-          >
-            <CheckCircle className="w-4 h-4 mr-1" />
-            Approve
-          </Button>
-          <Button
-            onClick={() => handleModerate(entry.id, 'rejected')}
-            disabled={moderateMutation.isPending}
-            variant="outline"
-            size="sm"
-          >
-            <XCircle className="w-4 h-4 mr-1" />
-            Reject
-          </Button>
-          <Button
-            onClick={() => handleModerate(entry.id, 'spam')}
-            disabled={moderateMutation.isPending}
-            variant="destructive"
-            size="sm"
-          >
-            <AlertTriangle className="w-4 h-4 mr-1" />
-            Mark as Spam
-          </Button>
+          {!showEditOnly && (
+            <>
+              <Button
+                onClick={() => handleModerate(entry.id, 'approved')}
+                disabled={moderateMutation.isPending}
+                className="bg-green-600 hover:bg-green-700"
+                size="sm"
+              >
+                <CheckCircle className="w-4 h-4 mr-1" />
+                Approve
+              </Button>
+              <Button
+                onClick={() => handleModerate(entry.id, 'rejected')}
+                disabled={moderateMutation.isPending}
+                variant="outline"
+                size="sm"
+              >
+                <XCircle className="w-4 h-4 mr-1" />
+                Reject
+              </Button>
+              <Button
+                onClick={() => handleModerate(entry.id, 'spam')}
+                disabled={moderateMutation.isPending}
+                variant="destructive"
+                size="sm"
+              >
+                <AlertTriangle className="w-4 h-4 mr-1" />
+                Mark as Spam
+              </Button>
+            </>
+          )}
         </div>
       </CardContent>
     </Card>
@@ -229,7 +242,7 @@ export function ModerationPage() {
         </div>
 
         <Tabs defaultValue="pending" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="pending" className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4" />
               Pending ({pendingEntries.length})
@@ -237,6 +250,10 @@ export function ModerationPage() {
             <TabsTrigger value="spam" className="flex items-center gap-2">
               <AlertTriangle className="w-4 h-4" />
               Spam Detected ({spamEntries.length})
+            </TabsTrigger>
+            <TabsTrigger value="approved" className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              Approved ({approvedEntries.length})
             </TabsTrigger>
           </TabsList>
 
@@ -281,6 +298,29 @@ export function ModerationPage() {
               ) : (
                 spamEntries.map((entry: PendingEntry) => (
                   <EntryCard key={entry.id} entry={entry} showSpamScore />
+                ))
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="approved">
+            <div className="space-y-4">
+              {approvedLoading ? (
+                <Card>
+                  <CardContent className="py-8 text-center">
+                    <p className="text-gray-500">Loading approved entries...</p>
+                  </CardContent>
+                </Card>
+              ) : approvedEntries.length === 0 ? (
+                <Card>
+                  <CardContent className="py-8 text-center">
+                    <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-3" />
+                    <p className="text-gray-500">No approved entries yet!</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                approvedEntries.map((entry: PendingEntry) => (
+                  <EntryCard key={entry.id} entry={entry} showEditOnly />
                 ))
               )}
             </div>
