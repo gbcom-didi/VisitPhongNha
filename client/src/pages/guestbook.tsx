@@ -377,14 +377,10 @@ export function Guestbook() {
             Share your experiences, memories, and recommendations from your journey in Phong Nha. 
             Connect with fellow travelers and leave your mark on our community.
           </p>
-          <div className="flex justify-center items-center space-x-6 text-sm text-gray-500">
+          <div className="flex justify-center items-center text-sm text-gray-500">
             <div className="flex items-center space-x-1">
               <MessageCircle className="w-4 h-4" />
               <span>{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <span>📰</span>
-              <span>{businesses.length} {businesses.length === 1 ? 'place' : 'places'}</span>
             </div>
           </div>
         </div>
