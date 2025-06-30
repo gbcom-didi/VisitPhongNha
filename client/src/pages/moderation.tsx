@@ -25,6 +25,7 @@ interface PendingEntry {
   spamScore?: number;
   createdAt: string;
   rating?: number;
+  relatedPlaceId?: number;
 }
 
 export function ModerationPage() {
@@ -176,7 +177,16 @@ export function ModerationPage() {
           className="mb-3"
         />
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          <Button
+            onClick={() => handleEditEntry(entry)}
+            variant="outline"
+            size="sm"
+            className="border-blue-200 text-blue-700 hover:bg-blue-50"
+          >
+            <Edit3 className="w-4 h-4 mr-1" />
+            Edit
+          </Button>
           <Button
             onClick={() => handleModerate(entry.id, 'approved')}
             disabled={moderateMutation.isPending}
@@ -277,6 +287,115 @@ export function ModerationPage() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Edit Entry Dialog */}
+      <Dialog open={!!editingEntry} onOpenChange={() => setEditingEntry(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Guestbook Entry</DialogTitle>
+            <DialogDescription>
+              Modify the entry content, match to businesses, and add location information.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="edit-message">Message</Label>
+              <Textarea
+                id="edit-message"
+                value={editForm.message}
+                onChange={(e) => setEditForm(prev => ({ ...prev, message: e.target.value }))}
+                rows={4}
+                className="mt-1"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="edit-nationality">Nationality</Label>
+                <Input
+                  id="edit-nationality"
+                  value={editForm.nationality}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, nationality: e.target.value }))}
+                  placeholder="e.g., Australia"
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit-rating">Rating (1-5)</Label>
+                <Select
+                  value={editForm.rating}
+                  onValueChange={(value) => setEditForm(prev => ({ ...prev, rating: value }))}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Select rating" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">No rating</SelectItem>
+                    <SelectItem value="1">1 ⭐</SelectItem>
+                    <SelectItem value="2">2 ⭐</SelectItem>
+                    <SelectItem value="3">3 ⭐</SelectItem>
+                    <SelectItem value="4">4 ⭐</SelectItem>
+                    <SelectItem value="5">5 ⭐</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="edit-location">Location / Google Maps URL</Label>
+              <Input
+                id="edit-location"
+                value={editForm.location}
+                onChange={(e) => setEditForm(prev => ({ ...prev, location: e.target.value }))}
+                placeholder="Location name or Google Maps sharing URL"
+                className="mt-1"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                You can paste a Google Maps sharing URL or just enter a location name
+              </p>
+            </div>
+
+            <div>
+              <Label htmlFor="edit-business">Related Business</Label>
+              <Select
+                value={editForm.relatedPlaceId}
+                onValueChange={(value) => setEditForm(prev => ({ ...prev, relatedPlaceId: value }))}
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Match to a business (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">No business match</SelectItem>
+                  {businesses.map((business: any) => (
+                    <SelectItem key={business.id} value={business.id.toString()}>
+                      {business.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button
+                onClick={handleSaveEdit}
+                disabled={editMutation.isPending}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                {editMutation.isPending ? 'Saving...' : 'Save Changes'}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setEditingEntry(null)}
+                disabled={editMutation.isPending}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

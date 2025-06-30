@@ -68,6 +68,7 @@ export interface IStorage {
   // Guestbook operations
   getGuestbookEntries(): Promise<GuestbookEntryWithRelations[]>;
   createGuestbookEntry(entry: InsertGuestbookEntry): Promise<GuestbookEntry>;
+  updateGuestbookEntry(entryId: number, updates: Partial<InsertGuestbookEntry>): Promise<void>;
   toggleGuestbookEntryLike(userId: string, entryId: number): Promise<{ liked: boolean }>;
   createGuestbookComment(comment: InsertGuestbookComment): Promise<GuestbookComment>;
   toggleGuestbookCommentLike(userId: string, commentId: number): Promise<{ liked: boolean }>;

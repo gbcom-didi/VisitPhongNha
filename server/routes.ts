@@ -870,6 +870,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.put('/api/admin/guestbook/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+    try {
+      const entryId = parseInt(req.params.id);
+      const updates = req.body;
+      
+      await storage.updateGuestbookEntry(entryId, updates);
+      res.json({ message: "Entry updated successfully" });
+    } catch (error) {
+      console.error("Error updating entry:", error);
+      res.status(500).json({ message: "Failed to update entry" });
+    }
+  });
+
   app.post('/api/admin/guestbook/comments/:id/moderate', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
     try {
       const { status } = req.body;
