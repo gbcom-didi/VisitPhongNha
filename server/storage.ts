@@ -547,6 +547,7 @@ export class DatabaseStorage implements IStorage {
       .from(guestbookEntries)
       .leftJoin(users, eq(guestbookEntries.authorId, users.id))
       .leftJoin(businesses, eq(guestbookEntries.relatedPlaceId, businesses.id))
+      .where(eq(guestbookEntries.status, 'approved'))
       .orderBy(desc(guestbookEntries.createdAt));
 
     // Get comments for each entry
