@@ -10,6 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 import { Badge } from '@/components/ui/badge';
 import { Navigation } from '@/components/navigation';
 import { useAuth } from '@/hooks/useAuth';
@@ -554,9 +555,20 @@ export function Guestbook() {
                       name="location"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Current Location</FormLabel>
+                          <div className="flex items-center gap-2">
+                            <FormLabel>Google Maps URL</FormLabel>
+                            <button 
+                              type="button" 
+                              className="text-gray-400 hover:text-gray-600"
+                              title="To get a Google Maps URL: 1. Open Google Maps 2. Search for your location 3. Click the Share button 4. Copy the link that appears"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                            </button>
+                          </div>
                           <FormControl>
-                            <Input placeholder="e.g., Phong Nha town, or Google Maps URL" {...field} />
+                            <Input placeholder="https://maps.google.com/..." {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
