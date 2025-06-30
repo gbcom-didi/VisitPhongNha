@@ -744,7 +744,7 @@ export function Guestbook() {
                     <div className="mb-4">
                       <Badge 
                         variant="secondary" 
-                        className="bg-orange-100 text-orange-800 border-orange-200 cursor-pointer hover:bg-orange-200 transition-colors px-3 py-1.5 text-sm font-medium"
+                        className="bg-mango-yellow/20 text-gray-800 border-mango-yellow/30 cursor-pointer hover:bg-mango-yellow/30 transition-colors px-3 py-1.5 text-sm font-medium"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleBusinessClick(entry.relatedPlace!.id);
@@ -832,7 +832,7 @@ export function Guestbook() {
                   <div>
                     <Badge 
                       variant="secondary" 
-                      className="bg-orange-100 text-orange-800 border-orange-200 cursor-pointer hover:bg-orange-200 transition-colors px-3 py-1.5 text-sm font-medium"
+                      className="bg-mango-yellow/20 text-gray-800 border-mango-yellow/30 cursor-pointer hover:bg-mango-yellow/30 transition-colors px-3 py-1.5 text-sm font-medium"
                       onClick={() => handleBusinessClick(selectedEntry.relatedPlace!.id)}
                     >
                       <MapPin className="w-3 h-3 mr-1" />
