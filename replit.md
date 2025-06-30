@@ -253,6 +253,8 @@ Changelog:
   - Implemented optimistic updates for instant like feedback and comprehensive error handling
   - Added location support for both text descriptions and Google Maps URLs
   - Restored sample business and article data after database schema updates
+  - Enhanced location field with "Google Maps URL" label and help tooltip with step-by-step instructions
+  - Improved form usability with clear guidance on obtaining Google Maps sharing links
 ```
 
 ## User Preferences

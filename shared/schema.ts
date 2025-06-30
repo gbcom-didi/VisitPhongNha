@@ -110,6 +110,15 @@ export const guestbookEntries = pgTable("guestbook_entries", {
   relatedPlaceId: integer("related_place_id").references(() => businesses.id),
   rating: integer("rating"), // 1-5 star rating
   likes: integer("likes").default(0),
+  // Moderation and spam protection fields
+  status: varchar("status", { length: 20 }).default("pending"), // pending, approved, rejected, spam
+  isSpam: boolean("is_spam").default(false),
+  spamScore: decimal("spam_score", { precision: 5, scale: 2 }), // 0-100 spam probability
+  moderatedBy: varchar("moderated_by").references(() => users.id),
+  moderatedAt: timestamp("moderated_at"),
+  moderationNotes: text("moderation_notes"),
+  ipAddress: varchar("ip_address", { length: 45 }), // For rate limiting
+  userAgent: text("user_agent"), // For spam detection
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -121,6 +130,12 @@ export const guestbookComments = pgTable("guestbook_comments", {
   comment: text("comment").notNull(),
   parentCommentId: integer("parent_comment_id").references(() => guestbookComments.id),
   likes: integer("likes").default(0),
+  // Moderation fields
+  status: varchar("status", { length: 20 }).default("pending"), // pending, approved, rejected, spam
+  isSpam: boolean("is_spam").default(false),
+  moderatedBy: varchar("moderated_by").references(() => users.id),
+  moderatedAt: timestamp("moderated_at"),
+  ipAddress: varchar("ip_address", { length: 45 }),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -135,6 +150,16 @@ export const guestbookCommentLikes = pgTable("guestbook_comment_likes", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").references(() => users.id).notNull(),
   commentId: integer("comment_id").references(() => guestbookComments.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Rate limiting table for spam protection
+export const rateLimits = pgTable("rate_limits", {
+  id: serial("id").primaryKey(),
+  identifier: varchar("identifier", { length: 255 }).notNull(), // IP address or user ID
+  action: varchar("action", { length: 50 }).notNull(), // 'guestbook_entry', 'guestbook_comment'
+  count: integer("count").default(1),
+  windowStart: timestamp("window_start").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
