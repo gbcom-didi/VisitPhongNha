@@ -495,10 +495,20 @@ export function Guestbook() {
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
             Travelers' Guestbook
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto mb-4">
             Share your experiences, memories, and recommendations from your journey in Phong Nha. 
             Connect with fellow travelers and leave your mark on our community.
           </p>
+          <div className="flex justify-center items-center space-x-6 text-sm text-gray-500">
+            <div className="flex items-center space-x-1">
+              <MessageCircle className="w-4 h-4" />
+              <span>{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</span>
+            </div>
+            <div className="flex items-center space-x-1">
+              <span>📰</span>
+              <span>{businesses.length} {businesses.length === 1 ? 'place' : 'places'}</span>
+            </div>
+          </div>
         </div>
 
         {/* Add Entry Button */}
