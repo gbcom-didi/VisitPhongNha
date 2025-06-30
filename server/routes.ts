@@ -649,8 +649,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ? `${dbUser.firstName} ${dbUser.lastName}` 
         : user.email?.split('@')[0] || 'Anonymous';
 
+      // Clean up numeric fields that might be empty strings
+      const cleanedBody = { ...req.body };
+      
+      // Convert empty strings to null for numeric fields
+      if (cleanedBody.relatedPlaceId === '') cleanedBody.relatedPlaceId = null;
+      if (cleanedBody.rating === '') cleanedBody.rating = null;
+      if (cleanedBody.latitude === '') cleanedBody.latitude = null;
+      if (cleanedBody.longitude === '') cleanedBody.longitude = null;
+      
+      // Convert string numbers to actual numbers
+      if (cleanedBody.relatedPlaceId && typeof cleanedBody.relatedPlaceId === 'string') {
+        cleanedBody.relatedPlaceId = parseInt(cleanedBody.relatedPlaceId, 10);
+      }
+      if (cleanedBody.rating && typeof cleanedBody.rating === 'string') {
+        cleanedBody.rating = parseInt(cleanedBody.rating, 10);
+      }
+      
       const entryData = insertGuestbookEntrySchema.parse({
-        ...req.body,
+        ...cleanedBody,
         authorId: user.uid,
         authorName: displayName
       });
