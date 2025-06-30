@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupFirebaseAuth, verifyFirebaseToken, requireFirebaseAdmin, requireFirebaseBusinessOwner, requireFirebaseViewer, auth } from "./firebaseAuth";
 import { permissions } from "./rbac";
+import { checkSpam, checkRateLimit, getClientIP } from "./spamProtection";
 import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema, insertArticleSchema, insertGuestbookEntrySchema, insertGuestbookCommentSchema, insertGuestbookEntryLikeSchema, insertGuestbookCommentLikeSchema, businesses as businessesTable, businessCategories, categories, articles, users, guestbookEntries, guestbookComments, guestbookEntryLikes, guestbookCommentLikes } from "@shared/schema";
 import { googlePlacesImporter } from "./googlePlacesImporter";
 import { z } from "zod";
@@ -643,6 +644,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Authentication required" });
       }
 
+      // Get client IP and user agent for spam protection
+      const clientIp = getClientIP(req);
+      const userAgent = req.headers['user-agent'] || '';
+
+      // Check rate limiting
+      const rateLimitCheck = await checkRateLimit(user.uid, 'guestbook_entry');
+      if (!rateLimitCheck.allowed) {
+        return res.status(429).json({ 
+          message: `Rate limit exceeded. You can post ${3} more entries in ${Math.ceil((rateLimitCheck.resetTime.getTime() - Date.now()) / (1000 * 60))} minutes.`,
+          resetTime: rateLimitCheck.resetTime
+        });
+      }
+
       // Get full user data from database for name
       const dbUser = await storage.getUser(user.uid);
       const displayName = dbUser?.firstName && dbUser?.lastName 
@@ -665,14 +679,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (cleanedBody.rating && typeof cleanedBody.rating === 'string') {
         cleanedBody.rating = parseInt(cleanedBody.rating, 10);
       }
+
+      // Check for spam content
+      const spamCheck = await checkSpam(cleanedBody.message, displayName);
+      
+      // Determine initial status based on spam check and user role
+      let status = 'pending';
+      if (spamCheck.isSpam) {
+        status = 'spam';
+      } else if (dbUser?.role === 'admin') {
+        status = 'approved'; // Auto-approve admin posts
+      }
       
       const entryData = insertGuestbookEntrySchema.parse({
         ...cleanedBody,
         authorId: user.uid,
-        authorName: displayName
+        authorName: displayName,
+        status,
+        isSpam: spamCheck.isSpam,
+        spamScore: spamCheck.spamScore,
+        ipAddress: clientIp,
+        userAgent: userAgent,
       });
 
       const entry = await storage.createGuestbookEntry(entryData);
+
+      // Log spam detection for review
+      if (spamCheck.isSpam) {
+        console.log(`🚨 Spam detected in guestbook entry ${entry.id}:`, {
+          score: spamCheck.spamScore,
+          reasons: spamCheck.reasons,
+          author: displayName,
+          preview: cleanedBody.message.substring(0, 100) + '...'
+        });
+      } else if (status === 'pending') {
+        console.log(`📝 New guestbook entry pending approval: ${entry.id} by ${displayName}`);
+      }
+
       res.status(201).json(entry);
     } catch (error) {
       console.error("Error creating guestbook entry:", error);
@@ -709,6 +752,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Authentication required" });
       }
 
+      // Check rate limiting for comments
+      const rateLimitCheck = await checkRateLimit(user.uid, 'guestbook_comment');
+      if (!rateLimitCheck.allowed) {
+        return res.status(429).json({ 
+          message: `Rate limit exceeded. You can post ${10} more comments in ${Math.ceil((rateLimitCheck.resetTime.getTime() - Date.now()) / (1000 * 60))} minutes.`,
+          resetTime: rateLimitCheck.resetTime
+        });
+      }
+
       const entryId = parseInt(req.params.id);
       
       // Get full user data from database for name
@@ -717,14 +769,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ? `${dbUser.firstName} ${dbUser.lastName}` 
         : user.email?.split('@')[0] || 'Anonymous';
 
+      // Check for spam in comment content
+      const spamCheck = await checkSpam(req.body.comment, displayName);
+      const clientIp = getClientIP(req);
+
+      // Determine initial status based on spam check and user role
+      let status = 'pending';
+      if (spamCheck.isSpam) {
+        status = 'spam';
+      } else if (dbUser?.role === 'admin') {
+        status = 'approved'; // Auto-approve admin comments
+      }
+
       const commentData = insertGuestbookCommentSchema.parse({
         ...req.body,
         entryId,
         authorId: user.uid,
-        authorName: displayName
+        authorName: displayName,
+        status,
+        isSpam: spamCheck.isSpam,
+        ipAddress: clientIp,
       });
 
       const comment = await storage.createGuestbookComment(commentData);
+
+      // Log spam detection for review
+      if (spamCheck.isSpam) {
+        console.log(`🚨 Spam detected in comment ${comment.id}:`, {
+          score: spamCheck.spamScore,
+          reasons: spamCheck.reasons,
+          author: displayName,
+          preview: req.body.comment.substring(0, 100) + '...'
+        });
+      }
+
       res.status(201).json(comment);
     } catch (error) {
       console.error("Error creating comment:", error);

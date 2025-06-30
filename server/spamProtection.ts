@@ -122,24 +122,27 @@ export async function checkRateLimit(
       .limit(1);
 
     if (existingRecord) {
-      if (existingRecord.count >= config.requests) {
+      const count = existingRecord.count || 0;
+      const windowStart = existingRecord.windowStart || new Date();
+      
+      if (count >= config.requests) {
         // Rate limit exceeded
         return {
           allowed: false,
           remainingRequests: 0,
-          resetTime: new Date(existingRecord.windowStart.getTime() + config.windowMinutes * 60 * 1000)
+          resetTime: new Date(windowStart.getTime() + config.windowMinutes * 60 * 1000)
         };
       } else {
         // Update existing record
         await db
           .update(rateLimits)
-          .set({ count: existingRecord.count + 1 })
+          .set({ count: count + 1 })
           .where(eq(rateLimits.id, existingRecord.id));
 
         return {
           allowed: true,
-          remainingRequests: config.requests - existingRecord.count - 1,
-          resetTime: new Date(existingRecord.windowStart.getTime() + config.windowMinutes * 60 * 1000)
+          remainingRequests: config.requests - count - 1,
+          resetTime: new Date(windowStart.getTime() + config.windowMinutes * 60 * 1000)
         };
       }
     } else {

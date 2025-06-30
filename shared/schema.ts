@@ -288,12 +288,17 @@ export const insertUserLikeSchema = createInsertSchema(userLikes).omit({
 export const insertGuestbookEntrySchema = createInsertSchema(guestbookEntries).omit({
   id: true,
   likes: true,
+  moderatedBy: true,
+  moderatedAt: true,
+  moderationNotes: true,
   createdAt: true,
 });
 
 export const insertGuestbookCommentSchema = createInsertSchema(guestbookComments).omit({
   id: true,
   likes: true,
+  moderatedBy: true,
+  moderatedAt: true,
   createdAt: true,
 });
 
