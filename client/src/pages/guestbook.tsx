@@ -235,8 +235,12 @@ export function Guestbook() {
 
   // Create comment mutation
   const createCommentMutation = useMutation({
-    mutationFn: async ({ entryId, comment }: { entryId: number; comment: string }) => {
-      return apiRequest('POST', `/api/guestbook/${entryId}/comments`, { comment });
+    mutationFn: async ({ entryId, comment, parentCommentId }: { entryId: number; comment: string; parentCommentId?: number }) => {
+      const payload: { comment: string; parentCommentId?: number } = { comment };
+      if (parentCommentId) {
+        payload.parentCommentId = parentCommentId;
+      }
+      return apiRequest('POST', `/api/guestbook/${entryId}/comments`, payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
@@ -386,7 +390,7 @@ export function Guestbook() {
       createCommentMutation.mutate({
         entryId: commentingOn,
         comment: comment,
-        ...(replyingTo && { parentCommentId: replyingTo }),
+        parentCommentId: replyingTo || undefined,
       });
       commentForm.reset();
       setReplyingTo(null);
