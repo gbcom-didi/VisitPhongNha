@@ -183,7 +183,7 @@ function CommentItem({
               commentForm={commentForm}
               onSubmitComment={onSubmitComment}
               createCommentMutation={createCommentMutation}
-              handleLikeComment={handleLikeComment}
+
               level={level + 1}
             />
           ))}
@@ -282,95 +282,7 @@ export function Guestbook() {
     },
   });
 
-  // Like entry mutation
-  const likeEntryMutation = useMutation({
-    mutationFn: async (entryId: number) => {
-      return apiRequest('POST', `/api/guestbook/${entryId}/like`);
-    },
-    onMutate: async (entryId) => {
-      // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['/api/guestbook'] });
 
-      // Snapshot the previous value
-      const previousEntries = queryClient.getQueryData(['/api/guestbook']);
-
-      // Optimistically update
-      queryClient.setQueryData(['/api/guestbook'], (old: GuestbookEntryWithRelations[] | undefined) => {
-        if (!old) return old;
-        return old.map(entry => 
-          entry.id === entryId 
-            ? { 
-                ...entry, 
-                isLiked: !entry.isLiked,
-                likes: entry.isLiked ? (entry.likes || 1) - 1 : (entry.likes || 0) + 1
-              }
-            : entry
-        );
-      });
-
-      return { previousEntries };
-    },
-    onError: (err, entryId, context) => {
-      // Rollback on error
-      if (context?.previousEntries) {
-        queryClient.setQueryData(['/api/guestbook'], context.previousEntries);
-      }
-      toast({
-        title: 'Error',
-        description: 'Failed to toggle like',
-        variant: 'destructive',
-      });
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
-    },
-  });
-
-  // Like comment mutation
-  const likeCommentMutation = useMutation({
-    mutationFn: async (commentId: number) => {
-      return apiRequest('POST', `/api/guestbook/comments/${commentId}/like`);
-    },
-    onMutate: async (commentId) => {
-      // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['/api/guestbook'] });
-
-      // Snapshot the previous value
-      const previousEntries = queryClient.getQueryData(['/api/guestbook']);
-
-      // Optimistically update
-      queryClient.setQueryData(['/api/guestbook'], (old: GuestbookEntryWithRelations[] | undefined) => {
-        if (!old) return old;
-        return old.map(entry => ({
-          ...entry,
-          comments: entry.comments?.map(comment => 
-            comment.id === commentId 
-              ? { 
-                  ...comment, 
-                  likes: (comment.likes || 0) + 1 // Simplified - just increment
-                }
-              : comment
-          )
-        }));
-      });
-
-      return { previousEntries };
-    },
-    onError: (err, commentId, context) => {
-      // Rollback on error
-      if (context?.previousEntries) {
-        queryClient.setQueryData(['/api/guestbook'], context.previousEntries);
-      }
-      toast({
-        title: 'Error',
-        description: 'Failed to toggle like',
-        variant: 'destructive',
-      });
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
-    },
-  });
 
   // Form setup
   const entryForm = useForm<GuestbookEntryForm>({
@@ -419,31 +331,7 @@ export function Guestbook() {
     }
   };
 
-  const handleLikeEntry = (entryId: number) => {
-    if (!isAuthenticated) {
-      toast({
-        title: 'Sign in required',
-        description: 'Please sign in to like entries',
-        variant: 'destructive',
-      });
-      return;
-    }
-    
-    likeEntryMutation.mutate(entryId);
-  };
 
-  const handleLikeComment = (commentId: number) => {
-    if (!isAuthenticated) {
-      toast({
-        title: 'Sign in required',
-        description: 'Please sign in to like comments',
-        variant: 'destructive',
-      });
-      return;
-    }
-    
-    likeCommentMutation.mutate(commentId);
-  };
 
 
 
