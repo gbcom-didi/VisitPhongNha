@@ -852,6 +852,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get('/api/admin/guestbook/approved', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+    try {
+      const approvedEntries = await storage.getApprovedGuestbookEntries();
+      res.json(approvedEntries);
+    } catch (error) {
+      console.error("Error fetching approved entries:", error);
+      res.status(500).json({ message: "Failed to fetch approved entries" });
+    }
+  });
+
   app.post('/api/admin/guestbook/:id/moderate', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
     try {
       const { status, notes } = req.body;

@@ -719,6 +719,14 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(guestbookEntries.createdAt));
   }
 
+  async getApprovedGuestbookEntries(): Promise<GuestbookEntry[]> {
+    return await db
+      .select()
+      .from(guestbookEntries)
+      .where(eq(guestbookEntries.status, 'approved'))
+      .orderBy(desc(guestbookEntries.createdAt));
+  }
+
   async moderateGuestbookEntry(entryId: number, status: string, moderatorId: string, notes?: string): Promise<void> {
     await db
       .update(guestbookEntries)
