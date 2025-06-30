@@ -601,6 +601,13 @@ export class DatabaseStorage implements IStorage {
     return newEntry;
   }
 
+  async updateGuestbookEntry(entryId: number, updates: Partial<InsertGuestbookEntry>): Promise<void> {
+    await db
+      .update(guestbookEntries)
+      .set(updates)
+      .where(eq(guestbookEntries.id, entryId));
+  }
+
   async toggleGuestbookEntryLike(userId: string, entryId: number): Promise<{ liked: boolean }> {
     // Check if like already exists
     const [existingLike] = await db
