@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 import { Badge } from '@/components/ui/badge';
 import { Navigation } from '@/components/navigation';
+import { BusinessModal } from '@/components/business-modal';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Heart, MessageCircle, Star, MapPin, Globe, Calendar, Flag, User, Reply } from 'lucide-react';
@@ -211,6 +212,7 @@ export function Guestbook() {
   const [commentingOn, setCommentingOn] = useState<number | null>(null);
   const [selectedEntry, setSelectedEntry] = useState<GuestbookEntryWithRelations | null>(null);
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
+  const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);
 
   // Fetch guestbook entries
   const { data: entries = [], isLoading } = useQuery<GuestbookEntryWithRelations[]>({
@@ -221,6 +223,14 @@ export function Guestbook() {
   const { data: businesses = [] } = useQuery<BusinessWithCategory[]>({
     queryKey: ['/api/businesses'],
   });
+
+  // Helper function to handle business modal opening
+  const handleBusinessClick = (businessId: number) => {
+    const business = businesses.find(b => b.id === businessId);
+    if (business) {
+      setSelectedBusiness(business);
+    }
+  };
 
   // Create guestbook entry mutation
   const createEntryMutation = useMutation({
@@ -732,7 +742,14 @@ export function Guestbook() {
                   {/* Related Place */}
                   {entry.relatedPlace && (
                     <div className="mb-4">
-                      <Badge variant="secondary" className="bg-mango-yellow/20 text-gray-800 border-mango-yellow/30">
+                      <Badge 
+                        variant="secondary" 
+                        className="bg-mango-yellow/20 text-gray-800 border-mango-yellow/30 cursor-pointer hover:bg-mango-yellow/30 transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleBusinessClick(entry.relatedPlace!.id);
+                        }}
+                      >
                         <MapPin className="w-3 h-3 mr-1" />
                         {entry.relatedPlace.name}
                       </Badge>
@@ -813,7 +830,11 @@ export function Guestbook() {
                 {/* Related Place */}
                 {selectedEntry.relatedPlace && (
                   <div>
-                    <Badge variant="secondary" className="bg-mango-yellow/20 text-gray-800 border-mango-yellow/30">
+                    <Badge 
+                      variant="secondary" 
+                      className="bg-mango-yellow/20 text-gray-800 border-mango-yellow/30 cursor-pointer hover:bg-mango-yellow/30 transition-colors"
+                      onClick={() => handleBusinessClick(selectedEntry.relatedPlace!.id)}
+                    >
                       <MapPin className="w-3 h-3 mr-1" />
                       {selectedEntry.relatedPlace.name}
                     </Badge>
@@ -942,6 +963,15 @@ export function Guestbook() {
               </div>
             </DialogContent>
           </Dialog>
+        )}
+
+        {/* Business Modal */}
+        {selectedBusiness && (
+          <BusinessModal
+            business={selectedBusiness}
+            isOpen={!!selectedBusiness}
+            onClose={() => setSelectedBusiness(null)}
+          />
         )}
       </div>
     </div>
