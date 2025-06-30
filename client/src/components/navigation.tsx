@@ -15,6 +15,7 @@ export function Navigation() {
     { href: '/', label: 'Home' },
     { href: '/explore', label: 'Explore' },
     { href: '/inspiration', label: 'Inspiration' },
+    { href: '/guestbook', label: 'Guestbook' },
     { href: '/getting-here', label: 'Getting Here' },
     { href: '/about', label: 'About' },
     { href: '/contact', label: 'Contact' },

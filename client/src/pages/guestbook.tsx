@@ -434,7 +434,7 @@ export function Guestbook() {
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <div className="flex items-center">
                             <Calendar className="w-4 h-4 mr-1" />
-                            {formatDistanceToNow(new Date(entry.createdAt!), { addSuffix: true })}
+                            {entry.createdAt ? formatDistanceToNow(new Date(entry.createdAt), { addSuffix: true }) : 'Recently'}
                           </div>
                           {entry.nationality && (
                             <div className="flex items-center">
@@ -573,7 +573,7 @@ export function Guestbook() {
                                 {comment.authorName}
                               </span>
                               <span className="text-xs text-gray-500">
-                                {formatDistanceToNow(new Date(comment.createdAt!), { addSuffix: true })}
+                                {comment.createdAt ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true }) : 'Recently'}
                               </span>
                             </div>
                             

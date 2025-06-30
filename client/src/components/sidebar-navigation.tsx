@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'wouter';
-import { Home, Compass, Lightbulb, Plane, Info, Phone, User, LogOut, Heart } from 'lucide-react';
+import { Home, Compass, Lightbulb, BookOpen, Plane, Info, Phone, User, LogOut, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { SignInModal } from '@/components/auth/SignInModal';
@@ -16,6 +16,7 @@ export function SidebarNavigation() {
     { href: '/', icon: Home, label: 'Home' },
     { href: '/explore', icon: Compass, label: 'Explore' },
     { href: '/inspiration', icon: Lightbulb, label: 'Inspiration' },
+    { href: '/guestbook', icon: BookOpen, label: 'Guestbook' },
     { href: '/getting-here', icon: Plane, label: 'Getting Here' },
     { href: '/about', icon: Info, label: 'About' },
     { href: '/contact', icon: Phone, label: 'Contact' },
