@@ -20,6 +20,17 @@ import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { BusinessWithCategory, GuestbookEntryWithRelations } from '@shared/schema';
 import { formatDistanceToNow } from 'date-fns';
 
+// Helper function to format names with privacy (First Name + Last Initial)
+const formatPrivateName = (fullName: string): string => {
+  const nameParts = fullName.trim().split(' ');
+  if (nameParts.length === 1) {
+    return nameParts[0];
+  }
+  const firstName = nameParts[0];
+  const lastInitial = nameParts[nameParts.length - 1][0]?.toUpperCase();
+  return lastInitial ? `${firstName} ${lastInitial}.` : firstName;
+};
+
 // Form schema for guestbook entries
 const guestbookEntrySchema = z.object({
   message: z.string().min(1, 'Message is required').max(1000, 'Message must be less than 1000 characters'),
@@ -687,7 +698,7 @@ export function Guestbook() {
                         <User className="w-5 h-5 text-black" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900">{entry.authorName}</h3>
+                        <h3 className="font-semibold text-gray-900">{formatPrivateName(entry.authorName)}</h3>
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <div className="flex items-center">
                             <Calendar className="w-4 h-4 mr-1" />
@@ -766,7 +777,7 @@ export function Guestbook() {
                     <User className="w-5 h-5 text-black" />
                   </div>
                   <div>
-                    <span className="font-semibold text-gray-900">{selectedEntry.authorName}</span>
+                    <span className="font-semibold text-gray-900">{formatPrivateName(selectedEntry.authorName)}</span>
                     {selectedEntry.rating && (
                       <div className="flex items-center space-x-1 mt-1">
                         {renderStars(selectedEntry.rating)}
@@ -775,7 +786,7 @@ export function Guestbook() {
                   </div>
                 </DialogTitle>
                 <DialogDescription>
-                  Travel experience from {selectedEntry.authorName} {selectedEntry.nationality && `from ${selectedEntry.nationality}`}
+                  Travel experience from {formatPrivateName(selectedEntry.authorName)} {selectedEntry.nationality && `from ${selectedEntry.nationality}`}
                 </DialogDescription>
               </DialogHeader>
 
