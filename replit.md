@@ -235,6 +235,12 @@ Changelog:
   - Map automatically pans and zooms to show hovered business location
   - All markers reset to normal color and size when hover ends
   - Enhanced user experience with smooth pan and zoom animations
+- June 27, 2025. Fixed React console warnings and TypeScript errors
+  - Added missing DialogDescription to BusinessModal for proper accessibility
+  - Fixed TypeScript rating field errors with parseFloat conversions and null handling
+  - Updated Map component render function to always return ReactElement instead of null
+  - Applied consistent rating number formatting (toFixed(1)) across business cards, modals, and favorites page
+  - Resolved all React warnings and TypeScript compilation errors for cleaner console output
 ```
 
 ## User Preferences

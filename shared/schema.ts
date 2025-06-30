@@ -97,10 +97,51 @@ export const userLikes = pgTable("user_likes", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Guestbook tables
+export const guestbookEntries = pgTable("guestbook_entries", {
+  id: serial("id").primaryKey(),
+  authorId: varchar("author_id").references(() => users.id).notNull(),
+  authorName: varchar("author_name", { length: 255 }).notNull(),
+  message: text("message").notNull(),
+  nationality: varchar("nationality", { length: 100 }),
+  location: text("location"), // Google Maps URL or description
+  latitude: decimal("latitude", { precision: 10, scale: 8 }),
+  longitude: decimal("longitude", { precision: 11, scale: 8 }),
+  relatedPlaceId: integer("related_place_id").references(() => businesses.id),
+  rating: integer("rating"), // 1-5 star rating
+  likes: integer("likes").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const guestbookComments = pgTable("guestbook_comments", {
+  id: serial("id").primaryKey(),
+  entryId: integer("entry_id").references(() => guestbookEntries.id).notNull(),
+  authorId: varchar("author_id").references(() => users.id).notNull(),
+  authorName: varchar("author_name", { length: 255 }).notNull(),
+  comment: text("comment").notNull(),
+  likes: integer("likes").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const guestbookEntryLikes = pgTable("guestbook_entry_likes", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  entryId: integer("entry_id").references(() => guestbookEntries.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const guestbookCommentLikes = pgTable("guestbook_comment_likes", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  commentId: integer("comment_id").references(() => guestbookComments.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const businessesRelations = relations(businesses, ({ many }) => ({
   businessCategories: many(businessCategories),
   likes: many(userLikes),
+  guestbookEntries: many(guestbookEntries),
 }));
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
@@ -131,6 +172,58 @@ export const userLikesRelations = relations(userLikes, ({ one }) => ({
 
 export const usersRelations = relations(users, ({ many }) => ({
   likes: many(userLikes),
+  guestbookEntries: many(guestbookEntries),
+  guestbookComments: many(guestbookComments),
+  guestbookEntryLikes: many(guestbookEntryLikes),
+  guestbookCommentLikes: many(guestbookCommentLikes),
+}));
+
+// Guestbook relations
+export const guestbookEntriesRelations = relations(guestbookEntries, ({ one, many }) => ({
+  author: one(users, {
+    fields: [guestbookEntries.authorId],
+    references: [users.id],
+  }),
+  relatedPlace: one(businesses, {
+    fields: [guestbookEntries.relatedPlaceId],
+    references: [businesses.id],
+  }),
+  comments: many(guestbookComments),
+  likes: many(guestbookEntryLikes),
+}));
+
+export const guestbookCommentsRelations = relations(guestbookComments, ({ one, many }) => ({
+  entry: one(guestbookEntries, {
+    fields: [guestbookComments.entryId],
+    references: [guestbookEntries.id],
+  }),
+  author: one(users, {
+    fields: [guestbookComments.authorId],
+    references: [users.id],
+  }),
+  likes: many(guestbookCommentLikes),
+}));
+
+export const guestbookEntryLikesRelations = relations(guestbookEntryLikes, ({ one }) => ({
+  user: one(users, {
+    fields: [guestbookEntryLikes.userId],
+    references: [users.id],
+  }),
+  entry: one(guestbookEntries, {
+    fields: [guestbookEntryLikes.entryId],
+    references: [guestbookEntries.id],
+  }),
+}));
+
+export const guestbookCommentLikesRelations = relations(guestbookCommentLikes, ({ one }) => ({
+  user: one(users, {
+    fields: [guestbookCommentLikes.userId],
+    references: [users.id],
+  }),
+  comment: one(guestbookComments, {
+    fields: [guestbookCommentLikes.commentId],
+    references: [guestbookComments.id],
+  }),
 }));
 
 // Schemas
@@ -157,6 +250,29 @@ export const insertUserLikeSchema = createInsertSchema(userLikes).omit({
   createdAt: true,
 });
 
+// Guestbook schemas
+export const insertGuestbookEntrySchema = createInsertSchema(guestbookEntries).omit({
+  id: true,
+  likes: true,
+  createdAt: true,
+});
+
+export const insertGuestbookCommentSchema = createInsertSchema(guestbookComments).omit({
+  id: true,
+  likes: true,
+  createdAt: true,
+});
+
+export const insertGuestbookEntryLikeSchema = createInsertSchema(guestbookEntryLikes).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertGuestbookCommentLikeSchema = createInsertSchema(guestbookCommentLikes).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -168,6 +284,25 @@ export type BusinessCategory = typeof businessCategories.$inferSelect;
 export type InsertBusinessCategory = z.infer<typeof insertBusinessCategorySchema>;
 export type UserLike = typeof userLikes.$inferSelect;
 export type InsertUserLike = z.infer<typeof insertUserLikeSchema>;
+
+// Guestbook types
+export type GuestbookEntry = typeof guestbookEntries.$inferSelect;
+export type InsertGuestbookEntry = z.infer<typeof insertGuestbookEntrySchema>;
+export type GuestbookComment = typeof guestbookComments.$inferSelect;
+export type InsertGuestbookComment = z.infer<typeof insertGuestbookCommentSchema>;
+export type GuestbookEntryLike = typeof guestbookEntryLikes.$inferSelect;
+export type InsertGuestbookEntryLike = z.infer<typeof insertGuestbookEntryLikeSchema>;
+export type GuestbookCommentLike = typeof guestbookCommentLikes.$inferSelect;
+export type InsertGuestbookCommentLike = z.infer<typeof insertGuestbookCommentLikeSchema>;
+
+// Extended types with relations
+export type GuestbookEntryWithRelations = GuestbookEntry & {
+  author: User;
+  relatedPlace?: Business;
+  comments: (GuestbookComment & { author: User })[];
+  isLiked?: boolean;
+  commentCount?: number;
+};
 
 // Articles table
 export const articles = pgTable("articles", {
