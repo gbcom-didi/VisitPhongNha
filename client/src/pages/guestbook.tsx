@@ -766,11 +766,26 @@ export function Guestbook() {
                     </div>
                   </div>
 
-                  {isAuthenticated && (
+                  {isAuthenticated ? (
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => setCommentingOn(commentingOn === selectedEntry.id ? null : selectedEntry.id)}
+                      className="text-mango-yellow border-mango-yellow hover:bg-mango-yellow hover:text-black"
+                    >
+                      <MessageCircle className="w-4 h-4 mr-1" />
+                      Add Comment
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        toast({
+                          title: 'Sign in required',
+                          description: 'Please sign in to add comments and share your travel experiences.',
+                        });
+                      }}
                       className="text-mango-yellow border-mango-yellow hover:bg-mango-yellow hover:text-black"
                     >
                       <MessageCircle className="w-4 h-4 mr-1" />
