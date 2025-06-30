@@ -16,7 +16,7 @@ import { Navigation } from '@/components/navigation';
 import { BusinessModal } from '@/components/business-modal';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { Heart, MessageCircle, Star, MapPin, Globe, Calendar, Flag, User, Reply } from 'lucide-react';
+import { MessageCircle, Star, MapPin, Globe, Calendar, Flag, User, Reply } from 'lucide-react';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { BusinessWithCategory, GuestbookEntryWithRelations } from '@shared/schema';
 import { formatDistanceToNow } from 'date-fns';
@@ -62,7 +62,6 @@ interface CommentItemProps {
   commentForm: any;
   onSubmitComment: (data: CommentForm) => void;
   createCommentMutation: any;
-  handleLikeComment: (id: number) => void;
   level: number;
 }
 
@@ -76,7 +75,6 @@ function CommentItem({
   commentForm, 
   onSubmitComment, 
   createCommentMutation, 
-  handleLikeComment, 
   level 
 }: CommentItemProps) {
   return (
@@ -95,17 +93,7 @@ function CommentItem({
             </span>
           </div>
           
-          <div className="flex items-center space-x-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleLikeComment(comment.id)}
-              className="text-gray-600 hover:text-red-500 h-6 px-2"
-            >
-              <Heart className="w-3 h-3 mr-1" />
-              {comment.likes || 0}
-            </Button>
-          </div>
+
         </div>
         <p className="text-sm text-gray-700 mb-2">{comment.comment}</p>
         
@@ -780,19 +768,6 @@ export function Guestbook() {
                   {/* Entry Actions */}
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                     <div className="flex items-center space-x-4">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleLikeEntry(entry.id);
-                        }}
-                        className="text-gray-600 hover:text-red-500"
-                      >
-                        <Heart className={`w-4 h-4 mr-1 ${entry.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-                        {entry.likes || 0}
-                      </Button>
-                      
                       <div className="flex items-center text-gray-600">
                         <MessageCircle className="w-4 h-4 mr-1" />
                         {entry.commentCount || 0}
@@ -897,16 +872,6 @@ export function Guestbook() {
                 {/* Entry Actions */}
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                   <div className="flex items-center space-x-4">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleLikeEntry(selectedEntry.id)}
-                      className="text-gray-600 hover:text-red-500"
-                    >
-                      <Heart className={`w-4 h-4 mr-1 ${selectedEntry.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-                      {selectedEntry.likes || 0}
-                    </Button>
-                    
                     <div className="flex items-center text-gray-600">
                       <MessageCircle className="w-4 h-4 mr-1" />
                       {selectedEntry.commentCount || 0}
@@ -986,7 +951,7 @@ export function Guestbook() {
                         commentForm={commentForm}
                         onSubmitComment={onSubmitComment}
                         createCommentMutation={createCommentMutation}
-                        handleLikeComment={handleLikeComment}
+
                         level={0}
                       />
                     ))}
