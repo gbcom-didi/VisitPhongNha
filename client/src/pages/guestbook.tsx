@@ -236,6 +236,7 @@ export function Guestbook() {
       });
       commentForm.reset();
       setReplyingTo(null);
+      setCommentingOn(null);
     }
   };
 
@@ -762,7 +763,15 @@ export function Guestbook() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
+                            onClick={() => {
+                              if (replyingTo === comment.id) {
+                                setReplyingTo(null);
+                                setCommentingOn(null);
+                              } else {
+                                setReplyingTo(comment.id);
+                                setCommentingOn(selectedEntry.id);
+                              }
+                            }}
                             className="text-xs text-mango-yellow hover:text-mango-yellow/80 h-6 px-2"
                           >
                             <Reply className="w-3 h-3 mr-1" />
@@ -804,7 +813,11 @@ export function Guestbook() {
                                     type="button"
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => setReplyingTo(null)}
+                                    onClick={() => {
+                                      setReplyingTo(null);
+                                      setCommentingOn(null);
+                                      commentForm.reset();
+                                    }}
                                     className="text-xs h-7"
                                   >
                                     Cancel
