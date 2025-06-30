@@ -638,17 +638,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create a new guestbook entry
   app.post('/api/guestbook', verifyFirebaseToken, async (req, res) => {
     try {
-      const user = req.user;
+      const user = req.user as any; // Firebase user object
       if (!user) {
         return res.status(401).json({ message: "Authentication required" });
       }
 
+      // Get full user data from database for name
+      const dbUser = await storage.getUser(user.uid);
+      const displayName = dbUser?.firstName && dbUser?.lastName 
+        ? `${dbUser.firstName} ${dbUser.lastName}` 
+        : user.email?.split('@')[0] || 'Anonymous';
+
       const entryData = insertGuestbookEntrySchema.parse({
         ...req.body,
-        authorId: user.id,
-        authorName: user.firstName && user.lastName 
-          ? `${user.firstName} ${user.lastName}` 
-          : user.email?.split('@')[0] || 'Anonymous'
+        authorId: user.uid,
+        authorName: displayName
       });
 
       const entry = await storage.createGuestbookEntry(entryData);
@@ -672,7 +676,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const entryId = parseInt(req.params.id);
-      const result = await storage.toggleGuestbookEntryLike(user.id, entryId);
+      const result = await storage.toggleGuestbookEntryLike(user.uid, entryId);
       res.json(result);
     } catch (error) {
       console.error("Error toggling entry like:", error);
@@ -689,13 +693,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const entryId = parseInt(req.params.id);
+      
+      // Get full user data from database for name
+      const dbUser = await storage.getUser(user.uid);
+      const displayName = dbUser?.firstName && dbUser?.lastName 
+        ? `${dbUser.firstName} ${dbUser.lastName}` 
+        : user.email?.split('@')[0] || 'Anonymous';
+
       const commentData = insertGuestbookCommentSchema.parse({
         ...req.body,
         entryId,
-        authorId: user.id,
-        authorName: user.firstName && user.lastName 
-          ? `${user.firstName} ${user.lastName}` 
-          : user.email?.split('@')[0] || 'Anonymous'
+        authorId: user.uid,
+        authorName: displayName
       });
 
       const comment = await storage.createGuestbookComment(commentData);
@@ -719,7 +728,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const commentId = parseInt(req.params.id);
-      const result = await storage.toggleGuestbookCommentLike(user.id, commentId);
+      const result = await storage.toggleGuestbookCommentLike(user.uid, commentId);
       res.json(result);
     } catch (error) {
       console.error("Error toggling comment like:", error);

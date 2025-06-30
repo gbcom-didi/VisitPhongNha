@@ -609,7 +609,7 @@ export class DatabaseStorage implements IStorage {
       // Decrement likes count
       await db
         .update(guestbookEntries)
-        .set({ likes: db.raw('likes - 1') })
+        .set({ likes: sql`${guestbookEntries.likes} - 1` })
         .where(eq(guestbookEntries.id, entryId));
 
       return { liked: false };
@@ -622,7 +622,7 @@ export class DatabaseStorage implements IStorage {
       // Increment likes count
       await db
         .update(guestbookEntries)
-        .set({ likes: db.raw('likes + 1') })
+        .set({ likes: sql`${guestbookEntries.likes} + 1` })
         .where(eq(guestbookEntries.id, entryId));
 
       return { liked: true };
@@ -660,7 +660,7 @@ export class DatabaseStorage implements IStorage {
       // Decrement likes count
       await db
         .update(guestbookComments)
-        .set({ likes: db.raw('likes - 1') })
+        .set({ likes: sql`${guestbookComments.likes} - 1` })
         .where(eq(guestbookComments.id, commentId));
 
       return { liked: false };
@@ -673,7 +673,7 @@ export class DatabaseStorage implements IStorage {
       // Increment likes count
       await db
         .update(guestbookComments)
-        .set({ likes: db.raw('likes + 1') })
+        .set({ likes: sql`${guestbookComments.likes} + 1` })
         .where(eq(guestbookComments.id, commentId));
 
       return { liked: true };
