@@ -27,7 +27,7 @@ import {
   type GuestbookEntryWithRelations,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, asc, inArray, sql } from "drizzle-orm";
+import { eq, and, or, desc, asc, inArray, sql } from "drizzle-orm";
 
 // Interface for storage operations
 export interface IStorage {
@@ -71,6 +71,12 @@ export interface IStorage {
   toggleGuestbookEntryLike(userId: string, entryId: number): Promise<{ liked: boolean }>;
   createGuestbookComment(comment: InsertGuestbookComment): Promise<GuestbookComment>;
   toggleGuestbookCommentLike(userId: string, commentId: number): Promise<{ liked: boolean }>;
+  
+  // Admin moderation operations
+  getPendingGuestbookEntries(): Promise<GuestbookEntry[]>;
+  getSpamGuestbookEntries(): Promise<GuestbookEntry[]>;
+  moderateGuestbookEntry(entryId: number, status: string, moderatorId: string, notes?: string): Promise<void>;
+  moderateGuestbookComment(commentId: number, status: string, moderatorId: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -686,6 +692,49 @@ export class DatabaseStorage implements IStorage {
 
       return { liked: true };
     }
+  }
+
+  // Admin moderation operations
+  async getPendingGuestbookEntries(): Promise<GuestbookEntry[]> {
+    return await db
+      .select()
+      .from(guestbookEntries)
+      .where(eq(guestbookEntries.status, 'pending'))
+      .orderBy(desc(guestbookEntries.createdAt));
+  }
+
+  async getSpamGuestbookEntries(): Promise<GuestbookEntry[]> {
+    return await db
+      .select()
+      .from(guestbookEntries)
+      .where(or(
+        eq(guestbookEntries.status, 'spam'),
+        eq(guestbookEntries.isSpam, true)
+      ))
+      .orderBy(desc(guestbookEntries.createdAt));
+  }
+
+  async moderateGuestbookEntry(entryId: number, status: string, moderatorId: string, notes?: string): Promise<void> {
+    await db
+      .update(guestbookEntries)
+      .set({
+        status,
+        moderatedBy: moderatorId,
+        moderationNotes: notes || null,
+        isSpam: status === 'spam'
+      })
+      .where(eq(guestbookEntries.id, entryId));
+  }
+
+  async moderateGuestbookComment(commentId: number, status: string, moderatorId: string): Promise<void> {
+    await db
+      .update(guestbookComments)
+      .set({
+        status,
+        moderatedBy: moderatorId,
+        isSpam: status === 'spam'
+      })
+      .where(eq(guestbookComments.id, commentId));
   }
 }
 

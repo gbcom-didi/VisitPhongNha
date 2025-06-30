@@ -24,12 +24,12 @@ interface PendingEntry {
 }
 
 export function ModerationPage() {
-  const { user, role } = useAuth();
+  const { currentUser, canAccessAdmin } = useAuth();
   const { toast } = useToast();
   const [moderationNotes, setModerationNotes] = useState<{ [key: number]: string }>({});
 
   // Redirect non-admin users
-  if (role !== 'admin') {
+  if (!canAccessAdmin()) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Navigation />
@@ -49,13 +49,13 @@ export function ModerationPage() {
   // Fetch pending entries
   const { data: pendingEntries = [], isLoading: pendingLoading } = useQuery({
     queryKey: ['/api/admin/guestbook/pending'],
-    enabled: role === 'admin',
+    enabled: canAccessAdmin(),
   });
 
   // Fetch spam entries
   const { data: spamEntries = [], isLoading: spamLoading } = useQuery({
     queryKey: ['/api/admin/guestbook/spam'],
-    enabled: role === 'admin',
+    enabled: canAccessAdmin(),
   });
 
   // Moderation mutation
@@ -63,7 +63,10 @@ export function ModerationPage() {
     mutationFn: async ({ entryId, status, notes }: { entryId: number; status: string; notes?: string }) => {
       return apiRequest(`/api/admin/guestbook/${entryId}/moderate`, {
         method: 'POST',
-        body: { status, notes },
+        body: JSON.stringify({ status, notes }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     },
     onSuccess: () => {
