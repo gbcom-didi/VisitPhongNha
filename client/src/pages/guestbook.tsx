@@ -744,7 +744,8 @@ export function Guestbook() {
                     <div className="mb-4">
                       <Badge 
                         variant="secondary" 
-                        className="bg-mango-yellow/20 text-gray-800 border-mango-yellow/30 cursor-pointer hover:bg-mango-yellow/30 transition-colors px-3 py-1.5 text-sm font-medium"
+                        className="bg-yellow-100 text-yellow-800 border-yellow-200 cursor-pointer hover:bg-yellow-200 transition-colors px-3 py-1.5 text-sm font-medium"
+                        style={{ backgroundColor: '#FEF3C7', color: '#92400e', borderColor: '#FDE68A' }}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleBusinessClick(entry.relatedPlace!.id);
@@ -832,7 +833,8 @@ export function Guestbook() {
                   <div>
                     <Badge 
                       variant="secondary" 
-                      className="bg-mango-yellow/20 text-gray-800 border-mango-yellow/30 cursor-pointer hover:bg-mango-yellow/30 transition-colors px-3 py-1.5 text-sm font-medium"
+                      className="bg-yellow-100 text-yellow-800 border-yellow-200 cursor-pointer hover:bg-yellow-200 transition-colors px-3 py-1.5 text-sm font-medium"
+                      style={{ backgroundColor: '#FEF3C7', color: '#92400e', borderColor: '#FDE68A' }}
                       onClick={() => handleBusinessClick(selectedEntry.relatedPlace!.id)}
                     >
                       <MapPin className="w-3 h-3 mr-1" />
