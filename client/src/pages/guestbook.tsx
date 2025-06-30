@@ -46,7 +46,6 @@ export function Guestbook() {
   const [commentingOn, setCommentingOn] = useState<number | null>(null);
   const [selectedEntry, setSelectedEntry] = useState<GuestbookEntryWithRelations | null>(null);
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
-  const [optimisticLikes, setOptimisticLikes] = useState<{[key: string]: boolean}>({});
 
   // Fetch guestbook entries
   const { data: entries = [], isLoading } = useQuery<GuestbookEntryWithRelations[]>({
@@ -110,15 +109,42 @@ export function Guestbook() {
     mutationFn: async (entryId: number) => {
       return apiRequest('POST', `/api/guestbook/${entryId}/like`);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
+    onMutate: async (entryId) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['/api/guestbook'] });
+
+      // Snapshot the previous value
+      const previousEntries = queryClient.getQueryData(['/api/guestbook']);
+
+      // Optimistically update
+      queryClient.setQueryData(['/api/guestbook'], (old: GuestbookEntryWithRelations[] | undefined) => {
+        if (!old) return old;
+        return old.map(entry => 
+          entry.id === entryId 
+            ? { 
+                ...entry, 
+                isLiked: !entry.isLiked,
+                likes: entry.isLiked ? (entry.likes || 1) - 1 : (entry.likes || 0) + 1
+              }
+            : entry
+        );
+      });
+
+      return { previousEntries };
     },
-    onError: (error: any) => {
+    onError: (err, entryId, context) => {
+      // Rollback on error
+      if (context?.previousEntries) {
+        queryClient.setQueryData(['/api/guestbook'], context.previousEntries);
+      }
       toast({
         title: 'Error',
-        description: error.message || 'Failed to toggle like',
+        description: 'Failed to toggle like',
         variant: 'destructive',
       });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
     },
   });
 
@@ -127,15 +153,44 @@ export function Guestbook() {
     mutationFn: async (commentId: number) => {
       return apiRequest('POST', `/api/guestbook/comments/${commentId}/like`);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
+    onMutate: async (commentId) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['/api/guestbook'] });
+
+      // Snapshot the previous value
+      const previousEntries = queryClient.getQueryData(['/api/guestbook']);
+
+      // Optimistically update
+      queryClient.setQueryData(['/api/guestbook'], (old: GuestbookEntryWithRelations[] | undefined) => {
+        if (!old) return old;
+        return old.map(entry => ({
+          ...entry,
+          comments: entry.comments?.map(comment => 
+            comment.id === commentId 
+              ? { 
+                  ...comment, 
+                  likes: (comment.likes || 0) + 1 // Simplified - just increment
+                }
+              : comment
+          )
+        }));
+      });
+
+      return { previousEntries };
     },
-    onError: (error: any) => {
+    onError: (err, commentId, context) => {
+      // Rollback on error
+      if (context?.previousEntries) {
+        queryClient.setQueryData(['/api/guestbook'], context.previousEntries);
+      }
       toast({
         title: 'Error',
-        description: error.message || 'Failed to toggle like',
+        description: 'Failed to toggle like',
         variant: 'destructive',
       });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
     },
   });
 
@@ -194,23 +249,7 @@ export function Guestbook() {
       return;
     }
     
-    // Optimistic update
-    const key = `entry-${entryId}`;
-    setOptimisticLikes(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
-    
-    likeEntryMutation.mutate(entryId, {
-      onSettled: () => {
-        // Clear optimistic state after mutation completes
-        setOptimisticLikes(prev => {
-          const newState = { ...prev };
-          delete newState[key];
-          return newState;
-        });
-      }
-    });
+    likeEntryMutation.mutate(entryId);
   };
 
   const handleLikeComment = (commentId: number) => {
@@ -223,29 +262,7 @@ export function Guestbook() {
       return;
     }
     
-    // Optimistic update
-    const key = `comment-${commentId}`;
-    setOptimisticLikes(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
-    
-    likeCommentMutation.mutate(commentId, {
-      onSettled: () => {
-        // Clear optimistic state after mutation completes
-        setOptimisticLikes(prev => {
-          const newState = { ...prev };
-          delete newState[key];
-          return newState;
-        });
-      }
-    });
-  };
-
-  // Helper function to determine if something is liked (with optimistic updates)
-  const isLiked = (type: 'entry' | 'comment', id: number, currentLiked: boolean) => {
-    const key = `${type}-${id}`;
-    return optimisticLikes[key] !== undefined ? optimisticLikes[key] : currentLiked;
+    likeCommentMutation.mutate(commentId);
   };
 
 
@@ -541,7 +558,7 @@ export function Guestbook() {
                         }}
                         className="text-gray-600 hover:text-red-500"
                       >
-                        <Heart className={`w-4 h-4 mr-1 ${isLiked('entry', entry.id, entry.isLiked || false) ? 'fill-red-500 text-red-500' : ''}`} />
+                        <Heart className={`w-4 h-4 mr-1 ${entry.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
                         {entry.likes || 0}
                       </Button>
                       
@@ -640,7 +657,7 @@ export function Guestbook() {
                       onClick={() => handleLikeEntry(selectedEntry.id)}
                       className="text-gray-600 hover:text-red-500"
                     >
-                      <Heart className={`w-4 h-4 mr-1 ${isLiked('entry', selectedEntry.id, selectedEntry.isLiked || false) ? 'fill-red-500 text-red-500' : ''}`} />
+                      <Heart className={`w-4 h-4 mr-1 ${selectedEntry.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
                       {selectedEntry.likes || 0}
                     </Button>
                     
@@ -733,7 +750,7 @@ export function Guestbook() {
                               onClick={() => handleLikeComment(comment.id)}
                               className="text-gray-600 hover:text-red-500 h-6 px-2"
                             >
-                              <Heart className={`w-3 h-3 mr-1 ${isLiked('comment', comment.id, false) ? 'fill-red-500 text-red-500' : ''}`} />
+                              <Heart className="w-3 h-3 mr-1" />
                               {comment.likes || 0}
                             </Button>
                           </div>
