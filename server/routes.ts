@@ -670,7 +670,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Like/unlike a guestbook entry
   app.post('/api/guestbook/:id/like', verifyFirebaseToken, async (req, res) => {
     try {
-      const user = req.user;
+      const user = req.user as any; // Firebase user object
       if (!user) {
         return res.status(401).json({ message: "Authentication required" });
       }
@@ -687,7 +687,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Add a comment to a guestbook entry
   app.post('/api/guestbook/:id/comments', verifyFirebaseToken, async (req, res) => {
     try {
-      const user = req.user;
+      const user = req.user as any; // Firebase user object
       if (!user) {
         return res.status(401).json({ message: "Authentication required" });
       }
@@ -722,7 +722,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Like/unlike a comment
   app.post('/api/guestbook/comments/:id/like', verifyFirebaseToken, async (req, res) => {
     try {
-      const user = req.user;
+      const user = req.user as any; // Firebase user object
       if (!user) {
         return res.status(401).json({ message: "Authentication required" });
       }

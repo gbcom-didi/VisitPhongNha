@@ -16,6 +16,7 @@ import About from "@/pages/about";
 import Contact from "@/pages/contact";
 import Admin from "@/pages/admin";
 import { Favorites } from "@/pages/favorites";
+import { Guestbook } from "@/pages/guestbook";
 
 function Router() {
   const { isAuthenticated, loading } = useAuth();
@@ -39,6 +40,7 @@ function Router() {
       <Route path="/contact" component={Contact} />
       <Route path="/admin" component={Admin} />
       <Route path="/saved" component={Favorites} />
+      <Route path="/guestbook" component={Guestbook} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>

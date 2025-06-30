@@ -1,0 +1,603 @@
+import { useState } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Navigation } from '@/components/navigation';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
+import { Heart, MessageCircle, Star, MapPin, Globe, Calendar, Flag, User } from 'lucide-react';
+import { apiRequest, queryClient } from '@/lib/queryClient';
+import type { BusinessWithCategory, GuestbookEntryWithRelations } from '@shared/schema';
+import { formatDistanceToNow } from 'date-fns';
+
+// Form schema for guestbook entries
+const guestbookEntrySchema = z.object({
+  message: z.string().min(1, 'Message is required').max(1000, 'Message must be less than 1000 characters'),
+  nationality: z.string().optional(),
+  location: z.string().optional(),
+  latitude: z.string().optional(),
+  longitude: z.string().optional(),
+  relatedPlaceId: z.number().optional(),
+  rating: z.number().min(1).max(5).optional(),
+});
+
+type GuestbookEntryForm = z.infer<typeof guestbookEntrySchema>;
+
+// Form schema for comments
+const commentSchema = z.object({
+  comment: z.string().min(1, 'Comment is required').max(500, 'Comment must be less than 500 characters'),
+});
+
+type CommentForm = z.infer<typeof commentSchema>;
+
+export function Guestbook() {
+  const { isAuthenticated } = useAuth();
+  const { toast } = useToast();
+  const [showForm, setShowForm] = useState(false);
+  const [commentingOn, setCommentingOn] = useState<number | null>(null);
+
+  // Fetch guestbook entries
+  const { data: entries = [], isLoading } = useQuery<GuestbookEntryWithRelations[]>({
+    queryKey: ['/api/guestbook'],
+  });
+
+  // Fetch businesses for the related place dropdown
+  const { data: businesses = [] } = useQuery<BusinessWithCategory[]>({
+    queryKey: ['/api/businesses'],
+  });
+
+  // Create guestbook entry mutation
+  const createEntryMutation = useMutation({
+    mutationFn: async (data: GuestbookEntryForm) => {
+      return apiRequest('POST', '/api/guestbook', data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
+      setShowForm(false);
+      entryForm.reset();
+      toast({
+        title: 'Success',
+        description: 'Your guestbook entry has been added!',
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to create guestbook entry',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // Create comment mutation
+  const createCommentMutation = useMutation({
+    mutationFn: async ({ entryId, comment }: { entryId: number; comment: string }) => {
+      return apiRequest('POST', `/api/guestbook/${entryId}/comments`, { comment });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
+      setCommentingOn(null);
+      toast({
+        title: 'Success',
+        description: 'Your comment has been added!',
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to add comment',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // Like entry mutation
+  const likeEntryMutation = useMutation({
+    mutationFn: async (entryId: number) => {
+      return apiRequest('POST', `/api/guestbook/${entryId}/like`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to toggle like',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // Like comment mutation
+  const likeCommentMutation = useMutation({
+    mutationFn: async (commentId: number) => {
+      return apiRequest('POST', `/api/guestbook/comments/${commentId}/like`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/guestbook'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to toggle like',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // Form setup
+  const entryForm = useForm<GuestbookEntryForm>({
+    resolver: zodResolver(guestbookEntrySchema),
+    defaultValues: {
+      message: '',
+      nationality: '',
+      location: '',
+      latitude: '',
+      longitude: '',
+      relatedPlaceId: undefined,
+      rating: undefined,
+    },
+  });
+
+  const commentForm = useForm<CommentForm>({
+    resolver: zodResolver(commentSchema),
+    defaultValues: {
+      comment: '',
+    },
+  });
+
+  const onSubmitEntry = (data: GuestbookEntryForm) => {
+    // Convert string fields to proper types
+    const submitData = {
+      ...data,
+      relatedPlaceId: data.relatedPlaceId || undefined,
+      rating: data.rating || undefined,
+    };
+    createEntryMutation.mutate(submitData);
+  };
+
+  const onSubmitComment = (data: CommentForm) => {
+    if (commentingOn) {
+      createCommentMutation.mutate({
+        entryId: commentingOn,
+        comment: data.comment,
+      });
+      commentForm.reset();
+    }
+  };
+
+  const handleLikeEntry = (entryId: number) => {
+    if (!isAuthenticated) {
+      toast({
+        title: 'Sign in required',
+        description: 'Please sign in to like entries',
+        variant: 'destructive',
+      });
+      return;
+    }
+    likeEntryMutation.mutate(entryId);
+  };
+
+  const handleLikeComment = (commentId: number) => {
+    if (!isAuthenticated) {
+      toast({
+        title: 'Sign in required',
+        description: 'Please sign in to like comments',
+        variant: 'destructive',
+      });
+      return;
+    }
+    likeCommentMutation.mutate(commentId);
+  };
+
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star
+        key={i}
+        className={`w-4 h-4 ${
+          i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+        }`}
+      />
+    ));
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navigation />
+        <div className="container mx-auto px-4 py-8">
+          <div className="animate-pulse space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-white rounded-lg h-32"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Travelers' Guestbook
+          </h1>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Share your experiences, memories, and recommendations from your journey in Phong Nha. 
+            Connect with fellow travelers and leave your mark on our community.
+          </p>
+        </div>
+
+        {/* Add Entry Button */}
+        {isAuthenticated && (
+          <div className="mb-8 text-center">
+            <Button
+              onClick={() => setShowForm(!showForm)}
+              className="bg-tropical-aqua text-white hover:bg-tropical-aqua/90"
+              size="lg"
+            >
+              {showForm ? 'Cancel' : 'Add Your Experience'}
+            </Button>
+          </div>
+        )}
+
+        {!isAuthenticated && (
+          <div className="mb-8 text-center">
+            <Card className="bg-tropical-aqua/10 border-tropical-aqua/20">
+              <CardContent className="pt-6">
+                <p className="text-gray-700 mb-4">
+                  Sign in to share your travel experiences and connect with other travelers!
+                </p>
+                <Button className="bg-tropical-aqua text-white hover:bg-tropical-aqua/90">
+                  Sign In to Continue
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Entry Form */}
+        {showForm && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Share Your Experience</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Form {...entryForm}>
+                <form onSubmit={entryForm.handleSubmit(onSubmitEntry)} className="space-y-6">
+                  <FormField
+                    control={entryForm.control}
+                    name="message"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Your Message *</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Share your experience, thoughts, or recommendations about Phong Nha..."
+                            className="min-h-[120px]"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={entryForm.control}
+                      name="nationality"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Nationality</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., Vietnam, Australia, United States" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={entryForm.control}
+                      name="location"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Current Location</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., Phong Nha town, or Google Maps URL" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={entryForm.control}
+                      name="relatedPlaceId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Related Place</FormLabel>
+                          <Select
+                            onValueChange={(value) => field.onChange(value ? parseInt(value) : undefined)}
+                            value={field.value?.toString() || ''}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a place (optional)" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {businesses.map((business) => (
+                                <SelectItem key={business.id} value={business.id.toString()}>
+                                  {business.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={entryForm.control}
+                      name="rating"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Overall Rating</FormLabel>
+                          <Select
+                            onValueChange={(value) => field.onChange(value ? parseInt(value) : undefined)}
+                            value={field.value?.toString() || ''}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Rate your experience" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="5">5 stars - Amazing!</SelectItem>
+                              <SelectItem value="4">4 stars - Great</SelectItem>
+                              <SelectItem value="3">3 stars - Good</SelectItem>
+                              <SelectItem value="2">2 stars - Okay</SelectItem>
+                              <SelectItem value="1">1 star - Poor</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="flex gap-4">
+                    <Button
+                      type="submit"
+                      disabled={createEntryMutation.isPending}
+                      className="bg-tropical-aqua text-white hover:bg-tropical-aqua/90"
+                    >
+                      {createEntryMutation.isPending ? 'Sharing...' : 'Share Experience'}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowForm(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Guestbook Entries */}
+        <div className="space-y-6">
+          {entries.length === 0 ? (
+            <Card>
+              <CardContent className="text-center py-12">
+                <MessageCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  No entries yet
+                </h3>
+                <p className="text-gray-600">
+                  Be the first to share your experience in Phong Nha!
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            entries.map((entry) => (
+              <Card key={entry.id} className="overflow-hidden">
+                <CardContent className="p-6">
+                  {/* Entry Header */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-tropical-aqua rounded-full flex items-center justify-center">
+                        <User className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900">{entry.authorName}</h3>
+                        <div className="flex items-center space-x-4 text-sm text-gray-500">
+                          <div className="flex items-center">
+                            <Calendar className="w-4 h-4 mr-1" />
+                            {formatDistanceToNow(new Date(entry.createdAt!), { addSuffix: true })}
+                          </div>
+                          {entry.nationality && (
+                            <div className="flex items-center">
+                              <Flag className="w-4 h-4 mr-1" />
+                              {entry.nationality}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Rating */}
+                    {entry.rating && (
+                      <div className="flex items-center space-x-1">
+                        {renderStars(entry.rating)}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Entry Content */}
+                  <div className="mb-4">
+                    <p className="text-gray-800 leading-relaxed">{entry.message}</p>
+                  </div>
+
+                  {/* Related Place */}
+                  {entry.relatedPlace && (
+                    <div className="mb-4">
+                      <Badge variant="secondary" className="bg-tropical-aqua/10 text-tropical-aqua border-tropical-aqua/20">
+                        <MapPin className="w-3 h-3 mr-1" />
+                        {entry.relatedPlace.name}
+                      </Badge>
+                    </div>
+                  )}
+
+                  {/* Location */}
+                  {entry.location && (
+                    <div className="mb-4">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Globe className="w-4 h-4 mr-1" />
+                        {entry.location.startsWith('http') ? (
+                          <a
+                            href={entry.location}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-tropical-aqua hover:underline"
+                          >
+                            View on Google Maps
+                          </a>
+                        ) : (
+                          entry.location
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Entry Actions */}
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div className="flex items-center space-x-4">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleLikeEntry(entry.id)}
+                        className="text-gray-600 hover:text-red-500"
+                      >
+                        <Heart className={`w-4 h-4 mr-1 ${entry.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                        {entry.likes || 0}
+                      </Button>
+                      
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setCommentingOn(commentingOn === entry.id ? null : entry.id)}
+                        className="text-gray-600 hover:text-tropical-aqua"
+                      >
+                        <MessageCircle className="w-4 h-4 mr-1" />
+                        {entry.commentCount || 0}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Comment Form */}
+                  {commentingOn === entry.id && isAuthenticated && (
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <Form {...commentForm}>
+                        <form onSubmit={commentForm.handleSubmit(onSubmitComment)} className="space-y-4">
+                          <FormField
+                            control={commentForm.control}
+                            name="comment"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <Textarea
+                                    placeholder="Add a comment..."
+                                    className="min-h-[80px]"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <div className="flex gap-2">
+                            <Button
+                              type="submit"
+                              size="sm"
+                              disabled={createCommentMutation.isPending}
+                              className="bg-tropical-aqua text-white hover:bg-tropical-aqua/90"
+                            >
+                              {createCommentMutation.isPending ? 'Adding...' : 'Add Comment'}
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setCommentingOn(null)}
+                            >
+                              Cancel
+                            </Button>
+                          </div>
+                        </form>
+                      </Form>
+                    </div>
+                  )}
+
+                  {/* Comments */}
+                  {entry.comments && entry.comments.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-gray-100 space-y-4">
+                      {entry.comments.map((comment) => (
+                        <div key={comment.id} className="bg-gray-50 rounded-lg p-4">
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-6 h-6 bg-tropical-aqua rounded-full flex items-center justify-center">
+                                <User className="w-3 h-3 text-white" />
+                              </div>
+                              <span className="text-sm font-medium text-gray-900">
+                                {comment.authorName}
+                              </span>
+                              <span className="text-xs text-gray-500">
+                                {formatDistanceToNow(new Date(comment.createdAt!), { addSuffix: true })}
+                              </span>
+                            </div>
+                            
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleLikeComment(comment.id)}
+                              className="text-gray-600 hover:text-red-500 h-6 px-2"
+                            >
+                              <Heart className="w-3 h-3 mr-1" />
+                              {comment.likes || 0}
+                            </Button>
+                          </div>
+                          <p className="text-sm text-gray-700">{comment.comment}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
