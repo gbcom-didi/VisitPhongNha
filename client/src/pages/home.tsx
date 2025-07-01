@@ -40,10 +40,10 @@ export default function Home() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">
+            <h2 className="text-2xl font-bold mb-4 font-questrial" style={{ color: '#137065' }}>
               Welcome to Your Phan Rang Adventure, {user?.firstName || 'Traveler'}!
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-gray-600 max-w-2xl mx-auto text-sm">
               Your personalized guide to kitesurfing paradise and Vietnamese culture awaits. 
               Start exploring, saving places, and creating unforgettable memories.
             </p>
@@ -51,11 +51,11 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8 mb-12">
             <div className="text-center p-6 bg-gray-50 rounded-xl">
-              <div className="w-16 h-16 bg-tropical-aqua rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-mango-yellow rounded-full flex items-center justify-center mx-auto mb-4">
                 <Map className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Explore Places</h3>
-              <p className="text-gray-600 mb-4">
+              <h3 className="text-lg font-semibold mb-2" style={{ color: '#137065' }}>Explore Places</h3>
+              <p className="text-gray-600 mb-4 text-sm">
                 Discover amazing kitesurfing spots, restaurants, and attractions on our interactive map.
               </p>
               <Button 
@@ -67,11 +67,11 @@ export default function Home() {
             </div>
 
             <div className="text-center p-6 bg-gray-50 rounded-xl">
-              <div className="w-16 h-16 bg-tropical-aqua rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-coral-sunset rounded-full flex items-center justify-center mx-auto mb-4">
                 <Heart className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Save Favorites</h3>
-              <p className="text-gray-600 mb-4">
+              <h3 className="text-lg font-semibold mb-2" style={{ color: '#137065' }}>Save Favorites</h3>
+              <p className="text-gray-600 mb-4 text-sm">
                 Create your personal travel wishlist by liking places you want to visit.
               </p>
               <Button 
@@ -84,11 +84,11 @@ export default function Home() {
             </div>
 
             <div className="text-center p-6 bg-gray-50 rounded-xl">
-              <div className="w-16 h-16 bg-sea-blue rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-jade-green rounded-full flex items-center justify-center mx-auto mb-4">
                 <TrendingUp className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Plan Your Trip</h3>
-              <p className="text-gray-600 mb-4">
+              <h3 className="text-lg font-semibold mb-2" style={{ color: '#137065' }}>Plan Your Trip</h3>
+              <p className="text-gray-600 mb-4 text-sm">
                 Get insider tips on getting here, getting around, and making the most of your visit.
               </p>
               <Button 
@@ -107,8 +107,8 @@ export default function Home() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4 font-questrial">Popular Right Now</h3>
-            <p className="text-gray-600">Top categories travelers are exploring in Phan Rang</p>
+            <h3 className="text-xl font-bold mb-4 font-questrial" style={{ color: '#137065' }}>Popular Right Now</h3>
+            <p className="text-gray-600 text-sm">Top categories travelers are exploring in Phan Rang</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -124,11 +124,11 @@ export default function Home() {
                   <Map className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold text-gray-900">Kitesurfing Schools</h4>
-                  <p className="text-sm text-gray-600">Learn from the pros</p>
+                  <h4 className="text-base font-semibold" style={{ color: '#137065' }}>Kitesurfing Schools</h4>
+                  <p className="text-xs text-gray-600">Learn from the pros</p>
                 </div>
               </div>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-xs">
                 Find the best kitesurfing schools and spots with perfect wind conditions.
               </p>
             </div>
@@ -145,11 +145,11 @@ export default function Home() {
                   <Heart className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold text-gray-900">Local Cuisine</h4>
-                  <p className="text-sm text-gray-600">Authentic flavors</p>
+                  <h4 className="text-base font-semibold" style={{ color: '#137065' }}>Local Cuisine</h4>
+                  <p className="text-xs text-gray-600">Authentic flavors</p>
                 </div>
               </div>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-xs">
                 Discover authentic Vietnamese restaurants and street food favorites.
               </p>
             </div>

@@ -1,9 +1,19 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
-import { Heart, Menu, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Menu, X, User, LogOut, Heart, Home, Compass, Lightbulb, BookOpen, Plane, Info, Phone } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { SignInModal } from '@/components/auth/SignInModal';
+import { Button } from '@/components/ui/button';
+
+const navigationLinks = [
+  { href: '/', label: 'Home', icon: Home },
+  { href: '/explore', label: 'Explore', icon: Compass },
+  { href: '/inspiration', label: 'Inspiration', icon: Lightbulb },
+  { href: '/guestbook', label: 'Guestbook', icon: BookOpen },
+  { href: '/getting-here', label: 'Getting Here', icon: Plane },
+  { href: '/about', label: 'About', icon: Info },
+  { href: '/contact', label: 'Contact', icon: Phone },
+];
 
 export function Navigation() {
   const [location] = useLocation();
@@ -89,7 +99,7 @@ export function Navigation() {
                 <Heart className="w-5 h-5" />
               </Button>
             )}
-            
+
             {isAuthenticated ? (
               <div className="flex items-center space-x-1 sm:space-x-3">
                 {currentUser?.photoURL && (
