@@ -2,9 +2,23 @@ import { Hero } from '@/components/hero';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
-import { Map, Heart, Navigation as NavigationIcon, Plane, Bus, Car } from 'lucide-react';
+import { Map, Heart, BookOpen, MessageSquare, Star, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { BusinessModal } from '@/components/business-modal';
+import type { Business } from '@shared/schema';
 
 export default function Landing() {
+  const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Fetch premium businesses for the carousel
+  const { data: businesses = [] } = useQuery({
+    queryKey: ['/api/businesses'],
+  });
+
+  const premiumBusinesses = (businesses as Business[]).filter((business: Business) => business.isPremium);
+
   const scrollToExplore = () => {
     const exploreSection = document.getElementById('explore');
     if (exploreSection) {
@@ -12,123 +26,229 @@ export default function Landing() {
     }
   };
 
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % Math.max(1, premiumBusinesses.length - 2));
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + Math.max(1, premiumBusinesses.length - 2)) % Math.max(1, premiumBusinesses.length - 2));
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       <Hero />
-      {/* How It Works Section */}
-      <section className="py-16 bg-white">
+      
+      {/* What is Visit Phong Nha Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl font-bold text-gray-900 mb-6 font-questrial">What is Visit Phong Nha?</h2>
+          <p className="text-xl text-gray-600 leading-relaxed">
+            Visit Phong Nha is your intelligent travel companion, built by locals, travelers, and insiders. 
+            Whether you're hiking jungle trails, exploring cave rivers, or sipping coffee in the countryside, 
+            we help you experience the real Phong Nha—with curated places, expert tips, and community insights.
+          </p>
+        </div>
+      </section>
+
+      {/* Features Highlight Section */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">How Visit Phong Nha Works</h3>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Discover, save, and experience the best of Phong Nha with our interactive travel platform 
-              designed for adventurers and culture seekers. Soon you'll be able to chat with our intelligent, AI-powered travel assistant to help you explore, plan, and personalise your next adventure.
-            </p>    
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-mango-yellow rounded-full flex items-center justify-center mx-auto mb-4">
-                <Map className="w-8 h-8 text-white" />
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left side - Features list */}
+            <div className="space-y-8">
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-mango-yellow rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Map className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Explore the Interactive Map</h3>
+                  <p className="text-gray-600">
+                    Discover curated locations across Phong Nha with our detailed interactive map featuring caves, 
+                    restaurants, accommodations, and hidden gems hand-picked by locals and experienced travelers.
+                  </p>
+                  <Button 
+                    variant="link" 
+                    className="text-mango-yellow hover:text-mango-yellow/80 p-0 mt-2"
+                    onClick={() => window.location.href = '/explore'}
+                  >
+                    Start exploring <ArrowRight className="w-4 h-4 ml-1" />
+                  </Button>
+                </div>
               </div>
-              <h4 className="text-xl font-semibold mb-2">Explore Interactive Map</h4>
-              <p className="text-gray-600">
-                Browse cave sites, restaurants, accommodations, and attractions on our detailed map.
-              </p>
+
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-chili-red rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Heart className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Save Your Favourite Places</h3>
+                  <p className="text-gray-600">
+                    Build your personal travel wishlist by saving the places that catch your eye. 
+                    Create the perfect itinerary for your Phong Nha adventure.
+                  </p>
+                  <Button 
+                    variant="link" 
+                    className="text-chili-red hover:text-chili-red/80 p-0 mt-2"
+                    onClick={() => window.location.href = '/saved'}
+                  >
+                    View saved places <ArrowRight className="w-4 h-4 ml-1" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-tropical-aqua rounded-xl flex items-center justify-center flex-shrink-0">
+                  <BookOpen className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Inspiration</h3>
+                  <p className="text-gray-600">
+                    Discover the magic of Phong Nha through stories, guides, and local experiences. 
+                    Get inspired by authentic adventures and insider knowledge from fellow travelers.
+                  </p>
+                  <Button 
+                    variant="link" 
+                    className="text-tropical-aqua hover:text-tropical-aqua/80 p-0 mt-2"
+                    onClick={() => window.location.href = '/inspiration'}
+                  >
+                    Read stories <ArrowRight className="w-4 h-4 ml-1" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-jade-green rounded-xl flex items-center justify-center flex-shrink-0">
+                  <MessageSquare className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Guestbook</h3>
+                  <p className="text-gray-600">
+                    Share your experiences, memories, and recommendations with fellow travelers. 
+                    Connect with the community and leave your mark on Phong Nha's story.
+                  </p>
+                  <Button 
+                    variant="link" 
+                    className="text-jade-green hover:text-jade-green/80 p-0 mt-2"
+                    onClick={() => window.location.href = '/guestbook'}
+                  >
+                    Share your story <ArrowRight className="w-4 h-4 ml-1" />
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-coral-sunset rounded-full flex items-center justify-center mx-auto mb-4">
-                <Heart className="w-8 h-8 text-white" />
+
+            {/* Right side - Hero image */}
+            <div className="relative">
+              <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
+                <img 
+                  src="https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+                  alt="Phong Nha cave exploration"
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <h4 className="text-xl font-semibold mb-2">Save Your Favorites</h4>
-              <p className="text-gray-600">
-                Create your personal travel wishlist by saving places you want to visit.
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-jade-green rounded-full flex items-center justify-center mx-auto mb-4">
-                <NavigationIcon className="w-8 h-8 text-white" />
+              <div className="absolute -bottom-6 -left-6 bg-white rounded-xl p-4 shadow-lg">
+                <div className="flex items-center space-x-2">
+                  <Star className="w-5 h-5 text-mango-yellow fill-current" />
+                  <span className="text-sm font-medium text-gray-900">Curated by locals</span>
+                </div>
               </div>
-              <h4 className="text-xl font-semibold mb-2">Get Directions</h4>
-              <p className="text-gray-600">
-                Navigate easily to your chosen destinations with integrated directions.
-              </p>
             </div>
           </div>
         </div>
       </section>
-      {/* Featured Categories Section */}
-      <section id="explore" className="py-16 bg-white">
+      {/* Premium Business Carousel */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">Explore Categories</h3>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">Featured Premium Places</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              From world-class kitesurfing to authentic Vietnamese cuisine and stunning natural attractions.
+              Handpicked premium locations that offer exceptional experiences in Phong Nha
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="group cursor-pointer" onClick={() => window.location.href = '/explore?category=kiting'}>
-              <div 
-                className="relative h-48 bg-cover bg-center rounded-xl overflow-hidden mb-4"
-                style={{
-                  backgroundImage: `url('/images/kitesurfing-vietnam-01.jpg')`
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent group-hover:from-black/70 transition-all" />
-                <div className="absolute bottom-4 left-4 text-white">
-                  <h4 className="text-xl font-semibold">Kitesurfing</h4>
-                  <p className="text-sm opacity-90">15+ spots</p>
+
+          {premiumBusinesses.length > 0 ? (
+            <div className="relative">
+              <div className="overflow-hidden">
+                <div 
+                  className="flex transition-transform duration-300 ease-in-out"
+                  style={{
+                    transform: `translateX(-${currentSlide * (100 / 3)}%)`
+                  }}
+                >
+                  {premiumBusinesses.map((business) => (
+                    <div key={business.id} className="w-1/3 flex-shrink-0 px-3">
+                      <div 
+                        className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden group"
+                        onClick={() => setSelectedBusiness(business)}
+                      >
+                        <div className="aspect-[4/3] overflow-hidden">
+                          <img
+                            src={business.imageUrl || 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400'}
+                            alt={business.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                        <div className="p-6">
+                          <div className="flex items-center justify-between mb-2">
+                            <h3 className="text-lg font-semibold text-gray-900 truncate">{business.name}</h3>
+                            <div className="flex items-center space-x-1">
+                              <Star className="w-4 h-4 text-mango-yellow fill-current" />
+                              <span className="text-sm text-gray-600">Premium</span>
+                            </div>
+                          </div>
+                          <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                            {business.description || 'Discover this premium location in Phong Nha'}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-gray-500">
+                              {business.address ? business.address.split(',').slice(-1)[0] : 'Phong Nha'}
+                            </span>
+                            {business.rating && (
+                              <div className="flex items-center space-x-1">
+                                <Star className="w-3 h-3 text-mango-yellow fill-current" />
+                                <span className="text-xs text-gray-600">
+                                  {parseFloat(business.rating.toString()).toFixed(1)}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
+
+              {/* Navigation buttons */}
+              {premiumBusinesses.length > 3 && (
+                <>
+                  <button
+                    onClick={prevSlide}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition-shadow"
+                  >
+                    <ChevronLeft className="w-5 h-5 text-gray-600" />
+                  </button>
+                  <button
+                    onClick={nextSlide}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition-shadow"
+                  >
+                    <ChevronRight className="w-5 h-5 text-gray-600" />
+                  </button>
+                </>
+              )}
             </div>
-            <div className="group cursor-pointer" onClick={() => window.location.href = '/explore?category=food-drink'}>
-              <div 
-                className="relative h-48 bg-cover bg-center rounded-xl overflow-hidden mb-4"
-                style={{
-                  backgroundImage: `url('https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400')`
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent group-hover:from-black/30 transition-all" />
-                <div className="absolute bottom-4 left-4 text-white">
-                  <h4 className="text-xl font-semibold">Food & Drink</h4>
-                  <p className="text-sm opacity-90">25+ restaurants</p>
-                </div>
-              </div>
+          ) : (
+            <div className="text-center py-12 text-gray-500">
+              <Star className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+              <p>Premium places coming soon...</p>
             </div>
-            <div className="group cursor-pointer" onClick={() => window.location.href = '/explore?category=accommodation'}>
-              <div 
-                className="relative h-48 bg-cover bg-center rounded-xl overflow-hidden mb-4"
-                style={{
-                  backgroundImage: `url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400')`
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent group-hover:from-black/30 transition-all" />
-                <div className="absolute bottom-4 left-4 text-white">
-                  <h4 className="text-xl font-semibold">Accommodation</h4>
-                  <p className="text-sm opacity-90">12+ places</p>
-                </div>
-              </div>
-            </div>
-            <div className="group cursor-pointer" onClick={() => window.location.href = '/explore?category=attractions'}>
-              <div 
-                className="relative h-48 bg-cover bg-center rounded-xl overflow-hidden mb-4"
-                style={{
-                  backgroundImage: `url('/images/my-hoa-tower-2.jpg')`
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent group-hover:from-black/30 transition-all" />
-                <div className="absolute bottom-4 left-4 text-white">
-                  <h4 className="text-xl font-semibold">Attractions</h4>
-                  <p className="text-sm opacity-90">20+ places</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="text-center mt-8">
+          )}
+
+          <div className="text-center mt-12">
             <Button 
               size="lg"
-              className="bg-chili-red hover:bg-red-600 text-white px-8 py-3"
+              className="bg-mango-yellow hover:bg-mango-yellow/90 text-white px-8 py-3"
               onClick={() => window.location.href = '/explore'}
             >
               Explore All Places
@@ -136,66 +256,17 @@ export default function Landing() {
           </div>
         </div>
       </section>
-      {/* Getting Here Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">Getting to Ninh Thuan</h3>
-            <p className="text-gray-600">Multiple ways to reach this kitesurfing paradise</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <div className="w-12 h-12 bg-chili-red rounded-lg flex items-center justify-center mb-4">
-                <Plane className="w-6 h-6 text-white" />
-              </div>
-              <h4 className="text-xl font-semibold mb-2">By Air</h4>
-              <p className="text-gray-600 mb-4">
-                Fly into Cam Ranh International Airport (1.5 hours drive) or Ho Chi Minh City (4 hours drive).
-              </p>
-              <Button 
-                variant="link" 
-                className="text-chili-red hover:text-red-600 p-0"
-                onClick={() => window.location.href = '/getting-here'}
-              >
-                View flight options →
-              </Button>
-            </div>
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <div className="w-12 h-12 bg-sea-blue rounded-lg flex items-center justify-center mb-4">
-                <Bus className="w-6 h-6 text-white" />
-              </div>
-              <h4 className="text-xl font-semibold mb-2">By Bus</h4>
-              <p className="text-gray-600 mb-4">
-                Regular bus services from Ho Chi Minh City, Nha Trang, and Da Lat to Phan Rang city.
-              </p>
-              <Button 
-                variant="link" 
-                className="text-chili-red hover:text-red-600 p-0"
-                onClick={() => window.location.href = '/getting-here'}
-              >
-                Bus schedules →
-              </Button>
-            </div>
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <div className="w-12 h-12 bg-tropical-aqua rounded-lg flex items-center justify-center mb-4">
-                <Car className="w-6 h-6 text-white" />
-              </div>
-              <h4 className="text-xl font-semibold mb-2">By Car</h4>
-              <p className="text-gray-600 mb-4">
-                Scenic coastal drive via Highway 1A. Rent a car or book private transfer.
-              </p>
-              <Button 
-                variant="link" 
-                className="text-chili-red hover:text-red-600 p-0"
-                onClick={() => window.location.href = '/getting-here'}
-              >
-                Rental options →
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
       <Footer />
+      
+      {/* Business Modal */}
+      {selectedBusiness && (
+        <BusinessModal
+          business={selectedBusiness}
+          isOpen={!!selectedBusiness}
+          onClose={() => setSelectedBusiness(null)}
+          onLike={() => {}} // Premium carousel doesn't need like functionality
+        />
+      )}
     </div>
   );
 }
