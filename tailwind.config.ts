@@ -61,6 +61,12 @@ export default {
           border: "var(--sidebar-border)",
           ring: "var(--sidebar-ring)",
         },
+        // Brand colors
+        "mango-yellow": "var(--mango-yellow)",
+        "chili-red": "#D32F2F",
+        "tropical-aqua": "#00BCD4",
+        "jade-green": "var(--jade-green)",
+        "coral-sunset": "var(--coral-sunset)",
       },
       keyframes: {
         "accordion-down": {
