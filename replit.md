@@ -255,6 +255,12 @@ Changelog:
   - Restored sample business and article data after database schema updates
   - Enhanced location field with "Google Maps URL" label and help tooltip with step-by-step instructions
   - Improved form usability with clear guidance on obtaining Google Maps sharing links
+- June 30, 2025. Enhanced guestbook user experience and navigation
+  - Removed all like functionality from guestbook entries and comments for simplified interface
+  - Added "Add Comment" button for signed-out users that prompts sign-in with helpful toast message
+  - Fixed "Sign In to Continue" button to properly open Firebase authentication modal
+  - Added Guestbook option to mobile navigation menu on explore page for complete mobile access
+  - Streamlined guestbook focus on experience sharing and threaded commenting without distractions
 ```
 
 ## User Preferences
