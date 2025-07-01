@@ -2,7 +2,7 @@ import { Hero } from '@/components/hero';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
-import { Map, Heart, BookOpen, MessageSquare, Star, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Map, Heart, Lightbulb, Book, Star, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { BusinessModal } from '@/components/business-modal';
@@ -42,8 +42,8 @@ export default function Landing() {
       {/* What is Visit Phong Nha Section */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-6 font-questrial">What is Visit Phong Nha?</h2>
-          <p className="text-xl text-gray-600 leading-relaxed">
+          <h2 className="text-2xl font-bold text-mango-yellow mb-6 font-questrial">What is Visit Phong Nha?</h2>
+          <p className="text-lg text-gray-600 leading-relaxed">
             Visit Phong Nha is your intelligent travel companion, built by locals, travelers, and insiders. 
             Whether you're hiking jungle trails, exploring cave rivers, or sipping coffee in the countryside, 
             we help you experience the real Phong Nha—with curated places, expert tips, and community insights.
@@ -62,8 +62,8 @@ export default function Landing() {
                   <Map className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Explore the Interactive Map</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-semibold text-mango-yellow mb-2">Explore the Interactive Map</h3>
+                  <p className="text-sm text-gray-600">
                     Discover curated locations across Phong Nha with our detailed interactive map featuring caves, 
                     restaurants, accommodations, and hidden gems hand-picked by locals and experienced travelers.
                   </p>
@@ -82,8 +82,8 @@ export default function Landing() {
                   <Heart className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Save Your Favourite Places</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-semibold text-chili-red mb-2">Save Your Favourite Places</h3>
+                  <p className="text-sm text-gray-600">
                     Build your personal travel wishlist by saving the places that catch your eye. 
                     Create the perfect itinerary for your Phong Nha adventure.
                   </p>
@@ -99,11 +99,11 @@ export default function Landing() {
 
               <div className="flex items-start space-x-4">
                 <div className="w-12 h-12 bg-tropical-aqua rounded-xl flex items-center justify-center flex-shrink-0">
-                  <BookOpen className="w-6 h-6 text-white" />
+                  <Lightbulb className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Inspiration</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-semibold text-tropical-aqua mb-2">Inspiration</h3>
+                  <p className="text-sm text-gray-600">
                     Discover the magic of Phong Nha through stories, guides, and local experiences. 
                     Get inspired by authentic adventures and insider knowledge from fellow travelers.
                   </p>
@@ -119,11 +119,11 @@ export default function Landing() {
 
               <div className="flex items-start space-x-4">
                 <div className="w-12 h-12 bg-jade-green rounded-xl flex items-center justify-center flex-shrink-0">
-                  <MessageSquare className="w-6 h-6 text-white" />
+                  <Book className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Guestbook</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-semibold text-jade-green mb-2">Guestbook</h3>
+                  <p className="text-sm text-gray-600">
                     Share your experiences, memories, and recommendations with fellow travelers. 
                     Connect with the community and leave your mark on Phong Nha's story.
                   </p>
@@ -161,9 +161,9 @@ export default function Landing() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">Featured Premium Places</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Handpicked premium locations that offer exceptional experiences in Phong Nha
+            <h2 className="text-2xl font-bold text-tropical-aqua mb-4 font-questrial">Featured Places</h2>
+            <p className="text-sm text-gray-600 max-w-2xl mx-auto">
+              Handpicked locations that offer exceptional experiences in Phong Nha
             </p>
           </div>
 
