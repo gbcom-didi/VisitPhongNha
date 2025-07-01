@@ -60,9 +60,9 @@ export function Navigation() {
           </div>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             {navigationLinks.map(({ href, label }) => (
-              <Link key={href} href={href} className={`transition-colors ${
+              <Link key={href} href={href} className={`text-sm transition-colors ${
                 isActiveLink(href)
                   ? 'text-tropical-aqua font-medium'
                   : 'text-gray-700 hover:text-tropical-aqua'
@@ -71,7 +71,7 @@ export function Navigation() {
               </Link>
             ))}
             {isAuthenticated && adminLinks.map(({ href, label }) => (
-              <Link key={href} href={href} className={`transition-colors ${
+              <Link key={href} href={href} className={`text-sm transition-colors ${
                 isActiveLink(href)
                   ? 'text-tropical-aqua font-medium'
                   : 'text-gray-700 hover:text-tropical-aqua'
