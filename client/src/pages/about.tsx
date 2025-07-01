@@ -13,14 +13,13 @@ export default function About() {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('/images/my-hoa-lagoon-4.jpg')`,
             backgroundBlendMode: 'overlay'
           }}
         />
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="text-center text-white px-4">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 font-questrial">About Visit Phong Nha</h1>
-            <p className="text-xl max-w-2xl mx-auto">Connecting travelers with Vietnam's hidden cave paradise</p>
+            <p className="text-xl max-w-2xl mx-auto">Connecting travelers with Vietnam's hidden paradise</p>
           </div>
         </div>
       </section>
@@ -31,7 +30,7 @@ export default function About() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-6 font-questrial">Our Mission</h2>
             <p className="text-lg text-gray-600 leading-relaxed">
-              Visit Phong Nha is Vietnam's premier travel platform dedicated to showcasing the incredible beauty and adventure opportunities of Quang Binh province. We're passionate about connecting international cave explorers and curious travelers with authentic Vietnamese experiences, local businesses, and unforgettable adventures.
+              Visit Phong Nha is Vietnam's premier travel platform dedicated to showcasing the incredible beauty and adventure opportunities of Quang Binh province. We're passionate about connecting international explorers and curious travelers with authentic Vietnamese experiences, local businesses, and unforgettable adventures.
             </p>
           </div>
           
@@ -42,10 +41,10 @@ export default function About() {
                   <div className="w-12 h-12 bg-coral-sunset rounded-lg flex items-center justify-center mr-4">
                     <Wind className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">For the Cave Exploration Community</h3>
+                  <h3 className="text-xl font-semibold text-gray-900">For the Adventurous Traveler</h3>
                 </div>
                 <p className="text-gray-600">
-                  We understand the unique needs of cave explorers - from guided tours and safety equipment to the best caves for different experience levels. Our platform is built by adventurers, for adventurers.
+                  We understand the unique needs of adventurous travelers - from self-guided tours to the best caves for different experience levels. Our platform is built by adventurers, for adventurers.
                 </p>
               </CardContent>
             </Card>
@@ -75,10 +74,10 @@ export default function About() {
               <h2 className="text-3xl font-bold text-gray-900 mb-6 font-questrial">Our Story</h2>
               <div className="space-y-4 text-gray-600">
                 <p>
-                  Visit Phong Nha began as a passion project by a group of international cave explorers who fell in love with Phong Nha's incredible cave systems, pristine nature, and incredible Vietnamese hospitality. After countless trips to the region, we realized there was no comprehensive guide that truly captured the magic of this hidden gem.
+                  Visit Phong Nha began as a passion project inspired by a deep love for the region’s stunning landscapes, vibrant culture, and warm hospitality. Created by long-time residents, locals and repeat visitos, the goal was to build a truly useful guide that captures the magic of this extraordinary place.
                 </p>
                 <p>
-                  What started as a simple map of cave sites has evolved into Vietnam's most comprehensive travel platform for Phong Nha. We've partnered with local businesses, cultural experts, and adventure guides to create an authentic, insider's perspective on this remarkable destination.
+                  What started as a simple map of of places to visit, has now evolved into Vietnam's most comprehensive travel platform for Phong Nha. We've partnered with local businesses, cultural experts, and adventure guides to create an authentic, insider's perspective on this remarkable destination.
                 </p>
                 <p>
                   Today, Visit Phong Nha serves thousands of travelers annually, helping them discover not just the world-class cave exploration, but also the rich local culture, delicious local cuisine, and stunning natural landscapes that make Phong Nha truly special.
@@ -89,7 +88,7 @@ export default function About() {
               <div 
                 className="aspect-square bg-cover bg-center rounded-2xl shadow-xl"
                 style={{
-                  backgroundImage: `url('/images/20241109-IMG_8759.jpg')`
+                  backgroundImage: `url('images/my-hoa-love.jpg')`
                 }}
               />
             </div>
@@ -119,7 +118,7 @@ export default function About() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-sea-blue rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-tropical-aqua rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-3">Community First</h3>
@@ -134,7 +133,7 @@ export default function About() {
               </div>
               <h3 className="text-xl font-semibold mb-3">Sustainable Tourism</h3>
               <p className="text-gray-600">
-                We promote responsible travel practices that preserve Ninh Thuan's natural beauty and cultural heritage for future generations.
+                We promote responsible travel practices that preserve Phong Nha's natural beauty and cultural heritage for future generations.
               </p>
             </div>
           </div>
@@ -147,7 +146,7 @@ export default function About() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-6 font-questrial">The Future of Visit Phong Nha</h2>
             <p className="text-lg text-gray-600 leading-relaxed">
-              Our vision extends beyond Phong Nha. We're building a scalable network of regional tourism hubs across Vietnam, each celebrating the unique character and opportunities of different provinces. From the mountains of Sapa to the beaches of Phu Quoc, we aim to become Vietnam's most trusted travel companion.
+              Our vision extends beyond Phong Nha. We're building a scalable network of regional tourism hubs across Vietnam, each celebrating the unique character and opportunities of different provinces. From the islands of Phu Quy to the beaches of Phan Rang, we aim to become Vietnam's most trusted travel companion.
             </p>
           </div>
 
@@ -168,10 +167,10 @@ export default function About() {
               <CardContent className="p-0">
                 <div className="flex items-center mb-4">
                   <Camera className="w-8 h-8 text-tropical-aqua mr-3" />
-                  <h3 className="text-xl font-semibold">Enhanced Features</h3>
+                  <h3 className="text-xl font-semibold">Enhanced AI</h3>
                 </div>
                 <p className="text-gray-600">
-                  From AR navigation to real-time weather integration, we're constantly innovating to make travel planning more intuitive and enjoyable.
+                  We’re also building powerful tools to enhance your journey! Our upcoming AI-powered travel assistant that offers real-time recommendations, local tips, and personalized itinerary support, all at your fingertips.
                 </p>
               </CardContent>
             </Card>

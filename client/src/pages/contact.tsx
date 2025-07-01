@@ -68,7 +68,6 @@ export default function Contact() {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('/images/my-hoa-love.jpg')`,
             backgroundBlendMode: 'overlay'
           }}
         />

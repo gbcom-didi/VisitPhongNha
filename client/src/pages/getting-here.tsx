@@ -14,7 +14,6 @@ export default function GettingHere() {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('/images/my-hoa-lagoon-3.jpg')`,
             backgroundBlendMode: 'overlay'
           }}
         />
