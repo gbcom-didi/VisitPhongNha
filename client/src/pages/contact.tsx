@@ -274,14 +274,14 @@ export default function Contact() {
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="text-center p-6">
               <CardContent className="p-0">
-                <div className="w-12 h-12 bg-chili-red rounded-lg flex items-center justify-center mx-auto mb-4">
+                <div className="w-12 h-12 bg-tropical-aqua rounded-lg flex items-center justify-center mx-auto mb-4">
                   <Users className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">Travel Planning</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   Need help planning your trip to Phan Rang? Our team can provide personalized recommendations.
                 </p>
-                <Button variant="outline" size="sm" className="text-chili-red border-chili-red hover:bg-chili-red hover:text-white">
+                <Button variant="outline" size="sm" className="text-tropical-aqua border-tropical-aqua hover:bg-tropical-aqua hover:text-white">
                   Get Travel Tips
                 </Button>
               </CardContent>
@@ -289,14 +289,14 @@ export default function Contact() {
 
             <Card className="text-center p-6">
               <CardContent className="p-0">
-                <div className="w-12 h-12 bg-sea-blue rounded-lg flex items-center justify-center mx-auto mb-4">
+                <div className="w-12 h-12 bg-jade-green rounded-lg flex items-center justify-center mx-auto mb-4">
                   <Building className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">Business Partnerships</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   Local business owner? Learn how to get featured on our platform and reach more travelers.
                 </p>
-                <Button variant="outline" size="sm" className="text-sea-blue border-sea-blue hover:bg-sea-blue hover:text-white">
+                <Button variant="outline" size="sm" className="text-jade-green border-jade-green hover:bg-jade-green hover:text-white">
                   Join as Partner
                 </Button>
               </CardContent>
