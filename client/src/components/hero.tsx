@@ -11,9 +11,9 @@ export function Hero() {
   });
 
   const scrollToExplore = () => {
-    const exploreSection = document.getElementById('explore');
-    if (exploreSection) {
-      exploreSection.scrollIntoView({ behavior: 'smooth' });
+    const welcomeSection = document.getElementById('what-is-visit-phong-nha');
+    if (welcomeSection) {
+      welcomeSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
