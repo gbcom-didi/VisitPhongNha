@@ -34,7 +34,7 @@ export function Hero() {
         {/* Main Content - Aligned with Logo */}
         <div className="flex-1 flex items-center">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-left max-w-lg">
+            <div className="text-left max-w-lg md:max-w-2xl lg:max-w-3xl">
               <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 font-questrial min-h-[1.2em]" style={{ color: '#137065' }}>
                 {displayText}
                 <span 
