@@ -40,20 +40,20 @@ export function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Brand */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4 flex-1 min-w-0">
             <Link href="/" className="flex-shrink-0">
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2 sm:space-x-3">
                 {/* Logo Image */}
-                <div className="w-10 h-10">
+                <div className="w-8 h-8 sm:w-10 sm:h-10">
                   <img 
                     src="/images/VisitPhongNha-Logo-02.png" 
                     alt="Visit Phong Nha Logo"
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <div>
-                  <h1 className="text-base md:text-lg font-bold text-mango-yellow font-questrial">Visit Phong Nha</h1>
-                  <p className="text-xs text-gray-500">Quang Binh Travel Hub</p>
+                <div className="min-w-0">
+                  <h1 className="text-sm sm:text-base md:text-lg font-bold text-mango-yellow font-questrial truncate">Visit Phong Nha</h1>
+                  <p className="text-xs text-gray-500 hidden sm:block">Quang Binh Travel Hub</p>
                 </div>
               </div>
             </Link>
@@ -82,7 +82,7 @@ export function Navigation() {
           </div>
 
           {/* User Actions */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-1 sm:space-x-3 flex-shrink-0">
             {isAuthenticated && (
               <Button 
                 variant="ghost" 
@@ -95,28 +95,31 @@ export function Navigation() {
             )}
             
             {isAuthenticated ? (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-1 sm:space-x-3">
                 {currentUser?.photoURL && (
                   <img
                     src={currentUser.photoURL}
                     alt="Profile"
-                    className="w-8 h-8 rounded-full object-cover"
+                    className="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover"
                   />
                 )}
                 <Button 
                   variant="outline" 
                   size="sm"
+                  className="text-xs sm:text-sm px-2 sm:px-3"
                   onClick={logout}
                 >
-                  Sign Out
+                  <span className="hidden sm:inline">Sign Out</span>
+                  <span className="sm:hidden">Out</span>
                 </Button>
               </div>
             ) : (
               <Button 
-                className="bg-mango-yellow text-white hover:bg-mango-yellow/90 font-medium shadow-sm"
+                className="bg-mango-yellow text-white hover:bg-mango-yellow/90 font-medium shadow-sm text-xs sm:text-sm px-2 sm:px-3"
                 onClick={() => setShowSignInModal(true)}
               >
-                Sign In
+                <span className="hidden sm:inline">Sign In</span>
+                <span className="sm:hidden">Sign In</span>
               </Button>
             )}
 
@@ -124,13 +127,13 @@ export function Navigation() {
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden text-gray-700"
+              className="md:hidden text-gray-700 p-1"
               onClick={toggleMobileMenu}
             >
               {isMobileMenuOpen ? (
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               ) : (
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5" />
               )}
             </Button>
           </div>
