@@ -1,5 +1,6 @@
+
 import { Button } from '@/components/ui/button';
-import { Play } from 'lucide-react';
+import { ArrowDown } from 'lucide-react';
 import { useTypewriter } from '@/hooks/useTypewriter';
 
 export function Hero() {
@@ -22,43 +23,63 @@ export function Hero() {
       <div 
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url('/images/my-hoa-love.jpg')`, // Updated image path
+          backgroundImage: `url('/images/inspiration/vpn-hero-01.png')`,
           backgroundBlendMode: 'overlay'
         }}
       />
 
       {/* Hero Content */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen sm:h-full px-4 py-8 sm:py-0">
-        <div className="text-center text-white max-w-4xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 font-questrial min-h-[1.2em]">
-            {displayText}
-            <span 
-              className={`inline-block w-1 h-[0.8em] ml-1 bg-white ${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity duration-100`}
-              style={{ animation: 'none' }}
-            />
-          </h2>
-          <p className="text-lg sm:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
-            Your ultimate guide to cave paradise and Vietnamese culture. 
-            Explore hidden gems, authentic experiences, and the best spots for adventure.
-          </p>
+      <div className="relative z-10 flex flex-col justify-between min-h-screen sm:h-full px-4 py-8 sm:py-0">
+        {/* Main Content - Left Aligned */}
+        <div className="flex-1 flex items-center">
+          <div className="text-left max-w-lg">
+            <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 font-questrial min-h-[1.2em]" style={{ color: '#137065' }}>
+              {displayText}
+              <span 
+                className={`inline-block w-1 h-[0.8em] ml-1 ${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity duration-100`}
+                style={{ backgroundColor: '#137065', animation: 'none' }}
+              />
+            </h2>
+            <p className="text-lg sm:text-xl mb-8 leading-relaxed" style={{ color: '#137065' }}>
+              Where nature, adventure, and culture meet.
+            </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg"
-              className="bg-mango-yellow hover:bg-mango-yellow/90 text-white px-8 py-3 text-lg"
-              onClick={() => window.location.href = '/explore'}
-            >
-              Start Exploring
-            </Button>
-            <Button 
-              size="lg"
-              variant="outline"
-              className="border-2 border-white text-white hover:bg-white hover:text-coral-sunset px-8 py-3 text-lg bg-transparent"
-            >
-              <Play className="w-5 h-5 mr-2" />
-              Watch Video
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button 
+                size="lg"
+                className="bg-mango-yellow hover:bg-mango-yellow/90 text-white px-8 py-3 text-lg"
+                onClick={() => window.location.href = '/explore'}
+              >
+                Explore like a local
+              </Button>
+              <Button 
+                size="lg"
+                variant="outline"
+                className="border-2 text-white hover:bg-white px-8 py-3 text-lg bg-transparent"
+                style={{ 
+                  borderColor: '#137065', 
+                  color: '#137065'
+                }}
+                onClick={() => window.location.href = '/inspiration'}
+              >
+                Discover hidden places
+              </Button>
+            </div>
           </div>
+        </div>
+
+        {/* Learn More Button - Center Bottom */}
+        <div className="flex justify-center pb-8">
+          <Button 
+            variant="ghost"
+            size="lg"
+            className="flex flex-col items-center gap-2 text-white hover:bg-white/10"
+            style={{ color: '#137065' }}
+            onClick={scrollToExplore}
+          >
+            <span>Learn more</span>
+            <ArrowDown className="w-5 h-5" />
+          </Button>
         </div>
       </div>
     </section>
