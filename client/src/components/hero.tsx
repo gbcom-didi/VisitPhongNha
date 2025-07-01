@@ -11,10 +11,22 @@ export function Hero() {
   });
 
   const scrollToExplore = () => {
-    const welcomeSection = document.getElementById('what-is-visit-phong-nha');
-    if (welcomeSection) {
-      welcomeSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    // Add a small delay to ensure the DOM is fully rendered
+    setTimeout(() => {
+      const welcomeSection = document.getElementById('what-is-visit-phong-nha');
+      if (welcomeSection) {
+        welcomeSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      } else {
+        // Fallback: scroll to a fixed position if element not found
+        window.scrollTo({
+          top: window.innerHeight,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
   };
 
   return (
