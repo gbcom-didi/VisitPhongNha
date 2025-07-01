@@ -11,8 +11,7 @@ export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
 
-  const navigationLinks = [
-    { href: '/', label: 'Home' },
+  const desktopNavigationLinks = [
     { href: '/explore', label: 'Explore' },
     { href: '/inspiration', label: 'Inspiration' },
     { href: '/guestbook', label: 'Guestbook' },
@@ -21,9 +20,15 @@ export function Navigation() {
     { href: '/contact', label: 'Contact' },
   ];
 
-  const adminLinks = canAccessAdmin() ? [
-    { href: '/admin', label: 'Admin' },
-  ] : [];
+  const mobileNavigationLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/explore', label: 'Explore' },
+    { href: '/inspiration', label: 'Inspiration' },
+    { href: '/guestbook', label: 'Guestbook' },
+    { href: '/getting-here', label: 'Getting Here' },
+    { href: '/about', label: 'About' },
+    { href: '/contact', label: 'Contact' },
+  ];
 
   const isActiveLink = (href: string) => {
     if (href === '/' && location === '/') return true;
@@ -61,16 +66,7 @@ export function Navigation() {
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-4 lg:space-x-6 absolute left-1/2 transform -translate-x-1/2">
-            {navigationLinks.map(({ href, label }) => (
-              <Link key={href} href={href} className={`text-sm transition-colors ${
-                isActiveLink(href)
-                  ? 'text-tropical-aqua font-medium'
-                  : 'text-gray-700 hover:text-tropical-aqua'
-              }`}>
-                {label}
-              </Link>
-            ))}
-            {isAuthenticated && adminLinks.map(({ href, label }) => (
+            {desktopNavigationLinks.map(({ href, label }) => (
               <Link key={href} href={href} className={`text-sm transition-colors ${
                 isActiveLink(href)
                   ? 'text-tropical-aqua font-medium'
@@ -143,7 +139,7 @@ export function Navigation() {
         {isMobileMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
-              {navigationLinks.map(({ href, label }) => (
+              {mobileNavigationLinks.map(({ href, label }) => (
                 <Link 
                   key={href} 
                   href={href}
