@@ -65,23 +65,23 @@ export function Footer() {
             <h5 className="text-lg font-semibold text-gray-900 mb-6">Explore</h5>
             <ul className="space-y-4">
               <li>
-                <Link href="/explore?category=kiting" className="text-gray-600 hover:text-jade-green transition-colors duration-200 text-sm">
-                  Kitesurfing Spots
+                <Link href="/explore" className="text-gray-600 hover:text-jade-green transition-colors duration-200 text-sm">
+                  Interactive Map
                 </Link>
               </li>
               <li>
-                <Link href="/explore?category=food-drink" className="text-gray-600 hover:text-jade-green transition-colors duration-200 text-sm">
-                  Restaurants
+                <Link href="/inspiration" className="text-gray-600 hover:text-jade-green transition-colors duration-200 text-sm">
+                  Inspiration
                 </Link>
               </li>
               <li>
-                <Link href="/explore?category=stay" className="text-gray-600 hover:text-jade-green transition-colors duration-200 text-sm">
-                  Accommodations
+                <Link href="/guestbook" className="text-gray-600 hover:text-jade-green transition-colors duration-200 text-sm">
+                  Guestbook
                 </Link>
               </li>
               <li>
-                <Link href="/explore?category=attractions" className="text-gray-600 hover:text-jade-green transition-colors duration-200 text-sm">
-                  Attractions
+                <Link href="/getting-here" className="text-gray-600 hover:text-jade-green transition-colors duration-200 text-sm">
+                  Getting Here
                 </Link>
               </li>
             </ul>
