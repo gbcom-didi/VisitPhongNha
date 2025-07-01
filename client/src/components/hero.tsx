@@ -18,7 +18,7 @@ export function Hero() {
   };
 
   return (
-    <section className="relative h-screen bg-gradient-to-r from-coral-sunset to-mango-yellow">
+    <section className="relative h-[90vh] bg-gradient-to-r from-coral-sunset to-mango-yellow">
       {/* Hero Background */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
