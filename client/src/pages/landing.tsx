@@ -52,107 +52,173 @@ export default function Landing() {
       </section>
 
       {/* Features Highlight Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left side - Features list */}
-            <div className="space-y-8">
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-mango-yellow rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Map className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-mango-yellow mb-2">Explore the Interactive Map</h3>
-                  <p className="text-sm text-gray-600">
-                    Discover curated locations across Phong Nha with our detailed interactive map featuring caves, 
-                    restaurants, accommodations, and hidden gems hand-picked by locals and experienced travelers.
-                  </p>
-                  <Button 
-                    variant="link" 
-                    className="text-mango-yellow hover:text-mango-yellow/80 p-0 mt-2"
-                    onClick={() => window.location.href = '/explore'}
-                  >
-                    Start exploring <ArrowRight className="w-4 h-4 ml-1" />
-                  </Button>
+      <section className="py-24 bg-gradient-to-br from-gray-50 via-white to-gray-100 relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-mango-yellow/10 to-coral-sunset/10 rounded-full -translate-x-32 -translate-y-32"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-tropical-aqua/10 to-jade-green/10 rounded-full translate-x-48 translate-y-48"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 font-questrial">
+              Your Gateway to 
+              <span className="bg-gradient-to-r from-mango-yellow to-coral-sunset bg-clip-text text-transparent"> Adventure</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Everything you need to discover, plan, and experience the magic of Phong Nha's hidden wonders
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left side - Enhanced Features */}
+            <div className="space-y-6">
+              {/* Interactive Map Feature */}
+              <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-white/50">
+                <div className="flex items-start space-x-6">
+                  <div className="relative">
+                    <div className="w-16 h-16 bg-gradient-to-br from-mango-yellow to-yellow-400 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Map className="w-8 h-8 text-white" />
+                    </div>
+                    <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-mango-yellow transition-colors">
+                      Interactive Explorer
+                    </h3>
+                    <p className="text-gray-600 mb-4 leading-relaxed">
+                      Navigate through Phong Nha's mysteries with our intelligent map. Discover hidden caves, 
+                      local eateries, and secret spots curated by adventurers and locals.
+                    </p>
+                    <Button 
+                      className="bg-gradient-to-r from-mango-yellow to-yellow-400 hover:from-yellow-400 hover:to-mango-yellow text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                      onClick={() => window.location.href = '/explore'}
+                    >
+                      Start Exploring <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-chili-red rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Heart className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-chili-red mb-2">Save Your Favourite Places</h3>
-                  <p className="text-sm text-gray-600">
-                    Build your personal travel wishlist by saving the places that catch your eye. 
-                    Create the perfect itinerary for your Phong Nha adventure.
-                  </p>
-                  <Button 
-                    variant="link" 
-                    className="text-chili-red hover:text-chili-red/80 p-0 mt-2"
-                    onClick={() => window.location.href = '/saved'}
-                  >
-                    View saved places <ArrowRight className="w-4 h-4 ml-1" />
-                  </Button>
+              {/* Favorites Feature */}
+              <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-white/50">
+                <div className="flex items-start space-x-6">
+                  <div className="relative">
+                    <div className="w-16 h-16 bg-gradient-to-br from-chili-red to-red-400 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Heart className="w-8 h-8 text-white" />
+                    </div>
+                    <div className="absolute -top-1 -right-1 w-6 h-6 bg-pink-500 rounded-full flex items-center justify-center">
+                      <span className="text-xs font-bold text-white">♥</span>
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-chili-red transition-colors">
+                      Personal Collection
+                    </h3>
+                    <p className="text-gray-600 mb-4 leading-relaxed">
+                      Curate your perfect adventure by saving places that inspire you. 
+                      Build your dream itinerary and never miss a hidden gem.
+                    </p>
+                    <Button 
+                      variant="outline"
+                      className="border-2 border-chili-red text-chili-red hover:bg-chili-red hover:text-white transition-all duration-300"
+                      onClick={() => window.location.href = '/explore'}
+                    >
+                      Build Your List <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-tropical-aqua rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Lightbulb className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-tropical-aqua mb-2">Inspiration</h3>
-                  <p className="text-sm text-gray-600">
-                    Discover the magic of Phong Nha through stories, guides, and local experiences. 
-                    Get inspired by authentic adventures and insider knowledge from fellow travelers.
+              {/* Stories & Community */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-white/50">
+                  <div className="w-12 h-12 bg-gradient-to-br from-tropical-aqua to-cyan-400 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Lightbulb className="w-6 h-6 text-white" />
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-tropical-aqua transition-colors">
+                    Stories & Guides
+                  </h4>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Authentic adventures and insider knowledge from fellow travelers.
                   </p>
                   <Button 
                     variant="link" 
-                    className="text-tropical-aqua hover:text-tropical-aqua/80 p-0 mt-2"
+                    className="text-tropical-aqua hover:text-tropical-aqua/80 p-0 font-semibold"
                     onClick={() => window.location.href = '/inspiration'}
                   >
-                    Read stories <ArrowRight className="w-4 h-4 ml-1" />
+                    Read Stories <ArrowRight className="w-3 h-3 ml-1" />
                   </Button>
                 </div>
-              </div>
 
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-jade-green rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Book className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-jade-green mb-2">Guestbook</h3>
-                  <p className="text-sm text-gray-600">
-                    Share your experiences, memories, and recommendations with fellow travelers. 
-                    Connect with the community and leave your mark on Phong Nha's story.
+                <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-white/50">
+                  <div className="w-12 h-12 bg-gradient-to-br from-jade-green to-green-400 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Book className="w-6 h-6 text-white" />
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-jade-green transition-colors">
+                    Travel Community
+                  </h4>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Connect with travelers and share your own Phong Nha experiences.
                   </p>
                   <Button 
                     variant="link" 
-                    className="text-jade-green hover:text-jade-green/80 p-0 mt-2"
+                    className="text-jade-green hover:text-jade-green/80 p-0 font-semibold"
                     onClick={() => window.location.href = '/guestbook'}
                   >
-                    Share your story <ArrowRight className="w-4 h-4 ml-1" />
+                    Join Community <ArrowRight className="w-3 h-3 ml-1" />
                   </Button>
                 </div>
               </div>
             </div>
 
-            {/* Right side - Hero image */}
+            {/* Right side - Enhanced Image with Overlays */}
             <div className="relative">
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
-                <img 
-                  src="/images/DJI_0411.jpg"
-                  alt="Phong Nha cave exploration"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="absolute -bottom-6 -left-6 bg-white rounded-xl p-4 shadow-lg">
-                <div className="flex items-center space-x-2">
-                  <Star className="w-5 h-5 text-mango-yellow fill-current" />
-                  <span className="text-sm font-medium text-gray-900">Curated by locals</span>
+              {/* Main Image Container */}
+              <div className="relative group">
+                <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl group-hover:shadow-3xl transition-all duration-500">
+                  <img 
+                    src="/images/DJI_0411.jpg"
+                    alt="Phong Nha cave exploration"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+                </div>
+                
+                {/* Floating Stats Cards */}
+                <div className="absolute -bottom-8 -left-8 bg-white rounded-2xl p-6 shadow-xl border border-gray-100/50 backdrop-blur-sm">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-mango-yellow to-yellow-400 rounded-xl flex items-center justify-center">
+                      <Star className="w-6 h-6 text-white fill-current" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">Curated by Locals</p>
+                      <p className="text-xs text-gray-600">500+ verified places</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="absolute -top-6 -right-6 bg-white rounded-2xl p-4 shadow-xl border border-gray-100/50 backdrop-blur-sm">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-gradient-to-br from-jade-green to-green-400 rounded-lg flex items-center justify-center">
+                      <Heart className="w-4 h-4 text-white fill-current" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-gray-900">Loved by Travelers</p>
+                      <div className="flex space-x-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="w-3 h-3 text-yellow-400 fill-current" />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              {/* Background decoration */}
+              <div className="absolute -z-10 top-8 left-8 w-full h-full bg-gradient-to-br from-coral-sunset/20 to-mango-yellow/20 rounded-3xl"></div>
             </div>
           </div>
         </div>
