@@ -142,7 +142,7 @@ export default function Landing() {
             <div className="relative">
               <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
                 <img 
-                  src="https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+                  src="/images/DJI_0411.jpg"
                   alt="Phong Nha cave exploration"
                   className="w-full h-full object-cover"
                 />
