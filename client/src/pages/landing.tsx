@@ -42,7 +42,7 @@ export default function Landing() {
       {/* What is Visit Phong Nha Section */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl font-bold text-mango-yellow mb-6 font-questrial">What is Visit Phong Nha?</h2>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-mango-yellow to-coral-sunset bg-clip-text text-transparent font-questrial">What is Visit Phong Nha?</h2>
           <p className="text-lg text-gray-600 leading-relaxed">
             Visit Phong Nha is your intelligent travel companion, built by locals, travelers, and insiders. 
             Whether you're hiking jungle trails, exploring cave rivers, or sipping coffee in the countryside, 
@@ -227,7 +227,7 @@ export default function Landing() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold text-tropical-aqua mb-4 font-questrial">Featured Places</h2>
+            <h2 className="text-3xl font-bold text-tropical-aqua mb-4 font-questrial">Featured Places</h2>
             <p className="text-sm text-gray-600 max-w-2xl mx-auto">
               Handpicked locations that offer exceptional experiences in Phong Nha
             </p>
