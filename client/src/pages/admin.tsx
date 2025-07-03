@@ -16,7 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { BusinessModal } from "@/components/business-modal";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Plus, Trash2, Save, Eye, X, Edit, Search, MapPin } from "lucide-react";
+import { Plus, Trash2, Save, Eye, X, Edit, Search } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { Category, Business, BusinessWithCategory } from "@shared/schema";
@@ -189,41 +189,6 @@ export default function Admin() {
       toast({
         title: "Error",
         description: error.message || "Failed to delete business",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const googlePlacesLookupMutation = useMutation({
-    mutationFn: async (data: { businessName: string; address?: string }) => {
-      return apiRequest("POST", "/api/google-places/lookup", data);
-    },
-    onSuccess: (data: any) => {
-      // Fill form with Google Places data
-      form.setValue("name", data.name || "");
-      form.setValue("description", data.description || "");
-      form.setValue("address", data.address || "");
-      form.setValue("latitude", data.latitude || "");
-      form.setValue("longitude", data.longitude || "");
-      form.setValue("phone", data.phone || "");
-      form.setValue("website", data.website || "");
-      form.setValue("hours", data.hours || "");
-      form.setValue("imageUrl", data.imageUrl || "");
-      form.setValue("gallery", data.gallery?.join(', ') || "");
-      form.setValue("rating", data.rating || "");
-      form.setValue("reviewCount", data.reviewCount || "");
-      form.setValue("googleMapsUrl", data.googleMapsUrl || "");
-      form.setValue("priceRange", data.priceRange || "");
-      
-      toast({
-        title: "Success",
-        description: "Business data filled from Google Places",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to lookup business on Google Places",
         variant: "destructive",
       });
     },
@@ -775,51 +740,6 @@ export default function Admin() {
                   {form.formState.errors.name && (
                     <p className="text-sm text-red-600">{form.formState.errors.name.message}</p>
                   )}
-                </div>
-
-                {/* Google API Lookup Button */}
-                <div className="border-2 border-dashed border-blue-300 p-4 rounded-lg bg-blue-50">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-semibold text-blue-900">Auto-fill with Google Places Data</h4>
-                      <p className="text-sm text-blue-700">Automatically fill business information from Google Places API</p>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        const businessName = form.getValues("name");
-                        const address = form.getValues("address");
-                        if (!businessName?.trim()) {
-                          toast({
-                            title: "Error",
-                            description: "Please enter a business name first",
-                            variant: "destructive",
-                          });
-                          return;
-                        }
-                        googlePlacesLookupMutation.mutate({
-                          businessName: businessName.trim(),
-                          address: address?.trim(),
-                        });
-                      }}
-                      disabled={googlePlacesLookupMutation.isPending}
-                      className="border-blue-300 text-blue-700 hover:bg-blue-100"
-                    >
-                      {googlePlacesLookupMutation.isPending ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-700 mr-2"></div>
-                          Looking up...
-                        </>
-                      ) : (
-                        <>
-                          <MapPin className="w-4 h-4 mr-2" />
-                          Fill from Google
-                        </>
-                      )}
-                    </Button>
-                  </div>
                 </div>
 
                 <div>
