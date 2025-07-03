@@ -1,30 +1,30 @@
 
-import { db } from './server/db.js';
-import { businesses } from './shared/schema.js';
+const { Pool } = require('@neondatabase/serverless');
 
 async function listBusinessNames() {
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  
   try {
-    console.log('Fetching all business names from the database...');
+    console.log('Connecting to database...');
     
-    const businessList = await db
-      .select({ 
-        id: businesses.id,
-        name: businesses.name 
-      })
-      .from(businesses)
-      .orderBy(businesses.name);
+    const result = await pool.query(`
+      SELECT id, name 
+      FROM businesses 
+      ORDER BY name ASC
+    `);
     
-    console.log(`\n📋 Found ${businessList.length} businesses in the database:\n`);
+    console.log(`\n📋 Found ${result.rows.length} businesses in the database:\n`);
     
-    businessList.forEach((business, index) => {
+    result.rows.forEach((business, index) => {
       console.log(`${index + 1}. ${business.name} (ID: ${business.id})`);
     });
     
-    console.log(`\n✅ Total: ${businessList.length} businesses`);
-    process.exit(0);
+    console.log(`\n✅ Total: ${result.rows.length} businesses`);
+    
   } catch (error) {
-    console.error('Error fetching businesses:', error);
-    process.exit(1);
+    console.error('Error fetching businesses:', error.message);
+  } finally {
+    await pool.end();
   }
 }
 
