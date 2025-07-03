@@ -362,13 +362,36 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
             {business.website && (
               <Button
                 className="bg-tropical-aqua hover:bg-tropical-aqua-600 text-white"
-                onClick={() => {
-                  const url = business.website;
-                  console.log('Opening website:', url);
-                  if (url) {
-                    // Ensure URL has protocol
-                    const finalUrl = url.startsWith('http') ? url : `https://${url}`;
-                    window.open(finalUrl, '_blank', 'noopener,noreferrer');
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  const url = business.website?.trim();
+                  console.log('Website URL:', url);
+                  console.log('Business object:', business);
+                  
+                  if (url && url !== '') {
+                    try {
+                      // Clean the URL and ensure it has a protocol
+                      let finalUrl = url;
+                      if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+                        finalUrl = `https://${finalUrl}`;
+                      }
+                      console.log('Final URL:', finalUrl);
+                      
+                      // Try to open the URL
+                      const newWindow = window.open(finalUrl, '_blank', 'noopener,noreferrer');
+                      if (!newWindow) {
+                        console.error('Popup blocked or failed to open');
+                        // Fallback: try setting window.location in current tab
+                        window.location.href = finalUrl;
+                      }
+                    } catch (error) {
+                      console.error('Error opening website:', error);
+                      alert(`Could not open website: ${url}`);
+                    }
+                  } else {
+                    console.error('No valid website URL found');
+                    alert('No website URL available for this business');
                   }
                 }}
               >
