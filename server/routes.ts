@@ -61,22 +61,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get photos
       const photos = await getPlacePhotos(placeDetails.photos || []);
       
-      // Format the response data
+      // Format the response data - NEVER include name or description to preserve existing values
       const googleData = {
-        name: placeDetails.name || businessName,
-        description: placeDetails.editorial_summary?.overview || "",
         address: placeDetails.formatted_address || "",
         latitude: placeDetails.geometry?.location?.lat?.toString() || "",
         longitude: placeDetails.geometry?.location?.lng?.toString() || "",
         phone: placeDetails.formatted_phone_number || "",
         website: placeDetails.website || "",
-        hours: placeDetails.opening_hours?.weekday_text?.join('; ') || "",
-        imageUrl: photos.length > 0 ? photos[0] : "",
-        gallery: photos.slice(1, 6), // Up to 5 additional photos
+        googleMapsUrl: placeDetails.url || "",
+        imageUrl: photos.length > 0 ? photos[0] : "", // Main Image URL (1st photo)
+        gallery: photos.slice(1, 5).join(', '), // Gallery URLs (2nd-5th photos, comma separated)
         rating: placeDetails.rating?.toString() || "",
         reviewCount: placeDetails.user_ratings_total?.toString() || "",
-        googleMapsUrl: placeDetails.url || "",
-        priceRange: placeDetails.price_level ? '$'.repeat(placeDetails.price_level) : "",
       };
 
       res.json(googleData);

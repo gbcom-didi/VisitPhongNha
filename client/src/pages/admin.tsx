@@ -199,25 +199,22 @@ export default function Admin() {
       return apiRequest("POST", "/api/google-places/lookup", data);
     },
     onSuccess: (data: any) => {
-      // Fill form with Google Places data
-      form.setValue("name", data.name || "");
-      form.setValue("description", data.description || "");
-      form.setValue("address", data.address || "");
-      form.setValue("latitude", data.latitude || "");
-      form.setValue("longitude", data.longitude || "");
-      form.setValue("phone", data.phone || "");
-      form.setValue("website", data.website || "");
-      form.setValue("hours", data.hours || "");
-      form.setValue("imageUrl", data.imageUrl || "");
-      form.setValue("gallery", data.gallery?.join(', ') || "");
-      form.setValue("rating", data.rating || "");
-      form.setValue("reviewCount", data.reviewCount || "");
-      form.setValue("googleMapsUrl", data.googleMapsUrl || "");
-      form.setValue("priceRange", data.priceRange || "");
+      // Fill form with Google Places data - PRESERVE existing name and description
+      // Only update the specific fields that Google should provide
+      if (data.latitude) form.setValue("latitude", data.latitude);
+      if (data.longitude) form.setValue("longitude", data.longitude);
+      if (data.address) form.setValue("address", data.address);
+      if (data.phone) form.setValue("phone", data.phone);
+      if (data.website) form.setValue("website", data.website);
+      if (data.googleMapsUrl) form.setValue("googleMapsUrl", data.googleMapsUrl);
+      if (data.imageUrl) form.setValue("imageUrl", data.imageUrl);
+      if (data.gallery) form.setValue("gallery", data.gallery);
+      if (data.rating) form.setValue("rating", data.rating);
+      if (data.reviewCount) form.setValue("reviewCount", data.reviewCount);
       
       toast({
         title: "Success",
-        description: "Business data filled from Google Places",
+        description: "Business location and media data updated from Google Places",
       });
     },
     onError: (error: any) => {
