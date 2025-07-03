@@ -316,32 +316,45 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
 
         {/* Smart Action Buttons */}
         <div className="space-y-3 pt-4 border-t border-gray-200">
-          {/* Address, Phone, and Google Maps Icons */}
-          <div className="flex items-center justify-center gap-6">
+          {/* Contact Information Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-4 border border-gray-200 rounded-lg bg-gray-50">
             {business.address && (
-              <div className="flex items-center text-gray-600">
-                <MapPin className="w-5 h-5 mr-2" />
-                <span className="text-sm">{business.address}</span>
+              <div className="flex items-center justify-center text-center px-4">
+                <div>
+                  <MapPin className="w-5 h-5 mx-auto mb-1 text-gray-500" />
+                  <p className="text-sm text-gray-700 font-medium">Address</p>
+                  <p className="text-xs text-gray-600">{business.address}</p>
+                </div>
               </div>
             )}
             
             {business.phone && (
-              <a 
-                href={`tel:${business.phone}`}
-                className="flex items-center text-gray-600 hover:text-tropical-aqua transition-colors"
-              >
-                <Phone className="w-5 h-5 mr-2" />
-                <span className="text-sm">{business.phone}</span>
-              </a>
+              <div className="flex items-center justify-center text-center px-4 border-l border-r border-gray-300">
+                <div>
+                  <Phone className="w-5 h-5 mx-auto mb-1 text-gray-500" />
+                  <p className="text-sm text-gray-700 font-medium">Phone</p>
+                  <a 
+                    href={`tel:${business.phone}`}
+                    className="text-xs text-tropical-aqua hover:text-tropical-aqua-700 transition-colors"
+                  >
+                    {business.phone}
+                  </a>
+                </div>
+              </div>
             )}
             
-            <button
-              onClick={handleDirectionsClick}
-              className="flex items-center text-gray-600 hover:text-tropical-aqua transition-colors"
-            >
-              <Globe className="w-5 h-5 mr-2" />
-              <span className="text-sm">View on Google Maps</span>
-            </button>
+            <div className="flex items-center justify-center text-center px-4">
+              <div>
+                <Globe className="w-5 h-5 mx-auto mb-1 text-gray-500" />
+                <p className="text-sm text-gray-700 font-medium">Location</p>
+                <button
+                  onClick={handleDirectionsClick}
+                  className="text-xs text-tropical-aqua hover:text-tropical-aqua-700 transition-colors"
+                >
+                  View on Google Maps
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Smart Booking/Website Buttons */}
