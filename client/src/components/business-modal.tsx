@@ -362,7 +362,15 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
             {business.website && (
               <Button
                 className="bg-tropical-aqua hover:bg-tropical-aqua-600 text-white"
-                onClick={() => window.open(business.website || '', '_blank')}
+                onClick={() => {
+                  const url = business.website;
+                  console.log('Opening website:', url);
+                  if (url) {
+                    // Ensure URL has protocol
+                    const finalUrl = url.startsWith('http') ? url : `https://${url}`;
+                    window.open(finalUrl, '_blank', 'noopener,noreferrer');
+                  }
+                }}
               >
                 <Globe className="w-4 h-4 mr-2" />
                 Visit Website
