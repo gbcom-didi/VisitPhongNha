@@ -272,6 +272,11 @@ Changelog:
   - Changed icons to themed versions: Map (mango-yellow), Heart (chili-red), Lightbulb (tropical-aqua), Book (jade-green)
   - Updated "Featured Premium Places" to "Featured Places" for cleaner messaging
   - Enhanced mobile responsiveness and visual polish throughout entire home page experience
+- July 3, 2025. Fixed homepage authentication inconsistency
+  - Resolved issue where signed-in and signed-out users saw different homepage versions
+  - All users now see the same beautiful "Your Gateway to Adventure" landing page
+  - Removed conditional routing that showed different components based on authentication status
+  - Maintained consistent user experience with Interactive Explorer and Personal Collection features
 ```
 
 ## User Preferences

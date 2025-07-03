@@ -32,7 +32,7 @@ function Router() {
 
   return (
     <Switch>
-      <Route path="/" component={isAuthenticated ? Home : Landing} />
+      <Route path="/" component={Landing} />
       <Route path="/explore" component={Explore} />
       <Route path="/inspiration" component={InspirationPage} />
       <Route path="/inspiration/:id" component={InspirationArticlePage} />
