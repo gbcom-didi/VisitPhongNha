@@ -88,7 +88,7 @@ export default function About() {
               <div 
                 className="aspect-square bg-cover bg-center rounded-2xl shadow-xl"
                 style={{
-                  backgroundImage: `url('images/my-hoa-love.jpg')`
+                  backgroundImage: `url('images/IMG_2089.jpg')`
                 }}
               />
             </div>

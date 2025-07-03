@@ -1,26 +1,53 @@
-import { storage } from './storage';
+import { db } from './db';
+import { businesses, categories } from '@shared/schema';
+import { eq, or } from 'drizzle-orm';
 
-interface PlaceDetails {
+const GOOGLE_PLACES_API_KEY = 'AIzaSyB9BiGD__jK5zG6owJJVL37bqh_S-1wf34';
+const PHONG_NHA_LOCATION = '17.5985,106.2636'; // Phong Nha coordinates
+const SEARCH_RADIUS = 50000; // 50km radius
+
+interface PlaceSearchResult {
   place_id: string;
   name: string;
-  formatted_address?: string;
+  formatted_address: string;
+  geometry: {
+    location: {
+      lat: number;
+      lng: number;
+    };
+  };
+  types: string[];
+  business_status?: string;
+}
+
+interface PlaceDetailsResult {
+  place_id: string;
+  name: string;
+  formatted_address: string;
   formatted_phone_number?: string;
+  international_phone_number?: string;
   website?: string;
+  url?: string;
+  opening_hours?: {
+    weekday_text: string[];
+    open_now: boolean;
+  };
+  geometry: {
+    location: {
+      lat: number;
+      lng: number;
+    };
+  };
+  types: string[];
   rating?: number;
   user_ratings_total?: number;
-  photos?: Array<{ photo_reference: string; width: number; height: number }>;
-  opening_hours?: {
-    open_now: boolean;
-    periods: Array<{
-      open: { day: number; time: string };
-      close?: { day: number; time: string };
-    }>;
-    weekday_text: string[];
-  };
-  price_level?: number;
-  types?: string[];
-  geometry?: {
-    location: { lat: number; lng: number };
+  photos?: Array<{
+    photo_reference: string;
+    height: number;
+    width: number;
+  }>;
+  editorial_summary?: {
+    overview: string;
   };
   reviews?: Array<{
     author_name: string;
@@ -28,315 +55,422 @@ interface PlaceDetails {
     text: string;
     time: number;
   }>;
-  international_phone_number?: string;
-  url?: string;
 }
 
-class GooglePlacesImporter {
-  private apiKey: string;
-  private baseUrl = 'https://maps.googleapis.com/maps/api/place';
+// Business names from the CSV
+const businessNames = [
+  'A Trần - cơm gà xối mỡ',
+  'Amanda Hotel Quảng Bình',
+  'Aumori Hostel',
+  'Balanha',
+  'Bamboo\'s House',
+  'Bánh khoái Tứ Quý',
+  'Bao Ninh Beach',
+  'Bao Ninh beach Resort',
+  'BinBin Homestay Đồng Hới Quảng Bình',
+  'Bún Bò Huế',
+  'Casual beer restaurant',
+  'Celina Peninsula Resort- Resort đẹp Quảng Bình',
+  'Chạy Lập Farmstay',
+  'Coffee Lyly 89',
+  'Cối Xay Gió Homestay Quảng Bình',
+  'Danh Lam Homestay(tân hoá.quảng bình)',
+  'Dark Cave',
+  'Dolphin Homestay',
+  'Dozy Hostel',
+  'Duy Tân Resort Quảng Bình',
+  'East Hill - Phong Nha',
+  'Elements Collection',
+  'En Cave',
+  'Fami Homestay',
+  'Geminai Restaurant',
+  'Genkan Vegan Cafe',
+  'Gold Coast Hotel Resort & Spa',
+  'GREEN RIVER',
+  'Greenfield Homestay',
+  'Ha Linh Restaurant',
+  'Hải Âu Hotel and Apartment',
+  'Hang Sơn Đoòng',
+  'Hang Trạ Ang',
+  'Hang Va Cave',
+  'HiQ Villa',
+  'Homestay hoàng dương',
+  'Homestay Hùng Liên',
+  'Hưng Phát Bungalow',
+  'Jungalo Collection.',
+  'Jungle Boss Trekking Tours Headquarters',
+  'Karst Villas Phong Nha',
+  'Khách sạn Trung Trầm',
+  'Lena Homestay & Villa',
+  'Lotus Restaurant - Phong Nha',
+  'Lực Giáng',
+  'Manli Resort',
+  'Mê Công Cafe',
+  'Melia Vinpearl Quảng Bình',
+  'Mia\'s House',
+  'Mộc Hoa Viên/Restaurant',
+  'Mộc Nhiên Quán',
+  'Monkey Bridge Farm',
+  'Nam Long Plus hotel',
+  'Nava Hotel & Resort',
+  'Nem Lụi - Bún Thịt Nướng LyLy 1',
+  'New Beach - OVAN',
+  'Newlife Homestay( thiện tâm homestay)',
+  'Nguyen Shack Retreat',
+  'Nhà hàng Bình Thiên Đường',
+  'Nhà hàng Chang My',
+  'Nhà hàng Khánh Thuỷ',
+  'Nhà Hàng Ngà Danh',
+  'Nhà Hàng Phương Nam II',
+  'Nhà Hàng Vườn Anh Tuấn',
+  'Nhà nghỉ Đồi Sim',
+  'Nhà vườn Thuyền Trưởng (The Captain\'s Garden House)',
+  'Ninh Cottage',
+  'Oxalis Adventure Tours',
+  'Phong Nha - Ke Bang National Park',
+  'Phong Nha Botanic Garden',
+  'Phong Nha Dawn Homestay',
+  'Phong Nha Escape Bungalow',
+  'Phong Nha Farmstay',
+  'Phong nha funky beach',
+  'Phong Nha Motorbike tour',
+  'Phong Nha Palafita Bungalow',
+  'Pub with cold beer',
+  'Quán Ăn 86 Tâm Thịnh Popular restaurant',
+  'Regal Collection House',
+  'RiverView HomeStay',
+  'Rumba',
+  'Sea Star Resort Quang Binh',
+  'Sealand homestay',
+  'Sun Spa Resort',
+  'Sunflower Nhật Lệ',
+  'SUSHI CÔ MO',
+  'Tân Hóa Rural Homestay',
+  'Thai Binh Street Food and Drink',
+  'Thai Hoang Villa',
+  'The Duck Stop',
+  'The Duck Tang Farm Quang Binh',
+  'Thien Truc Hotel',
+  'Tú Làn Lodge',
+  'TuTu\'s Homestay Phong Nha',
+  'voco Quang Binh Resort by IHG',
+  'Wildlife and Jungle Adventure - ECOFOOT',
+  'Wyndham Quang Binh Golf & Beach Resort'
+];
 
-  constructor() {
-    this.apiKey = process.env.GOOGLE_PLACES_API_KEY_VALID || process.env.GOOGLE_PLACES_API_KEY_UNRESTRICTED || process.env.GOOGLE_PLACES_API_KEY!;
-    if (!this.apiKey) {
-      throw new Error('Valid Google Places API key is required');
+// Category mapping based on Google Places types
+const categoryMapping: Record<string, string> = {
+  // Accommodation
+  'lodging': 'accommodation',
+  'campground': 'accommodation',
+  'rv_park': 'accommodation',
+  
+  // Food & Drink
+  'restaurant': 'food-drink',
+  'food': 'food-drink',
+  'meal_takeaway': 'food-drink',
+  'meal_delivery': 'food-drink',
+  'cafe': 'food-drink',
+  'bar': 'food-drink',
+  'night_club': 'food-drink',
+  'bakery': 'food-drink',
+  
+  // Street Food (if specified in business name)
+  'street_food': 'street-food',
+  
+  // Attractions/Tours
+  'tourist_attraction': 'attractions',
+  'amusement_park': 'attractions',
+  'aquarium': 'attractions',
+  'art_gallery': 'attractions',
+  'museum': 'attractions',
+  'zoo': 'attractions',
+  'park': 'attractions',
+  'natural_feature': 'attractions',
+  'establishment': 'attractions',
+  'point_of_interest': 'attractions',
+  'travel_agency': 'tours',
+  
+  // Recreation
+  'gym': 'recreation',
+  'spa': 'recreation',
+  'beauty_salon': 'recreation',
+  'hair_care': 'recreation',
+  
+  // Services
+  'atm': 'atm',
+  'bank': 'atm',
+  'hospital': 'medical',
+  'doctor': 'medical',
+  'dentist': 'medical',
+  'pharmacy': 'pharmacy',
+  'supermarket': 'supermarket',
+  'convenience_store': 'supermarket',
+  'grocery_or_supermarket': 'supermarket',
+  'shopping_mall': 'shopping',
+  'clothing_store': 'shopping',
+  'electronics_store': 'mobile-phone',
+  'car_repair': 'mechanic',
+  'gas_station': 'mechanic'
+};
+
+function mapGoogleTypesToCategory(types: string[], businessName: string): string {
+  // Check business name for specific keywords
+  const nameLower = businessName.toLowerCase();
+  
+  if (nameLower.includes('cave') || nameLower.includes('hang')) return 'caves';
+  if (nameLower.includes('waterfall') || nameLower.includes('thác')) return 'waterfall';
+  if (nameLower.includes('beach') || nameLower.includes('bãi biển')) return 'attractions';
+  if (nameLower.includes('park') || nameLower.includes('vườn quốc gia')) return 'parks';
+  if (nameLower.includes('tour') || nameLower.includes('adventure')) return 'tours';
+  if (nameLower.includes('massage')) return 'massage';
+  if (nameLower.includes('market') || nameLower.includes('chợ')) return 'market';
+  if (nameLower.includes('street food') || nameLower.includes('bánh') || nameLower.includes('bún') || nameLower.includes('cơm')) return 'street-food';
+  if (nameLower.includes('cafe') || nameLower.includes('coffee')) return 'cafe';
+  
+  // Map Google types to our categories
+  for (const type of types) {
+    if (categoryMapping[type]) {
+      return categoryMapping[type];
     }
   }
+  
+  // Default fallback based on common patterns
+  if (types.includes('lodging')) return 'accommodation';
+  if (types.includes('restaurant') || types.includes('food')) return 'food-drink';
+  if (types.includes('tourist_attraction')) return 'attractions';
+  
+  return 'attractions'; // Default fallback
+}
 
-  async searchPlace(businessName: string, location: string = "Phong Nha, Vietnam"): Promise<string | null> {
-    try {
-      // Try multiple search variations for better matching
-      const searchQueries = [
-        `${businessName} ${location}`,
-        `${businessName} Quang Binh Vietnam`,
-        `${businessName} Phong Nha Quang Binh`,
-        businessName, // Try just the business name
-      ];
-
-      for (const query of searchQueries) {
-        const searchUrl = `${this.baseUrl}/textsearch/json?query=${encodeURIComponent(query)}&key=${this.apiKey}`;
-        
-        const response = await fetch(searchUrl);
-        const data = await response.json();
-
-        if (data.status === 'OK' && data.results?.length > 0) {
-          // Filter results to prioritize those in Vietnam or with relevant location
-          const vietnamResults = data.results.filter((result: any) => 
-            result.formatted_address?.includes('Vietnam') ||
-            result.formatted_address?.includes('Ninh Thuan') ||
-            result.formatted_address?.includes('Phan Rang')
-          );
-          
-          if (vietnamResults.length > 0) {
-            return vietnamResults[0].place_id;
-          }
-          
-          // Fallback to first result if no Vietnam-specific results
-          return data.results[0].place_id;
-        }
-      }
-      
-      return null;
-    } catch (error) {
-      console.error(`Error searching for ${businessName}:`, error);
-      return null;
-    }
+function generateDescription(placeDetails: PlaceDetailsResult): string {
+  if (placeDetails.editorial_summary?.overview) {
+    return placeDetails.editorial_summary.overview;
   }
+  
+  const name = placeDetails.name;
+  const types = placeDetails.types;
+  const location = 'Phong Nha, Quang Binh Province';
+  
+  // Generate description based on types
+  if (types.includes('lodging')) {
+    return `${name} offers comfortable accommodation in ${location}. Experience authentic Vietnamese hospitality in this well-located property.`;
+  } else if (types.includes('restaurant') || types.includes('food')) {
+    return `${name} serves delicious local cuisine in ${location}. Enjoy authentic Vietnamese flavors and fresh ingredients.`;
+  } else if (types.includes('tourist_attraction')) {
+    return `${name} is a popular attraction in ${location}. Discover the natural beauty and cultural significance of this remarkable destination.`;
+  } else if (types.includes('travel_agency')) {
+    return `${name} provides expert tour services in ${location}. Explore the wonders of Phong Nha with experienced local guides.`;
+  }
+  
+  return `${name} is located in ${location}. A quality establishment serving the local community and visitors.`;
+}
 
-  async getPlaceDetails(placeId: string): Promise<PlaceDetails | null> {
-    try {
-      const fields = [
-        'place_id', 'name', 'formatted_address', 'formatted_phone_number',
-        'international_phone_number', 'website', 'rating', 'user_ratings_total',
-        'photos', 'opening_hours', 'price_level', 'types', 'geometry',
-        'reviews', 'url'
-      ].join(',');
-
-      const detailsUrl = `${this.baseUrl}/details/json?place_id=${placeId}&fields=${fields}&key=${this.apiKey}`;
-      
-      const response = await fetch(detailsUrl);
-      const data = await response.json();
-
-      if (data.status === 'OK' && data.result) {
-        return data.result;
-      }
-      return null;
-    } catch (error) {
-      console.error(`Error getting details for place ${placeId}:`, error);
+async function searchPlace(businessName: string): Promise<PlaceSearchResult | null> {
+  try {
+    const query = encodeURIComponent(`${businessName} Phong Nha Quang Binh Vietnam`);
+    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&location=${PHONG_NHA_LOCATION}&radius=${SEARCH_RADIUS}&key=${GOOGLE_PLACES_API_KEY}`;
+    
+    console.log(`🔍 Searching for: ${businessName}`);
+    
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    if (data.status !== 'OK') {
+      console.log(`❌ Search failed for ${businessName}: ${data.status}`);
       return null;
     }
-  }
-
-  getPhotoUrl(photoReference: string, maxWidth: number = 800): string {
-    return `${this.baseUrl}/photo?maxwidth=${maxWidth}&photoreference=${photoReference}&key=${this.apiKey}`;
-  }
-
-  mapPriceLevelToRange(priceLevel?: number): string {
-    switch (priceLevel) {
-      case 0: return '$';
-      case 1: return '$';
-      case 2: return '$$';
-      case 3: return '$$$';
-      case 4: return '$$$$';
-      default: return '$$';
+    
+    if (data.results && data.results.length > 0) {
+      console.log(`✅ Found ${businessName} with place_id: ${data.results[0].place_id}`);
+      return data.results[0];
     }
+    
+    console.log(`⚠️ No results found for: ${businessName}`);
+    return null;
+  } catch (error) {
+    console.error(`❌ Error searching for ${businessName}:`, error);
+    return null;
   }
+}
 
-  extractOperatingHours(openingHours?: any): any {
-    if (!openingHours?.weekday_text) return null;
+async function getPlaceDetails(placeId: string): Promise<PlaceDetailsResult | null> {
+  try {
+    const fields = 'place_id,name,formatted_address,formatted_phone_number,international_phone_number,website,url,opening_hours,geometry,types,rating,user_ratings_total,photos,editorial_summary,reviews';
+    const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=${fields}&key=${GOOGLE_PLACES_API_KEY}`;
     
-    const hours: any = {};
-    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const response = await fetch(url);
+    const data = await response.json();
     
-    openingHours.weekday_text.forEach((dayText: string, index: number) => {
-      const dayName = dayNames[index];
-      if (dayText.includes('Closed')) {
-        hours[dayName] = 'Closed';
-      } else {
-        const timeMatch = dayText.match(/(\d{1,2}:\d{2}\s?[AP]M)\s*–\s*(\d{1,2}:\d{2}\s?[AP]M)/);
-        if (timeMatch) {
-          hours[dayName] = `${timeMatch[1]} - ${timeMatch[2]}`;
-        }
-      }
-    });
+    if (data.status !== 'OK') {
+      console.log(`❌ Details fetch failed for place_id ${placeId}: ${data.status}`);
+      return null;
+    }
     
-    return Object.keys(hours).length > 0 ? hours : null;
+    return data.result;
+  } catch (error) {
+    console.error(`❌ Error fetching details for place_id ${placeId}:`, error);
+    return null;
   }
+}
 
-  extractAmenities(types?: string[]): string[] {
-    if (!types) return [];
+async function getPhotoUrl(photoReference: string, maxWidth: number = 1600): Promise<string> {
+  return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photo_reference=${photoReference}&key=${GOOGLE_PLACES_API_KEY}`;
+}
+
+async function processPhotos(photos: Array<{photo_reference: string, height: number, width: number}> | undefined): Promise<{imageUrl: string, gallery: string[]}> {
+  if (!photos || photos.length === 0) {
+    return { imageUrl: '', gallery: [] };
+  }
+  
+  const photoUrls: string[] = [];
+  
+  // Get up to 5 photos
+  for (let i = 0; i < Math.min(photos.length, 5); i++) {
+    const photoUrl = await getPhotoUrl(photos[i].photo_reference);
+    photoUrls.push(photoUrl);
+  }
+  
+  return {
+    imageUrl: photoUrls[0] || '',
+    gallery: photoUrls.slice(1) // Photos 2-5 for gallery
+  };
+}
+
+async function getCategoryId(categorySlug: string): Promise<number> {
+  try {
+    const [category] = await db
+      .select()
+      .from(categories)
+      .where(eq(categories.slug, categorySlug))
+      .limit(1);
     
-    const amenityMap: Record<string, string> = {
-      'wifi': 'Free WiFi',
-      'parking': 'Parking Available',
-      'wheelchair_accessible': 'Wheelchair Accessible',
-      'air_conditioning': 'Air Conditioning',
-      'outdoor_seating': 'Outdoor Seating',
-      'takeout': 'Takeout Available',
-      'delivery': 'Delivery Available',
-      'credit_cards': 'Credit Cards Accepted',
-      'restroom': 'Restrooms',
-      'family_friendly': 'Family Friendly'
+    if (category) {
+      return category.id;
+    }
+    
+    // If category doesn't exist, default to attractions
+    const [defaultCategory] = await db
+      .select()
+      .from(categories)
+      .where(eq(categories.slug, 'attractions'))
+      .limit(1);
+    
+    return defaultCategory?.id || 1;
+  } catch (error) {
+    console.error('Error getting category ID:', error);
+    return 1; // Default fallback
+  }
+}
+
+async function saveBusiness(placeDetails: PlaceDetailsResult, businessName: string): Promise<void> {
+  try {
+    const category = mapGoogleTypesToCategory(placeDetails.types, businessName);
+    const categoryId = await getCategoryId(category);
+    const { imageUrl, gallery } = await processPhotos(placeDetails.photos);
+    const description = generateDescription(placeDetails);
+    
+    // Check if business already exists
+    const existingBusiness = await db
+      .select()
+      .from(businesses)
+      .where(
+        or(
+          eq(businesses.name, placeDetails.name),
+          eq(businesses.googleMapsUrl, placeDetails.url || '')
+        )
+      )
+      .limit(1);
+    
+    const businessData = {
+      name: placeDetails.name,
+      description,
+      latitude: placeDetails.geometry.location.lat.toString(),
+      longitude: placeDetails.geometry.location.lng.toString(),
+      address: placeDetails.formatted_address,
+      phone: placeDetails.formatted_phone_number || placeDetails.international_phone_number || null,
+      website: placeDetails.website || null,
+      hours: placeDetails.opening_hours?.weekday_text?.join('; ') || null,
+      imageUrl,
+      gallery,
+      categoryId,
+      rating: placeDetails.rating?.toString() || null,
+      reviewCount: placeDetails.user_ratings_total || 0,
+      googleMapsUrl: placeDetails.url || null,
+      isActive: true,
+      isPremium: false,
+      isVerified: true,
+      isRecommended: false,
+      tags: placeDetails.types.filter(type => !['establishment', 'point_of_interest'].includes(type)),
+      reviews: placeDetails.reviews ? JSON.stringify(placeDetails.reviews.slice(0, 5)) : null
     };
-
-    return types
-      .filter(type => amenityMap[type])
-      .map(type => amenityMap[type]);
-  }
-
-  async updateBusinessWithGoogleData(businessId: number, businessName: string): Promise<boolean> {
-    try {
-      console.log(`Fetching Google data for: ${businessName}`);
-      
-      // Search for the place
-      const placeId = await this.searchPlace(businessName);
-      if (!placeId) {
-        console.log(`No place found for: ${businessName}`);
-        return false;
-      }
-
-      // Get detailed information
-      const placeDetails = await this.getPlaceDetails(placeId);
-      if (!placeDetails) {
-        console.log(`No details found for: ${businessName}`);
-        return false;
-      }
-
-      // Prepare update data
-      const updateData: any = {};
-
-      // Basic information
-      if (placeDetails.formatted_address) {
-        updateData.address = placeDetails.formatted_address;
-      }
-
-      if (placeDetails.formatted_phone_number || placeDetails.international_phone_number) {
-        updateData.phone = placeDetails.formatted_phone_number || placeDetails.international_phone_number;
-      }
-
-      if (placeDetails.website) {
-        updateData.website = placeDetails.website;
-      }
-
-      // Location coordinates
-      if (placeDetails.geometry?.location) {
-        updateData.latitude = placeDetails.geometry.location.lat;
-        updateData.longitude = placeDetails.geometry.location.lng;
-      }
-
-      // Rating and reviews
-      if (placeDetails.rating) {
-        updateData.rating = placeDetails.rating;
-      }
-
-      if (placeDetails.user_ratings_total) {
-        updateData.reviewCount = placeDetails.user_ratings_total;
-      }
-
-      // Reviews data
-      if (placeDetails.reviews && placeDetails.reviews.length > 0) {
-        const processedReviews = placeDetails.reviews.slice(0, 5).map(review => ({
-          author_name: review.author_name,
-          rating: review.rating,
-          text: review.text ? review.text.substring(0, 500) : '', // Limit text length
-          time: review.time
-        }));
-        updateData.reviews = processedReviews;
-      }
-
-      // Price range
-      if (placeDetails.price_level !== undefined) {
-        updateData.priceRange = this.mapPriceLevelToRange(placeDetails.price_level);
-      }
-
-      // Operating hours
-      const operatingHours = this.extractOperatingHours(placeDetails.opening_hours);
-      if (operatingHours) {
-        updateData.operatingHours = operatingHours;
-      }
-
-      // Gallery - get up to 10 photos
-      if (placeDetails.photos && placeDetails.photos.length > 0) {
-        const gallery = placeDetails.photos
-          .slice(0, 10)
-          .map(photo => this.getPhotoUrl(photo.photo_reference, 800));
-        updateData.gallery = gallery;
-        
-        // Set the first photo as the main image if not already set
-        updateData.imageUrl = gallery[0];
-      }
-
-      // Truncate long text fields to prevent database errors
-      if (updateData.address && updateData.address.length > 500) {
-        updateData.address = updateData.address.substring(0, 497) + '...';
-      }
-      
-      if (updateData.website && updateData.website.length > 500) {
-        updateData.website = updateData.website.substring(0, 500);
-      }
-
-      // Amenities based on place types
-      const amenities = this.extractAmenities(placeDetails.types);
-      if (amenities.length > 0) {
-        updateData.amenities = amenities;
-      }
-
-      // Tags based on place types
-      if (placeDetails.types) {
-        const tags = placeDetails.types
-          .filter(type => !type.includes('establishment') && !type.includes('point_of_interest'))
-          .map(type => type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()))
-          .slice(0, 5);
-        updateData.tags = tags;
-      }
-
-      // Google Maps URL
-      if (placeDetails.url) {
-        updateData.directionsUrl = placeDetails.url;
-      }
-
-      // Mark as verified since it's from Google
-      updateData.isVerified = true;
-
-      // Update the business
-      await storage.updateBusiness(businessId, updateData);
-      
-      console.log(`Successfully updated ${businessName} with Google data`);
-      return true;
-
-    } catch (error) {
-      console.error(`Error updating business ${businessName}:`, error);
-      return false;
+    
+    if (existingBusiness.length > 0) {
+      console.log(`🔄 Updating existing business: ${placeDetails.name}`);
+      await db
+        .update(businesses)
+        .set({
+          ...businessData,
+          updatedAt: new Date()
+        })
+        .where(eq(businesses.id, existingBusiness[0].id));
+    } else {
+      console.log(`➕ Creating new business: ${placeDetails.name}`);
+      await db
+        .insert(businesses)
+        .values(businessData);
     }
-  }
-
-  async importAllBusinesses(): Promise<void> {
-    try {
-      console.log('Starting Google Places import for all businesses...');
-      
-      const businesses = await storage.getBusinesses();
-      console.log(`Found ${businesses.length} businesses to update`);
-
-      let successCount = 0;
-      let errorCount = 0;
-
-      // Focus on businesses more likely to be found in Google Places
-      const priorityBusinesses = [
-        'Amanoi', 'Ninh Chu beach', 'Phan Rang Market', 'Ninh Thuan Hospital',
-        'Ninh Thuận Museum', 'ANARA Binh Tien Golf Club', 'Khu du lịch Hang Rái'
-      ];
-
-      // Try priority businesses first
-      for (const business of businesses) {
-        try {
-          // Add delay to respect API rate limits
-          await new Promise(resolve => setTimeout(resolve, 200));
-          
-          const success = await this.updateBusinessWithGoogleData(business.id, business.name);
-          if (success) {
-            successCount++;
-            console.log(`✓ Successfully updated: ${business.name}`);
-          } else {
-            errorCount++;
-            console.log(`✗ Failed to find: ${business.name}`);
-          }
-        } catch (error) {
-          console.error(`Failed to update ${business.name}:`, error);
-          errorCount++;
-        }
-
-        // Stop after processing 20 businesses to avoid timeout
-        if (successCount + errorCount >= 20) {
-          console.log('Stopping after 20 businesses to avoid timeout...');
-          break;
-        }
-      }
-
-      console.log(`Import completed: ${successCount} successful, ${errorCount} failed`);
-    } catch (error) {
-      console.error('Error in importAllBusinesses:', error);
-    }
+    
+    console.log(`✅ Saved business: ${placeDetails.name} (Category: ${category})`);
+  } catch (error) {
+    console.error(`❌ Error saving business ${placeDetails.name}:`, error);
   }
 }
 
-export const googlePlacesImporter = new GooglePlacesImporter();
+export async function importBusinesses(): Promise<void> {
+  console.log('🚀 Starting Google Places import for 97 businesses...');
+  console.log(`📍 Search area: Phong Nha, Quang Binh (${PHONG_NHA_LOCATION})`);
+  
+  let successCount = 0;
+  let failCount = 0;
+  
+  for (let i = 0; i < businessNames.length; i++) {
+    const businessName = businessNames[i];
+    console.log(`\n📋 Processing ${i + 1}/${businessNames.length}: ${businessName}`);
+    
+    try {
+      // Step 1: Search for the place
+      const searchResult = await searchPlace(businessName);
+      if (!searchResult) {
+        failCount++;
+        continue;
+      }
+      
+      // Step 2: Get detailed information
+      const placeDetails = await getPlaceDetails(searchResult.place_id);
+      if (!placeDetails) {
+        failCount++;
+        continue;
+      }
+      
+      // Step 3: Save to database
+      await saveBusiness(placeDetails, businessName);
+      successCount++;
+      
+      // Rate limiting - wait 100ms between requests
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+    } catch (error) {
+      console.error(`❌ Failed to process ${businessName}:`, error);
+      failCount++;
+    }
+  }
+  
+  console.log('\n📊 Import Summary:');
+  console.log(`✅ Successfully imported: ${successCount} businesses`);
+  console.log(`❌ Failed to import: ${failCount} businesses`);
+  console.log(`📈 Success rate: ${((successCount / businessNames.length) * 100).toFixed(1)}%`);
+}
+
+// Run import if this file is executed directly
+export default importBusinesses;
