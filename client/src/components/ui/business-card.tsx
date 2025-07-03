@@ -78,18 +78,40 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
           alt={business.name}
           className="w-full h-full object-cover"
           onError={(e) => {
-            // If image fails to load, show default placeholder
+            // If image fails to load, try fallback image based on category
             const target = e.target as HTMLImageElement;
-            target.style.display = 'none';
-            const parent = target.parentElement;
-            if (parent) {
-              parent.innerHTML = `
-                <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                  <svg class="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                  </svg>
-                </div>
-              `;
+            const categoryName = business.category?.name?.toLowerCase();
+            
+            // Use high-quality fallback images specific to business categories
+            let fallbackUrl = '';
+            if (categoryName?.includes('accommodation') || categoryName?.includes('hotel')) {
+              fallbackUrl = 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop&auto=format';
+            } else if (categoryName?.includes('cave')) {
+              fallbackUrl = 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&h=600&fit=crop&auto=format';
+            } else if (categoryName?.includes('food') || categoryName?.includes('restaurant')) {
+              fallbackUrl = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=600&fit=crop&auto=format';
+            } else if (categoryName?.includes('attraction')) {
+              fallbackUrl = 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=800&h=600&fit=crop&auto=format';
+            } else {
+              fallbackUrl = 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=800&h=600&fit=crop&auto=format';
+            }
+            
+            // If we haven't tried a fallback yet, try it
+            if (!target.src.includes('unsplash.com')) {
+              target.src = fallbackUrl;
+            } else {
+              // If even fallback failed, show placeholder
+              target.style.display = 'none';
+              const parent = target.parentElement;
+              if (parent) {
+                parent.innerHTML = `
+                  <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    <svg class="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                  </div>
+                `;
+              }
             }
           }}
         />
