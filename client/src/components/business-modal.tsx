@@ -166,132 +166,16 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
           </DialogDescription>
         </DialogHeader>
 
-        {/* Business Image Gallery */}
-        <div className="w-full h-64 mb-4 relative">
-          {hasMultipleImages ? (
-            <div className="flex gap-2 h-full">
-              {/* Main Image */}
-              <div className="flex-1 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden relative">
-                <img 
-                  src={allImages[0]} 
-                  alt={business.name}
-                  className="w-full h-full object-cover cursor-pointer"
-                  onClick={() => setShowGallery(true)}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    const categoryName = business.category?.name?.toLowerCase();
-                    
-                    // Use high-quality fallback images specific to business categories
-                    let fallbackUrl = '';
-                    if (categoryName?.includes('accommodation') || categoryName?.includes('hotel')) {
-                      fallbackUrl = 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop&auto=format';
-                    } else if (categoryName?.includes('cave')) {
-                      fallbackUrl = 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&h=600&fit=crop&auto=format';
-                    } else if (categoryName?.includes('food') || categoryName?.includes('restaurant')) {
-                      fallbackUrl = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=600&fit=crop&auto=format';
-                    } else if (categoryName?.includes('attraction')) {
-                      fallbackUrl = 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=800&h=600&fit=crop&auto=format';
-                    } else {
-                      fallbackUrl = 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=800&h=600&fit=crop&auto=format';
-                    }
-                    
-                    // If we haven't tried a fallback yet, try it
-                    if (!target.src.includes('unsplash.com')) {
-                      target.src = fallbackUrl;
-                    } else {
-                      // If even fallback failed, show placeholder
-                      target.style.display = 'none';
-                      const parent = target.parentElement;
-                      if (parent) {
-                        parent.innerHTML = `
-                          <div class="w-full h-full bg-gradient-to-br from-sea-blue to-tropical-aqua flex items-center justify-center">
-                            <svg class="w-16 h-16 text-white opacity-50" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                            </svg>
-                          </div>
-                        `;
-                      }
-                    }
-                  }}
-                />
-              </div>
-              
-              {/* Thumbnail Grid */}
-              <div className="w-32 flex flex-col gap-2">
-                {thumbnailImages.slice(0, 3).map((image, index) => (
-                  <div key={index} className="h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden">
-                    <img 
-                      src={image} 
-                      alt={`${business.name} - Image ${index + 2}`}
-                      className="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => {
-                        setSelectedImageIndex(index + 1);
-                        setShowGallery(true);
-                      }}
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                ))}
-                
-                {/* Show All Photos Button */}
-                {allImages.length > 4 && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-20 flex flex-col items-center justify-center text-xs border-tropical-aqua-200 hover:bg-tropical-aqua-50"
-                    onClick={() => setShowGallery(true)}
-                  >
-                    <Images className="w-4 h-4 mb-1" />
-                    Show all photos
-                  </Button>
-                )}
-                
-                {allImages.length === 4 && (
-                  <div className="h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden">
-                    <img 
-                      src={thumbnailImages[3]} 
-                      alt={`${business.name} - Image 4`}
-                      className="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => {
-                        setSelectedImageIndex(3);
-                        setShowGallery(true);
-                      }}
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            /* Single Image */
-            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden">
-              <img 
-                src={allImages[0]} 
-                alt={business.name}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  const parent = target.parentElement;
-                  if (parent) {
-                    parent.innerHTML = `
-                      <div class="w-full h-full bg-gradient-to-br from-sea-blue to-tropical-aqua flex items-center justify-center">
-                        <svg class="w-16 h-16 text-white opacity-50" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                        </svg>
-                      </div>
-                    `;
-                  }
-                }}
-              />
-            </div>
-          )}
+        {/* View All Photos Button */}
+        <div className="w-full mb-4">
+          <Button
+            variant="outline"
+            className="w-full h-16 flex items-center justify-center gap-2 border-tropical-aqua-200 hover:bg-tropical-aqua-50"
+            onClick={() => setShowGallery(true)}
+          >
+            <Images className="w-5 h-5" />
+            View All Photos
+          </Button>
         </div>
 
         {/* Business Info */}
@@ -322,141 +206,102 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
 
             {/* Reviews Section */}
             {business.rating && (
-              <div className="bg-gray-50 rounded-lg p-3 border">
-                <h4 className="font-semibold text-gray-900 mb-2">Reviews</h4>
-                <div className="flex items-center gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className="text-3xl font-bold text-gray-900">
-                      {business.rating ? parseFloat(business.rating).toFixed(1) : 'N/A'}
-                    </div>
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <Star 
-                          key={i} 
-                          className={`w-3 h-3 ${
-                            i < Math.floor(parseFloat(business.rating || '0')) 
-                              ? 'fill-yellow-400 text-yellow-400' 
-                              : 'fill-gray-200 text-gray-200'
-                          }`} 
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center text-gray-600 mb-1">
-                      <User className="w-3 h-3 mr-1" />
-                      <span className="text-sm">
-                        {business.reviewCount && business.reviewCount > 0 
-                          ? `${business.reviewCount.toLocaleString()} reviews`
-                          : '6 reviews'}
-                      </span>
-                    </div>
-                    {business.googleMapsUrl && (
-                      <a 
-                        href={business.googleMapsUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center text-sm text-tropical-aqua hover:text-tropical-aqua-800 transition-colors"
-                      >
-                        View on Google Maps
-                        <ExternalLink className="w-3 h-3 ml-1" />
-                      </a>
-                    )}
-                  </div>
-                </div>
+              <div className="flex items-center gap-2">
+                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                <span className="font-medium text-gray-900">{parseFloat(business.rating).toFixed(1)}</span>
+                {business.reviewCount && business.reviewCount > 0 && (
+                  <span className="text-sm text-gray-500">({business.reviewCount} reviews)</span>
+                )}
               </div>
             )}
           </div>
 
-          {/* Contact Information */}
-          <div className="space-y-3 border-t border-gray-200 pt-4">
+
+        </div>
+
+        {/* Smart Action Buttons */}
+        <div className="space-y-3 pt-4 border-t border-gray-200">
+          {/* Address, Phone, and Google Maps Icons */}
+          <div className="flex items-center justify-center gap-6">
             {business.address && (
-              <div className="flex items-start text-gray-600">
-                <MapPin className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
+              <div className="flex items-center text-gray-600">
+                <MapPin className="w-5 h-5 mr-2" />
                 <span className="text-sm">{business.address}</span>
               </div>
             )}
-
+            
             {business.phone && (
-              <div className="flex items-center text-gray-600">
-                <Phone className="w-5 h-5 mr-3 flex-shrink-0" />
-                <a 
-                  href={`tel:${business.phone}`}
-                  className="text-sm hover:text-tropical-aqua transition-colors"
-                >
-                  {business.phone}
-                </a>
-              </div>
+              <a 
+                href={`tel:${business.phone}`}
+                className="flex items-center text-gray-600 hover:text-tropical-aqua transition-colors"
+              >
+                <Phone className="w-5 h-5 mr-2" />
+                <span className="text-sm">{business.phone}</span>
+              </a>
             )}
-
-            {business.hours && (
-              <div className="flex items-center text-gray-600">
-                <Clock className="w-5 h-5 mr-3 flex-shrink-0" />
-                <span className="text-sm">{business.hours}</span>
-              </div>
-            )}
-
-            {business.website && (
-              <div className="flex items-center text-gray-600">
-                <Globe className="w-5 h-5 mr-3 flex-shrink-0" />
-                <a 
-                  href={business.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm hover:text-tropical-aqua transition-colors flex items-center"
-                >
-                  Visit Website
-                  <ExternalLink className="w-3 h-3 ml-1" />
-                </a>
-              </div>
-            )}
-
-            {business.googleMapsUrl && (
-              <div className="flex items-center text-gray-600">
-                <MapPin className="w-5 h-5 mr-3 flex-shrink-0" />
-                <a 
-                  href={business.googleMapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm hover:text-tropical-aqua transition-colors flex items-center"
-                >
-                  View on Google Maps
-                  <ExternalLink className="w-3 h-3 ml-1" />
-                </a>
-              </div>
-            )}
+            
+            <button
+              onClick={handleDirectionsClick}
+              className="flex items-center text-gray-600 hover:text-tropical-aqua transition-colors"
+            >
+              <Globe className="w-5 h-5 mr-2" />
+              <span className="text-sm">View on Google Maps</span>
+            </button>
           </div>
-        </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
-          <Button
-            className="flex-1 bg-tropical-aqua hover:bg-tropical-aqua-600 text-white"
-            onClick={handleBookClick}
-          >
-            {business.website ? 'Visit Website' : 'Book Now'}
-          </Button>
-
-          <Button
-            variant="outline"
-            className="flex-1"
-            onClick={handleDirectionsClick}
-          >
-            Get Directions
-          </Button>
-
-          <Button
-            variant="outline"
-            className={`px-4 ${
-              localIsLiked 
-                ? 'text-red-500 border-red-500 hover:bg-red-50' 
-                : 'text-gray-600 hover:text-red-500 hover:border-red-500'
-            }`}
-            onClick={handleLikeClick}
-            disabled={likeMutation.isPending}
-          >
-            <Heart className={`w-4 h-4 ${localIsLiked ? 'fill-current' : ''}`} />
-          </Button>
+          {/* Smart Booking/Website Buttons */}
+          <div className="flex flex-wrap gap-2 justify-center">
+            {business.website && (
+              <Button
+                className="bg-tropical-aqua hover:bg-tropical-aqua-600 text-white"
+                onClick={() => window.open(business.website || '', '_blank')}
+              >
+                <Globe className="w-4 h-4 mr-2" />
+                Visit Website
+              </Button>
+            )}
+            
+            {business.affiliateLink && (
+              <Button
+                variant="outline"
+                onClick={() => window.open(business.affiliateLink || '', '_blank')}
+              >
+                Book Now
+              </Button>
+            )}
+            
+            {business.directBookingContact && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  const contact = business.directBookingContact;
+                  if (contact?.includes('@')) {
+                    window.open(`mailto:${contact}`, '_blank');
+                  } else if (contact?.includes('http')) {
+                    window.open(contact, '_blank');
+                  } else if (contact) {
+                    window.open(`tel:${contact}`, '_blank');
+                  }
+                }}
+              >
+                Direct Booking
+              </Button>
+            )}
+            
+            {/* Like Button */}
+            <Button
+              variant="outline"
+              className={`px-4 ${
+                localIsLiked 
+                  ? 'text-red-500 border-red-500 hover:bg-red-50' 
+                  : 'text-gray-600 hover:text-red-500 hover:border-red-500'
+              }`}
+              onClick={handleLikeClick}
+              disabled={likeMutation.isPending}
+            >
+              <Heart className={`w-4 h-4 ${localIsLiked ? 'fill-current' : ''}`} />
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
