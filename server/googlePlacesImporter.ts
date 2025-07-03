@@ -269,36 +269,21 @@ function generateDescription(placeDetails: PlaceDetailsResult): string {
 
 export async function searchGooglePlaces(query: string): Promise<PlaceSearchResult[]> {
   try {
-    console.log(`🔍 Searching Google Places for: "${query}"`);
-    console.log(`🔑 Using API key: ${GOOGLE_PLACES_API_KEY?.substring(0, 10)}...`);
-    
-    // Use Text Search API with simplified query
-    const searchQuery = encodeURIComponent(query + " Phong Nha Vietnam");
-    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${searchQuery}&key=${GOOGLE_PLACES_API_KEY}`;
-    
-    console.log(`📡 API URL: ${url.replace(GOOGLE_PLACES_API_KEY, 'API_KEY_HIDDEN')}`);
+    // Use Text Search API which is better for business names
+    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&location=${PHONG_NHA_LOCATION}&radius=${SEARCH_RADIUS}&key=${GOOGLE_PLACES_API_KEY}`;
     
     const response = await fetch(url);
     const data = await response.json();
     
-    console.log(`📊 API Response status: ${data.status}`);
-    if (data.error_message) {
-      console.log(`❌ API Error message: ${data.error_message}`);
-    }
-    
     if (data.status !== 'OK') {
       console.log(`❌ Search failed for "${query}": ${data.status}`);
-      if (data.status === 'REQUEST_DENIED') {
-        throw new Error(`Google Places API REQUEST_DENIED: ${data.error_message || 'Check API key permissions and billing'}`);
-      }
       return [];
     }
     
-    console.log(`✅ Found ${data.results?.length || 0} results`);
     return data.results || [];
   } catch (error) {
     console.error(`❌ Error searching for "${query}":`, error);
-    throw error;
+    return [];
   }
 }
 

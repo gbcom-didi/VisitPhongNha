@@ -199,77 +199,25 @@ export default function Admin() {
       return apiRequest("POST", "/api/google-places/lookup", data);
     },
     onSuccess: (data: any) => {
-      console.log("Google Places API response:", data);
-      
-      // Force update all fields with Google Places data - PRESERVE existing name and description
-      console.log("Attempting to update form fields...");
-      
-      // Set latitude
-      console.log("Setting latitude:", data.latitude);
-      form.setValue("latitude", data.latitude || "", { shouldDirty: true });
-      
-      // Set longitude  
-      console.log("Setting longitude:", data.longitude);
-      form.setValue("longitude", data.longitude || "", { shouldDirty: true });
-      
-      // Set address
-      console.log("Setting address:", data.address);
-      form.setValue("address", data.address || "", { shouldDirty: true });
-      
-      // Set phone
-      console.log("Setting phone:", data.phone);
-      form.setValue("phone", data.phone || "", { shouldDirty: true });
-      
-      // Set website
-      console.log("Setting website:", data.website);
-      form.setValue("website", data.website || "", { shouldDirty: true });
-      
-      // Set Google Maps URL
-      console.log("Setting googleMapsUrl:", data.googleMapsUrl);
-      form.setValue("googleMapsUrl", data.googleMapsUrl || "", { shouldDirty: true });
-      
-      // Set main image URL
-      console.log("Setting imageUrl:", data.imageUrl);
-      form.setValue("imageUrl", data.imageUrl || "", { shouldDirty: true });
-      
-      // Set gallery URLs
-      console.log("Setting gallery:", data.gallery);
-      form.setValue("gallery", data.gallery || "", { shouldDirty: true });
-      
-      // Set rating
-      console.log("Setting rating:", data.rating);
-      form.setValue("rating", data.rating || "", { shouldDirty: true });
-      
-      // Set review count
-      console.log("Setting reviewCount:", data.reviewCount);
-      form.setValue("reviewCount", data.reviewCount || "", { shouldDirty: true });
-      
-      // Get current form values and merge with Google data
-      const currentValues = form.getValues();
-      console.log("Current form values:", currentValues);
-      
-      const updatedValues = {
-        ...currentValues,
-        latitude: data.latitude || currentValues.latitude,
-        longitude: data.longitude || currentValues.longitude,
-        address: data.address || currentValues.address,
-        phone: data.phone || currentValues.phone,
-        website: data.website || currentValues.website,
-        googleMapsUrl: data.googleMapsUrl || currentValues.googleMapsUrl,
-        imageUrl: data.imageUrl || currentValues.imageUrl,
-        gallery: data.gallery || currentValues.gallery,
-        rating: data.rating || currentValues.rating,
-        reviewCount: data.reviewCount || currentValues.reviewCount,
-      };
-      
-      console.log("Updated form values:", updatedValues);
-      
-      // Reset form with merged values to force complete re-render
-      form.reset(updatedValues);
+      // Fill form with Google Places data
+      form.setValue("name", data.name || "");
+      form.setValue("description", data.description || "");
+      form.setValue("address", data.address || "");
+      form.setValue("latitude", data.latitude || "");
+      form.setValue("longitude", data.longitude || "");
+      form.setValue("phone", data.phone || "");
+      form.setValue("website", data.website || "");
+      form.setValue("hours", data.hours || "");
+      form.setValue("imageUrl", data.imageUrl || "");
+      form.setValue("gallery", data.gallery?.join(', ') || "");
+      form.setValue("rating", data.rating || "");
+      form.setValue("reviewCount", data.reviewCount || "");
+      form.setValue("googleMapsUrl", data.googleMapsUrl || "");
+      form.setValue("priceRange", data.priceRange || "");
       
       toast({
-        title: "Success", 
-        description: "Business location and media data updated from Google Places",
+        title: "Success",
+        description: "Business data filled from Google Places",
       });
     },
     onError: (error: any) => {

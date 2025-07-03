@@ -52,10 +52,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const syncUserWithBackend = async (user: User): Promise<AuthUser> => {
     try {
       const idToken = await user.getIdToken();
-      
-      // Store token in localStorage for API requests
-      localStorage.setItem('firebaseToken', idToken);
-      
       const response = await fetch('/api/auth/firebase/sync', {
         method: 'POST',
         headers: {
@@ -242,8 +238,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const syncedUser = await syncUserWithBackend(user);
             setCurrentUser(syncedUser);
           } else {
-            // Clear token when user logs out
-            localStorage.removeItem('firebaseToken');
             setCurrentUser(null);
           }
           setLoading(false);

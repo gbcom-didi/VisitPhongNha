@@ -30,7 +30,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Firebase auth already handles user endpoints
 
   // Google Places API integration for admin
-  app.post('/api/google-places/lookup', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.post('/api/google-places/lookup', requireFirebaseAdmin, async (req, res) => {
     try {
       const { businessName, address } = req.body;
       
@@ -61,37 +61,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get photos
       const photos = await getPlacePhotos(placeDetails.photos || []);
       
-      // Format the response data - NEVER include name or description to preserve existing values
+      // Format the response data
       const googleData = {
+        name: placeDetails.name || businessName,
+        description: placeDetails.editorial_summary?.overview || "",
         address: placeDetails.formatted_address || "",
         latitude: placeDetails.geometry?.location?.lat?.toString() || "",
         longitude: placeDetails.geometry?.location?.lng?.toString() || "",
         phone: placeDetails.formatted_phone_number || "",
         website: placeDetails.website || "",
-        googleMapsUrl: placeDetails.url || "",
-        imageUrl: photos.length > 0 ? photos[0] : "", // Main Image URL (1st photo)
-        gallery: photos.slice(1, 5).join(', '), // Gallery URLs (2nd-5th photos, comma separated)
+        hours: placeDetails.opening_hours?.weekday_text?.join('; ') || "",
+        imageUrl: photos.length > 0 ? photos[0] : "",
+        gallery: photos.slice(1, 6), // Up to 5 additional photos
         rating: placeDetails.rating?.toString() || "",
         reviewCount: placeDetails.user_ratings_total?.toString() || "",
+        googleMapsUrl: placeDetails.url || "",
+        priceRange: placeDetails.price_level ? '$'.repeat(placeDetails.price_level) : "",
       };
 
-      console.log("📋 Sending Google Places data to frontend:", JSON.stringify(googleData, null, 2));
       res.json(googleData);
     } catch (error) {
       console.error('Google Places lookup error:', error);
-      
-      // Check if it's an API key issue
-      if (error instanceof Error && error.message.includes('REQUEST_DENIED')) {
-        res.status(400).json({ 
-          error: "Google Places API access denied. Please check API key permissions and billing setup.",
-          details: error.message 
-        });
-      } else {
-        res.status(500).json({ 
-          error: "Failed to lookup business in Google Places",
-          details: error instanceof Error ? error.message : "Unknown error"
-        });
-      }
+      res.status(500).json({ error: "Failed to lookup business in Google Places" });
     }
   });
 
