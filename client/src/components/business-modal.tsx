@@ -425,7 +425,26 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
           </div>
           
           <h4 className="text-lg font-semibold mb-3">Location</h4>
-          <div className="w-full h-64 rounded-lg overflow-hidden border border-gray-200 relative">
+          
+          {/* Map Action Links */}
+          <div className="flex items-center gap-6 mb-3">
+            <button
+              onClick={handleLocationClick}
+              className="flex items-center text-tropical-aqua hover:text-tropical-aqua-700 transition-colors text-sm font-medium"
+            >
+              <Globe className="w-4 h-4 mr-2" />
+              View on Google Maps
+            </button>
+            <button
+              onClick={handleDirectionsClick}
+              className="flex items-center text-tropical-aqua hover:text-tropical-aqua-700 transition-colors text-sm font-medium"
+            >
+              <MapPin className="w-4 h-4 mr-2" />
+              Get Directions
+            </button>
+          </div>
+          
+          <div className="w-full h-64 rounded-lg overflow-hidden border border-gray-200">
             <Wrapper
               apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
               render={(status) => (
@@ -440,24 +459,6 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
             >
               <BusinessLocationMap business={business} />
             </Wrapper>
-            
-            {/* Floating Action Buttons over Map */}
-            <div className="absolute top-4 left-4 space-y-2">
-              <button
-                onClick={handleLocationClick}
-                className="bg-white hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-lg shadow-lg text-sm font-medium transition-colors border"
-              >
-                <Globe className="w-4 h-4 mr-1 inline" />
-                View on Google Maps
-              </button>
-              <button
-                onClick={handleDirectionsClick}
-                className="bg-white hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-lg shadow-lg text-sm font-medium transition-colors border block"
-              >
-                <MapPin className="w-4 h-4 mr-1 inline" />
-                Get Directions
-              </button>
-            </div>
           </div>
           
           {/* Close Button under Map */}
