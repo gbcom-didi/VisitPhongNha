@@ -277,6 +277,11 @@ Changelog:
   - All users now see the same beautiful "Your Gateway to Adventure" landing page
   - Removed conditional routing that showed different components based on authentication status
   - Maintained consistent user experience with Interactive Explorer and Personal Collection features
+- July 3, 2025. Fixed business modal Google Maps URL integration
+  - Updated "View on Google Maps" button to use Google Maps URL field from admin form
+  - Business modal now prioritizes stored Google Maps URL over coordinate-generated URLs
+  - Falls back to coordinate-based URL generation when Google Maps URL field is empty
+  - Provides direct access to specific Google Maps place pages when configured
 ```
 
 ## User Preferences

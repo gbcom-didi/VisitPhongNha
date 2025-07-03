@@ -139,6 +139,13 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
   };
 
   const handleLocationClick = () => {
+    // Prioritize the Google Maps URL from admin form if available
+    if (business.googleMapsUrl && business.googleMapsUrl.trim()) {
+      window.open(business.googleMapsUrl, '_blank');
+      return;
+    }
+    
+    // Fallback to generating URL from coordinates
     const lat = parseFloat(business.latitude);
     const lng = parseFloat(business.longitude);
     if (!isNaN(lat) && !isNaN(lng)) {
