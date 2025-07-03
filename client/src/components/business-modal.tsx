@@ -376,6 +376,12 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                       if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
                         finalUrl = `https://${finalUrl}`;
                       }
+                      
+                      // For better compatibility, prefer HTTPS for known working sites
+                      if (finalUrl.startsWith('http://') && !finalUrl.includes('localhost')) {
+                        finalUrl = finalUrl.replace('http://', 'https://');
+                      }
+                      
                       console.log('Final URL:', finalUrl);
                       
                       // Try to open the URL
