@@ -393,10 +393,18 @@ export class DatabaseStorage implements IStorage {
     // Extract categoryIds from business data
     const { categoryIds, ...businessData } = business;
     
+    // Convert empty strings to null for optional fields
+    const processedData = Object.fromEntries(
+      Object.entries(businessData).map(([key, value]) => [
+        key,
+        value === '' ? null : value
+      ])
+    );
+    
     // Update the business record
     const [updatedBusiness] = await db
       .update(businesses)
-      .set({ ...businessData, updatedAt: new Date() })
+      .set({ ...processedData, updatedAt: new Date() })
       .where(eq(businesses.id, id))
       .returning();
 

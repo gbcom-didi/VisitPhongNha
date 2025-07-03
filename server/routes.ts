@@ -191,10 +191,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const businessId = parseInt(req.params.id);
       const { categoryIds, ...businessFields } = req.body;
       
-      // Filter out empty strings and undefined values
+      // Filter out undefined values but allow empty strings (to clear fields)
       const filteredFields = Object.fromEntries(
         Object.entries(businessFields).filter(([key, value]) => 
-          value !== '' && value !== undefined && value !== null
+          value !== undefined
         )
       );
       
