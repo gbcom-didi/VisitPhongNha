@@ -199,18 +199,50 @@ export default function Admin() {
       return apiRequest("POST", "/api/google-places/lookup", data);
     },
     onSuccess: (data: any) => {
+      console.log("Google Places API response:", data);
+      
       // Fill form with Google Places data - PRESERVE existing name and description
       // Only update the specific fields that Google should provide
-      if (data.latitude) form.setValue("latitude", data.latitude);
-      if (data.longitude) form.setValue("longitude", data.longitude);
-      if (data.address) form.setValue("address", data.address);
-      if (data.phone) form.setValue("phone", data.phone);
-      if (data.website) form.setValue("website", data.website);
-      if (data.googleMapsUrl) form.setValue("googleMapsUrl", data.googleMapsUrl);
-      if (data.imageUrl) form.setValue("imageUrl", data.imageUrl);
-      if (data.gallery) form.setValue("gallery", data.gallery);
-      if (data.rating) form.setValue("rating", data.rating);
-      if (data.reviewCount) form.setValue("reviewCount", data.reviewCount);
+      if (data.latitude) {
+        console.log("Setting latitude:", data.latitude);
+        form.setValue("latitude", data.latitude);
+      }
+      if (data.longitude) {
+        console.log("Setting longitude:", data.longitude);
+        form.setValue("longitude", data.longitude);
+      }
+      if (data.address) {
+        console.log("Setting address:", data.address);
+        form.setValue("address", data.address);
+      }
+      if (data.phone) {
+        console.log("Setting phone:", data.phone);
+        form.setValue("phone", data.phone);
+      }
+      if (data.website) {
+        console.log("Setting website:", data.website);
+        form.setValue("website", data.website);
+      }
+      if (data.googleMapsUrl) {
+        console.log("Setting googleMapsUrl:", data.googleMapsUrl);
+        form.setValue("googleMapsUrl", data.googleMapsUrl);
+      }
+      if (data.imageUrl) {
+        console.log("Setting imageUrl:", data.imageUrl);
+        form.setValue("imageUrl", data.imageUrl);
+      }
+      if (data.gallery) {
+        console.log("Setting gallery:", data.gallery);
+        form.setValue("gallery", data.gallery);
+      }
+      if (data.rating) {
+        console.log("Setting rating:", data.rating);
+        form.setValue("rating", data.rating);
+      }
+      if (data.reviewCount) {
+        console.log("Setting reviewCount:", data.reviewCount);
+        form.setValue("reviewCount", data.reviewCount);
+      }
       
       toast({
         title: "Success",
