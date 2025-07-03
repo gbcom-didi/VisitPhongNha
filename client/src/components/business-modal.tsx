@@ -307,50 +307,8 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
 
         </div>
 
-        {/* Smart Action Buttons */}
+        {/* Action Buttons */}
         <div className="space-y-3 pt-4 border-t border-gray-200">
-          {/* Contact Information Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-4 border border-gray-200 rounded-lg bg-gray-50">
-            {business.address && (
-              <div className="flex items-center justify-center text-center px-4">
-                <div>
-                  <MapPin className="w-5 h-5 mx-auto mb-1 text-gray-500" />
-                  <p className="text-sm text-gray-700 font-medium">Address</p>
-                  <p className="text-xs text-gray-600">{business.address}</p>
-                </div>
-              </div>
-            )}
-            
-            {business.phone && (
-              <div className="flex items-center justify-center text-center px-4 border-l border-r border-gray-300">
-                <div>
-                  <Phone className="w-5 h-5 mx-auto mb-1 text-gray-500" />
-                  <p className="text-sm text-gray-700 font-medium">Phone</p>
-                  <a 
-                    href={`tel:${business.phone}`}
-                    className="text-xs text-tropical-aqua hover:text-tropical-aqua-700 transition-colors"
-                  >
-                    {business.phone}
-                  </a>
-                </div>
-              </div>
-            )}
-            
-            <div className="flex items-center justify-center text-center px-4">
-              <div>
-                <Globe className="w-5 h-5 mx-auto mb-1 text-gray-500" />
-                <p className="text-sm text-gray-700 font-medium">Location</p>
-                <button
-                  onClick={handleLocationClick}
-                  className="text-xs text-tropical-aqua hover:text-tropical-aqua-700 transition-colors"
-                >
-                  View on Google Maps
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Smart Booking/Website Buttons */}
           <div className="flex flex-wrap gap-2 justify-center">
             {business.website && (
               <Button
@@ -398,13 +356,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
               </Button>
             )}
             
-            <Button
-              variant="outline"
-              onClick={handleDirectionsClick}
-            >
-              <MapPin className="w-4 h-4 mr-2" />
-              Get Directions
-            </Button>
+
             
             {business.affiliateLink && (
               <Button
@@ -449,13 +401,31 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
           </div>
         </div>
 
-        {/* Location Map */}
+        {/* Location Section */}
         <div className="mt-6 border-t pt-6">
-          <h4 className="text-lg font-semibold mb-3 flex items-center">
-            <MapPin className="w-5 h-5 mr-2 text-tropical-aqua" />
-            Location
-          </h4>
-          <div className="w-full h-64 rounded-lg overflow-hidden border border-gray-200">
+          {/* Address and Phone (Left-aligned) */}
+          <div className="mb-4 space-y-2">
+            {business.address && (
+              <div className="flex items-center text-gray-600">
+                <MapPin className="w-4 h-4 mr-2 text-gray-500" />
+                <span className="text-sm">{business.address}</span>
+              </div>
+            )}
+            {business.phone && (
+              <div className="flex items-center text-gray-600">
+                <Phone className="w-4 h-4 mr-2 text-gray-500" />
+                <a 
+                  href={`tel:${business.phone}`}
+                  className="text-sm text-tropical-aqua hover:text-tropical-aqua-700 transition-colors"
+                >
+                  {business.phone}
+                </a>
+              </div>
+            )}
+          </div>
+          
+          <h4 className="text-lg font-semibold mb-3">Location</h4>
+          <div className="w-full h-64 rounded-lg overflow-hidden border border-gray-200 relative">
             <Wrapper
               apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
               render={(status) => (
@@ -470,6 +440,35 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
             >
               <BusinessLocationMap business={business} />
             </Wrapper>
+            
+            {/* Floating Action Buttons over Map */}
+            <div className="absolute top-4 left-4 space-y-2">
+              <button
+                onClick={handleLocationClick}
+                className="bg-white hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-lg shadow-lg text-sm font-medium transition-colors border"
+              >
+                <Globe className="w-4 h-4 mr-1 inline" />
+                View on Google Maps
+              </button>
+              <button
+                onClick={handleDirectionsClick}
+                className="bg-white hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-lg shadow-lg text-sm font-medium transition-colors border block"
+              >
+                <MapPin className="w-4 h-4 mr-1 inline" />
+                Get Directions
+              </button>
+            </div>
+          </div>
+          
+          {/* Close Button under Map */}
+          <div className="mt-4 text-center">
+            <Button
+              variant="outline"
+              onClick={onClose}
+              className="px-6"
+            >
+              Close
+            </Button>
           </div>
         </div>
       </DialogContent>
