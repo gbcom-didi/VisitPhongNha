@@ -166,16 +166,111 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
           </DialogDescription>
         </DialogHeader>
 
-        {/* View All Photos Button */}
-        <div className="w-full mb-4">
-          <Button
-            variant="outline"
-            className="w-full h-16 flex items-center justify-center gap-2 border-tropical-aqua-200 hover:bg-tropical-aqua-50"
-            onClick={() => setShowGallery(true)}
-          >
-            <Images className="w-5 h-5" />
-            View All Photos
-          </Button>
+        {/* Photo Grid */}
+        <div className="w-full h-80 mb-4 relative">
+          {allImages.length > 0 ? (
+            <div className="flex gap-2 h-full">
+              {/* Main Large Photo */}
+              <div className="flex-1 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden relative cursor-pointer">
+                <img 
+                  src={allImages[0]} 
+                  alt={business.name}
+                  className="w-full h-full object-cover"
+                  onClick={() => {
+                    setSelectedImageIndex(0);
+                    setShowGallery(true);
+                  }}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    const categoryName = business.category?.name?.toLowerCase();
+                    
+                    let fallbackUrl = '';
+                    if (categoryName?.includes('accommodation') || categoryName?.includes('hotel')) {
+                      fallbackUrl = 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop&auto=format';
+                    } else if (categoryName?.includes('cave')) {
+                      fallbackUrl = 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&h=600&fit=crop&auto=format';
+                    } else if (categoryName?.includes('food') || categoryName?.includes('restaurant')) {
+                      fallbackUrl = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=600&fit=crop&auto=format';
+                    } else if (categoryName?.includes('attraction')) {
+                      fallbackUrl = 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=800&h=600&fit=crop&auto=format';
+                    } else {
+                      fallbackUrl = 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=800&h=600&fit=crop&auto=format';
+                    }
+                    
+                    if (!target.src.includes('unsplash.com')) {
+                      target.src = fallbackUrl;
+                    } else {
+                      target.style.display = 'none';
+                      const parent = target.parentElement;
+                      if (parent) {
+                        parent.innerHTML = `
+                          <div class="w-full h-full bg-gradient-to-br from-tropical-aqua to-jade-green flex items-center justify-center">
+                            <svg class="w-16 h-16 text-white opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                          </div>
+                        `;
+                      }
+                    }
+                  }}
+                />
+              </div>
+              
+              {/* Right Grid of 4 smaller photos */}
+              {allImages.length > 1 && (
+                <div className="w-64 grid grid-cols-2 gap-2">
+                  {allImages.slice(1, 5).map((image, index) => (
+                    <div 
+                      key={index} 
+                      className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden relative cursor-pointer hover:opacity-90 transition-opacity"
+                    >
+                      <img 
+                        src={image} 
+                        alt={`${business.name} - Image ${index + 2}`}
+                        className="w-full h-full object-cover"
+                        onClick={() => {
+                          setSelectedImageIndex(index + 1);
+                          setShowGallery(true);
+                        }}
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                        }}
+                      />
+                      {/* Show all photos overlay on last image if more than 5 photos */}
+                      {index === 3 && allImages.length > 5 && (
+                        <div 
+                          className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowGallery(true);
+                          }}
+                        >
+                          <div className="text-white text-center">
+                            <Images className="w-6 h-6 mx-auto mb-1" />
+                            <span className="text-sm font-medium">Show all photos</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  
+                  {/* Fill empty grid spots if less than 4 additional images */}
+                  {Array.from({ length: Math.max(0, 4 - (allImages.length - 1)) }, (_, index) => (
+                    <div key={`empty-${index}`} className="bg-gray-100 rounded-lg"></div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Fallback when no images */
+            <div className="w-full h-full bg-gradient-to-br from-tropical-aqua to-jade-green rounded-lg flex items-center justify-center">
+              <div className="text-white text-center">
+                <Images className="w-16 h-16 mx-auto mb-2 opacity-50" />
+                <p className="text-lg font-medium">No photos available</p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Business Info */}
