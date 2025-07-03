@@ -5,7 +5,7 @@ import { setupFirebaseAuth, verifyFirebaseToken, requireFirebaseAdmin, requireFi
 import { permissions } from "./rbac";
 import { checkSpam, checkRateLimit, getClientIP } from "./spamProtection";
 import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema, insertArticleSchema, insertGuestbookEntrySchema, insertGuestbookCommentSchema, insertGuestbookEntryLikeSchema, insertGuestbookCommentLikeSchema, businesses as businessesTable, businessCategories, categories, articles, users, guestbookEntries, guestbookComments, guestbookEntryLikes, guestbookCommentLikes } from "@shared/schema";
-import { googlePlacesImporter } from "./googlePlacesImporter";
+// Import will be done dynamically in the route handlers
 import { z } from "zod";
 import { db } from "./db";
 import { eq, desc, asc } from "drizzle-orm";
@@ -908,6 +908,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error moderating comment:", error);
       res.status(500).json({ message: "Failed to moderate comment" });
+    }
+  });
+
+  // Import routes for business data management
+  app.post('/api/import/google-places', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+    try {
+      console.log('Starting Google Places import...');
+      const importModule = await import('./googlePlacesImporter.js');
+      await importModule.default();
+      res.json({ success: true, message: 'Google Places import completed successfully' });
+    } catch (error) {
+      console.error('Google Places import failed:', error);
+      res.status(500).json({ success: false, error: 'Import failed', details: (error as Error).message });
+    }
+  });
+
+  app.post('/api/import/manual', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+    try {
+      console.log('Starting manual import...');
+      const importModule = await import('./manualImport.js');
+      await importModule.default();
+      res.json({ success: true, message: 'Manual import completed successfully' });
+    } catch (error) {
+      console.error('Manual import failed:', error);
+      res.status(500).json({ success: false, error: 'Import failed', details: (error as Error).message });
     }
   });
 

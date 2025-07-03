@@ -472,5 +472,5 @@ export async function importBusinesses(): Promise<void> {
   console.log(`📈 Success rate: ${((successCount / businessNames.length) * 100).toFixed(1)}%`);
 }
 
-// Run import if this file is executed directly
+// Export function for use in other files
 export default importBusinesses;

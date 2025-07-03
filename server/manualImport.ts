@@ -587,3 +587,16 @@ function getDefaultImage(category: string): string {
 }
 
 export default importManualBusinesses;
+
+// Run if this file is executed directly
+if (process.argv[1].endsWith('manualImport.ts')) {
+  importManualBusinesses()
+    .then(() => {
+      console.log('🎉 Manual import completed successfully!');
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error('💥 Manual import failed:', error);
+      process.exit(1);
+    });
+}
