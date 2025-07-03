@@ -382,8 +382,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                       const newWindow = window.open(finalUrl, '_blank', 'noopener,noreferrer');
                       if (!newWindow) {
                         console.error('Popup blocked or failed to open');
-                        // Fallback: try setting window.location in current tab
-                        window.location.href = finalUrl;
+                        alert('Popup blocked. Please allow popups for this site or copy this URL: ' + finalUrl);
                       }
                     } catch (error) {
                       console.error('Error opening website:', error);
