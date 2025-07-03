@@ -209,6 +209,20 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                 }}
               />
               
+              {/* Floating Like Button */}
+              <Button
+                variant="outline"
+                className={`absolute top-4 right-4 w-12 h-12 rounded-full bg-white/90 hover:bg-white shadow-lg border-2 ${
+                  localIsLiked 
+                    ? 'text-red-500 border-red-500 hover:bg-red-50' 
+                    : 'text-gray-600 hover:text-red-500 hover:border-red-500'
+                }`}
+                onClick={handleLikeClick}
+                disabled={likeMutation.isPending}
+              >
+                <Heart className={`w-5 h-5 ${localIsLiked ? 'fill-current' : ''}`} />
+              </Button>
+              
               {/* Slider Navigation - only show if multiple images */}
               {allImages.length > 1 && (
                 <>
@@ -358,40 +372,43 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
             
 
             
-            {/* Booking Buttons - Show when booking type is "affiliate" */}
+            {/* Modern Booking Buttons Grid - Show when booking type is "affiliate" */}
             {business.bookingType === 'affiliate' && (
-              <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full">
                 {business.bookingComUrl && (
                   <Button
-                    className="bg-tropical-aqua hover:bg-tropical-aqua-700 text-white"
+                    className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
                     onClick={() => window.open(business.bookingComUrl || '', '_blank')}
                   >
+                    <ExternalLink className="w-4 h-4 mr-2" />
                     Book on Booking.com
                   </Button>
                 )}
                 {business.agodaUrl && (
                   <Button
-                    className="bg-tropical-aqua hover:bg-tropical-aqua-700 text-white"
+                    className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
                     onClick={() => window.open(business.agodaUrl || '', '_blank')}
                   >
+                    <ExternalLink className="w-4 h-4 mr-2" />
                     Book on Agoda
                   </Button>
                 )}
                 {business.affiliateLink && (
                   <Button
-                    className="bg-tropical-aqua hover:bg-tropical-aqua-700 text-white"
+                    className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
                     onClick={() => window.open(business.affiliateLink || '', '_blank')}
                   >
+                    <ExternalLink className="w-4 h-4 mr-2" />
                     Book with Affiliate
                   </Button>
                 )}
-              </>
+              </div>
             )}
             
             {/* Direct Booking Contact - Show when booking type is "direct" */}
             {business.bookingType === 'direct' && business.directBookingContact && (
               <Button
-                variant="outline"
+                className="bg-gradient-to-r from-tropical-aqua to-tropical-aqua-600 hover:from-tropical-aqua-600 hover:to-tropical-aqua-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
                 onClick={() => {
                   const contact = business.directBookingContact;
                   if (contact?.includes('@')) {
@@ -403,29 +420,18 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                   }
                 }}
               >
+                <ExternalLink className="w-4 h-4 mr-2" />
                 Direct Booking
               </Button>
             )}
-            
-            {/* Like Button */}
-            <Button
-              variant="outline"
-              className={`px-4 ${
-                localIsLiked 
-                  ? 'text-red-500 border-red-500 hover:bg-red-50' 
-                  : 'text-gray-600 hover:text-red-500 hover:border-red-500'
-              }`}
-              onClick={handleLikeClick}
-              disabled={likeMutation.isPending}
-            >
-              <Heart className={`w-4 h-4 ${localIsLiked ? 'fill-current' : ''}`} />
-            </Button>
           </div>
         </div>
 
         {/* Location Section */}
         <div className="mt-6 border-t pt-6">
-          {/* Address and Phone (Left-aligned) */}
+          <h4 className="text-lg font-semibold mb-3">Location</h4>
+          
+          {/* Address and Phone under Location title */}
           <div className="mb-4 space-y-2">
             {business.address && (
               <div className="flex items-center text-gray-600">
@@ -445,8 +451,6 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
               </div>
             )}
           </div>
-          
-          <h4 className="text-lg font-semibold mb-3">Location</h4>
           
           {/* Map Action Links */}
           <div className="flex items-center gap-6 mb-3">
