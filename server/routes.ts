@@ -82,7 +82,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(googleData);
     } catch (error) {
       console.error('Google Places lookup error:', error);
-      res.status(500).json({ error: "Failed to lookup business in Google Places" });
+      
+      // Check if it's an API key issue
+      if (error instanceof Error && error.message.includes('REQUEST_DENIED')) {
+        res.status(400).json({ 
+          error: "Google Places API access denied. Please check API key permissions and billing setup.",
+          details: error.message 
+        });
+      } else {
+        res.status(500).json({ 
+          error: "Failed to lookup business in Google Places",
+          details: error instanceof Error ? error.message : "Unknown error"
+        });
+      }
     }
   });
 
