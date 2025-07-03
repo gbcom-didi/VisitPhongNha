@@ -68,6 +68,8 @@ export const businesses = pgTable("businesses", {
   amenities: text("amenities").array(),
   bookingType: varchar("booking_type", { length: 20 }).default("none"), // 'affiliate', 'direct', or 'none'
   affiliateLink: varchar("affiliate_link", { length: 500 }),
+  bookingComUrl: varchar("booking_com_url", { length: 500 }),
+  agodaUrl: varchar("agoda_url", { length: 500 }),
   directBookingContact: varchar("direct_booking_contact", { length: 255 }),
   enquiryFormEnabled: boolean("enquiry_form_enabled").default(false),
   featuredText: varchar("featured_text", { length: 255 }),

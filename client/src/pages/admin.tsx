@@ -39,6 +39,8 @@ const businessFormSchema = z.object({
   amenities: z.string().optional(),
   bookingType: z.enum(["none", "direct", "affiliate"]).default("none"),
   affiliateLink: z.string().url().optional().or(z.literal("")),
+  bookingComUrl: z.string().url().optional().or(z.literal("")),
+  agodaUrl: z.string().url().optional().or(z.literal("")),
   directBookingContact: z.string().optional(),
   enquiryFormEnabled: z.boolean().default(false),
   featuredText: z.string().optional(),
@@ -510,6 +512,18 @@ export default function Admin() {
                     </div>
 
                     <div>
+                      <Label htmlFor="bookingComUrl">Booking.com URL</Label>
+                      <Input {...form.register("bookingComUrl")} placeholder="https://www.booking.com/hotel/..." />
+                      <p className="text-xs text-gray-500 mt-1">Direct link to property on Booking.com</p>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="agodaUrl">Agoda URL</Label>
+                      <Input {...form.register("agodaUrl")} placeholder="https://www.agoda.com/..." />
+                      <p className="text-xs text-gray-500 mt-1">Direct link to property on Agoda</p>
+                    </div>
+
+                    <div>
                       <Label htmlFor="directBookingContact">Direct Booking Contact</Label>
                       <Input {...form.register("directBookingContact")} placeholder="Phone, WhatsApp, or email" />
                       <p className="text-xs text-gray-500 mt-1">Contact information for direct bookings</p>
@@ -888,6 +902,18 @@ export default function Admin() {
                     <Label htmlFor="affiliateLink">Affiliate Link</Label>
                     <Input {...form.register("affiliateLink")} placeholder="https://booking.com/..." />
                     <p className="text-xs text-gray-500 mt-1">Third-party booking website URL</p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="bookingComUrl">Booking.com URL</Label>
+                    <Input {...form.register("bookingComUrl")} placeholder="https://www.booking.com/hotel/..." />
+                    <p className="text-xs text-gray-500 mt-1">Direct link to property on Booking.com</p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="agodaUrl">Agoda URL</Label>
+                    <Input {...form.register("agodaUrl")} placeholder="https://www.agoda.com/..." />
+                    <p className="text-xs text-gray-500 mt-1">Direct link to property on Agoda</p>
                   </div>
 
                   <div>
