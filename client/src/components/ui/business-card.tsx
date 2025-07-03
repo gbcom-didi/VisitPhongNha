@@ -1,4 +1,4 @@
-import { Heart, MapPin, Clock, Phone, Star } from 'lucide-react';
+import { Heart, Star } from 'lucide-react';
 import { Button } from './button';
 import { Badge } from './badge';
 import type { BusinessWithCategory } from '@shared/schema';
@@ -27,12 +27,6 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
   const handleLikeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onLike?.(business);
-  };
-
-  const getDistanceText = () => {
-    // Mock distance calculation - in production, use user's location
-    const distances = ['1.2 km', '2.5 km', '3.8 km', '5.1 km', '7.3 km'];
-    return distances[Math.floor(Math.random() * distances.length)] + ' away';
   };
 
   const getBusinessImageUrl = () => {
@@ -136,15 +130,10 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
       </div>
 
       {/* Business Info */}
-      <div className="p-4">
-        <h4 className="font-semibold text-gray-900 text-base mb-1 line-clamp-1">
+      <div className="p-5">
+        <h4 className="font-medium text-gray-900 text-sm mb-3 line-clamp-1">
           {business.name}
         </h4>
-        
-        <div className="flex items-center text-gray-500 text-sm mb-2">
-          <MapPin className="w-4 h-4 mr-1" />
-          <span>Ninh Thuan Province, Vietnam</span>
-        </div>
 
         {business.category && (
           <Badge 
@@ -154,21 +143,15 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
               color: business.category.color,
               border: `1px solid ${business.category.color}40`
             }}
-            className="text-xs mb-2"
+            className="text-xs mb-3"
           >
             {business.category.name}
           </Badge>
         )}
 
-        {business.description && (
-          <p className="text-sm text-gray-600 line-clamp-2 mb-2">
-            {business.description}
-          </p>
-        )}
-
         {/* Rating */}
         {business.rating && (
-          <div className="flex items-center mb-2">
+          <div className="flex items-center">
             <div className="flex items-center">
               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
               <span className="text-sm font-medium text-gray-900">{parseFloat(business.rating || '0').toFixed(1)}</span>
@@ -178,17 +161,6 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
             )}
           </div>
         )}
-
-        {/* Additional Info */}
-        <div className="flex items-center justify-between text-xs text-gray-500">
-          <span>{getDistanceText()}</span>
-          {business.hours && (
-            <div className="flex items-center">
-              <Clock className="w-3 h-3 mr-1" />
-              <span className="truncate">{business.hours}</span>
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );
