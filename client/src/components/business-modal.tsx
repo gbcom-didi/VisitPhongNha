@@ -322,11 +322,11 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
         </div>
 
         {/* Action Buttons */}
-        <div className="space-y-4 pt-4 border-t border-gray-200">
-          {/* Visit Website Button - Full Width */}
-          {business.website && (
-            <Button
-              className="w-full bg-tropical-aqua hover:bg-tropical-aqua-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium py-3 rounded-xl"
+        <div className="space-y-3 pt-4 border-t border-gray-200">
+          <div className="flex flex-wrap gap-2 justify-center">
+            {business.website && (
+              <Button
+                className="bg-tropical-aqua hover:bg-tropical-aqua-600 text-white"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -364,64 +364,67 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                     alert('No website URL available for this business');
                   }
                 }}
-            >
-              <Globe className="w-4 h-4 mr-2" />
-              Visit Website
-            </Button>
-          )}
+              >
+                <Globe className="w-4 h-4 mr-2" />
+                Visit Website
+              </Button>
+            )}
+            
 
-          {/* Booking Buttons Grid - Show when booking type is "affiliate" */}
-          {business.bookingType === 'affiliate' && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {business.bookingComUrl && (
-                <Button
-                  className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium py-3 rounded-xl"
-                  onClick={() => window.open(business.bookingComUrl || '', '_blank')}
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Check Availability on Booking.com
-                </Button>
-              )}
-              {business.agodaUrl && (
-                <Button
-                  className="w-full bg-gradient-to-r from-chili-red to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium py-3 rounded-xl"
-                  onClick={() => window.open(business.agodaUrl || '', '_blank')}
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Check Availability on Agoda
-                </Button>
-              )}
-              {business.affiliateLink && (
-                <Button
-                  className="w-full bg-gradient-to-r from-jade-green to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium py-3 rounded-xl"
-                  onClick={() => window.open(business.affiliateLink || '', '_blank')}
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Check Availability with Affiliate
-                </Button>
-              )}
-            </div>
-          )}
-          
-          {/* Direct Booking Contact - Show when booking type is "direct" */}
-          {business.bookingType === 'direct' && business.directBookingContact && (
-            <Button
-              className="w-full bg-gradient-to-r from-tropical-aqua to-tropical-aqua-600 hover:from-tropical-aqua-600 hover:to-tropical-aqua-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium py-3 rounded-xl"
-              onClick={() => {
-                const contact = business.directBookingContact;
-                if (contact?.includes('@')) {
-                  window.open(`mailto:${contact}`, '_blank');
-                } else if (contact?.includes('http')) {
-                  window.open(contact, '_blank');
-                } else if (contact) {
-                  window.open(`tel:${contact}`, '_blank');
-                }
-              }}
-            >
-              <ExternalLink className="w-4 h-4 mr-2" />
-              Direct Booking
-            </Button>
-          )}
+            
+            {/* Modern Booking Buttons Grid - Show when booking type is "affiliate" */}
+            {business.bookingType === 'affiliate' && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full">
+                {business.bookingComUrl && (
+                  <Button
+                    className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
+                    onClick={() => window.open(business.bookingComUrl || '', '_blank')}
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Book on Booking.com
+                  </Button>
+                )}
+                {business.agodaUrl && (
+                  <Button
+                    className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
+                    onClick={() => window.open(business.agodaUrl || '', '_blank')}
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Book on Agoda
+                  </Button>
+                )}
+                {business.affiliateLink && (
+                  <Button
+                    className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
+                    onClick={() => window.open(business.affiliateLink || '', '_blank')}
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Book with Affiliate
+                  </Button>
+                )}
+              </div>
+            )}
+            
+            {/* Direct Booking Contact - Show when booking type is "direct" */}
+            {business.bookingType === 'direct' && business.directBookingContact && (
+              <Button
+                className="bg-gradient-to-r from-tropical-aqua to-tropical-aqua-600 hover:from-tropical-aqua-600 hover:to-tropical-aqua-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
+                onClick={() => {
+                  const contact = business.directBookingContact;
+                  if (contact?.includes('@')) {
+                    window.open(`mailto:${contact}`, '_blank');
+                  } else if (contact?.includes('http')) {
+                    window.open(contact, '_blank');
+                  } else if (contact) {
+                    window.open(`tel:${contact}`, '_blank');
+                  }
+                }}
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Direct Booking
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Location Section */}
