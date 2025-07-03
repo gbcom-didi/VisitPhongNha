@@ -137,6 +137,16 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
     }
   };
 
+  const handleLocationClick = () => {
+    const lat = parseFloat(business.latitude);
+    const lng = parseFloat(business.longitude);
+    if (!isNaN(lat) && !isNaN(lng)) {
+      // Open Google Maps showing the location (not directions)
+      const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+      window.open(url, '_blank');
+    }
+  }
+
   const handleDirectionsClick = () => {
     const lat = parseFloat(business.latitude);
     const lng = parseFloat(business.longitude);
@@ -348,7 +358,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                 <Globe className="w-5 h-5 mx-auto mb-1 text-gray-500" />
                 <p className="text-sm text-gray-700 font-medium">Location</p>
                 <button
-                  onClick={handleDirectionsClick}
+                  onClick={handleLocationClick}
                   className="text-xs text-tropical-aqua hover:text-tropical-aqua-700 transition-colors"
                 >
                   View on Google Maps
