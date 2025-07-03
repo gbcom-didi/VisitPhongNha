@@ -323,10 +323,10 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
 
         {/* Action Buttons */}
         <div className="space-y-3 pt-4 border-t border-gray-200">
-          <div className="flex flex-wrap gap-2 justify-center">
+          <div className="flex flex-col gap-3">
             {business.website && (
               <Button
-                className="bg-tropical-aqua hover:bg-tropical-aqua-600 text-white"
+                className="w-full bg-[#00BCD4] hover:bg-[#00ACC1] text-white font-medium px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -374,10 +374,10 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
             
             {/* Modern Booking Buttons Grid - Show when booking type is "affiliate" */}
             {business.bookingType === 'affiliate' && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full">
+              <div className="grid grid-cols-1 gap-3 w-full">
                 {business.bookingComUrl && (
                   <Button
-                    className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
+                    className="w-full bg-[#F4B942] hover:bg-[#F2B038] text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
                     onClick={() => window.open(business.bookingComUrl || '', '_blank')}
                   >
                     <ExternalLink className="w-4 h-4 mr-2" />
@@ -386,7 +386,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                 )}
                 {business.agodaUrl && (
                   <Button
-                    className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
+                    className="w-full bg-[#F87D51] hover:bg-[#F6724A] text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
                     onClick={() => window.open(business.agodaUrl || '', '_blank')}
                   >
                     <ExternalLink className="w-4 h-4 mr-2" />
@@ -395,7 +395,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                 )}
                 {business.affiliateLink && (
                   <Button
-                    className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
+                    className="w-full bg-[#6DBFB3] hover:bg-[#60B5A8] text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
                     onClick={() => window.open(business.affiliateLink || '', '_blank')}
                   >
                     <ExternalLink className="w-4 h-4 mr-2" />
@@ -408,7 +408,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
             {/* Direct Booking Contact - Show when booking type is "direct" */}
             {business.bookingType === 'direct' && business.directBookingContact && (
               <Button
-                className="bg-gradient-to-r from-tropical-aqua to-tropical-aqua-600 hover:from-tropical-aqua-600 hover:to-tropical-aqua-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
+                className="w-full bg-[#00BCD4] hover:bg-[#00ACC1] text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
                 onClick={() => {
                   const contact = business.directBookingContact;
                   if (contact?.includes('@')) {
