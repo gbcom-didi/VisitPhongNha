@@ -356,6 +356,14 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
               </Button>
             )}
             
+            <Button
+              variant="outline"
+              onClick={handleDirectionsClick}
+            >
+              <MapPin className="w-4 h-4 mr-2" />
+              Get Directions
+            </Button>
+            
             {business.affiliateLink && (
               <Button
                 variant="outline"
