@@ -358,16 +358,38 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
             
 
             
-            {business.affiliateLink && (
-              <Button
-                variant="outline"
-                onClick={() => window.open(business.affiliateLink || '', '_blank')}
-              >
-                Book Now
-              </Button>
+            {/* Booking Buttons - Show when booking type is "affiliate" */}
+            {business.bookingType === 'affiliate' && (
+              <>
+                {business.bookingComUrl && (
+                  <Button
+                    className="bg-tropical-aqua hover:bg-tropical-aqua-700 text-white"
+                    onClick={() => window.open(business.bookingComUrl || '', '_blank')}
+                  >
+                    Book on Booking.com
+                  </Button>
+                )}
+                {business.agodaUrl && (
+                  <Button
+                    className="bg-tropical-aqua hover:bg-tropical-aqua-700 text-white"
+                    onClick={() => window.open(business.agodaUrl || '', '_blank')}
+                  >
+                    Book on Agoda
+                  </Button>
+                )}
+                {business.affiliateLink && (
+                  <Button
+                    className="bg-tropical-aqua hover:bg-tropical-aqua-700 text-white"
+                    onClick={() => window.open(business.affiliateLink || '', '_blank')}
+                  >
+                    Book with Affiliate
+                  </Button>
+                )}
+              </>
             )}
             
-            {business.directBookingContact && (
+            {/* Direct Booking Contact - Show when booking type is "direct" */}
+            {business.bookingType === 'direct' && business.directBookingContact && (
               <Button
                 variant="outline"
                 onClick={() => {
