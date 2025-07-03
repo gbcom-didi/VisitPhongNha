@@ -75,6 +75,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         reviewCount: placeDetails.user_ratings_total?.toString() || "",
       };
 
+      console.log("📋 Sending Google Places data to frontend:", JSON.stringify(googleData, null, 2));
       res.json(googleData);
     } catch (error) {
       console.error('Google Places lookup error:', error);
