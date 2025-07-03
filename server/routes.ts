@@ -30,7 +30,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Firebase auth already handles user endpoints
 
   // Google Places API integration for admin
-  app.post('/api/google-places/lookup', requireFirebaseAdmin, async (req, res) => {
+  app.post('/api/google-places/lookup', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
     try {
       const { businessName, address } = req.body;
       
