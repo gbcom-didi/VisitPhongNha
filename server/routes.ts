@@ -29,6 +29,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Firebase auth already handles user endpoints
 
+  // Google Places API integration for admin
+  app.post('/api/google-places/lookup', requireFirebaseAdmin, async (req, res) => {
+    try {
+      const { businessName, address } = req.body;
+      
+      if (!businessName) {
+        return res.status(400).json({ error: "Business name is required" });
+      }
+
+      const query = address ? `${businessName} ${address}` : businessName;
+      
+      // Import the Google Places importer
+      const { searchGooglePlaces, getPlaceDetails, getPlacePhotos } = await import("./googlePlacesImporter");
+      
+      // Search for the business
+      const candidates = await searchGooglePlaces(query);
+      
+      if (!candidates || candidates.length === 0) {
+        return res.status(404).json({ error: "Business not found in Google Places" });
+      }
+
+      // Get detailed information for the first candidate
+      const placeId = candidates[0].place_id;
+      const placeDetails = await getPlaceDetails(placeId);
+      
+      if (!placeDetails) {
+        return res.status(404).json({ error: "Could not retrieve place details" });
+      }
+
+      // Get photos
+      const photos = await getPlacePhotos(placeDetails.photos || []);
+      
+      // Format the response data
+      const googleData = {
+        name: placeDetails.name || businessName,
+        description: placeDetails.editorial_summary?.overview || "",
+        address: placeDetails.formatted_address || "",
+        latitude: placeDetails.geometry?.location?.lat?.toString() || "",
+        longitude: placeDetails.geometry?.location?.lng?.toString() || "",
+        phone: placeDetails.formatted_phone_number || "",
+        website: placeDetails.website || "",
+        hours: placeDetails.opening_hours?.weekday_text?.join('; ') || "",
+        imageUrl: photos.length > 0 ? photos[0] : "",
+        gallery: photos.slice(1, 6), // Up to 5 additional photos
+        rating: placeDetails.rating?.toString() || "",
+        reviewCount: placeDetails.user_ratings_total?.toString() || "",
+        googleMapsUrl: placeDetails.url || "",
+        priceRange: placeDetails.price_level ? '$'.repeat(placeDetails.price_level) : "",
+      };
+
+      res.json(googleData);
+    } catch (error) {
+      console.error('Google Places lookup error:', error);
+      res.status(500).json({ error: "Failed to lookup business in Google Places" });
+    }
+  });
+
   // Categories routes
   app.get('/api/categories', async (req, res) => {
     try {

@@ -41,6 +41,7 @@ interface PlaceDetailsResult {
   types: string[];
   rating?: number;
   user_ratings_total?: number;
+  price_level?: number;
   photos?: Array<{
     photo_reference: string;
     height: number;
@@ -266,6 +267,26 @@ function generateDescription(placeDetails: PlaceDetailsResult): string {
   return `${name} is located in ${location}. A quality establishment serving the local community and visitors.`;
 }
 
+export async function searchGooglePlaces(query: string): Promise<PlaceSearchResult[]> {
+  try {
+    // Use Text Search API which is better for business names
+    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&location=${PHONG_NHA_LOCATION}&radius=${SEARCH_RADIUS}&key=${GOOGLE_PLACES_API_KEY}`;
+    
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    if (data.status !== 'OK') {
+      console.log(`❌ Search failed for "${query}": ${data.status}`);
+      return [];
+    }
+    
+    return data.results || [];
+  } catch (error) {
+    console.error(`❌ Error searching for "${query}":`, error);
+    return [];
+  }
+}
+
 async function searchPlace(businessName: string): Promise<PlaceSearchResult | null> {
   try {
     const query = encodeURIComponent(`${businessName} Phong Nha Quang Binh Vietnam`);
@@ -294,7 +315,7 @@ async function searchPlace(businessName: string): Promise<PlaceSearchResult | nu
   }
 }
 
-async function getPlaceDetails(placeId: string): Promise<PlaceDetailsResult | null> {
+export async function getPlaceDetails(placeId: string): Promise<PlaceDetailsResult | null> {
   try {
     const fields = 'place_id,name,formatted_address,formatted_phone_number,international_phone_number,website,url,opening_hours,geometry,types,rating,user_ratings_total,photos,editorial_summary,reviews';
     const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=${fields}&key=${GOOGLE_PLACES_API_KEY}`;
@@ -316,6 +337,22 @@ async function getPlaceDetails(placeId: string): Promise<PlaceDetailsResult | nu
 
 async function getPhotoUrl(photoReference: string, maxWidth: number = 1600): Promise<string> {
   return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photo_reference=${photoReference}&key=${GOOGLE_PLACES_API_KEY}`;
+}
+
+export async function getPlacePhotos(photos: Array<{photo_reference: string, height: number, width: number}> | undefined): Promise<string[]> {
+  if (!photos || photos.length === 0) {
+    return [];
+  }
+  
+  const photoUrls: string[] = [];
+  
+  // Get up to 5 photos
+  for (let i = 0; i < Math.min(photos.length, 5); i++) {
+    const photoUrl = await getPhotoUrl(photos[i].photo_reference);
+    photoUrls.push(photoUrl);
+  }
+  
+  return photoUrls;
 }
 
 async function processPhotos(photos: Array<{photo_reference: string, height: number, width: number}> | undefined): Promise<{imageUrl: string, gallery: string[]}> {
