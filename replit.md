@@ -282,6 +282,13 @@ Changelog:
   - Business modal now prioritizes stored Google Maps URL over coordinate-generated URLs
   - Falls back to coordinate-based URL generation when Google Maps URL field is empty
   - Provides direct access to specific Google Maps place pages when configured
+- July 3, 2025. Imported additional Google Maps businesses from CSV data
+  - Added 14 new authentic businesses from Google Maps API search results
+  - Imported complete business data including ratings, reviews, photos, and contact information
+  - Enhanced database with restaurants, accommodations, adventure tours, and attractions
+  - Businesses now include authentic Google Maps URLs, galleries, and verified location data
+  - Total business count increased from 49 to 63 verified local establishments
+  - Automatic category assignment based on business type and services offered
 ```
 
 ## User Preferences
