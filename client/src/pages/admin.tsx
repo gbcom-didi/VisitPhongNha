@@ -203,46 +203,60 @@ export default function Admin() {
       
       // Fill form with Google Places data - PRESERVE existing name and description
       // Only update the specific fields that Google should provide
-      if (data.latitude) {
+      // Force update all available fields
+      
+      if (data.latitude && data.latitude.trim() !== "") {
         console.log("Setting latitude:", data.latitude);
-        form.setValue("latitude", data.latitude);
+        form.setValue("latitude", data.latitude.trim());
       }
-      if (data.longitude) {
+      
+      if (data.longitude && data.longitude.trim() !== "") {
         console.log("Setting longitude:", data.longitude);
-        form.setValue("longitude", data.longitude);
+        form.setValue("longitude", data.longitude.trim());
       }
-      if (data.address) {
+      
+      if (data.address && data.address.trim() !== "") {
         console.log("Setting address:", data.address);
-        form.setValue("address", data.address);
+        form.setValue("address", data.address.trim());
       }
-      if (data.phone) {
+      
+      if (data.phone && data.phone.trim() !== "") {
         console.log("Setting phone:", data.phone);
-        form.setValue("phone", data.phone);
+        form.setValue("phone", data.phone.trim());
       }
-      if (data.website) {
+      
+      if (data.website && data.website.trim() !== "") {
         console.log("Setting website:", data.website);
-        form.setValue("website", data.website);
+        form.setValue("website", data.website.trim());
       }
-      if (data.googleMapsUrl) {
+      
+      if (data.googleMapsUrl && data.googleMapsUrl.trim() !== "") {
         console.log("Setting googleMapsUrl:", data.googleMapsUrl);
-        form.setValue("googleMapsUrl", data.googleMapsUrl);
+        form.setValue("googleMapsUrl", data.googleMapsUrl.trim());
       }
-      if (data.imageUrl) {
+      
+      if (data.imageUrl && data.imageUrl.trim() !== "") {
         console.log("Setting imageUrl:", data.imageUrl);
-        form.setValue("imageUrl", data.imageUrl);
+        form.setValue("imageUrl", data.imageUrl.trim());
       }
-      if (data.gallery) {
+      
+      if (data.gallery && data.gallery.trim() !== "") {
         console.log("Setting gallery:", data.gallery);
-        form.setValue("gallery", data.gallery);
+        form.setValue("gallery", data.gallery.trim());
       }
-      if (data.rating) {
+      
+      if (data.rating && data.rating.trim() !== "") {
         console.log("Setting rating:", data.rating);
-        form.setValue("rating", data.rating);
+        form.setValue("rating", data.rating.trim());
       }
-      if (data.reviewCount) {
+      
+      if (data.reviewCount && data.reviewCount.trim() !== "") {
         console.log("Setting reviewCount:", data.reviewCount);
-        form.setValue("reviewCount", data.reviewCount);
+        form.setValue("reviewCount", data.reviewCount.trim());
       }
+      
+      // Force form to re-render to show updated values
+      form.trigger();
       
       toast({
         title: "Success",
