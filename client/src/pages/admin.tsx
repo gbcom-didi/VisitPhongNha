@@ -562,17 +562,7 @@ export default function Admin() {
                         </div>
                       </div>
 
-                      <div>
-                        <Label htmlFor="reviews">Reviews (JSON format)</Label>
-                        <Textarea 
-                          {...form.register("reviews")} 
-                          rows={4} 
-                          placeholder={`[{"author_name": "John Smith", "rating": 5, "text": "Amazing experience!", "time": 1640995200}]`}
-                        />
-                        <p className="text-xs text-gray-500 mt-1">
-                          Enter reviews in JSON format. Each review should have author_name, rating, text, and time fields.
-                        </p>
-                      </div>
+
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -956,17 +946,7 @@ export default function Admin() {
                     </div>
                   </div>
 
-                  <div>
-                    <Label htmlFor="reviews">Reviews (JSON format)</Label>
-                    <Textarea 
-                      {...form.register("reviews")} 
-                      rows={4} 
-                      placeholder={`[{"author_name": "John Smith", "rating": 5, "text": "Amazing experience!", "time": 1640995200}]`}
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Enter reviews in JSON format. Each review should have author_name, rating, text, and time fields.
-                    </p>
-                  </div>
+
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
