@@ -1,4 +1,5 @@
 import { X, MapPin, Phone, Clock, Globe, Heart, ExternalLink, Star, User, Images, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Wrapper } from '@googlemaps/react-wrapper';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -447,6 +448,30 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
             </Button>
           </div>
         </div>
+
+        {/* Location Map */}
+        <div className="mt-6 border-t pt-6">
+          <h4 className="text-lg font-semibold mb-3 flex items-center">
+            <MapPin className="w-5 h-5 mr-2 text-tropical-aqua" />
+            Location
+          </h4>
+          <div className="w-full h-64 rounded-lg overflow-hidden border border-gray-200">
+            <Wrapper
+              apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+              render={(status) => (
+                status === 'LOADING' ? (
+                  <div className="w-full h-full bg-gray-100 animate-pulse"></div>
+                ) : status === 'FAILURE' ? (
+                  <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-500">Map unavailable</div>
+                ) : (
+                  <></>
+                )
+              )}
+            >
+              <BusinessLocationMap business={business} />
+            </Wrapper>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
 
@@ -541,5 +566,88 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
       </Dialog>
     )}
     </>
+  );
+}
+
+// Small map component for business location
+interface BusinessLocationMapProps {
+  business: BusinessWithCategory;
+}
+
+function BusinessLocationMap({ business }: BusinessLocationMapProps) {
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+
+  useEffect(() => {
+    if (!map) return;
+
+    const lat = parseFloat(business.latitude);
+    const lng = parseFloat(business.longitude);
+
+    if (isNaN(lat) || isNaN(lng)) return;
+
+    const position = { lat, lng };
+
+    // Center the map on the business location
+    map.setCenter(position);
+    map.setZoom(15);
+
+    // Add a marker for the business
+    const marker = new google.maps.Marker({
+      position,
+      map,
+      title: business.name,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 12,
+        fillColor: business.category?.color || '#0FBDBD',
+        fillOpacity: 1,
+        strokeColor: '#FFFFFF',
+        strokeWeight: 3,
+      },
+    });
+
+    // Add info window on marker click
+    const infoWindow = new google.maps.InfoWindow({
+      content: `
+        <div style="padding: 8px; min-width: 200px;">
+          <h4 style="margin: 0 0 4px 0; font-weight: 600; color: #1f2937;">${business.name}</h4>
+          <p style="margin: 0; color: #6b7280; font-size: 14px;">${business.address || 'Address not available'}</p>
+        </div>
+      `,
+    });
+
+    marker.addListener('click', () => {
+      infoWindow.open(map, marker);
+    });
+
+    return () => {
+      marker.setMap(null);
+    };
+  }, [map, business]);
+
+  return (
+    <div
+      ref={(node) => {
+        if (node && !map) {
+          setMap(
+            new google.maps.Map(node, {
+              center: { lat: parseFloat(business.latitude), lng: parseFloat(business.longitude) },
+              zoom: 15,
+              mapTypeControl: false,
+              streetViewControl: false,
+              fullscreenControl: false,
+              styles: [
+                {
+                  featureType: 'poi',
+                  elementType: 'labels',
+                  stylers: [{ visibility: 'off' }],
+                },
+              ],
+            })
+          );
+        }
+      }}
+      className="w-full h-full"
+    />
   );
 }
