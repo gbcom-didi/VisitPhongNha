@@ -118,9 +118,8 @@ async function importCSVBusinesses() {
         }
         
         // Build gallery array from individual gallery images
-        const gallery = [galleryImage1, galleryImage2, galleryImage3, galleryImage4]
-          .filter(img => img && img.trim() !== '' && img !== mainImageURL)
-          .join(',');
+        const galleryImages = [galleryImage1, galleryImage2, galleryImage3, galleryImage4]
+          .filter(img => img && img.trim() !== '' && !img.includes('google.com/maps/search/'));
         
         const categorySlug = getCategorySlug(name, address || '', description || '');
         const category = allCategories.find(c => c.slug === categorySlug);
@@ -148,8 +147,15 @@ async function importCSVBusinesses() {
         if (website && website !== '') businessUpdateData.website = website;
         if (phone && phone !== '') businessUpdateData.phone = phone;
         if (googleMapsUrl && googleMapsUrl !== '') businessUpdateData.googleMapsUrl = googleMapsUrl;
-        if (mainImageURL && mainImageURL !== '') businessUpdateData.imageUrl = mainImageURL;
-        if (gallery) businessUpdateData.gallery = gallery.split(',');
+        
+        // Use the first authentic image from gallery as main image
+        if (galleryImages.length > 0) {
+          businessUpdateData.imageUrl = galleryImages[0];
+          // Use remaining images as gallery
+          if (galleryImages.length > 1) {
+            businessUpdateData.gallery = galleryImages.slice(1);
+          }
+        }
         
         // Always update name (in case of corrections)
         businessUpdateData.name = name;

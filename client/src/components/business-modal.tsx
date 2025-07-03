@@ -21,10 +21,31 @@ interface BusinessModalProps {
 const getBusinessImageUrl = (business: BusinessWithCategory | null): string => {
   if (!business) return '';
 
-  const nameHash = business.name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const imageId = nameHash % 1000; // Ensure the ID is within a reasonable range
+  // Use the authentic imageUrl from CSV data first (this is the mainImageURL)
+  if (business.imageUrl && business.imageUrl.trim() !== '' && !business.imageUrl.includes('google.com/maps/search/')) {
+    return business.imageUrl;
+  }
 
-  return `https://source.unsplash.com/random/400x400/?${business.category?.name || 'business'}&sig=${imageId}`;
+  // Fallback to category-based images if no authentic image available
+  const categoryName = business.category?.name?.toLowerCase();
+  
+  if (categoryName?.includes('cave')) {
+    return 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&h=600&fit=crop';
+  }
+  if (categoryName?.includes('accommodation') || categoryName?.includes('hotel')) {
+    return 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop';
+  }
+  if (categoryName?.includes('food') || categoryName?.includes('restaurant')) {
+    return 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=600&fit=crop';
+  }
+  if (categoryName?.includes('street food')) {
+    return 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&h=600&fit=crop';
+  }
+  if (categoryName?.includes('attraction')) {
+    return 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=800&h=600&fit=crop';
+  }
+
+  return 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=800&h=600&fit=crop';
 };
 
 export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessModalProps) {

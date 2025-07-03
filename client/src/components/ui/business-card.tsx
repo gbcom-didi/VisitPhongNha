@@ -36,11 +36,12 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
   };
 
   const getBusinessImageUrl = () => {
-    if (business.imageUrl) {
+    // Use the authentic imageUrl from CSV data first (this is the mainImageURL)
+    if (business.imageUrl && business.imageUrl.trim() !== '' && !business.imageUrl.includes('google.com/maps/search/')) {
       return business.imageUrl;
     }
     
-    // Provide category-based fallback images
+    // If imageUrl is a Google Maps search URL, use category-based fallback images
     const categoryName = business.category?.name?.toLowerCase();
     
     if (categoryName?.includes('food') || categoryName?.includes('restaurant')) {
@@ -49,18 +50,18 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
     if (categoryName?.includes('street food')) {
       return 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400';
     }
-    if (categoryName?.includes('kite') || categoryName?.includes('sport')) {
-      return '/images/kitesurfing-vietnam-01.jpg';
+    if (categoryName?.includes('cave')) {
+      return 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&h=600&fit=crop';
     }
     if (categoryName?.includes('accommodation') || categoryName?.includes('hotel')) {
       return 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400';
     }
-    if (categoryName?.includes('attraction') || categoryName?.includes('tower')) {
-      return '/images/my-hoa-tower-2.jpg';
+    if (categoryName?.includes('attraction')) {
+      return 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=800&h=600&fit=crop';
     }
     
-    // Default fallback
-    return 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400';
+    // Default fallback for Phong Nha region
+    return 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=800&h=600&fit=crop';
   };
 
   return (
