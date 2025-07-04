@@ -138,31 +138,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
     }
   };
 
-  const handleLocationClick = () => {
-    // Prioritize the Google Maps URL from admin form if available
-    if (business.googleMapsUrl && business.googleMapsUrl.trim()) {
-      window.open(business.googleMapsUrl, '_blank');
-      return;
-    }
-    
-    // Fallback to generating URL from coordinates
-    const lat = parseFloat(business.latitude);
-    const lng = parseFloat(business.longitude);
-    if (!isNaN(lat) && !isNaN(lng)) {
-      // Open Google Maps showing the location (not directions)
-      const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
-      window.open(url, '_blank');
-    }
-  }
 
-  const handleDirectionsClick = () => {
-    const lat = parseFloat(business.latitude);
-    const lng = parseFloat(business.longitude);
-    if (!isNaN(lat) && !isNaN(lng)) {
-      const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-      window.open(url, '_blank');
-    }
-  };
 
   // Combine main image and gallery images
   const allImages = [
@@ -333,47 +309,21 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
           <div className="flex flex-col gap-3">
             {business.website && (
               <Button
+                asChild
                 className="w-full bg-[#00BCD4] hover:bg-[#00ACC1] text-white font-medium px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  const url = business.website?.trim();
-                  console.log('Website URL:', url);
-                  console.log('Business object:', business);
-                  
-                  if (url && url !== '') {
-                    try {
-                      // Clean the URL and ensure it has a protocol
-                      let finalUrl = url;
-                      if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
-                        finalUrl = `https://${finalUrl}`;
-                      }
-                      
-                      // For better compatibility, prefer HTTPS for known working sites
-                      if (finalUrl.startsWith('http://') && !finalUrl.includes('localhost')) {
-                        finalUrl = finalUrl.replace('http://', 'https://');
-                      }
-                      
-                      console.log('Final URL:', finalUrl);
-                      
-                      // Try to open the URL
-                      const newWindow = window.open(finalUrl, '_blank', 'noopener,noreferrer');
-                      if (!newWindow) {
-                        console.error('Popup blocked or failed to open');
-                        alert('Popup blocked. Please allow popups for this site or copy this URL: ' + finalUrl);
-                      }
-                    } catch (error) {
-                      console.error('Error opening website:', error);
-                      alert(`Could not open website: ${url}`);
-                    }
-                  } else {
-                    console.error('No valid website URL found');
-                    alert('No website URL available for this business');
-                  }
-                }}
               >
-                <Globe className="w-4 h-4 mr-2" />
-                Visit Website
+                <a 
+                  href={
+                    business.website?.trim().startsWith('http') 
+                      ? business.website.trim()
+                      : `https://${business.website?.trim()}`
+                  }
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <Globe className="w-4 h-4 mr-2" />
+                  Visit Website
+                </a>
               </Button>
             )}
             
@@ -384,29 +334,35 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
               <div className="grid grid-cols-1 gap-3 w-full">
                 {business.bookingComUrl && (
                   <Button
+                    asChild
                     className="w-full bg-[#F4B942] hover:bg-[#F2B038] text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
-                    onClick={() => window.open(business.bookingComUrl || '', '_blank')}
                   >
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Book on Booking.com
+                    <a href={business.bookingComUrl} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      Book on Booking.com
+                    </a>
                   </Button>
                 )}
                 {business.agodaUrl && (
                   <Button
+                    asChild
                     className="w-full bg-[#F87D51] hover:bg-[#F6724A] text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
-                    onClick={() => window.open(business.agodaUrl || '', '_blank')}
                   >
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Book on Agoda
+                    <a href={business.agodaUrl} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      Book on Agoda
+                    </a>
                   </Button>
                 )}
                 {business.affiliateLink && (
                   <Button
+                    asChild
                     className="w-full bg-[#6DBFB3] hover:bg-[#60B5A8] text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
-                    onClick={() => window.open(business.affiliateLink || '', '_blank')}
                   >
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Book with Affiliate
+                    <a href={business.affiliateLink} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      Book with Affiliate
+                    </a>
                   </Button>
                 )}
               </div>
@@ -415,20 +371,23 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
             {/* Direct Booking Contact - Show when booking type is "direct" */}
             {business.bookingType === 'direct' && business.directBookingContact && (
               <Button
+                asChild
                 className="w-full bg-[#00BCD4] hover:bg-[#00ACC1] text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
-                onClick={() => {
-                  const contact = business.directBookingContact;
-                  if (contact?.includes('@')) {
-                    window.open(`mailto:${contact}`, '_blank');
-                  } else if (contact?.includes('http')) {
-                    window.open(contact, '_blank');
-                  } else if (contact) {
-                    window.open(`tel:${contact}`, '_blank');
-                  }
-                }}
               >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Direct Booking
+                <a 
+                  href={
+                    business.directBookingContact?.includes('@') 
+                      ? `mailto:${business.directBookingContact}`
+                      : business.directBookingContact?.includes('http')
+                      ? business.directBookingContact
+                      : `tel:${business.directBookingContact}`
+                  }
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Direct Booking
+                </a>
               </Button>
             )}
           </div>
@@ -461,20 +420,28 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
           
           {/* Map Action Links */}
           <div className="flex items-center gap-6 mb-3">
-            <button
-              onClick={handleLocationClick}
+            <a
+              href={
+                business.googleMapsUrl && business.googleMapsUrl.trim()
+                  ? business.googleMapsUrl
+                  : `https://www.google.com/maps/search/?api=1&query=${business.latitude},${business.longitude}`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center text-tropical-aqua hover:text-tropical-aqua-700 transition-colors text-sm font-medium"
             >
               <Globe className="w-4 h-4 mr-2" />
               View on Google Maps
-            </button>
-            <button
-              onClick={handleDirectionsClick}
+            </a>
+            <a
+              href={`https://www.google.com/maps/dir/?api=1&destination=${business.latitude},${business.longitude}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center text-tropical-aqua hover:text-tropical-aqua-700 transition-colors text-sm font-medium"
             >
               <MapPin className="w-4 h-4 mr-2" />
               Get Directions
-            </button>
+            </a>
           </div>
           
           <div className="w-full h-64 rounded-lg overflow-hidden border border-gray-200">

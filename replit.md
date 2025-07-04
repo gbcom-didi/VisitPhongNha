@@ -290,6 +290,13 @@ Changelog:
   - Total business count increased from 49 to 89 verified local establishments
   - Comprehensive coverage of Phong Nha region including Đồng Hới, Bố Trạch, and Minh Hóa areas
   - Automatic category assignment based on business type and services offered
+- July 4, 2025. Fixed Chrome browser compatibility for business modal links
+  - Replaced all window.open() calls with proper anchor tags using target="_blank"
+  - Fixed booking buttons (Booking.com, Agoda, Affiliate) to work consistently across browsers
+  - Updated "Visit Website" button to use native link behavior instead of JavaScript
+  - Fixed "View on Google Maps" and "Get Directions" links for cross-browser compatibility
+  - Added proper rel="noopener noreferrer" attributes for security and performance
+  - Removed unused handler functions and cleaned up code structure
 ```
 
 ## User Preferences
