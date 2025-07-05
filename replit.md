@@ -297,6 +297,13 @@ Changelog:
   - Fixed "View on Google Maps" and "Get Directions" links for cross-browser compatibility
   - Added proper rel="noopener noreferrer" attributes for security and performance
   - Removed unused handler functions and cleaned up code structure
+- July 5, 2025. Fixed business category filtering and removed unwanted filter categories
+  - Removed "Attraction", "Restaurant", and "Recreation" categories from business filters
+  - Reassigned 5 Recreation businesses to appropriate categories (Adventure, Attractions, Caves)
+  - Fixed category filtering logic to check multiple categories per business instead of just primary category
+  - Cleaned up duplicate category assignments in database for improved data integrity
+  - All Cave businesses now display correctly when filtering by Caves category
+  - Business filters now show only 6 relevant categories: Accommodation, Adventure, Attractions, Caves, Food & Drink, Street Food
 ```
 
 ## User Preferences

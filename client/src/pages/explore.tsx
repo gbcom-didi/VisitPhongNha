@@ -84,7 +84,10 @@ export default function Explore() {
 
   // Filter businesses by selected category
   const filteredBusinesses = selectedCategory 
-    ? businesses.filter(business => business.category?.id === selectedCategory)
+    ? businesses.filter(business => 
+        business.categories?.some(cat => cat.id === selectedCategory) || 
+        business.category?.id === selectedCategory
+      )
     : businesses;
 
   const handleBusinessClick = (business: BusinessWithCategory) => {
