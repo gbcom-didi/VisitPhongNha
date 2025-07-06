@@ -268,18 +268,33 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">{business.name}</h3>
-              {business.category && (
-                <Badge
-                  style={{
-                    backgroundColor: business.category.color + '20',
-                    color: business.category.color,
-                    border: `1px solid ${business.category.color}40`
-                  }}
-                  className="mb-3"
-                >
-                  {business.category.name}
-                </Badge>
-              )}
+              {/* Category Badges */}
+              <div className="flex flex-wrap gap-2 mb-3">
+                {business.categories && business.categories.length > 0 ? (
+                  business.categories.map((category) => (
+                    <Badge
+                      key={category.id}
+                      style={{
+                        backgroundColor: category.color + '20',
+                        color: category.color,
+                        border: `1px solid ${category.color}40`
+                      }}
+                    >
+                      {category.name}
+                    </Badge>
+                  ))
+                ) : business.category ? (
+                  <Badge
+                    style={{
+                      backgroundColor: business.category.color + '20',
+                      color: business.category.color,
+                      border: `1px solid ${business.category.color}40`
+                    }}
+                  >
+                    {business.category.name}
+                  </Badge>
+                ) : null}
+              </div>
             </div>
           </div>
 
