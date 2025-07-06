@@ -99,17 +99,47 @@ export function InspirationPage() {
               >
                 All Topics
               </Button>
-              {allTags.map(tag => (
-                <Button
-                  key={tag}
-                  variant={selectedTag === tag ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedTag(tag)}
-                  className={selectedTag === tag ? "bg-mango-yellow hover:bg-mango-yellow/90 text-white text-xs px-3 py-1.5" : "text-xs px-3 py-1.5"}
-                >
-                  {tag}
-                </Button>
-              ))}
+              {allTags.map(tag => {
+                // Use same color logic for filter buttons
+                const getTagColor = (tagName: string) => {
+                  const lowerTag = tagName.toLowerCase();
+                  if (lowerTag.includes('culture') || lowerTag.includes('heritage') || lowerTag.includes('history')) {
+                    return '#F87D51'; // Coral Sunset
+                  }
+                  if (lowerTag.includes('nature') || lowerTag.includes('eco') || lowerTag.includes('sustainable') || lowerTag.includes('environment')) {
+                    return '#6DBFB3'; // Jade Green
+                  }
+                  if (lowerTag.includes('adventure') || lowerTag.includes('tours') || lowerTag.includes('activity')) {
+                    return '#297F6F'; // Dark Green
+                  }
+                  if (lowerTag.includes('accommodation') || lowerTag.includes('luxury') || lowerTag.includes('hotel')) {
+                    return '#00BCD4'; // Light Blue
+                  }
+                  return '#F4B942'; // Mango Yellow (default)
+                };
+                
+                const tagColor = getTagColor(tag);
+                
+                return (
+                  <Button
+                    key={tag}
+                    variant={selectedTag === tag ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedTag(tag)}
+                    className="text-xs px-3 py-1.5"
+                    style={selectedTag === tag ? {
+                      backgroundColor: tagColor,
+                      borderColor: tagColor,
+                      color: 'white'
+                    } : {
+                      borderColor: tagColor,
+                      color: tagColor
+                    }}
+                  >
+                    {tag}
+                  </Button>
+                );
+              })}
             </div>
           )}
         </div>
@@ -219,11 +249,42 @@ function ArticleCard({ article, featured = false }: ArticleCardProps) {
         
         {article.tags && article.tags.length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {article.tags.slice(0, 3).map(tag => (
-              <Badge key={tag} variant="secondary" className="text-xs px-2 py-0.5 bg-mango-yellow text-white">
-                {tag}
-              </Badge>
-            ))}
+            {article.tags.slice(0, 3).map(tag => {
+              // Assign colors based on tag content
+              const getTagColor = (tagName: string) => {
+                const lowerTag = tagName.toLowerCase();
+                if (lowerTag.includes('culture') || lowerTag.includes('heritage') || lowerTag.includes('history')) {
+                  return { bg: '#F87D51', text: 'white' }; // Coral Sunset
+                }
+                if (lowerTag.includes('nature') || lowerTag.includes('eco') || lowerTag.includes('sustainable') || lowerTag.includes('environment')) {
+                  return { bg: '#6DBFB3', text: 'white' }; // Jade Green
+                }
+                if (lowerTag.includes('adventure') || lowerTag.includes('tours') || lowerTag.includes('activity')) {
+                  return { bg: '#297F6F', text: 'white' }; // Dark Green
+                }
+                if (lowerTag.includes('accommodation') || lowerTag.includes('luxury') || lowerTag.includes('hotel')) {
+                  return { bg: '#00BCD4', text: 'white' }; // Light Blue
+                }
+                // Default to Mango Yellow for other tags
+                return { bg: '#F4B942', text: 'white' }; // Mango Yellow
+              };
+              
+              const colors = getTagColor(tag);
+              
+              return (
+                <Badge 
+                  key={tag} 
+                  variant="secondary" 
+                  className="text-xs px-2 py-0.5 border-0"
+                  style={{ 
+                    backgroundColor: colors.bg,
+                    color: colors.text
+                  }}
+                >
+                  {tag}
+                </Badge>
+              );
+            })}
           </div>
         )}
       </div>
