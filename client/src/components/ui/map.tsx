@@ -187,13 +187,29 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
         infoWindow.open(mapRef.current, marker);
       });
 
-      // Add hover listeners for tooltip
+      // Add hover listeners for tooltip and visual effects
       marker.addListener('mouseover', () => {
         showTooltip(business.name, { lat, lng });
+        
+        // Change marker to black and make it larger on hover
+        marker.setIcon({
+          url: createCustomMarkerIcon(categorySlug, 48, true), // Black highlighted marker
+          scaledSize: new google.maps.Size(48, 48),
+          anchor: new google.maps.Point(24, 24),
+        });
+        marker.setZIndex(1000);
       });
 
       marker.addListener('mouseout', () => {
         hideTooltip();
+        
+        // Reset marker to normal color and size
+        marker.setIcon({
+          url: createCustomMarkerIcon(categorySlug, 36, false),
+          scaledSize: new google.maps.Size(36, 36),
+          anchor: new google.maps.Point(18, 18),
+        });
+        marker.setZIndex(1);
       });
 
       markersRef.current.push(marker);
