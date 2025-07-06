@@ -304,6 +304,13 @@ Changelog:
   - Cleaned up duplicate category assignments in database for improved data integrity
   - All Cave businesses now display correctly when filtering by Caves category
   - Business filters now show only 6 relevant categories: Accommodation, Adventure, Attractions, Caves, Food & Drink, Street Food
+- July 6, 2025. Updated map pin colors to match brand theme colors
+  - Updated all category colors in database to use brand theme colors (Mango Yellow, Coral Sunset, Tropical Aqua, Jade Green)
+  - Updated Google Maps marker icon colors to match business categories with brand theme
+  - Accommodation pins now display in Mango Yellow (#F4B942), Adventure in Coral Sunset (#F87D51)
+  - Attractions pins use Tropical Aqua (#00BCD4), Caves use Jade Green (#6DBFB3)
+  - Food & Drink pins use Coral Sunset (#F87D51), Street Food uses Mango Yellow (#F4B942)
+  - Map pins now provide consistent visual branding that matches category filter colors throughout the site
 ```
 
 ## User Preferences
