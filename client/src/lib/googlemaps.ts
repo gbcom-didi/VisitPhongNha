@@ -1,7 +1,7 @@
 export const GOOGLE_MAPS_CONFIG = {
   apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
-  center: { lat: 17.5985, lng: 106.2636 }, // Phong Nha, Quang Binh coordinates
-  zoom: 12,
+  center: { lat: 17.4800, lng: 106.4500 }, // Center point between Phong Nha and Dong Hoi
+  zoom: 10,
   mapId: import.meta.env.VITE_GOOGLE_MAPS_MAP_ID || '',
 };
 
