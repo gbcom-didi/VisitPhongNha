@@ -311,6 +311,12 @@ Changelog:
   - Attractions pins use Tropical Aqua (#00BCD4), Caves use Jade Green (#6DBFB3)
   - Food & Drink pins use Coral Sunset (#F87D51), Street Food uses Mango Yellow (#F4B942)
   - Map pins now provide consistent visual branding that matches category filter colors throughout the site
+- July 6, 2025. Implemented interactive map pin tooltips with business names
+  - Added custom black tooltip overlay with white text displaying business names
+  - Tooltips appear when hovering over map pins directly showing business name above the pin
+  - Tooltips also appear on map when hovering over business cards in the directory listing
+  - Tooltip positioning automatically adjusts to stay above the map pin with proper spacing
+  - Enhanced user experience with immediate visual feedback for both map and card interactions
 ```
 
 ## User Preferences

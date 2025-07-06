@@ -20,6 +20,49 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
   const markersRef = useRef<google.maps.Marker[]>([]);
   const businessMarkersRef = useRef<{ [businessId: number]: google.maps.Marker }>({});
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<google.maps.InfoWindow | null>(null);
+
+  // Tooltip helper functions using InfoWindow for simplicity and reliability
+  const showTooltip = useCallback((text: string, position: { lat: number; lng: number }) => {
+    if (!mapRef.current || !window.google) return;
+
+    // Remove existing tooltip
+    if (tooltipRef.current) {
+      tooltipRef.current.close();
+    }
+
+    // Create new tooltip using InfoWindow with custom styling
+    tooltipRef.current = new google.maps.InfoWindow({
+      content: `
+        <div style="
+          background: rgba(0, 0, 0, 0.9);
+          color: white;
+          padding: 8px 12px;
+          border-radius: 6px;
+          font-size: 14px;
+          font-weight: 500;
+          white-space: nowrap;
+          font-family: system-ui, -apple-system, sans-serif;
+          border: none;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        ">
+          ${text}
+        </div>
+      `,
+      position: { lat: position.lat, lng: position.lng },
+      disableAutoPan: true,
+      pixelOffset: new google.maps.Size(0, -45)
+    });
+
+    tooltipRef.current.open(mapRef.current);
+  }, []);
+
+  const hideTooltip = useCallback(() => {
+    if (tooltipRef.current) {
+      tooltipRef.current.close();
+      tooltipRef.current = null;
+    }
+  }, []);
 
   const initializeMap = useCallback(() => {
     if (!mapContainerRef.current || !window.google) return;
@@ -49,6 +92,14 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
 
   useEffect(() => {
     initializeMap();
+    
+    // Cleanup function
+    return () => {
+      if (tooltipRef.current) {
+        tooltipRef.current.setMap(null);
+        tooltipRef.current = null;
+      }
+    };
   }, [initializeMap]);
 
   // Update markers when businesses change
@@ -100,10 +151,19 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
         infoWindow.open(mapRef.current, marker);
       });
 
+      // Add hover listeners for tooltip
+      marker.addListener('mouseover', () => {
+        showTooltip(business.name, { lat, lng });
+      });
+
+      marker.addListener('mouseout', () => {
+        hideTooltip();
+      });
+
       markersRef.current.push(marker);
       businessMarkersRef.current[business.id] = marker;
     });
-  }, [businesses, onBusinessClick]);
+  }, [businesses, onBusinessClick, showTooltip, hideTooltip]);
 
   // Highlight selected business
   useEffect(() => {
@@ -131,6 +191,11 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       marker.setZIndex(1);
     });
 
+    // Hide tooltip when no business is hovered
+    if (!hoveredBusiness) {
+      hideTooltip();
+    }
+
     // Highlight the hovered business marker and zoom to it
     if (hoveredBusiness && businessMarkersRef.current[hoveredBusiness.id] && mapRef.current) {
       const hoveredMarker = businessMarkersRef.current[hoveredBusiness.id];
@@ -146,11 +211,12 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       // Bring to front
       hoveredMarker.setZIndex(1000);
       
-      // Zoom to show the hovered business
+      // Show tooltip for hovered business card
       const lat = parseFloat(hoveredBusiness.latitude);
       const lng = parseFloat(hoveredBusiness.longitude);
       
       if (!isNaN(lat) && !isNaN(lng)) {
+        showTooltip(hoveredBusiness.name, { lat, lng });
         mapRef.current.panTo({ lat, lng });
         const currentZoom = mapRef.current.getZoom() || 10;
         if (currentZoom < 14) {
@@ -158,7 +224,7 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
         }
       }
     }
-  }, [hoveredBusiness]);
+  }, [hoveredBusiness, showTooltip, hideTooltip]);
 
   // Map controls
   const zoomIn = () => {
