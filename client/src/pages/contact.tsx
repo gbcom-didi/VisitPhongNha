@@ -205,8 +205,8 @@ export default function Contact() {
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-1">Email Us</h3>
                         <p className="text-gray-600 text-sm mb-2">Send us an email anytime</p>
-                        <a href="mailto:hello@didivui.com" className="text-chili-red hover:text-red-600 font-medium">
-                          hello@didivui.com
+                        <a href="mailto:hello@visitphongnha.com" className="text-chili-red hover:text-red-600 font-medium">
+                          hello@visitphongnha.com
                         </a>
                       </div>
                     </div>
