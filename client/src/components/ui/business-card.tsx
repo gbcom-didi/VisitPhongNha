@@ -135,30 +135,43 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
           {business.name}
         </h4>
 
-        {business.category && (
-          <Badge 
-            variant="secondary"
-            style={{ 
-              backgroundColor: business.category.color + '20',
-              color: business.category.color,
-              border: `1px solid ${business.category.color}40`
-            }}
-            className="text-xs mb-3"
-          >
-            {business.category.name}
-          </Badge>
-        )}
+        {/* Category Badges */}
+        <div className="flex flex-wrap gap-1 mb-3">
+          {business.categories && business.categories.length > 0 ? (
+            business.categories.map((category) => (
+              <Badge 
+                key={category.id}
+                variant="secondary"
+                style={{ 
+                  backgroundColor: category.color + '20',
+                  color: category.color,
+                  border: `1px solid ${category.color}40`
+                }}
+                className="text-xs px-2 py-0.5 text-xs font-medium"
+              >
+                {category.name}
+              </Badge>
+            ))
+          ) : business.category ? (
+            <Badge 
+              variant="secondary"
+              style={{ 
+                backgroundColor: business.category.color + '20',
+                color: business.category.color,
+                border: `1px solid ${business.category.color}40`
+              }}
+              className="text-xs px-2 py-0.5 text-xs font-medium"
+            >
+              {business.category.name}
+            </Badge>
+          ) : null}
+        </div>
 
         {/* Rating */}
         {business.rating && (
           <div className="flex items-center">
-            <div className="flex items-center">
-              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1" />
-              <span className="text-xs font-medium text-gray-900">{parseFloat(business.rating || '0').toFixed(1)}</span>
-            </div>
-            {business.reviewCount && business.reviewCount > 0 && (
-              <span className="text-xs text-gray-500 ml-1">({business.reviewCount} reviews)</span>
-            )}
+            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1" />
+            <span className="text-xs font-medium text-gray-900">{parseFloat(business.rating || '0').toFixed(1)}</span>
           </div>
         )}
       </div>
