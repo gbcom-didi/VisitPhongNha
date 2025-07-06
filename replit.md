@@ -317,6 +317,11 @@ Changelog:
   - Tooltips also appear on map when hovering over business cards in the directory listing
   - Tooltip positioning automatically adjusts to stay above the map pin with proper spacing
   - Enhanced user experience with immediate visual feedback for both map and card interactions
+- July 6, 2025. Added consistent hover effects for map pins and business cards
+  - Map pins now turn black and enlarge (36px to 48px) when hovered directly, matching business card hover behavior
+  - Clean black tooltip displays business name without Google Maps default styling (no white box or arrow)
+  - Consistent visual feedback between hovering over business cards and map pins
+  - Enhanced interactive experience with immediate visual response on both map and directory elements
 ```
 
 ## User Preferences
