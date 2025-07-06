@@ -20,21 +20,33 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
   const markersRef = useRef<google.maps.Marker[]>([]);
   const businessMarkersRef = useRef<{ [businessId: number]: google.maps.Marker }>({});
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const tooltipRef = useRef<google.maps.InfoWindow | null>(null);
+  const tooltipRef = useRef<any>(null);
 
-  // Tooltip helper functions using InfoWindow for simplicity and reliability
+  // Custom tooltip overlay that's just a black box
   const showTooltip = useCallback((text: string, position: { lat: number; lng: number }) => {
     if (!mapRef.current || !window.google) return;
 
     // Remove existing tooltip
     if (tooltipRef.current) {
-      tooltipRef.current.close();
+      tooltipRef.current.setMap(null);
     }
 
-    // Create new tooltip using InfoWindow with custom styling
-    tooltipRef.current = new google.maps.InfoWindow({
-      content: `
-        <div style="
+    // Create custom overlay class
+    class CustomTooltip extends google.maps.OverlayView {
+      private position: google.maps.LatLng;
+      private text: string;
+      private div: HTMLDivElement | null = null;
+
+      constructor(position: google.maps.LatLng, text: string) {
+        super();
+        this.position = position;
+        this.text = text;
+      }
+
+      onAdd() {
+        this.div = document.createElement('div');
+        this.div.style.cssText = `
+          position: absolute;
           background: rgba(0, 0, 0, 0.9);
           color: white;
           padding: 8px 12px;
@@ -42,24 +54,48 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
           font-size: 14px;
           font-weight: 500;
           white-space: nowrap;
-          font-family: system-ui, -apple-system, sans-serif;
-          border: none;
+          pointer-events: none;
+          z-index: 1000;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        ">
-          ${text}
-        </div>
-      `,
-      position: { lat: position.lat, lng: position.lng },
-      disableAutoPan: true,
-      pixelOffset: new google.maps.Size(0, -45)
-    });
+          font-family: system-ui, -apple-system, sans-serif;
+        `;
+        this.div.textContent = this.text;
 
-    tooltipRef.current.open(mapRef.current);
+        const panes = this.getPanes();
+        if (panes) {
+          panes.floatPane.appendChild(this.div);
+        }
+      }
+
+      draw() {
+        if (!this.div) return;
+
+        const overlayProjection = this.getProjection();
+        if (!overlayProjection) return;
+
+        const point = overlayProjection.fromLatLngToDivPixel(this.position);
+        if (point) {
+          this.div.style.left = (point.x - this.div.offsetWidth / 2) + 'px';
+          this.div.style.top = (point.y - this.div.offsetHeight - 45) + 'px';
+        }
+      }
+
+      onRemove() {
+        if (this.div && this.div.parentNode) {
+          this.div.parentNode.removeChild(this.div);
+          this.div = null;
+        }
+      }
+    }
+
+    const latLng = new google.maps.LatLng(position.lat, position.lng);
+    tooltipRef.current = new CustomTooltip(latLng, text);
+    tooltipRef.current.setMap(mapRef.current);
   }, []);
 
   const hideTooltip = useCallback(() => {
     if (tooltipRef.current) {
-      tooltipRef.current.close();
+      tooltipRef.current.setMap(null);
       tooltipRef.current = null;
     }
   }, []);
