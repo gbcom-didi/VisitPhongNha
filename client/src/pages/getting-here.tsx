@@ -171,53 +171,13 @@ export default function GettingHere() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">Travel Tips & Information</h2>
-            <p className="text-gray-600">Important information for your journey to Phan Rang</p>
+            <p className="text-gray-600">Important information for your journey to Phong Nha</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl">Best Time to Visit</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <h4 className="font-semibold text-chili-red">Kitesurfing Season</h4>
-                  <p className="text-sm text-gray-600">November to April - consistent winds</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-sea-blue">Dry Season</h4>
-                  <p className="text-sm text-gray-600">December to August - less rainfall</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-tropical-aqua">Weather</h4>
-                  <p className="text-sm text-gray-600">Year-round tropical climate, 24-32°C</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl">Entry Requirements</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <h4 className="font-semibold text-chili-red">Visa</h4>
-                  <p className="text-sm text-gray-600">E-visa or visa on arrival available</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-sea-blue">Passport</h4>
-                  <p className="text-sm text-gray-600">Valid for 6+ months</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-tropical-aqua">Currency</h4>
-                  <p className="text-sm text-gray-600">Vietnamese Dong (VND), USD accepted</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl">Getting Around Phan Rang</CardTitle>
+                <CardTitle className="text-xl">Getting Around Phong Nha</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
@@ -258,40 +218,7 @@ export default function GettingHere() {
         </div>
       </section>
 
-      {/* Route Map Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">Route Overview</h2>
-            <p className="text-gray-600">Popular routes to reach Phan Rang from major cities</p>
-          </div>
-
-          <div className="bg-white rounded-xl p-8 shadow-lg">
-            <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center mb-6">
-              <div className="text-center text-gray-500">
-                <MapPin className="w-16 h-16 mx-auto mb-4" />
-                <p className="text-lg font-medium">Interactive Route Map</p>
-                <p className="text-sm">Plan your journey to Phan Rang</p>
-              </div>
-            </div>
-            
-            <div className="grid md:grid-cols-3 gap-6 text-center">
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-semibold text-gray-900 mb-2">Ho Chi Minh City</h4>
-                <p className="text-sm text-gray-600">350km • 4-6 hours</p>
-              </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-semibold text-gray-900 mb-2">Nha Trang</h4>
-                <p className="text-sm text-gray-600">105km • 1.5-2 hours</p>
-              </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-semibold text-gray-900 mb-2">Da Lat</h4>
-                <p className="text-sm text-gray-600">160km • 3-4 hours</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
       <Footer />
     </div>
