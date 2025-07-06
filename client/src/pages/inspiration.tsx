@@ -57,8 +57,8 @@ export function InspirationPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Page Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 font-questrial mb-3">Inspiration</h1>
-          <p className="text-base text-gray-600 max-w-3xl">
+          <h1 className="text-2xl font-bold font-questrial mb-3" style={{ color: '#297F6F' }}>Inspiration</h1>
+          <p className="text-base max-w-3xl" style={{ color: '#6DBFB3' }}>
             Discover the magic of Phong Nha through stories, guides, and local experiences that will inspire your next adventure.
           </p>
         </div>
@@ -71,7 +71,7 @@ export function InspirationPage() {
               <Input
                 type="text"
                 placeholder="Search articles..."
-                className="pl-9 pr-9 text-sm"
+                className="pl-9 pr-9 text-sm border-jade-green focus:border-mango-yellow"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -95,7 +95,8 @@ export function InspirationPage() {
                 variant={selectedTag === null ? "default" : "outline"}
                 size="sm"
                 onClick={() => setSelectedTag(null)}
-                className={selectedTag === null ? "bg-mango-yellow hover:bg-mango-yellow/90 text-white text-xs px-3 py-1.5" : "text-xs px-3 py-1.5"}
+                className={selectedTag === null ? "text-white text-xs px-3 py-1.5" : "text-xs px-3 py-1.5 border-jade-green text-jade-green hover:bg-jade-green hover:text-white"}
+                style={selectedTag === null ? { backgroundColor: '#F4B942' } : {}}
               >
                 All Topics
               </Button>
@@ -105,7 +106,8 @@ export function InspirationPage() {
                   variant={selectedTag === tag ? "default" : "outline"}
                   size="sm"
                   onClick={() => setSelectedTag(tag)}
-                  className={selectedTag === tag ? "bg-mango-yellow hover:bg-mango-yellow/90 text-white text-xs px-3 py-1.5" : "text-xs px-3 py-1.5"}
+                  className={selectedTag === tag ? "text-white text-xs px-3 py-1.5" : "text-xs px-3 py-1.5 border-coral-sunset text-coral-sunset hover:bg-coral-sunset hover:text-white"}
+                  style={selectedTag === tag ? { backgroundColor: '#F87D51' } : {}}
                 >
                   {tag}
                 </Button>
@@ -117,7 +119,7 @@ export function InspirationPage() {
         {/* Featured Articles - Only show when no tag filter is applied */}
         {!selectedTag && featuredArticles.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Featured Guides</h2>
+            <h2 className="text-lg font-bold mb-4" style={{ color: '#297F6F' }}>Featured Guides</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {featuredArticles.map(article => (
                 <ArticleCard key={article.id} article={article} featured />
@@ -128,15 +130,15 @@ export function InspirationPage() {
 
         {/* All Articles */}
         <div>
-          <h2 className="text-lg font-bold text-gray-900 mb-4">
+          <h2 className="text-lg font-bold mb-4" style={{ color: '#297F6F' }}>
             {selectedTag ? `Articles about ${selectedTag}` : 'Latest Articles'}
           </h2>
           
           {filteredArticles.length === 0 ? (
             <div className="text-center py-8">
-              <MapPin className="w-8 h-8 mx-auto text-gray-300 mb-3" />
-              <h3 className="text-base font-medium text-gray-900 mb-2">No articles found</h3>
-              <p className="text-sm text-gray-600">Try adjusting your search or filters</p>
+              <MapPin className="w-8 h-8 mx-auto mb-3" style={{ color: '#6DBFB3' }} />
+              <h3 className="text-base font-medium mb-2" style={{ color: '#297F6F' }}>No articles found</h3>
+              <p className="text-sm" style={{ color: '#6DBFB3' }}>Try adjusting your search or filters</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -185,8 +187,9 @@ function ArticleCard({ article, featured = false }: ArticleCardProps) {
 
   return (
     <div
-      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-all hover:scale-105"
       onClick={handleClick}
+      style={{ borderTop: '3px solid #F4B942' }}
     >
       <div className="relative">
         <img
@@ -195,21 +198,21 @@ function ArticleCard({ article, featured = false }: ArticleCardProps) {
           className="w-full h-32 object-cover"
         />
         {featured && (
-          <Badge className="absolute top-3 left-3 bg-mango-yellow text-white">
+          <Badge className="absolute top-3 left-3 text-white" style={{ backgroundColor: '#F87D51' }}>
             Featured
           </Badge>
         )}
       </div>
       
       <div className="p-4">
-        <div className="flex items-center text-xs text-gray-500 mb-2">
-          <User className="w-3 h-3 mr-1" />
+        <div className="flex items-center text-xs mb-2" style={{ color: '#6DBFB3' }}>
+          <User className="w-3 h-3 mr-1" style={{ color: '#00BCD4' }} />
           <span>{article.author}</span>
-          <Calendar className="w-3 h-3 ml-3 mr-1" />
+          <Calendar className="w-3 h-3 ml-3 mr-1" style={{ color: '#00BCD4' }} />
           <span>{formatDate(article.publicationDate)}</span>
         </div>
         
-        <h3 className="text-sm font-semibold text-gray-900 mb-2 line-clamp-2">
+        <h3 className="text-sm font-semibold mb-2 line-clamp-2" style={{ color: '#297F6F' }}>
           {article.title}
         </h3>
         
@@ -219,8 +222,15 @@ function ArticleCard({ article, featured = false }: ArticleCardProps) {
         
         {article.tags && article.tags.length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {article.tags.slice(0, 3).map(tag => (
-              <Badge key={tag} variant="secondary" className="text-xs px-2 py-0.5 bg-mango-yellow text-white">
+            {article.tags.slice(0, 3).map((tag, index) => (
+              <Badge 
+                key={tag} 
+                variant="secondary" 
+                className="text-xs px-2 py-0.5 text-white"
+                style={{ 
+                  backgroundColor: index === 0 ? '#F4B942' : index === 1 ? '#F87D51' : '#6DBFB3' 
+                }}
+              >
                 {tag}
               </Badge>
             ))}
