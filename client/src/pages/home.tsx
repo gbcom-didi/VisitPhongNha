@@ -46,7 +46,7 @@ export default function Home() {
             <p className="text-gray-600 max-w-2xl mx-auto text-sm">
               Your intelligent travel companion for Phong Nha region. We combine local expertise 
               with modern technology to help you discover the world's most spectacular cave systems, 
-              authentic Vietnamese culture, and hidden gems known only to locals.
+              authentic local culture, and hidden gems known only to locals.
             </p>
           </div>
 
@@ -114,7 +114,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 gap-6">
             <div 
-              className="group cursor-pointer bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="group cursor-pointer bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow border border-gray-200"
               onClick={() => window.location.href = '/explore?category=kiting'}
             >
               <div className="flex items-center mb-4">
@@ -135,7 +135,7 @@ export default function Home() {
             </div>
 
             <div 
-              className="group cursor-pointer bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="group cursor-pointer bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow border border-gray-200"
               onClick={() => window.location.href = '/explore?category=food-drink'}
             >
               <div className="flex items-center mb-4">
@@ -151,7 +151,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-600 text-xs">
-                Discover authentic Vietnamese restaurants and street food favorites.
+                Discover authentic local restaurants and street food favorites.
               </p>
             </div>
           </div>

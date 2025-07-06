@@ -259,8 +259,7 @@ export default function Landing() {
                           <div className="flex items-center justify-between mb-2">
                             <h3 className="text-lg font-semibold text-gray-900 truncate">{business.name}</h3>
                             <div className="flex items-center space-x-1">
-                              <Star className="w-4 h-4 text-mango-yellow fill-current" />
-                              <span className="text-sm text-gray-600">Premium</span>
+                              {/* Removed Premium badge */}
                             </div>
                           </div>
                           <p className="text-gray-600 text-sm line-clamp-2 mb-3">
