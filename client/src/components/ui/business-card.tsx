@@ -34,10 +34,10 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
     if (business.imageUrl && business.imageUrl.trim() !== '' && !business.imageUrl.includes('google.com/maps/search/')) {
       return business.imageUrl;
     }
-    
+
     // If imageUrl is a Google Maps search URL, use category-based fallback images
     const categoryName = business.category?.name?.toLowerCase();
-    
+
     if (categoryName?.includes('food') || categoryName?.includes('restaurant')) {
       return 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400';
     }
@@ -53,7 +53,7 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
     if (categoryName?.includes('attraction')) {
       return 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=800&h=600&fit=crop';
     }
-    
+
     // Default fallback for Phong Nha region
     return 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=800&h=600&fit=crop';
   };
@@ -75,7 +75,7 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
             // If image fails to load, try fallback image based on category
             const target = e.target as HTMLImageElement;
             const categoryName = business.category?.name?.toLowerCase();
-            
+
             // Use high-quality fallback images specific to business categories
             let fallbackUrl = '';
             if (categoryName?.includes('accommodation') || categoryName?.includes('hotel')) {
@@ -89,7 +89,7 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
             } else {
               fallbackUrl = 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=800&h=600&fit=crop&auto=format';
             }
-            
+
             // If we haven't tried a fallback yet, try it
             if (!target.src.includes('unsplash.com')) {
               target.src = fallbackUrl;
@@ -109,7 +109,7 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
             }
           }}
         />
-        
+
         {/* Like Button Overlay */}
         <Button
           variant="ghost"
@@ -126,7 +126,7 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
           />
         </Button>
 
-        
+
       </div>
 
       {/* Business Info */}
@@ -147,7 +147,7 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
                   color: category.color,
                   border: `1px solid ${category.color}40`
                 }}
-                className="text-xs px-2 py-0.5 text-xs font-medium"
+                className="text-[10px] px-1.5 py-0.5 font-medium"
               >
                 {category.name}
               </Badge>
@@ -160,7 +160,7 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
                 color: business.category.color,
                 border: `1px solid ${business.category.color}40`
               }}
-              className="text-xs px-2 py-0.5 text-xs font-medium"
+              className="text-[10px] px-1.5 py-0.5 font-medium"
             >
               {business.category.name}
             </Badge>
