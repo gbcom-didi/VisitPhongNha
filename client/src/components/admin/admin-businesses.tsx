@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { BusinessModal } from "@/components/business-modal";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -195,12 +195,7 @@ export default function AdminBusinesses() {
     },
   });
 
-  const filteredBusinesses = searchQuery
-    ? businesses.filter((business) =>
-        business.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (business.address && business.address.toLowerCase().includes(searchQuery.toLowerCase()))
-      )
-    : businesses;
+  
 
   // Effect to load business data when editing
   useEffect(() => {
@@ -267,214 +262,113 @@ export default function AdminBusinesses() {
     );
   }
 
+  const filteredBusinesses = searchQuery
+    ? businesses.filter((business) =>
+        business.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : businesses;
+
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="manage" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="add">Add Business</TabsTrigger>
-          <TabsTrigger value="manage">Manage Businesses</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="add" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Add New Business</CardTitle>
-              <CardDescription>
-                Add a new business to the directory with comprehensive details
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Business Name *</Label>
-                    <Input
-                      id="name"
-                      {...form.register("name")}
-                      placeholder="Enter business name"
-                    />
-                    {form.formState.errors.name && (
-                      <p className="text-sm text-red-600">{form.formState.errors.name.message}</p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="address">Address</Label>
-                    <Input
-                      id="address"
-                      {...form.register("address")}
-                      placeholder="Enter business address"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="latitude">Latitude *</Label>
-                    <Input
-                      id="latitude"
-                      {...form.register("latitude")}
-                      placeholder="e.g., 17.4738"
-                      type="number"
-                      step="any"
-                    />
-                    {form.formState.errors.latitude && (
-                      <p className="text-sm text-red-600">{form.formState.errors.latitude.message}</p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="longitude">Longitude *</Label>
-                    <Input
-                      id="longitude"
-                      {...form.register("longitude")}
-                      placeholder="e.g., 106.6229"
-                      type="number"
-                      step="any"
-                    />
-                    {form.formState.errors.longitude && (
-                      <p className="text-sm text-red-600">{form.formState.errors.longitude.message}</p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    {...form.register("description")}
-                    placeholder="Enter business description"
-                    rows={4}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Categories *</Label>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {categories.map((category) => (
-                      <label key={category.id} className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={selectedCategoryIds.includes(category.id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedCategoryIds([...selectedCategoryIds, category.id]);
-                            } else {
-                              setSelectedCategoryIds(selectedCategoryIds.filter(id => id !== category.id));
-                            }
-                          }}
-                          className="rounded"
-                        />
-                        <span className="text-sm">{category.name}</span>
-                      </label>
-                    ))}
-                  </div>
-                  {selectedCategoryIds.length === 0 && form.formState.errors.categoryIds && (
-                    <p className="text-sm text-red-600">{form.formState.errors.categoryIds.message}</p>
-                  )}
-                </div>
-
-                <div className="flex justify-end space-x-2">
-                  <Button type="submit" disabled={createBusinessMutation.isPending}>
-                    {createBusinessMutation.isPending ? "Creating..." : "Create Business"}
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="manage" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Existing Businesses ({businesses.length})</CardTitle>
-              <CardDescription>View and manage current business listings</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    placeholder="Search businesses by name..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Existing Businesses ({filteredBusinesses.length} of {businesses.length})</CardTitle>
+          <CardDescription>View and manage current business listings</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                placeholder="Search businesses by name..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-10"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  type="button"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
 
                 <div className="space-y-4">
-                  {filteredBusinesses.map((business) => (
-                    <div key={business.id} className="p-4 border rounded-lg">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-lg">{business.name}</h3>
-                          {business.categories && business.categories.length > 0 && (
-                            <p className="text-sm text-gray-600 mb-2">
-                              {business.categories.map(cat => cat.name).join(', ')}
-                            </p>
-                          )}
-                          {business.address && (
-                            <p className="text-sm text-gray-500 mb-2">{business.address}</p>
-                          )}
-                          <div className="flex flex-wrap gap-2">
-                            {business.isActive && <Badge className="bg-green-100 text-green-800">Active</Badge>}
-                            {business.isPremium && <Badge className="bg-yellow-100 text-yellow-800">Premium</Badge>}
-                            {business.isVerified && <Badge className="bg-blue-100 text-blue-800">Verified</Badge>}
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setViewingBusiness(business);
-                              setIsBusinessModalOpen(true);
-                            }}
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setEditingBusiness(business);
-                              setIsEditDialogOpen(true);
-                            }}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="outline" size="sm">
-                                <Trash2 className="w-4 h-4 text-red-600" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Business</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Are you sure you want to delete "{business.name}"? This action cannot be undone.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() => deleteBusinessMutation.mutate(business.id)}
-                                  className="bg-red-600 hover:bg-red-700"
-                                >
-                                  Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </div>
+              {filteredBusinesses.map((business) => (
+                <div key={business.id} className="p-4 border rounded-lg">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg">{business.name}</h3>
+                      {business.categories && business.categories.length > 0 && (
+                        <p className="text-sm text-gray-600 mb-2">
+                          {business.categories.map(cat => cat.name).join(', ')}
+                        </p>
+                      )}
+                      {business.address && (
+                        <p className="text-sm text-gray-500 mb-2">{business.address}</p>
+                      )}
+                      <div className="flex flex-wrap gap-2">
+                        {business.isActive && <Badge className="bg-green-100 text-green-800">Active</Badge>}
+                        {business.isPremium && <Badge className="bg-yellow-100 text-yellow-800">Premium</Badge>}
+                        {business.isVerified && <Badge className="bg-blue-100 text-blue-800">Verified</Badge>}
                       </div>
                     </div>
-                  ))}
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setViewingBusiness(business);
+                          setIsBusinessModalOpen(true);
+                        }}
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setEditingBusiness(business);
+                          setIsEditDialogOpen(true);
+                        }}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <Trash2 className="w-4 h-4 text-red-600" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Business</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to delete "{business.name}"? This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => deleteBusinessMutation.mutate(business.id)}
+                              className="bg-red-600 hover:bg-red-700"
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Business Modal */}
       {viewingBusiness && (
