@@ -37,6 +37,10 @@ export interface IStorage {
   upsertUser(user: UpsertUser): Promise<User>;
   updateUserRole(userId: string, role: string): Promise<User>;
   getUsersByRole(role: string): Promise<User[]>;
+  getAllUsers(): Promise<User[]>;
+  createUser(userData: any): Promise<User>;
+  updateUser(userId: string, userData: any): Promise<User>;
+  deleteUser(userId: string): Promise<void>;
   
   // Category operations
   getCategories(): Promise<Category[]>;
@@ -64,18 +68,21 @@ export interface IStorage {
   getArticle(id: number): Promise<Article | undefined>;
   createArticle(article: InsertArticle): Promise<Article>;
   updateArticle(id: number, article: Partial<InsertArticle>): Promise<Article>;
+  deleteArticle(id: number): Promise<void>;
   
   // Guestbook operations
   getGuestbookEntries(): Promise<GuestbookEntryWithRelations[]>;
   createGuestbookEntry(entry: InsertGuestbookEntry): Promise<GuestbookEntry>;
   updateGuestbookEntry(entryId: number, updates: Partial<InsertGuestbookEntry>): Promise<void>;
+  deleteGuestbookEntry(entryId: number): Promise<void>;
   toggleGuestbookEntryLike(userId: string, entryId: number): Promise<{ liked: boolean }>;
   createGuestbookComment(comment: InsertGuestbookComment): Promise<GuestbookComment>;
   toggleGuestbookCommentLike(userId: string, commentId: number): Promise<{ liked: boolean }>;
   
   // Admin moderation operations
-  getPendingGuestbookEntries(): Promise<GuestbookEntry[]>;
-  getSpamGuestbookEntries(): Promise<GuestbookEntry[]>;
+  getPendingGuestbookEntries(): Promise<GuestbookEntryWithRelations[]>;
+  getSpamGuestbookEntries(): Promise<GuestbookEntryWithRelations[]>;
+  getApprovedGuestbookEntries(): Promise<GuestbookEntryWithRelations[]>;
   moderateGuestbookEntry(entryId: number, status: string, moderatorId: string, notes?: string): Promise<void>;
   moderateGuestbookComment(commentId: number, status: string, moderatorId: string): Promise<void>;
 }
@@ -711,29 +718,101 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  // Helper method to attach relations to guestbook entries
+  private async attachRelationsToGuestbookEntries(entriesData: any[]): Promise<GuestbookEntryWithRelations[]> {
+    const entriesWithComments = await Promise.all(
+      entriesData.map(async (entry) => {
+        // Get author info
+        const author = entry.authorId ? await db
+          .select({
+            id: users.id,
+            email: users.email,
+            firstName: users.firstName,
+            lastName: users.lastName,
+            profileImageUrl: users.profileImageUrl,
+          })
+          .from(users)
+          .where(eq(users.id, entry.authorId))
+          .limit(1) : null;
+
+        // Get related place info
+        const relatedPlace = entry.relatedPlaceId ? await db
+          .select({
+            id: businesses.id,
+            name: businesses.name,
+            description: businesses.description,
+            imageUrl: businesses.imageUrl,
+          })
+          .from(businesses)
+          .where(eq(businesses.id, entry.relatedPlaceId))
+          .limit(1) : null;
+
+        // Get comments for each entry
+        const allComments = await db
+          .select({
+            id: guestbookComments.id,
+            entryId: guestbookComments.entryId,
+            authorId: guestbookComments.authorId,
+            authorName: guestbookComments.authorName,
+            comment: guestbookComments.comment,
+            parentCommentId: guestbookComments.parentCommentId,
+            likes: guestbookComments.likes,
+            createdAt: guestbookComments.createdAt,
+          })
+          .from(guestbookComments)
+          .where(eq(guestbookComments.entryId, entry.id))
+          .orderBy(asc(guestbookComments.createdAt));
+
+        // Organize comments in a nested structure
+        const topLevelComments = allComments.filter(c => !c.parentCommentId);
+        const comments = topLevelComments.map(comment => ({
+          ...comment,
+          replies: allComments.filter(c => c.parentCommentId === comment.id),
+          author: null // Simplified for admin view
+        }));
+
+        return {
+          ...entry,
+          author: author?.[0] || null,
+          relatedPlace: relatedPlace?.[0] || null,
+          comments,
+          commentCount: comments.length
+        } as GuestbookEntryWithRelations;
+      })
+    );
+
+    return entriesWithComments;
+  }
+
   // Admin moderation operations
-  async getPendingGuestbookEntries(): Promise<GuestbookEntry[]> {
-    return await db
+  async getPendingGuestbookEntries(): Promise<GuestbookEntryWithRelations[]> {
+    const entriesData = await db
       .select()
       .from(guestbookEntries)
       .where(eq(guestbookEntries.status, 'pending'))
       .orderBy(desc(guestbookEntries.createdAt));
+
+    return this.attachRelationsToGuestbookEntries(entriesData);
   }
 
-  async getSpamGuestbookEntries(): Promise<GuestbookEntry[]> {
-    return await db
+  async getSpamGuestbookEntries(): Promise<GuestbookEntryWithRelations[]> {
+    const entriesData = await db
       .select()
       .from(guestbookEntries)
       .where(eq(guestbookEntries.isSpam, true))
       .orderBy(desc(guestbookEntries.createdAt));
+
+    return this.attachRelationsToGuestbookEntries(entriesData);
   }
 
-  async getApprovedGuestbookEntries(): Promise<GuestbookEntry[]> {
-    return await db
+  async getApprovedGuestbookEntries(): Promise<GuestbookEntryWithRelations[]> {
+    const entriesData = await db
       .select()
       .from(guestbookEntries)
       .where(eq(guestbookEntries.status, 'approved'))
       .orderBy(desc(guestbookEntries.createdAt));
+
+    return this.attachRelationsToGuestbookEntries(entriesData);
   }
 
   async moderateGuestbookEntry(entryId: number, status: string, moderatorId: string, notes?: string): Promise<void> {
@@ -757,6 +836,76 @@ export class DatabaseStorage implements IStorage {
         isSpam: status === 'spam'
       })
       .where(eq(guestbookComments.id, commentId));
+  }
+
+  // Additional user management methods for admin
+  async getAllUsers(): Promise<User[]> {
+    return await db
+      .select()
+      .from(users)
+      .orderBy(desc(users.createdAt));
+  }
+
+  async createUser(userData: any): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values({
+        ...userData,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    return user;
+  }
+
+  async updateUser(userId: string, userData: any): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({
+        ...userData,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async deleteUser(userId: string): Promise<void> {
+    await db
+      .delete(users)
+      .where(eq(users.id, userId));
+  }
+
+  // Additional article management methods for admin
+  async deleteArticle(id: number): Promise<void> {
+    await db
+      .delete(articles)
+      .where(eq(articles.id, id));
+  }
+
+  // Additional guestbook management methods for admin
+  async deleteGuestbookEntry(entryId: number): Promise<void> {
+    // First delete related likes and comments
+    await db
+      .delete(guestbookCommentLikes)
+      .where(eq(guestbookCommentLikes.commentId, inArray(
+        db.select({ id: guestbookComments.id })
+          .from(guestbookComments)
+          .where(eq(guestbookComments.entryId, entryId))
+      )));
+
+    await db
+      .delete(guestbookComments)
+      .where(eq(guestbookComments.entryId, entryId));
+
+    await db
+      .delete(guestbookEntryLikes)
+      .where(eq(guestbookEntryLikes.entryId, entryId));
+
+    // Finally delete the entry
+    await db
+      .delete(guestbookEntries)
+      .where(eq(guestbookEntries.id, entryId));
   }
 }
 

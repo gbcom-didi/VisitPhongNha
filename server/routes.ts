@@ -911,6 +911,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin user management routes
+  app.get('/api/admin/users', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  app.post('/api/admin/users', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+    try {
+      const userData = req.body;
+      const user = await storage.createUser(userData);
+      res.status(201).json(user);
+    } catch (error) {
+      console.error("Error creating user:", error);
+      res.status(500).json({ message: "Failed to create user" });
+    }
+  });
+
+  app.put('/api/admin/users/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const userData = req.body;
+      const user = await storage.updateUser(userId, userData);
+      res.json(user);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      res.status(500).json({ message: "Failed to update user" });
+    }
+  });
+
+  app.delete('/api/admin/users/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+    try {
+      const userId = req.params.id;
+      await storage.deleteUser(userId);
+      res.json({ message: "User deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      res.status(500).json({ message: "Failed to delete user" });
+    }
+  });
+
+  // Admin guestbook management routes
+  app.post('/api/admin/guestbook', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+    try {
+      const user = req.user as any;
+      const entryData = {
+        ...req.body,
+        authorId: user.uid,
+        status: 'approved', // Admin-created entries are auto-approved
+        isSpam: false,
+        spamScore: 0,
+      };
+      
+      const entry = await storage.createGuestbookEntry(entryData);
+      res.status(201).json(entry);
+    } catch (error) {
+      console.error("Error creating admin guestbook entry:", error);
+      res.status(500).json({ message: "Failed to create entry" });
+    }
+  });
+
+  app.delete('/api/admin/guestbook/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+    try {
+      const entryId = parseInt(req.params.id);
+      await storage.deleteGuestbookEntry(entryId);
+      res.json({ message: "Entry deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting guestbook entry:", error);
+      res.status(500).json({ message: "Failed to delete entry" });
+    }
+  });
+
+  // Article management routes (DELETE missing)
+  app.delete('/api/articles/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+    try {
+      const articleId = parseInt(req.params.id);
+      await storage.deleteArticle(articleId);
+      res.json({ message: "Article deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting article:", error);
+      res.status(500).json({ message: "Failed to delete article" });
+    }
+  });
+
   // Import routes for business data management
   app.post('/api/import/google-places', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
     try {
