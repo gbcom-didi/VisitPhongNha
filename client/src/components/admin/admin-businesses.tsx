@@ -11,8 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { BusinessModal } from "@/components/business-modal";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Plus, Trash2, Save, Eye, X, Edit, Search } from "lucide-react";
@@ -384,97 +384,377 @@ export default function AdminBusinesses() {
 
       {/* Edit Business Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Edit Business</DialogTitle>
+            <DialogTitle>Edit Business: {editingBusiness?.name}</DialogTitle>
+            <DialogDescription>
+              Update business information, media, booking settings, and reviews.
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="edit-name">Business Name *</Label>
-                <Input
-                  id="edit-name"
-                  {...form.register("name")}
-                  placeholder="Enter business name"
-                />
-                {form.formState.errors.name && (
-                  <p className="text-sm text-red-600">{form.formState.errors.name.message}</p>
-                )}
-              </div>
+            <Tabs defaultValue="business-info" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="business-info">Business Information</TabsTrigger>
+                <TabsTrigger value="media-details">Media & Details</TabsTrigger>
+                <TabsTrigger value="booking-settings">Booking & Settings</TabsTrigger>
+                <TabsTrigger value="rating-reviews">Rating & Reviews</TabsTrigger>
+              </TabsList>
 
-              <div className="space-y-2">
-                <Label htmlFor="edit-address">Address</Label>
-                <Input
-                  id="edit-address"
-                  {...form.register("address")}
-                  placeholder="Enter business address"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="edit-latitude">Latitude *</Label>
-                <Input
-                  id="edit-latitude"
-                  {...form.register("latitude")}
-                  placeholder="e.g., 17.4738"
-                  type="number"
-                  step="any"
-                />
-                {form.formState.errors.latitude && (
-                  <p className="text-sm text-red-600">{form.formState.errors.latitude.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="edit-longitude">Longitude *</Label>
-                <Input
-                  id="edit-longitude"
-                  {...form.register("longitude")}
-                  placeholder="e.g., 106.6229"
-                  type="number"
-                  step="any"
-                />
-                {form.formState.errors.longitude && (
-                  <p className="text-sm text-red-600">{form.formState.errors.longitude.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="edit-description">Description</Label>
-              <Textarea
-                id="edit-description"
-                {...form.register("description")}
-                placeholder="Enter business description"
-                rows={4}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Categories *</Label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {categories.map((category) => (
-                  <label key={category.id} className="flex items-center space-x-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={selectedCategoryIds.includes(category.id)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedCategoryIds([...selectedCategoryIds, category.id]);
-                        } else {
-                          setSelectedCategoryIds(selectedCategoryIds.filter(id => id !== category.id));
-                        }
-                      }}
-                      className="rounded"
+              <TabsContent value="business-info" className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-name">Business Name *</Label>
+                    <Input
+                      id="edit-name"
+                      {...form.register("name")}
+                      placeholder="Enter business name"
                     />
-                    <span className="text-sm">{category.name}</span>
-                  </label>
-                ))}
-              </div>
-              {selectedCategoryIds.length === 0 && form.formState.errors.categoryIds && (
-                <p className="text-sm text-red-600">{form.formState.errors.categoryIds.message}</p>
-              )}
-            </div>
+                    {form.formState.errors.name && (
+                      <p className="text-sm text-red-600">{form.formState.errors.name.message}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-address">Address</Label>
+                    <Textarea
+                      id="edit-address"
+                      {...form.register("address")}
+                      placeholder="Enter business address"
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-latitude">Latitude *</Label>
+                    <Input
+                      id="edit-latitude"
+                      {...form.register("latitude")}
+                      placeholder="e.g., 17.4738"
+                      type="number"
+                      step="any"
+                    />
+                    {form.formState.errors.latitude && (
+                      <p className="text-sm text-red-600">{form.formState.errors.latitude.message}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-longitude">Longitude *</Label>
+                    <Input
+                      id="edit-longitude"
+                      {...form.register("longitude")}
+                      placeholder="e.g., 106.6229"
+                      type="number"
+                      step="any"
+                    />
+                    {form.formState.errors.longitude && (
+                      <p className="text-sm text-red-600">{form.formState.errors.longitude.message}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-phone">Phone</Label>
+                    <Input
+                      id="edit-phone"
+                      {...form.register("phone")}
+                      placeholder="Enter phone number"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-email">Email</Label>
+                    <Input
+                      id="edit-email"
+                      {...form.register("email")}
+                      placeholder="Enter email address"
+                      type="email"
+                    />
+                    {form.formState.errors.email && (
+                      <p className="text-sm text-red-600">{form.formState.errors.email.message}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-description">Description</Label>
+                  <Textarea
+                    id="edit-description"
+                    {...form.register("description")}
+                    placeholder="Enter business description"
+                    rows={4}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-website">Website</Label>
+                    <Input
+                      id="edit-website"
+                      {...form.register("website")}
+                      placeholder="https://example.com"
+                    />
+                    {form.formState.errors.website && (
+                      <p className="text-sm text-red-600">{form.formState.errors.website.message}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-hours">Hours</Label>
+                    <Input
+                      id="edit-hours"
+                      {...form.register("hours")}
+                      placeholder="e.g., Mon-Fri: 9am-5pm"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Categories *</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {categories.map((category) => (
+                      <label key={category.id} className="flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedCategoryIds.includes(category.id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedCategoryIds([...selectedCategoryIds, category.id]);
+                            } else {
+                              setSelectedCategoryIds(selectedCategoryIds.filter(id => id !== category.id));
+                            }
+                          }}
+                          className="rounded"
+                        />
+                        <span className="text-sm">{category.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {selectedCategoryIds.length === 0 && form.formState.errors.categoryIds && (
+                    <p className="text-sm text-red-600">{form.formState.errors.categoryIds.message}</p>
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="media-details" className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-google-maps-url">Google Maps URL</Label>
+                  <Input
+                    id="edit-google-maps-url"
+                    {...form.register("googleMapsUrl")}
+                    placeholder="https://maps.google.com/?cid=12345..."
+                  />
+                  {form.formState.errors.googleMapsUrl && (
+                    <p className="text-sm text-red-600">{form.formState.errors.googleMapsUrl.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-image-url">Main Image URL</Label>
+                  <Input
+                    id="edit-image-url"
+                    {...form.register("imageUrl")}
+                    placeholder="https://example.com/image.jpg"
+                  />
+                  {form.formState.errors.imageUrl && (
+                    <p className="text-sm text-red-600">{form.formState.errors.imageUrl.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-gallery">Gallery URLs (comma-separated)</Label>
+                  <Textarea
+                    id="edit-gallery"
+                    {...form.register("gallery")}
+                    placeholder="https://image1.jpg, https://image2.jpg, ..."
+                    rows={3}
+                  />
+                  <p className="text-sm text-gray-500">Enter multiple image URLs separated by commas</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-tags">Tags</Label>
+                  <Input
+                    id="edit-tags"
+                    {...form.register("tags")}
+                    placeholder="budget, kitesurf, beachfront"
+                  />
+                  <p className="text-sm text-gray-500">Comma-separated tags to help users find this business</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-amenities">Amenities</Label>
+                  <Input
+                    id="edit-amenities"
+                    {...form.register("amenities")}
+                    placeholder="WiFi, Free breakfast, Surf rental"
+                  />
+                  <p className="text-sm text-gray-500">Comma-separated list of amenities and services</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-price-range">Price Range</Label>
+                  <Input
+                    id="edit-price-range"
+                    {...form.register("priceRange")}
+                    placeholder="200k-400k VND or $$"
+                  />
+                  <p className="text-sm text-gray-500">Price range in local currency or dollar signs</p>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="booking-settings" className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-booking-type">Booking Type</Label>
+                  <Select value={form.watch("bookingType")} onValueChange={(value) => form.setValue("bookingType", value as "none" | "direct" | "affiliate")}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select booking type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">No Booking</SelectItem>
+                      <SelectItem value="direct">Direct Booking</SelectItem>
+                      <SelectItem value="affiliate">Affiliate Booking</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-affiliate-link">Affiliate Link</Label>
+                  <Input
+                    id="edit-affiliate-link"
+                    {...form.register("affiliateLink")}
+                    placeholder="https://booking.com/..."
+                  />
+                  <p className="text-sm text-gray-500">Third-party booking website URL</p>
+                  {form.formState.errors.affiliateLink && (
+                    <p className="text-sm text-red-600">{form.formState.errors.affiliateLink.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-booking-com-url">Booking.com URL</Label>
+                  <Input
+                    id="edit-booking-com-url"
+                    {...form.register("bookingComUrl")}
+                    placeholder="https://www.booking.com/hotel/..."
+                  />
+                  <p className="text-sm text-gray-500">Direct link to property on Booking.com</p>
+                  {form.formState.errors.bookingComUrl && (
+                    <p className="text-sm text-red-600">{form.formState.errors.bookingComUrl.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-agoda-url">Agoda URL</Label>
+                  <Input
+                    id="edit-agoda-url"
+                    {...form.register("agodaUrl")}
+                    placeholder="https://www.agoda.com/..."
+                  />
+                  <p className="text-sm text-gray-500">Direct link to property on Agoda</p>
+                  {form.formState.errors.agodaUrl && (
+                    <p className="text-sm text-red-600">{form.formState.errors.agodaUrl.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-direct-booking-contact">Direct Booking Contact</Label>
+                  <Input
+                    id="edit-direct-booking-contact"
+                    {...form.register("directBookingContact")}
+                    placeholder="Phone, WhatsApp, or email"
+                  />
+                  <p className="text-sm text-gray-500">Contact information for direct bookings</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-featured-text">Featured Text</Label>
+                  <Input
+                    id="edit-featured-text"
+                    {...form.register("featuredText")}
+                    placeholder="Special highlight or promotional text"
+                  />
+                  <p className="text-sm text-gray-500">Short marketing tagline or special offer</p>
+                </div>
+
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="edit-enquiry-form-enabled"
+                      checked={form.watch("enquiryFormEnabled")}
+                      onCheckedChange={(checked) => form.setValue("enquiryFormEnabled", checked)}
+                    />
+                    <Label htmlFor="edit-enquiry-form-enabled">Enquiry Form</Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="edit-is-active"
+                      checked={form.watch("isActive")}
+                      onCheckedChange={(checked) => form.setValue("isActive", checked)}
+                    />
+                    <Label htmlFor="edit-is-active">Active</Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="edit-is-premium"
+                      checked={form.watch("isPremium")}
+                      onCheckedChange={(checked) => form.setValue("isPremium", checked)}
+                    />
+                    <Label htmlFor="edit-is-premium">Premium</Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="edit-is-verified"
+                      checked={form.watch("isVerified")}
+                      onCheckedChange={(checked) => form.setValue("isVerified", checked)}
+                    />
+                    <Label htmlFor="edit-is-verified">Verified</Label>
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="rating-reviews" className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-rating">Rating (1-5)</Label>
+                    <Input
+                      id="edit-rating"
+                      {...form.register("rating")}
+                      placeholder="4.90"
+                      type="number"
+                      step="0.1"
+                      min="1"
+                      max="5"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-review-count">Review Count</Label>
+                    <Input
+                      id="edit-review-count"
+                      {...form.register("reviewCount")}
+                      placeholder="1033"
+                      type="number"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-reviews">Reviews (JSON format)</Label>
+                  <Textarea
+                    id="edit-reviews"
+                    {...form.register("reviews")}
+                    placeholder='[{"author": "John Doe", "rating": 5, "text": "Great place!"}]'
+                    rows={8}
+                  />
+                  <p className="text-sm text-gray-500">
+                    Enter reviews in JSON format with author, rating, and text fields
+                  </p>
+                </div>
+              </TabsContent>
+            </Tabs>
 
             <div className="flex justify-end space-x-2">
               <Button
