@@ -82,7 +82,7 @@ export default function AdminPortal() {
   const renderContent = () => {
     switch (activeSection) {
       case "overview":
-        return <AdminOverview />;
+        return <AdminOverview setActiveSection={setActiveSection} />;
       case "manage-businesses":
         return <AdminBusinesses />;
       case "add-business":
@@ -94,7 +94,7 @@ export default function AdminPortal() {
       case "users":
         return <AdminUsers />;
       default:
-        return <AdminOverview />;
+        return <AdminOverview setActiveSection={setActiveSection} />;
     }
   };
 
@@ -183,7 +183,7 @@ export default function AdminPortal() {
 }
 
 // Overview component
-function AdminOverview() {
+function AdminOverview({ setActiveSection }: { setActiveSection: (section: string) => void }) {
   return (
     <div className="space-y-6">
       <div>
@@ -195,7 +195,11 @@ function AdminOverview() {
         {navigationItems.slice(1).map((item) => {
           const Icon = item.icon;
           return (
-            <Card key={item.id} className="hover:shadow-md transition-shadow cursor-pointer">
+            <Card 
+              key={item.id} 
+              className="hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => setActiveSection(item.id)}
+            >
               <CardHeader className="pb-3">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-mango-yellow to-coral-sunset rounded-lg flex items-center justify-center">
