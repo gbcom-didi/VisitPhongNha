@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Editor } from '@tinymce/tinymce-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -499,35 +498,7 @@ function ArticleForm({
       {/* Content */}
       <div>
         <Label htmlFor="contentHtml">Content (HTML) *</Label>
-        <div className="mt-2">
-          <Controller
-            name="contentHtml"
-            control={form.control}
-            render={({ field }) => (
-              <Editor
-                apiKey="no-api-key"
-                value={field.value}
-                onEditorChange={(content) => field.onChange(content)}
-                init={{
-                  height: 400,
-                  menubar: true,
-                  plugins: [
-                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                    'insertdatetime', 'media', 'table', 'help', 'wordcount'
-                  ],
-                  toolbar: 'undo redo | blocks | ' +
-                    'bold italic forecolor | alignleft aligncenter ' +
-                    'alignright alignjustify | bullist numlist outdent indent | ' +
-                    'removeformat | help | code',
-                  content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-                  branding: false,
-                  promotion: false
-                }}
-              />
-            )}
-          />
-        </div>
+        <Textarea {...form.register("contentHtml")} rows={10} className="font-mono text-sm" />
         {form.formState.errors.contentHtml && (
           <p className="text-sm text-red-600">{form.formState.errors.contentHtml.message}</p>
         )}
