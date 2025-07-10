@@ -294,6 +294,8 @@ export const insertGuestbookEntrySchema = createInsertSchema(guestbookEntries).o
   moderatedAt: true,
   moderationNotes: true,
   createdAt: true,
+}).extend({
+  spamScore: z.number().optional(),
 });
 
 export const insertGuestbookCommentSchema = createInsertSchema(guestbookComments).omit({
@@ -302,6 +304,8 @@ export const insertGuestbookCommentSchema = createInsertSchema(guestbookComments
   moderatedBy: true,
   moderatedAt: true,
   createdAt: true,
+}).extend({
+  isSpam: z.boolean().optional(),
 });
 
 export const insertGuestbookEntryLikeSchema = createInsertSchema(guestbookEntryLikes).omit({

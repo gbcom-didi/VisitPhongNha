@@ -648,13 +648,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const clientIp = getClientIP(req);
       const userAgent = req.headers['user-agent'] || '';
 
-      // Check rate limiting
-      const rateLimitCheck = await checkRateLimit(user.uid, 'guestbook_entry');
-      if (!rateLimitCheck.allowed) {
-        return res.status(429).json({ 
-          message: `Rate limit exceeded. You can post ${3} more entries in ${Math.ceil((rateLimitCheck.resetTime.getTime() - Date.now()) / (1000 * 60))} minutes.`,
-          resetTime: rateLimitCheck.resetTime
-        });
+      // Check rate limiting (skip if rate limits table doesn't exist)
+      try {
+        const rateLimitCheck = await checkRateLimit(user.uid, 'guestbook_entry');
+        if (!rateLimitCheck.allowed) {
+          return res.status(429).json({ 
+            message: `Rate limit exceeded. You can post ${3} more entries in ${Math.ceil((rateLimitCheck.resetTime.getTime() - Date.now()) / (1000 * 60))} minutes.`,
+            resetTime: rateLimitCheck.resetTime
+          });
+        }
+      } catch (rateLimitError) {
+        console.warn('Rate limiting table not found, skipping rate limit check');
       }
 
       // Get full user data from database for name
@@ -752,13 +756,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Authentication required" });
       }
 
-      // Check rate limiting for comments
-      const rateLimitCheck = await checkRateLimit(user.uid, 'guestbook_comment');
-      if (!rateLimitCheck.allowed) {
-        return res.status(429).json({ 
-          message: `Rate limit exceeded. You can post ${10} more comments in ${Math.ceil((rateLimitCheck.resetTime.getTime() - Date.now()) / (1000 * 60))} minutes.`,
-          resetTime: rateLimitCheck.resetTime
-        });
+      // Check rate limiting for comments (skip if rate limits table doesn't exist)
+      try {
+        const rateLimitCheck = await checkRateLimit(user.uid, 'guestbook_comment');
+        if (!rateLimitCheck.allowed) {
+          return res.status(429).json({ 
+            message: `Rate limit exceeded. You can post ${10} more comments in ${Math.ceil((rateLimitCheck.resetTime.getTime() - Date.now()) / (1000 * 60))} minutes.`,
+            resetTime: rateLimitCheck.resetTime
+          });
+        }
+      } catch (rateLimitError) {
+        console.warn('Rate limiting table not found, skipping rate limit check');
       }
 
       const entryId = parseInt(req.params.id);
