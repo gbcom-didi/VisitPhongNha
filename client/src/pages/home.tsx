@@ -37,12 +37,25 @@ export default function Home() {
 
   // Remove auto-advance carousel - use manual navigation only
 
+  // Calculate max slides based on screen size
+  const getMaxSlides = () => {
+    // Desktop: show 3 cards at a time, so max slides = total businesses - 2 (to always show 3)
+    // Mobile: show 1 card at a time, so max slides = total businesses - 1
+    const isDesktop = window.innerWidth >= 768;
+    if (isDesktop) {
+      return Math.max(0, featuredBusinesses.length - 3);
+    } else {
+      return Math.max(0, featuredBusinesses.length - 1);
+    }
+  };
+
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % featuredBusinesses.length);
+    const maxSlides = getMaxSlides();
+    setCurrentSlide((prev) => Math.min(prev + 1, maxSlides));
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + featuredBusinesses.length) % featuredBusinesses.length);
+    setCurrentSlide((prev) => Math.max(prev - 1, 0));
   };
 
   const handleBusinessClick = (business: BusinessWithCategory) => {
@@ -311,13 +324,19 @@ export default function Home() {
                 <>
                   <button 
                     onClick={prevSlide}
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow z-10"
+                    disabled={currentSlide === 0}
+                    className={`absolute left-2 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow z-10 ${
+                      currentSlide === 0 ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                   >
                     <ChevronLeft className="w-6 h-6 text-gray-600" />
                   </button>
                   <button 
                     onClick={nextSlide}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow z-10"
+                    disabled={currentSlide >= getMaxSlides()}
+                    className={`absolute right-2 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow z-10 ${
+                      currentSlide >= getMaxSlides() ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                   >
                     <ChevronRight className="w-6 h-6 text-gray-600" />
                   </button>
