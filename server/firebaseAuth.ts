@@ -17,32 +17,15 @@ export const auth = admin.auth();
 
 // Middleware to verify Firebase ID tokens
 export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
-  console.log('=== Firebase Token Verification START ===');
-  console.log('Request URL:', req.url, 'Method:', req.method);
-  
   try {
     const authHeader = req.headers.authorization;
-    console.log('All headers:', Object.keys(req.headers));
-    console.log('Auth header received:', authHeader ? `Bearer ${authHeader.split('Bearer ')[1]?.substring(0, 20)}...` : 'None');
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('No valid authorization header found');
-      console.log('Available headers:', req.headers);
       return res.status(401).json({ message: 'No token provided' });
     }
 
     const idToken = authHeader.split('Bearer ')[1];
-    console.log('Attempting to verify token with length:', idToken.length);
-    console.log('Token starts with:', idToken.substring(0, 50));
-    
-    // Add debug for token verification
-    try {
-      const decodedToken = await auth.verifyIdToken(idToken);
-      console.log('Token verified successfully for user:', decodedToken.email);
-    } catch (verifyError) {
-      console.error('Token verification failed:', verifyError);
-      throw verifyError;
-    }
+    const decodedToken = await auth.verifyIdToken(idToken);
     
     // Fetch user data from database to get role
     // First try by Firebase UID, then by email if not found
@@ -67,11 +50,9 @@ export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
       claims: decodedToken
     };
 
-    console.log('Request user set:', req.user.email, req.user.role);
     next();
   } catch (error) {
     console.error('Error verifying Firebase token:', error);
-    console.error('Request URL:', req.url, 'Method:', req.method);
     return res.status(401).json({ message: 'Invalid token' });
   }
 };
