@@ -13,7 +13,6 @@ import type { BusinessWithCategory } from '@shared/schema';
 export default function Home() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -35,24 +34,7 @@ export default function Home() {
     }
   }, [user, isLoading, toast]);
 
-  // Remove auto-advance carousel - use manual navigation only
-
-  // Calculate max slides - desktop groups of 3, mobile shows 1
-  const maxSlides = Math.max(0, Math.ceil(featuredBusinesses.length / 3) - 1); // Desktop logic
-  const maxMobileSlides = Math.max(0, featuredBusinesses.length - 1); // Mobile logic
-
-  const nextSlide = () => {
-    const isDesktop = window.innerWidth >= 768;
-    const max = isDesktop ? maxSlides : maxMobileSlides;
-    setCurrentSlide((prev) => {
-      const next = prev + 1;
-      return next > max ? prev : next; // Don't advance if it would go beyond max
-    });
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => Math.max(prev - 1, 0));
-  };
+  // Simple grid layout - no carousel navigation needed
 
   const handleBusinessClick = (business: BusinessWithCategory) => {
     setSelectedBusiness(business);
@@ -219,139 +201,80 @@ export default function Home() {
             <p className="text-gray-600 text-sm">Handpicked locations that offer exceptional experiences in Phong Nha</p>
           </div>
 
-          {featuredBusinesses.length > 0 && (
-            <div className="relative overflow-hidden">
-              {/* Desktop: Show 3 cards in slider */}
-              <div className="hidden md:block">
-                <div 
-                  className="flex transition-transform duration-500 ease-in-out"
-                  style={{ 
-                    transform: `translateX(-${currentSlide * 100}%)`,
-                  }}
-                >
-                  {Array.from({ length: Math.ceil(featuredBusinesses.length / 3) }, (_, groupIndex) => (
-                    <div key={groupIndex} className="flex-shrink-0 w-full flex gap-6">
-                      {featuredBusinesses.slice(groupIndex * 3, groupIndex * 3 + 3).map((business) => (
-                        <div 
-                          key={business.id}
-                          className="flex-1 max-w-80"
-                        >
-                          <div 
-                            className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer h-full"
-                            onClick={() => handleBusinessClick(business)}
-                          >
-                            <div className="h-48 bg-gray-200 relative">
-                              <img 
-                                src={business.imageUrl || '/images/my-hoa-lagoon-3.jpg'} 
-                                alt={business.name}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <div className="p-6 h-40 flex flex-col justify-between">
-                              <div>
-                                <h4 className="text-lg font-semibold mb-2 line-clamp-1" style={{ color: '#137065' }}>{business.name}</h4>
-                                <p className="text-gray-600 text-sm mb-3 line-clamp-2">{business.description}</p>
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-2">
-                                  <span className="text-sm text-gray-500">Vietnam</span>
-                                  {business.rating && (
-                                    <div className="flex items-center space-x-1">
-                                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                                      <span className="text-sm font-medium">{parseFloat(business.rating).toFixed(1)}</span>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Mobile: Show slider with navigation */}
-              <div className="md:hidden">
-                <div 
-                  className="flex transition-transform duration-500 ease-in-out gap-4"
-                  style={{ 
-                    transform: `translateX(-${currentSlide * 100}%)`,
-                  }}
-                >
-                  {featuredBusinesses.map((business, index) => (
-                    <div 
-                      key={business.id}
-                      className="flex-shrink-0 w-full max-w-sm mx-auto"
-                    >
-                      <div 
-                        className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer h-full"
-                        onClick={() => handleBusinessClick(business)}
-                      >
-                        <div className="h-48 bg-gray-200 relative">
-                          <img 
-                            src={business.imageUrl || '/images/my-hoa-lagoon-3.jpg'} 
-                            alt={business.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="p-6 h-40 flex flex-col justify-between">
-                          <div>
-                            <h4 className="text-lg font-semibold mb-2 line-clamp-1" style={{ color: '#137065' }}>{business.name}</h4>
-                            <p className="text-gray-600 text-sm mb-3 line-clamp-2">{business.description}</p>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                              <span className="text-sm text-gray-500">Vietnam</span>
-                              {business.rating && (
-                                <div className="flex items-center space-x-1">
-                                  <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                                  <span className="text-sm font-medium">{parseFloat(business.rating).toFixed(1)}</span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
+          {featuredBusinesses.length > 0 ? (
+            <div className="relative">
+              {/* Business Cards Grid/Carousel */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredBusinesses.map((business) => (
+                  <div 
+                    key={business.id}
+                    className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105"
+                    onClick={() => handleBusinessClick(business)}
+                  >
+                    {/* Business Image */}
+                    <div className="h-48 bg-gray-200 relative overflow-hidden">
+                      <img 
+                        src={business.imageUrl || '/images/my-hoa-lagoon-3.jpg'} 
+                        alt={business.name}
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                      />
+                      {/* Premium Badge */}
+                      <div className="absolute top-3 right-3 bg-gradient-to-r from-mango-yellow to-yellow-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                        Premium
                       </div>
                     </div>
-                  ))}
-                </div>
+                    
+                    {/* Business Info */}
+                    <div className="p-6">
+                      <div className="mb-3">
+                        <h4 className="text-lg font-semibold mb-2 line-clamp-1" style={{ color: '#137065' }}>
+                          {business.name}
+                        </h4>
+                        <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                          {business.description}
+                        </p>
+                      </div>
+                      
+                      {/* Rating and Location */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm text-gray-500">Vietnam</span>
+                        </div>
+                        
+                        {business.rating && (
+                          <div className="flex items-center space-x-1">
+                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                            <span className="text-sm font-medium">{parseFloat(business.rating).toFixed(1)}</span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Category Badge */}
+                      {business.category && (
+                        <div className="mt-3 pt-3 border-t border-gray-100">
+                          <span 
+                            className="inline-block px-3 py-1 rounded-full text-xs font-medium text-white"
+                            style={{ backgroundColor: business.category.color }}
+                          >
+                            {business.category.name}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
-                
-              {/* Navigation buttons for both desktop and mobile */}
-              {featuredBusinesses.length > 1 && (
-                <>
-                  <button 
-                    onClick={prevSlide}
-                    disabled={currentSlide === 0}
-                    className={`absolute left-2 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow z-10 ${
-                      currentSlide === 0 ? 'opacity-50 cursor-not-allowed' : ''
-                    }`}
-                  >
-                    <ChevronLeft className="w-6 h-6 text-gray-600" />
-                  </button>
-                  <button 
-                    onClick={nextSlide}
-                    disabled={(() => {
-                      const isDesktop = window.innerWidth >= 768;
-                      const max = isDesktop ? maxSlides : maxMobileSlides;
-                      return currentSlide >= max;
-                    })()}
-                    className={`absolute right-2 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow z-10 ${
-                      (() => {
-                        const isDesktop = window.innerWidth >= 768;
-                        const max = isDesktop ? maxSlides : maxMobileSlides;
-                        return currentSlide >= max ? 'opacity-50 cursor-not-allowed' : '';
-                      })()
-                    }`}
-                  >
-                    <ChevronRight className="w-6 h-6 text-gray-600" />
-                  </button>
-                </>
-              )}
-
-
+              
+              {/* Show count of premium places */}
+              <div className="text-center mt-8">
+                <p className="text-sm text-gray-500">
+                  Showing {featuredBusinesses.length} premium {featuredBusinesses.length === 1 ? 'place' : 'places'}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500">No premium places available at the moment.</p>
             </div>
           )}
         </div>
