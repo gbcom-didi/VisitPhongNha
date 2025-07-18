@@ -115,7 +115,7 @@ export default function Home() {
                   <Map className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold mb-2 bg-gradient-to-r from-teal-700 to-teal-600 bg-clip-text text-transparent">Interactive Explorer</h4>
+                  <h4 className="text-lg font-semibold mb-2 bg-gradient-to-r from-teal-700 to-teal-600 bg-clip-text text-[#ecb412]">Interactive Explorer</h4>
                   <p className="text-gray-600 text-sm mb-4">
                     Navigate through Phong Nha's mysteries with our intelligent map. Discover hidden caves, local eateries, and 
                     secret spots curated by adventurers and locals.
