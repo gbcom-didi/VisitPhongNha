@@ -1020,7 +1020,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Article management routes (DELETE missing)
+  // Article management routes
+  app.put('/api/articles/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+    try {
+      const articleId = parseInt(req.params.id);
+      const articleData = req.body;
+      
+      // Check if article exists
+      const existingArticle = await storage.getArticle(articleId);
+      if (!existingArticle) {
+        return res.status(404).json({ message: "Article not found" });
+      }
+      
+      const updatedArticle = await storage.updateArticle(articleId, articleData);
+      res.json(updatedArticle);
+    } catch (error) {
+      console.error("Error updating article:", error);
+      res.status(500).json({ message: "Failed to update article" });
+    }
+  });
+
   app.delete('/api/articles/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
     try {
       const articleId = parseInt(req.params.id);

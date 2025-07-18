@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Plus, Edit, Trash2, Search, Calendar, MapPin, Eye, Save } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
@@ -212,6 +212,7 @@ export default function AdminArticles() {
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Add New Article</DialogTitle>
+              <DialogDescription>Create a new inspiration article for travelers visiting Phong Nha.</DialogDescription>
             </DialogHeader>
             <ArticleForm 
               form={form} 
@@ -296,7 +297,11 @@ export default function AdminArticles() {
                     </div>
 
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => window.open(`/inspiration/${article.id}`, '_blank')}
+                      >
                         <Eye className="w-4 h-4 mr-1" />
                         View
                       </Button>
@@ -314,6 +319,7 @@ export default function AdminArticles() {
                         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                           <DialogHeader>
                             <DialogTitle>Edit Article</DialogTitle>
+                            <DialogDescription>Update the article details and content.</DialogDescription>
                           </DialogHeader>
                           <ArticleForm 
                             form={form} 
@@ -484,12 +490,30 @@ function ArticleForm({
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <Label htmlFor="isFeatured">Featured Article</Label>
-              <Switch {...form.register("isFeatured")} />
+              <Controller
+                name="isFeatured"
+                control={form.control}
+                render={({ field }) => (
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
+              />
             </div>
 
             <div className="flex items-center justify-between">
               <Label htmlFor="isActive">Active</Label>
-              <Switch {...form.register("isActive")} />
+              <Controller
+                name="isActive"
+                control={form.control}
+                render={({ field }) => (
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
+              />
             </div>
           </div>
         </div>
