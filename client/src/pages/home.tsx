@@ -98,8 +98,8 @@ export default function Home() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h3 className="text-2xl font-bold mb-4 font-questrial bg-gradient-to-r from-mango-yellow to-yellow-500 bg-clip-text text-transparent">
-              Your Gateway to Adventure
+            <h3 className="text-2xl font-bold mb-4 font-questrial text-gray-900">
+              Your Gateway to <span className="bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">Adventure</span>
             </h3>
             <p className="text-gray-600 text-sm">
               Everything you need to discover, plan, and experience the magic of Phong Nha's hidden wonders
