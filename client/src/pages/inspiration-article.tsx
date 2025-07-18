@@ -253,6 +253,13 @@ export function InspirationArticlePage() {
                   </a>
                 </div>
               )}
+
+              {/* Debug: Show external URL info */}
+              <div className="mb-4 p-2 bg-gray-100 rounded text-xs">
+                <strong>Debug Info:</strong><br />
+                External URL: {article.externalUrl || 'null'}<br />
+                Has external URL: {article.externalUrl ? 'true' : 'false'}
+              </div>
             </div>
 
             {/* Article Content - Full HTML Display */}
