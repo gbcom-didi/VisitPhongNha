@@ -80,7 +80,7 @@ export default function Home() {
       <Navigation />
       <InteractiveHero />
       {/* What is Visit Phong Nha Section */}
-      <section id="what-is-visit-phong-nha" className="py-16 bg-white scroll-mt-20">
+      <section id="what-is-visit-phong-nha" className="py-16 bg-white scroll-mt-20 pt-[34px] pb-[34px]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-2xl font-bold mb-4 font-questrial bg-gradient-to-r from-orange-400 via-orange-500 to-amber-500 bg-clip-text text-transparent">
