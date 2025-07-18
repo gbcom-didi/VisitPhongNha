@@ -38,19 +38,17 @@ export default function Landing() {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       <Hero />
-      
       {/* What is Visit Phong Nha Section */}
       <section className="py-12 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold bg-gradient-to-r from-mango-yellow to-coral-sunset bg-clip-text text-transparent font-questrial">What is Visit Phong Nha?</h2>
-          <p className="text-lg text-gray-600 leading-relaxed">
+          <p className="text-lg text-gray-600 leading-relaxed mt-[15px] mb-[15px]">
             Visit Phong Nha is your intelligent travel companion, built by locals, travelers, and insiders. 
             Whether you're hiking jungle trails, exploring cave rivers, or sipping coffee in the countryside, 
             we help you experience the real Phong Nha—with curated places, expert tips, and community insights.
           </p>
         </div>
       </section>
-
       {/* Features Highlight Section */}
       <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-gray-100 relative overflow-hidden">
         {/* Background decorative elements */}
@@ -322,7 +320,6 @@ export default function Landing() {
         </div>
       </section>
       <Footer />
-      
       {/* Business Modal */}
       {selectedBusiness && (
         <BusinessModal
