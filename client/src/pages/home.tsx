@@ -69,7 +69,7 @@ export default function Home() {
       <section id="what-is-visit-phong-nha" className="py-16 bg-white scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold mb-4 font-questrial" style={{ color: '#FF8B7A' }}>
+            <h2 className="text-2xl font-bold mb-4 font-questrial bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
               What is Visit Phong Nha?
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-sm">
@@ -85,8 +85,8 @@ export default function Home() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h3 className="text-2xl font-bold mb-4 font-questrial" style={{ color: '#F4B942' }}>
-              Your Gateway to <span style={{ color: '#F4B942' }}>Adventure</span>
+            <h3 className="text-2xl font-bold mb-4 font-questrial bg-gradient-to-r from-mango-yellow to-yellow-500 bg-clip-text text-transparent">
+              Your Gateway to Adventure
             </h3>
             <p className="text-gray-600 text-sm">
               Everything you need to discover, plan, and experience the magic of Phong Nha's hidden wonders
@@ -97,18 +97,18 @@ export default function Home() {
             {/* Left Side - Features */}
             <div className="space-y-8">
               {/* Interactive Explorer */}
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-mango-yellow rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className="flex items-start space-x-4 bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-mango-yellow to-yellow-500 shadow-md">
                   <Map className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold mb-2" style={{ color: '#137065' }}>Interactive Explorer</h4>
+                  <h4 className="text-lg font-semibold mb-2 bg-gradient-to-r from-teal-700 to-teal-600 bg-clip-text text-transparent">Interactive Explorer</h4>
                   <p className="text-gray-600 text-sm mb-4">
                     Navigate through Phong Nha's mysteries with our intelligent map. Discover hidden caves, local eateries, and 
                     secret spots curated by adventurers and locals.
                   </p>
                   <Button 
-                    className="bg-mango-yellow hover:bg-yellow-500 text-white text-sm"
+                    className="bg-gradient-to-r from-mango-yellow to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-white text-sm shadow-md hover:shadow-lg transition-all duration-300"
                     onClick={() => window.location.href = '/explore'}
                   >
                     Start Exploring →
@@ -117,18 +117,18 @@ export default function Home() {
               </div>
 
               {/* Personal Collection */}
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-coral-sunset rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className="flex items-start space-x-4 bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-coral-sunset to-red-500 shadow-md">
                   <Heart className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold mb-2" style={{ color: '#137065' }}>Personal Collection</h4>
+                  <h4 className="text-lg font-semibold mb-2 bg-gradient-to-r from-teal-700 to-teal-600 bg-clip-text text-transparent">Personal Collection</h4>
                   <p className="text-gray-600 text-sm mb-4">
                     Curate your perfect adventure by saving places that inspire you. Build your dream itinerary and never miss a hidden gem.
                   </p>
                   <Button 
                     variant="outline"
-                    className="border-coral-sunset text-coral-sunset hover:bg-coral-sunset hover:text-white text-sm"
+                    className="border-coral-sunset text-coral-sunset hover:bg-gradient-to-r hover:from-coral-sunset hover:to-red-500 hover:text-white text-sm shadow-md hover:shadow-lg transition-all duration-300"
                     onClick={() => window.location.href = '/explore'}
                   >
                     Build Your List →
@@ -138,36 +138,36 @@ export default function Home() {
 
               {/* Bottom Features Row */}
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-tropical-aqua rounded-lg flex items-center justify-center mx-auto mb-3">
+                <div className="text-center p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3 bg-gradient-to-br from-tropical-aqua to-cyan-600 shadow-md">
                     <Lightbulb className="w-6 h-6 text-white" />
                   </div>
-                  <h5 className="font-semibold mb-2" style={{ color: '#137065' }}>Stories & Guides</h5>
+                  <h5 className="font-semibold mb-2 bg-gradient-to-r from-teal-700 to-teal-600 bg-clip-text text-transparent">Stories & Guides</h5>
                   <p className="text-gray-600 text-xs mb-3">
                     Authentic adventures and insider knowledge from fellow travelers.
                   </p>
                   <Button 
                     variant="outline"
                     size="sm"
-                    className="border-tropical-aqua text-tropical-aqua hover:bg-tropical-aqua hover:text-white text-xs"
+                    className="border-tropical-aqua text-tropical-aqua hover:bg-gradient-to-r hover:from-tropical-aqua hover:to-cyan-600 hover:text-white text-xs shadow-md hover:shadow-lg transition-all duration-300"
                     onClick={() => window.location.href = '/inspiration'}
                   >
                     Read Stories →
                   </Button>
                 </div>
 
-                <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-jade-green rounded-lg flex items-center justify-center mx-auto mb-3">
+                <div className="text-center p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3 bg-gradient-to-br from-jade-green to-teal-600 shadow-md">
                     <BookOpen className="w-6 h-6 text-white" />
                   </div>
-                  <h5 className="font-semibold mb-2" style={{ color: '#137065' }}>Travel Community</h5>
+                  <h5 className="font-semibold mb-2 bg-gradient-to-r from-teal-700 to-teal-600 bg-clip-text text-transparent">Travel Community</h5>
                   <p className="text-gray-600 text-xs mb-3">
                     Connect with travelers and share your own Phong Nha experiences.
                   </p>
                   <Button 
                     variant="outline"
                     size="sm"
-                    className="border-jade-green text-jade-green hover:bg-jade-green hover:text-white text-xs"
+                    className="border-jade-green text-jade-green hover:bg-gradient-to-r hover:from-jade-green hover:to-teal-600 hover:text-white text-xs shadow-md hover:shadow-lg transition-all duration-300"
                     onClick={() => window.location.href = '/guestbook'}
                   >
                     Join Community →
@@ -178,17 +178,17 @@ export default function Home() {
 
             {/* Right Side - Image with overlay */}
             <div className="relative">
-              <div className="relative h-96 rounded-xl overflow-hidden">
+              <div className="relative h-96 rounded-xl overflow-hidden shadow-xl">
                 <img 
                   src="/images/vpn-hero-02.png" 
                   alt="Phong Nha Cave Adventure"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute top-4 right-4 bg-white rounded-lg px-3 py-2 flex items-center space-x-2">
+                <div className="absolute top-4 right-4 bg-white rounded-lg px-3 py-2 flex items-center space-x-2 shadow-lg">
                   <Star className="w-4 h-4 text-yellow-500 fill-current" />
                   <span className="text-sm font-medium text-gray-700">Loved by Travelers</span>
                 </div>
-                <div className="absolute bottom-4 left-4 bg-mango-yellow rounded-lg px-3 py-2 flex items-center space-x-2">
+                <div className="absolute bottom-4 left-4 bg-gradient-to-r from-mango-yellow to-yellow-500 rounded-lg px-3 py-2 flex items-center space-x-2 shadow-lg">
                   <Star className="w-4 h-4 text-white fill-current" />
                   <span className="text-sm font-medium text-white">Curated by Locals</span>
                   <span className="text-xs text-white">500+ verified places</span>
@@ -203,7 +203,7 @@ export default function Home() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h3 className="text-2xl font-bold mb-4 font-questrial" style={{ color: '#00BCD4' }}>Featured Places</h3>
+            <h3 className="text-2xl font-bold mb-4 font-questrial bg-gradient-to-r from-tropical-aqua to-cyan-600 bg-clip-text text-transparent">Featured Places</h3>
             <p className="text-gray-600 text-sm">Handpicked locations that offer exceptional experiences in Phong Nha</p>
           </div>
 
