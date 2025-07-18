@@ -630,12 +630,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const rawData = req.body;
       
-      // Transform data to handle timestamp fields
+      // Transform data to handle timestamp fields and coordinate conversion
       const transformedData = {
         ...rawData,
         // Convert string dates to Date objects for timestamp fields
         ...(rawData.publicationDate && { 
           publicationDate: new Date(rawData.publicationDate) 
+        }),
+        // Convert numeric coordinates to strings for decimal fields
+        ...(rawData.latitude !== undefined && { 
+          latitude: rawData.latitude.toString() 
+        }),
+        ...(rawData.longitude !== undefined && { 
+          longitude: rawData.longitude.toString() 
         }),
       };
       
@@ -1033,12 +1040,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Article not found" });
       }
       
-      // Transform data to handle timestamp fields
+      // Transform data to handle timestamp fields and coordinate conversion
       const articleData = {
         ...rawData,
         // Convert string dates to Date objects for timestamp fields
         ...(rawData.publicationDate && { 
           publicationDate: new Date(rawData.publicationDate) 
+        }),
+        // Convert numeric coordinates to strings for decimal fields
+        ...(rawData.latitude !== undefined && { 
+          latitude: rawData.latitude.toString() 
+        }),
+        ...(rawData.longitude !== undefined && { 
+          longitude: rawData.longitude.toString() 
         }),
         // updatedAt will be handled automatically by the database
         // Remove fields that shouldn't be updated manually
