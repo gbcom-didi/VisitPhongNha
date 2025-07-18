@@ -328,6 +328,12 @@ Changelog:
   - Added proper data transformation for publicationDate fields in article updates
   - Enhanced both POST and PUT article routes with complete Firebase authentication
   - Article editing functionality now works seamlessly with proper authentication and data handling
+- July 18, 2025. Implemented external URL button feature for inspiration articles
+  - Added external URL button to article detail pages that appears when External URL field is populated
+  - Button styled with tropical aqua brand color and external link icon for consistent design
+  - Opens external sources in new tab with proper security attributes (noopener noreferrer)
+  - Integrated seamlessly into article header layout below tags section
+  - Feature allows editors to link articles to external booking pages, websites, or additional resources
 ```
 
 ## User Preferences

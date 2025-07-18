@@ -254,26 +254,7 @@ export function InspirationArticlePage() {
                 </div>
               )}
 
-              {/* ALWAYS SHOW THIS TEST BUTTON */}
-              <div className="mb-4">
-                <a
-                  href="https://phongnhafarmstay.com/room/elements-collection/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors duration-200"
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  TEST BUTTON - Always Visible
-                </a>
-              </div>
 
-              {/* Debug: Show ALL article data */}
-              <div className="mb-4 p-4 bg-yellow-100 border-2 border-yellow-500 rounded text-sm">
-                <strong>🔍 DEBUG INFO:</strong><br />
-                <pre className="mt-2 text-xs bg-white p-2 rounded overflow-auto">
-                  {JSON.stringify(article, null, 2)}
-                </pre>
-              </div>
             </div>
 
             {/* Article Content - Full HTML Display */}
