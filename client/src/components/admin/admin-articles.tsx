@@ -22,14 +22,14 @@ const articleFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   author: z.string().min(1, "Author is required"),
   summary: z.string().min(1, "Summary is required"),
-  mainImageUrl: z.string().url().optional().or(z.literal("")),
+  mainImageUrl: z.string().optional().or(z.literal("")),
   publicationDate: z.string().min(1, "Publication date is required"),
   latitude: z.string().min(1, "Latitude is required"),
   longitude: z.string().min(1, "Longitude is required"),
   tags: z.string().optional(),
   contentHtml: z.string().min(1, "Content is required"),
   mapOverlay: z.string().optional(),
-  externalUrl: z.string().url().optional().or(z.literal("")),
+  externalUrl: z.string().optional().or(z.literal("")),
   isFeatured: z.boolean().default(false),
   isActive: z.boolean().default(true),
 });
@@ -147,6 +147,9 @@ export default function AdminArticles() {
   });
 
   const onSubmit = (data: ArticleFormData) => {
+    console.log('Form submission data:', data);
+    console.log('Form errors:', form.formState.errors);
+    
     if (editingArticle) {
       updateArticleMutation.mutate({ ...data, id: editingArticle.id });
     } else {
@@ -479,12 +482,18 @@ function ArticleForm({
 
           <div>
             <Label htmlFor="mainImageUrl">Main Image URL</Label>
-            <Input {...form.register("mainImageUrl")} placeholder="https://..." />
+            <Input {...form.register("mainImageUrl")} placeholder="https://... or images/..." />
+            {form.formState.errors.mainImageUrl && (
+              <p className="text-sm text-red-600">{form.formState.errors.mainImageUrl.message}</p>
+            )}
           </div>
 
           <div>
             <Label htmlFor="externalUrl">External URL</Label>
             <Input {...form.register("externalUrl")} placeholder="https://..." />
+            {form.formState.errors.externalUrl && (
+              <p className="text-sm text-red-600">{form.formState.errors.externalUrl.message}</p>
+            )}
           </div>
 
           <div className="space-y-4">
