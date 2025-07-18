@@ -221,20 +221,18 @@ export default function Home() {
           {featuredBusinesses.length > 0 && (
             <div className="relative overflow-hidden">
               <div 
-                className="flex transition-transform duration-500 ease-in-out"
+                className="flex transition-transform duration-500 ease-in-out gap-6"
                 style={{ 
-                  transform: `translateX(-${currentSlide * 33.333}%)`,
-                  width: `${featuredBusinesses.length * 33.333}%`
+                  transform: `translateX(-${currentSlide * (100 / 3)}%)`,
                 }}
               >
                 {featuredBusinesses.map((business, index) => (
                   <div 
                     key={business.id}
-                    className="flex-shrink-0 px-3"
-                    style={{ width: `${100 / Math.min(featuredBusinesses.length, 3)}%` }}
+                    className="flex-shrink-0 w-80"
                   >
                     <div 
-                      className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+                      className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer h-full"
                       onClick={() => handleBusinessClick(business)}
                     >
                       <div className="h-48 bg-gray-200 relative">
@@ -244,9 +242,11 @@ export default function Home() {
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="p-6">
-                        <h4 className="text-lg font-semibold mb-2" style={{ color: '#137065' }}>{business.name}</h4>
-                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{business.description}</p>
+                      <div className="p-6 h-40 flex flex-col justify-between">
+                        <div>
+                          <h4 className="text-lg font-semibold mb-2 line-clamp-1" style={{ color: '#137065' }}>{business.name}</h4>
+                          <p className="text-gray-600 text-sm mb-3 line-clamp-2">{business.description}</p>
+                        </div>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
                             <span className="text-sm text-gray-500">Vietnam</span>
