@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useRBAC } from "@/hooks/useRBAC";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -184,6 +185,16 @@ export default function AdminPortal() {
 
 // Overview component
 function AdminOverview({ setActiveSection }: { setActiveSection: (section: string) => void }) {
+  const { data: stats, isLoading } = useQuery<{
+    businesses: number;
+    categories: number;
+    articles: number;
+    guestbookEntries: number;
+    users: number;
+  }>({
+    queryKey: ["/api/admin/stats"],
+  });
+
   return (
     <div className="space-y-6">
       <div>
@@ -222,24 +233,39 @@ function AdminOverview({ setActiveSection }: { setActiveSection: (section: strin
           <CardDescription>Platform overview and recent activity</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-tropical-aqua">89</div>
-              <div className="text-sm text-gray-500">Total Businesses</div>
+          {isLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="text-center animate-pulse">
+                  <div className="h-8 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                </div>
+              ))}
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-coral-sunset">6</div>
-              <div className="text-sm text-gray-500">Categories</div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-tropical-aqua">{stats?.businesses || 0}</div>
+                <div className="text-sm text-gray-500">Total Businesses</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-coral-sunset">{stats?.categories || 0}</div>
+                <div className="text-sm text-gray-500">Categories</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-jade-green">{stats?.articles || 0}</div>
+                <div className="text-sm text-gray-500">Articles</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-mango-yellow">{stats?.guestbookEntries || 0}</div>
+                <div className="text-sm text-gray-500">Guestbook Entries</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-purple-600">{stats?.users || 0}</div>
+                <div className="text-sm text-gray-500">Users</div>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-jade-green">12</div>
-              <div className="text-sm text-gray-500">Articles</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-mango-yellow">24</div>
-              <div className="text-sm text-gray-500">Guestbook Entries</div>
-            </div>
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>

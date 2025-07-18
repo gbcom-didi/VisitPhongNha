@@ -305,6 +305,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin stats route
+  app.get('/api/admin/stats', requireFirebaseAdmin, async (req, res) => {
+    try {
+      const [businesses, categories, articles, guestbookEntries, allUsers] = await Promise.all([
+        storage.getAllBusinesses(),
+        storage.getCategories(),
+        storage.getArticles(),
+        storage.getGuestbookEntries(),
+        storage.getUsersByRole('viewer').then(async viewers => {
+          const businessOwners = await storage.getUsersByRole('business_owner');
+          const admins = await storage.getUsersByRole('admin');
+          return [...viewers, ...businessOwners, ...admins];
+        })
+      ]);
+
+      res.json({
+        businesses: businesses.length,
+        categories: categories.length,
+        articles: articles.length,
+        guestbookEntries: guestbookEntries.length,
+        users: allUsers.length
+      });
+    } catch (error) {
+      console.error("Error fetching admin stats:", error);
+      res.status(500).json({ message: "Failed to fetch stats" });
+    }
+  });
+
   // Google Places import route (admin only)
   app.post('/api/admin/import-google-places', requireFirebaseAdmin, async (req, res) => {
     try {
