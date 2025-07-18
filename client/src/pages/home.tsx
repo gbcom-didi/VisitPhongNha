@@ -3,7 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { useToast } from '@/hooks/use-toast';
-import { Hero } from '@/components/hero';
+import { InteractiveHero } from '@/components/interactive-hero';
 import { Button } from '@/components/ui/button';
 import { Heart, Map, TrendingUp } from 'lucide-react';
 
@@ -34,7 +34,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      <Hero />
+      <InteractiveHero />
 
       {/* Welcome Section */}
       <section id="what-is-visit-phong-nha" className="py-16 bg-white scroll-mt-20">
