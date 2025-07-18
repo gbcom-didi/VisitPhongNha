@@ -228,6 +228,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete business route (admin only)
+  app.delete('/api/businesses/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+    try {
+      const businessId = parseInt(req.params.id);
+      
+      // Check if business exists
+      const existingBusiness = await storage.getBusiness(businessId);
+      if (!existingBusiness) {
+        return res.status(404).json({ message: "Business not found" });
+      }
+      
+      // Delete the business
+      const success = await storage.deleteBusiness(businessId);
+      
+      if (success) {
+        res.json({ message: "Business deleted successfully" });
+      } else {
+        res.status(500).json({ message: "Failed to delete business" });
+      }
+    } catch (error) {
+      console.error("Error deleting business:", error);
+      res.status(500).json({ message: "Failed to delete business" });
+    }
+  });
+
   // Admin routes for user management
   app.get('/api/admin/users', requireFirebaseAdmin, async (req, res) => {
     try {

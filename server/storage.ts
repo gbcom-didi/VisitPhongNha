@@ -55,6 +55,7 @@ export interface IStorage {
   getBusiness(id: number): Promise<Business | undefined>;
   createBusiness(business: InsertBusiness): Promise<Business>;
   updateBusiness(id: number, business: Partial<InsertBusiness>): Promise<Business>;
+  deleteBusiness(id: number): Promise<boolean>;
   
   // User likes operations
   getUserLikes(userId: string): Promise<UserLike[]>;
@@ -433,6 +434,28 @@ export class DatabaseStorage implements IStorage {
     }
 
     return updatedBusiness;
+  }
+
+  async deleteBusiness(id: number): Promise<boolean> {
+    try {
+      // First, delete all related data
+      // Delete user likes for this business
+      await db.delete(userLikes).where(eq(userLikes.businessId, id));
+      
+      // Delete business category associations
+      await db.delete(businessCategories).where(eq(businessCategories.businessId, id));
+      
+      // Delete the business itself
+      const [deletedBusiness] = await db
+        .delete(businesses)
+        .where(eq(businesses.id, id))
+        .returning();
+      
+      return !!deletedBusiness;
+    } catch (error) {
+      console.error("Error deleting business:", error);
+      return false;
+    }
   }
 
   // User likes operations
