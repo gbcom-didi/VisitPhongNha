@@ -218,10 +218,6 @@ export default function Home() {
                         alt={business.name}
                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                       />
-                      {/* Premium Badge */}
-                      <div className="absolute top-3 right-3 bg-gradient-to-r from-mango-yellow to-yellow-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                        Premium
-                      </div>
                     </div>
                     
                     {/* Business Info */}
