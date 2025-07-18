@@ -64,9 +64,12 @@ export const getQueryFn: <T>(options: {
       if (auth.currentUser) {
         token = await auth.currentUser.getIdToken(true); // Force refresh
         localStorage.setItem('firebaseToken', token);
+        console.log('Query client got fresh token for:', queryKey[0]);
+      } else {
+        console.warn('No Firebase user found for query:', queryKey[0]);
       }
     } catch (error) {
-      console.warn('Could not refresh Firebase token for query, using stored token');
+      console.warn('Could not refresh Firebase token for query, using stored token:', error);
     }
     
     const headers: Record<string, string> = {};
