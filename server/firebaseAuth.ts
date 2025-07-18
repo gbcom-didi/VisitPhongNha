@@ -58,6 +58,7 @@ export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
     next();
   } catch (error) {
     console.error('Error verifying Firebase token:', error);
+    console.error('Request URL:', req.url, 'Method:', req.method);
     return res.status(401).json({ message: 'Invalid token' });
   }
 };

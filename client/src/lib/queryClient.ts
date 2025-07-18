@@ -35,6 +35,9 @@ export async function apiRequest(
   
   if (token) {
     headers.Authorization = `Bearer ${token}`;
+    console.log('Sending request to:', url, 'with token length:', token.length);
+  } else {
+    console.log('No token available for request to:', url);
   }
 
   const res = await fetch(url, {
