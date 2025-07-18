@@ -64,7 +64,6 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       <InteractiveHero />
-
       {/* What is Visit Phong Nha Section */}
       <section id="what-is-visit-phong-nha" className="py-16 bg-white scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -80,7 +79,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Your Gateway to Adventure Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -191,14 +189,13 @@ export default function Home() {
                 <div className="absolute bottom-4 left-4 bg-gradient-to-r from-mango-yellow to-yellow-500 rounded-lg px-3 py-2 flex items-center space-x-2 shadow-lg">
                   <Star className="w-4 h-4 text-white fill-current" />
                   <span className="text-sm font-medium text-white">Curated by Locals</span>
-                  <span className="text-xs text-white">500+ verified places</span>
+                  <span className="text-xs text-white">100+ verified places</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-
       {/* Featured Places Carousel */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -271,7 +268,6 @@ export default function Home() {
           )}
         </div>
       </section>
-
       <Footer />
     </div>
   );
