@@ -334,6 +334,11 @@ Changelog:
   - Opens external sources in new tab with proper security attributes (noopener noreferrer)
   - Integrated seamlessly into article header layout below tags section
   - Feature allows editors to link articles to external booking pages, websites, or additional resources
+- July 18, 2025. Fixed article creation validation error for latitude/longitude coordinates
+  - Resolved Zod validation error where latitude and longitude were sent as numbers but expected as strings
+  - Added coordinate conversion in both POST and PUT article routes to transform numeric values to strings
+  - Article creation and editing now works correctly with proper coordinate field handling
+  - Admin users can successfully create and edit inspiration articles without validation errors
 ```
 
 ## User Preferences
