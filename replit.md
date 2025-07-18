@@ -339,6 +339,13 @@ Changelog:
   - Added coordinate conversion in both POST and PUT article routes to transform numeric values to strings
   - Article creation and editing now works correctly with proper coordinate field handling
   - Admin users can successfully create and edit inspiration articles without validation errors
+- July 18, 2025. Fixed business creation numeric field validation errors
+  - Resolved PostgreSQL "invalid input syntax for type numeric" error caused by empty strings in decimal fields
+  - Added comprehensive data cleaning for latitude, longitude, rating, and reviewCount fields
+  - Empty strings now convert to undefined for required fields and null for optional fields
+  - Applied validation fixes to both POST (create) and PUT (update) business routes
+  - Enhanced array field cleaning to filter out empty entries for gallery, tags, and amenities
+  - Business creation and editing functionality now works seamlessly without validation errors
 ```
 
 ## User Preferences
