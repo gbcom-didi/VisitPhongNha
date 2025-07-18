@@ -1021,8 +1021,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Article management routes
-  app.put('/api/articles/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.put('/api/articles/:id', (req, res, next) => {
+    console.log('PUT /api/articles/:id route hit');
+    console.log('Headers:', req.headers.authorization ? 'Authorization present' : 'No authorization');
+    next();
+  }, verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
     try {
+      console.log('PUT /api/articles/:id handler executing');
       const articleId = parseInt(req.params.id);
       const articleData = req.body;
       
