@@ -39,11 +39,11 @@ export default function Home() {
 
   // Calculate max slides based on screen size
   const getMaxSlides = () => {
-    // Desktop: show 3 cards at a time, so max slides = total businesses - 2 (to always show 3)
-    // Mobile: show 1 card at a time, so max slides = total businesses - 1
+    // Desktop: show 3 cards at a time, so max position = ceil(total/3) - 1
+    // Mobile: show 1 card at a time, so max position = total - 1
     const isDesktop = window.innerWidth >= 768;
     if (isDesktop) {
-      return Math.max(0, featuredBusinesses.length - 3);
+      return Math.max(0, Math.ceil(featuredBusinesses.length / 3) - 1);
     } else {
       return Math.max(0, featuredBusinesses.length - 1);
     }
@@ -228,45 +228,49 @@ export default function Home() {
               {/* Desktop: Show 3 cards in slider */}
               <div className="hidden md:block">
                 <div 
-                  className="flex transition-transform duration-500 ease-in-out gap-6"
+                  className="flex transition-transform duration-500 ease-in-out"
                   style={{ 
-                    transform: `translateX(-${currentSlide * 33.333}%)`,
+                    transform: `translateX(-${currentSlide * 100}%)`,
                   }}
                 >
-                  {featuredBusinesses.map((business, index) => (
-                    <div 
-                      key={business.id}
-                      className="flex-shrink-0 w-80"
-                    >
-                      <div 
-                        className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer h-full"
-                        onClick={() => handleBusinessClick(business)}
-                      >
-                        <div className="h-48 bg-gray-200 relative">
-                          <img 
-                            src={business.imageUrl || '/images/my-hoa-lagoon-3.jpg'} 
-                            alt={business.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="p-6 h-40 flex flex-col justify-between">
-                          <div>
-                            <h4 className="text-lg font-semibold mb-2 line-clamp-1" style={{ color: '#137065' }}>{business.name}</h4>
-                            <p className="text-gray-600 text-sm mb-3 line-clamp-2">{business.description}</p>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                              <span className="text-sm text-gray-500">Vietnam</span>
-                              {business.rating && (
-                                <div className="flex items-center space-x-1">
-                                  <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                                  <span className="text-sm font-medium">{parseFloat(business.rating).toFixed(1)}</span>
+                  {Array.from({ length: Math.ceil(featuredBusinesses.length / 3) }, (_, groupIndex) => (
+                    <div key={groupIndex} className="flex-shrink-0 w-full flex gap-6">
+                      {featuredBusinesses.slice(groupIndex * 3, groupIndex * 3 + 3).map((business) => (
+                        <div 
+                          key={business.id}
+                          className="flex-1 max-w-80"
+                        >
+                          <div 
+                            className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer h-full"
+                            onClick={() => handleBusinessClick(business)}
+                          >
+                            <div className="h-48 bg-gray-200 relative">
+                              <img 
+                                src={business.imageUrl || '/images/my-hoa-lagoon-3.jpg'} 
+                                alt={business.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="p-6 h-40 flex flex-col justify-between">
+                              <div>
+                                <h4 className="text-lg font-semibold mb-2 line-clamp-1" style={{ color: '#137065' }}>{business.name}</h4>
+                                <p className="text-gray-600 text-sm mb-3 line-clamp-2">{business.description}</p>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                  <span className="text-sm text-gray-500">Vietnam</span>
+                                  {business.rating && (
+                                    <div className="flex items-center space-x-1">
+                                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                                      <span className="text-sm font-medium">{parseFloat(business.rating).toFixed(1)}</span>
+                                    </div>
+                                  )}
                                 </div>
-                              )}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
                   ))}
                 </div>
