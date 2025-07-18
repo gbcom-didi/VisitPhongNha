@@ -118,7 +118,7 @@ export function InteractiveHero() {
           </div>
           
           {/* CTA Button */}
-          <div className="flex justify-end">
+          <div className="flex justify-start">
             <Link href={currentPrompt.link}>
               <Button
                 size="lg"
