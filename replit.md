@@ -322,6 +322,12 @@ Changelog:
   - Clean black tooltip displays business name without Google Maps default styling (no white box or arrow)
   - Consistent visual feedback between hovering over business cards and map pins
   - Enhanced interactive experience with immediate visual response on both map and directory elements
+- July 18, 2025. Fixed critical Firebase authentication and database timestamp issues
+  - Resolved duplicate PUT route for articles that was missing Firebase authentication middleware
+  - Fixed database timestamp conversion error by transforming string dates to Date objects
+  - Added proper data transformation for publicationDate fields in article updates
+  - Enhanced both POST and PUT article routes with complete Firebase authentication
+  - Article editing functionality now works seamlessly with proper authentication and data handling
 ```
 
 ## User Preferences
