@@ -110,7 +110,7 @@ export function InteractiveHero() {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-left max-w-lg md:max-w-2xl lg:max-w-3xl">
           {/* Typewriter Text */}
-          <div className="text-3xl sm:text-4xl md:text-6xl font-normal mb-1 min-h-[120px] md:min-h-[150px] flex items-center font-questrial">
+          <div className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-normal mb-1 min-h-[120px] md:min-h-[150px] flex items-center font-questrial">
             <span className="relative" style={{ color: '#137065' }}>
               {displayedText}
               <span className="animate-pulse ml-1" style={{ color: '#137065' }}>|</span>
