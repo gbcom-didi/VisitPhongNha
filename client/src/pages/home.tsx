@@ -351,18 +351,7 @@ export default function Home() {
                 </>
               )}
 
-              {/* Dots indicator for mobile */}
-              <div className="flex justify-center mt-4 space-x-2 md:hidden">
-                {featuredBusinesses.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      index === currentSlide ? 'bg-tropical-aqua' : 'bg-gray-300'
-                    }`}
-                  />
-                ))}
-              </div>
+
             </div>
           )}
         </div>
