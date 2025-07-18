@@ -12,7 +12,21 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const token = localStorage.getItem('firebaseToken');
+  // Always get a fresh token for authenticated requests
+  let token = localStorage.getItem('firebaseToken');
+  
+  // Try to get a fresh token from Firebase if available
+  try {
+    const { getAuth } = await import('firebase/auth');
+    const auth = getAuth();
+    if (auth.currentUser) {
+      token = await auth.currentUser.getIdToken(true); // Force refresh
+      localStorage.setItem('firebaseToken', token);
+    }
+  } catch (error) {
+    console.warn('Could not refresh Firebase token, using stored token');
+  }
+  
   const headers: Record<string, string> = data ? { "Content-Type": "application/json" } : {};
   
   if (token) {
@@ -36,7 +50,21 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const token = localStorage.getItem('firebaseToken');
+    // Always get a fresh token for authenticated requests
+    let token = localStorage.getItem('firebaseToken');
+    
+    // Try to get a fresh token from Firebase if available
+    try {
+      const { getAuth } = await import('firebase/auth');
+      const auth = getAuth();
+      if (auth.currentUser) {
+        token = await auth.currentUser.getIdToken(true); // Force refresh
+        localStorage.setItem('firebaseToken', token);
+      }
+    } catch (error) {
+      console.warn('Could not refresh Firebase token for query, using stored token');
+    }
+    
     const headers: Record<string, string> = {};
     
     if (token) {
