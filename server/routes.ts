@@ -147,11 +147,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/businesses', verifyFirebaseToken, requireFirebaseBusinessOwner, async (req: any, res) => {
     try {
-      console.log('Creating business - User:', req.user?.email, 'Role:', req.user?.role);
+
       // Extract categoryIds from the request body and validate the rest with the schema
       const { categoryIds, ...businessFields } = req.body;
       
-      const businessData = insertBusinessSchema.parse(businessFields);
+      // Clean and validate numeric fields to prevent empty string errors
+      const cleanedFields = {
+        ...businessFields,
+        // Convert empty strings to undefined for required numeric fields
+        latitude: businessFields.latitude === '' ? undefined : businessFields.latitude,
+        longitude: businessFields.longitude === '' ? undefined : businessFields.longitude,
+        // Convert empty strings to null for optional numeric fields
+        rating: businessFields.rating === '' ? null : businessFields.rating,
+        reviewCount: businessFields.reviewCount === '' ? null : businessFields.reviewCount,
+        // Clean array fields
+        gallery: Array.isArray(businessFields.gallery) ? businessFields.gallery.filter(url => url && url.trim()) : [],
+        tags: Array.isArray(businessFields.tags) ? businessFields.tags.filter(tag => tag && tag.trim()) : [],
+        amenities: Array.isArray(businessFields.amenities) ? businessFields.amenities.filter(amenity => amenity && amenity.trim()) : [],
+      };
+      
+      const businessData = insertBusinessSchema.parse(cleanedFields);
       const userId = req.user.uid;
       const userRole = req.user.role;
       
@@ -192,9 +207,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const businessId = parseInt(req.params.id);
       const { categoryIds, ...businessFields } = req.body;
       
-      // Filter out undefined values but allow empty strings (to clear fields)
+      // Clean and validate numeric fields to prevent empty string errors
+      const cleanedFields = {
+        ...businessFields,
+        // Convert empty strings to undefined for required numeric fields
+        latitude: businessFields.latitude === '' ? undefined : businessFields.latitude,
+        longitude: businessFields.longitude === '' ? undefined : businessFields.longitude,
+        // Convert empty strings to null for optional numeric fields
+        rating: businessFields.rating === '' ? null : businessFields.rating,
+        reviewCount: businessFields.reviewCount === '' ? null : businessFields.reviewCount,
+        // Clean array fields
+        gallery: Array.isArray(businessFields.gallery) ? businessFields.gallery.filter(url => url && url.trim()) : businessFields.gallery,
+        tags: Array.isArray(businessFields.tags) ? businessFields.tags.filter(tag => tag && tag.trim()) : businessFields.tags,
+        amenities: Array.isArray(businessFields.amenities) ? businessFields.amenities.filter(amenity => amenity && amenity.trim()) : businessFields.amenities,
+      };
+      
+      // Filter out undefined values
       const filteredFields = Object.fromEntries(
-        Object.entries(businessFields).filter(([key, value]) => 
+        Object.entries(cleanedFields).filter(([key, value]) => 
           value !== undefined
         )
       );
