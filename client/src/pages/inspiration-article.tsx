@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useRoute, Link } from 'wouter';
-import { ArrowLeft, Calendar, User, MapPin } from 'lucide-react';
+import { ArrowLeft, Calendar, User, MapPin, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Map } from '@/components/ui/map';
@@ -236,6 +236,21 @@ export function InspirationArticlePage() {
                       #{tag}
                     </Badge>
                   ))}
+                </div>
+              )}
+
+              {/* External URL Button */}
+              {article.externalUrl && (
+                <div className="mb-4">
+                  <a
+                    href={article.externalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-4 py-2 bg-tropical-aqua hover:bg-tropical-aqua/90 text-white text-sm font-medium rounded-lg transition-colors duration-200"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Visit External Source
+                  </a>
                 </div>
               )}
             </div>
