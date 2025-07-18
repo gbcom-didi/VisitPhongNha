@@ -10,6 +10,8 @@ interface FilterDialogProps {
   categories: Category[];
   selectedCategory: number | null;
   onCategoryChange: (categoryId: number | null) => void;
+  selectedTags?: string[];
+  onTagsChange?: (tags: string[]) => void;
 }
 
 export function FilterDialog({
@@ -17,10 +19,16 @@ export function FilterDialog({
   onClose,
   categories,
   selectedCategory,
-  onCategoryChange
+  onCategoryChange,
+  selectedTags = [],
+  onTagsChange
 }: FilterDialogProps) {
   const handleCategorySelect = (categoryId: number | null) => {
     onCategoryChange(categoryId);
+    // If "All" is selected, also clear tags
+    if (categoryId === null && onTagsChange) {
+      onTagsChange([]);
+    }
   };
 
   
@@ -38,9 +46,9 @@ export function FilterDialog({
           <div className="space-y-3">
             {/* All Categories */}
             <Button
-              variant={selectedCategory === null ? "default" : "outline"}
+              variant={selectedCategory === null && selectedTags.length === 0 ? "default" : "outline"}
               className={`w-full justify-start h-8 text-left text-sm ${
-                selectedCategory === null 
+                selectedCategory === null && selectedTags.length === 0
                   ? "bg-mango-yellow hover:bg-mango-yellow/90 text-white border-mango-yellow" 
                   : "border-gray-200 hover:bg-gray-50"
               }`}

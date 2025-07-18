@@ -49,7 +49,18 @@ export function BusinessDirectory({
 
   const handleFilterChange = (categoryId: number | null) => {
     onCategoryChange(categoryId);
+    // If "All" is selected, also clear tags
+    if (categoryId === null && onTagsChange) {
+      onTagsChange([]);
+    }
     setIsFilterDialogOpen(false);
+  };
+
+  const handleAllButtonClick = () => {
+    onCategoryChange(null);
+    if (onTagsChange) {
+      onTagsChange([]);
+    }
   };
 
   return (
@@ -90,11 +101,11 @@ export function BusinessDirectory({
         {/* Horizontal Filter Buttons */}
         <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide">
           <Button
-            variant={selectedCategory === null ? "default" : "outline"}
+            variant={selectedCategory === null && selectedTags.length === 0 ? "default" : "outline"}
             size="sm"
-            onClick={() => onCategoryChange(null)}
+            onClick={handleAllButtonClick}
             className={`h-6 px-3 text-xs whitespace-nowrap flex-shrink-0 min-w-fit ${
-              selectedCategory === null ? "bg-mango-yellow hover:bg-mango-yellow/90 text-white border-mango-yellow" : ""
+              selectedCategory === null && selectedTags.length === 0 ? "bg-mango-yellow hover:bg-mango-yellow/90 text-white border-mango-yellow" : ""
             }`}
           >
             All
@@ -166,6 +177,8 @@ export function BusinessDirectory({
         categories={categories}
         selectedCategory={selectedCategory}
         onCategoryChange={handleFilterChange}
+        selectedTags={selectedTags}
+        onTagsChange={onTagsChange}
       />
     </div>
   );
