@@ -16,13 +16,55 @@ import { Heart, Map as MapIcon, List, Menu, Navigation } from 'lucide-react';
 export default function Explore() {
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showMapInMobile, setShowMapInMobile] = useState(true);
   const [hoveredBusiness, setHoveredBusiness] = useState<BusinessWithCategory | null>(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  // Function to get URL search parameters
+  const getUrlParams = () => {
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    return {
+      category: urlSearchParams.get('category'),
+      tags: urlSearchParams.get('tags')?.split(',').filter(Boolean) || []
+    };
+  };
+
+  // Function to update URL with current filters
+  const updateUrl = (category: number | null, tags: string[]) => {
+    const params = new URLSearchParams();
+    
+    if (category) {
+      params.set('category', category.toString());
+    }
+    
+    if (tags.length > 0) {
+      params.set('tags', tags.join(','));
+    }
+    
+    const newUrl = `/explore${params.toString() ? `?${params.toString()}` : ''}`;
+    window.history.replaceState({}, '', newUrl);
+  };
+
+  // Initialize filters from URL parameters on component mount
+  useEffect(() => {
+    const urlParams = getUrlParams();
+    
+    if (urlParams.category) {
+      const categoryId = parseInt(urlParams.category);
+      if (!isNaN(categoryId)) {
+        setSelectedCategory(categoryId);
+      }
+    }
+    
+    if (urlParams.tags.length > 0) {
+      setSelectedTags(urlParams.tags);
+    }
+  }, []);
 
   // Fetch categories
   const { data: categories = [] } = useQuery<Category[]>({
@@ -82,13 +124,23 @@ export default function Explore() {
     },
   });
 
-  // Filter businesses by selected category
-  const filteredBusinesses = selectedCategory 
-    ? businesses.filter(business => 
-        business.categories?.some(cat => cat.id === selectedCategory) || 
-        business.category?.id === selectedCategory
-      )
-    : businesses;
+  // Filter businesses by selected category and tags
+  const filteredBusinesses = businesses.filter(business => {
+    // Category filter
+    const categoryMatch = !selectedCategory || 
+      business.categories?.some(cat => cat.id === selectedCategory) || 
+      business.category?.id === selectedCategory;
+    
+    // Tags filter
+    const tagsMatch = selectedTags.length === 0 || 
+      (business.tags && business.tags.some(tag => 
+        selectedTags.some(selectedTag => 
+          tag.toLowerCase().includes(selectedTag.toLowerCase())
+        )
+      ));
+    
+    return categoryMatch && tagsMatch;
+  });
 
   const handleBusinessClick = (business: BusinessWithCategory) => {
     setSelectedBusiness(business);
@@ -119,6 +171,12 @@ export default function Explore() {
 
   const handleCategoryChange = (categoryId: number | null) => {
     setSelectedCategory(categoryId);
+    updateUrl(categoryId, selectedTags);
+  };
+
+  const handleTagsChange = (tags: string[]) => {
+    setSelectedTags(tags);
+    updateUrl(selectedCategory, tags);
   };
 
   if (businessesLoading) {
@@ -246,6 +304,8 @@ export default function Explore() {
               onBusinessLeave={handleBusinessLeave}
               selectedCategory={selectedCategory}
               onCategoryChange={handleCategoryChange}
+              selectedTags={selectedTags}
+              onTagsChange={handleTagsChange}
             />
             
             <button
@@ -296,6 +356,8 @@ export default function Explore() {
             onBusinessLeave={handleBusinessLeave}
             selectedCategory={selectedCategory}
             onCategoryChange={handleCategoryChange}
+            selectedTags={selectedTags}
+            onTagsChange={handleTagsChange}
           />
         </div>
 

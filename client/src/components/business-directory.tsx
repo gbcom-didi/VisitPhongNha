@@ -16,6 +16,8 @@ interface BusinessDirectoryProps {
   onBusinessLeave?: () => void;
   selectedCategory: number | null;
   onCategoryChange: (categoryId: number | null) => void;
+  selectedTags?: string[];
+  onTagsChange?: (tags: string[]) => void;
 }
 
 export function BusinessDirectory({ 
@@ -26,7 +28,9 @@ export function BusinessDirectory({
   onBusinessHover,
   onBusinessLeave,
   selectedCategory,
-  onCategoryChange
+  onCategoryChange,
+  selectedTags = [],
+  onTagsChange
 }: BusinessDirectoryProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);

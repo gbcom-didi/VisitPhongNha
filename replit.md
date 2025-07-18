@@ -352,6 +352,14 @@ Changelog:
   - User management system now properly displays all registered users with role-based filtering
   - Authentication debugging confirmed Firebase token verification working correctly throughout admin routes
   - Admin portal user management fully operational with create, edit, and delete functionality
+- July 18, 2025. Added dynamic Quick Stats panel and URL-based filtering for explore page
+  - Created `/api/admin/stats` endpoint providing real-time counts for businesses, categories, articles, guestbook entries, and users
+  - Updated Quick Stats panel in admin dashboard to display live data instead of hardcoded values
+  - Added loading skeleton animation while fetching stats data
+  - Implemented URL parameter support for explore page filtering: `?category=4` for specific categories, `?tags=cave,adventure` for tag filtering
+  - Users can now share direct links to filtered views (e.g., `/explore?category=7` shows only Street Food businesses)
+  - Combined category and tag filtering works seamlessly with URL updates reflecting current filter state
+  - Fixed authentication middleware composition for proper admin route access control
 ```
 
 ## User Preferences
