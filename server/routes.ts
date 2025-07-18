@@ -637,17 +637,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/articles/:id', requireFirebaseAdmin, async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const articleData = insertArticleSchema.partial().parse(req.body);
-      const article = await storage.updateArticle(id, articleData);
-      res.json(article);
-    } catch (error) {
-      console.error("Error updating article:", error);
-      res.status(500).json({ message: "Failed to update article" });
-    }
-  });
+
 
   // Guestbook routes
   // Get all guestbook entries with comments and related data
@@ -1021,13 +1011,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Article management routes
-  app.put('/api/articles/:id', (req, res, next) => {
-    console.log('PUT /api/articles/:id route hit');
-    console.log('Headers:', req.headers.authorization ? 'Authorization present' : 'No authorization');
-    next();
-  }, verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.put('/api/articles/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
     try {
-      console.log('PUT /api/articles/:id handler executing');
       const articleId = parseInt(req.params.id);
       const articleData = req.body;
       

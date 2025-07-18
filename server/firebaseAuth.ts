@@ -17,7 +17,6 @@ export const auth = admin.auth();
 
 // Middleware to verify Firebase ID tokens
 export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
-  console.log('verifyFirebaseToken middleware called for:', req.method, req.url);
   try {
     const authHeader = req.headers.authorization;
     
