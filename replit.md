@@ -360,6 +360,8 @@ Changelog:
   - Users can now share direct links to filtered views (e.g., `/explore?category=7` shows only Street Food businesses)
   - Combined category and tag filtering works seamlessly with URL updates reflecting current filter state
   - Fixed authentication middleware composition for proper admin route access control
+  - Enhanced "All" button functionality to reset both category and tag filters, properly showing all businesses
+  - Updated filter UI to show "All" as selected only when no filters are active
 ```
 
 ## User Preferences
