@@ -95,7 +95,6 @@ export function InspirationArticlePage() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <SidebarNavigation />
-
       {/* Responsive Layout */}
       <div className="flex-1 ml-16">
         {/* Desktop: Split Screen Layout */}
@@ -246,7 +245,7 @@ export function InspirationArticlePage() {
                     href={article.externalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-4 py-2 bg-tropical-aqua hover:bg-tropical-aqua/90 text-white text-sm font-medium rounded-lg transition-colors duration-200"
+                    className="inline-flex items-center px-4 py-2 bg-tropical-aqua hover:bg-tropical-aqua/90 text-white font-medium rounded-lg transition-colors duration-200 text-[13px]"
                   >
                     <ExternalLink className="w-4 h-4 mr-2" />
                     Visit External Source
