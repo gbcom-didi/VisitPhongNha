@@ -109,36 +109,32 @@ export function InteractiveHero() {
       {/* Content */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-left max-w-lg md:max-w-2xl lg:max-w-3xl">
-          {/* Typewriter Text and Button */}
-          <div className="min-h-[120px] md:min-h-[150px] flex flex-col justify-center">
-            {/* Text Container */}
-            <div className="text-3xl sm:text-4xl md:text-6xl font-normal font-questrial mb-1" style={{ color: '#137065' }}>
-              <span className="inline-block">
-                {displayedText}
-                <span className="animate-pulse ml-1" style={{ color: '#137065' }}>|</span>
-              </span>
-            </div>
-            
-            {/* Button positioned to align with text width */}
-            <div className="flex justify-start mt-1">
-              <div style={{ width: `${displayedText.length * 0.6}em` }}></div>
-              <Link href={currentPrompt.link}>
-                <Button
-                  size="lg"
-                  className={`
-                    bg-coral-sunset hover:bg-coral-sunset/90 text-white font-semibold px-8 py-3 text-lg
-                    transform transition-all duration-300 hover:scale-105 border-0
-                    ${showButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
-                  `}
-                  style={{
-                    transitionDelay: showButton ? '0.2s' : '0s',
-                    boxShadow: 'none'
-                  }}
-                >
-                  {currentPrompt.cta}
-                </Button>
-              </Link>
-            </div>
+          {/* Typewriter Text */}
+          <div className="text-3xl sm:text-4xl md:text-6xl font-normal mb-1 min-h-[120px] md:min-h-[150px] flex items-center font-questrial">
+            <span className="relative" style={{ color: '#137065' }}>
+              {displayedText}
+              <span className="animate-pulse ml-1" style={{ color: '#F7E74A' }}>|</span>
+            </span>
+          </div>
+          
+          {/* CTA Button */}
+          <div className="flex justify-end">
+            <Link href={currentPrompt.link}>
+              <Button
+                size="lg"
+                className={`
+                  bg-coral-sunset hover:bg-coral-sunset/90 text-white font-semibold px-8 py-3 text-lg
+                  transform transition-all duration-300 hover:scale-105 border-0
+                  ${showButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+                `}
+                style={{
+                  transitionDelay: showButton ? '0.2s' : '0s',
+                  boxShadow: 'none'
+                }}
+              >
+                {currentPrompt.cta}
+              </Button>
+            </Link>
           </div>
           
 
