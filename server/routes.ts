@@ -626,9 +626,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/articles', requireFirebaseAdmin, async (req, res) => {
+  app.post('/api/articles', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
     try {
-      const articleData = insertArticleSchema.parse(req.body);
+      const rawData = req.body;
+      
+      // Transform data to handle timestamp fields
+      const transformedData = {
+        ...rawData,
+        // Convert string dates to Date objects for timestamp fields
+        ...(rawData.publicationDate && { 
+          publicationDate: new Date(rawData.publicationDate) 
+        }),
+      };
+      
+      const articleData = insertArticleSchema.parse(transformedData);
       const article = await storage.createArticle(articleData);
       res.status(201).json(article);
     } catch (error) {
@@ -1014,13 +1025,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put('/api/articles/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
     try {
       const articleId = parseInt(req.params.id);
-      const articleData = req.body;
+      const rawData = req.body;
       
       // Check if article exists
       const existingArticle = await storage.getArticle(articleId);
       if (!existingArticle) {
         return res.status(404).json({ message: "Article not found" });
       }
+      
+      // Transform data to handle timestamp fields
+      const articleData = {
+        ...rawData,
+        // Convert string dates to Date objects for timestamp fields
+        ...(rawData.publicationDate && { 
+          publicationDate: new Date(rawData.publicationDate) 
+        }),
+        // updatedAt will be handled automatically by the database
+        // Remove fields that shouldn't be updated manually
+        createdAt: undefined,
+        updatedAt: undefined,
+        id: undefined,
+      };
       
       const updatedArticle = await storage.updateArticle(articleId, articleData);
       res.json(updatedArticle);
