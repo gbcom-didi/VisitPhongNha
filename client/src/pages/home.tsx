@@ -37,21 +37,17 @@ export default function Home() {
 
   // Remove auto-advance carousel - use manual navigation only
 
-  // Calculate max slides based on screen size
-  const getMaxSlides = () => {
-    // Desktop: show 3 cards at a time, so max position = ceil(total/3) - 1
-    // Mobile: show 1 card at a time, so max position = total - 1
-    const isDesktop = window.innerWidth >= 768;
-    if (isDesktop) {
-      return Math.max(0, Math.ceil(featuredBusinesses.length / 3) - 1);
-    } else {
-      return Math.max(0, featuredBusinesses.length - 1);
-    }
-  };
+  // Calculate max slides - desktop groups of 3, mobile shows 1
+  const maxSlides = Math.max(0, Math.ceil(featuredBusinesses.length / 3) - 1); // Desktop logic
+  const maxMobileSlides = Math.max(0, featuredBusinesses.length - 1); // Mobile logic
 
   const nextSlide = () => {
-    const maxSlides = getMaxSlides();
-    setCurrentSlide((prev) => Math.min(prev + 1, maxSlides));
+    const isDesktop = window.innerWidth >= 768;
+    const max = isDesktop ? maxSlides : maxMobileSlides;
+    setCurrentSlide((prev) => {
+      const next = prev + 1;
+      return next > max ? prev : next; // Don't advance if it would go beyond max
+    });
   };
 
   const prevSlide = () => {
@@ -337,9 +333,17 @@ export default function Home() {
                   </button>
                   <button 
                     onClick={nextSlide}
-                    disabled={currentSlide >= getMaxSlides()}
+                    disabled={(() => {
+                      const isDesktop = window.innerWidth >= 768;
+                      const max = isDesktop ? maxSlides : maxMobileSlides;
+                      return currentSlide >= max;
+                    })()}
                     className={`absolute right-2 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow z-10 ${
-                      currentSlide >= getMaxSlides() ? 'opacity-50 cursor-not-allowed' : ''
+                      (() => {
+                        const isDesktop = window.innerWidth >= 768;
+                        const max = isDesktop ? maxSlides : maxMobileSlides;
+                        return currentSlide >= max ? 'opacity-50 cursor-not-allowed' : '';
+                      })()
                     }`}
                   >
                     <ChevronRight className="w-6 h-6 text-gray-600" />
