@@ -24,7 +24,7 @@ export default function Home() {
   });
 
   // Get only premium businesses for carousel
-  const featuredBusinesses = businesses.filter(business => business.is_premium);
+  const featuredBusinesses = businesses.filter(business => business.isPremium);
 
   useEffect(() => {
     if (!isLoading && user) {
