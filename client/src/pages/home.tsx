@@ -7,20 +7,24 @@ import { InteractiveHero } from '@/components/interactive-hero';
 import { Button } from '@/components/ui/button';
 import { Heart, Map, Lightbulb, BookOpen, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { BusinessModal } from '@/components/business-modal';
+import type { BusinessWithCategory } from '@shared/schema';
 
 export default function Home() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch featured businesses
-  const { data: businesses = [] } = useQuery({
+  // Fetch all businesses
+  const { data: businesses = [] } = useQuery<BusinessWithCategory[]>({
     queryKey: ['/api/businesses'],
     enabled: true,
   });
 
-  // Get premium/featured businesses (first 3 for carousel)
-  const featuredBusinesses = businesses.slice(0, 3);
+  // Get only premium businesses for carousel
+  const featuredBusinesses = businesses.filter(business => business.isPremium);
 
   useEffect(() => {
     if (!isLoading && user) {
@@ -47,6 +51,16 @@ export default function Home() {
 
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + featuredBusinesses.length) % featuredBusinesses.length);
+  };
+
+  const handleBusinessClick = (business: BusinessWithCategory) => {
+    setSelectedBusiness(business);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedBusiness(null);
   };
 
   if (isLoading) {
@@ -217,9 +231,12 @@ export default function Home() {
                   <div 
                     key={business.id}
                     className="flex-shrink-0 px-3"
-                    style={{ width: `${100 / featuredBusinesses.length}%` }}
+                    style={{ width: `${100 / Math.min(featuredBusinesses.length, 3)}%` }}
                   >
-                    <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <div 
+                      className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+                      onClick={() => handleBusinessClick(business)}
+                    >
                       <div className="h-48 bg-gray-200 relative">
                         <img 
                           src={business.imageUrl || '/images/my-hoa-lagoon-3.jpg'} 
@@ -232,7 +249,7 @@ export default function Home() {
                         <p className="text-gray-600 text-sm mb-3 line-clamp-2">{business.description}</p>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
-                            <span className="text-sm text-gray-500">{business.location || 'Vietnam'}</span>
+                            <span className="text-sm text-gray-500">Vietnam</span>
                             {business.rating && (
                               <div className="flex items-center space-x-1">
                                 <Star className="w-4 h-4 text-yellow-500 fill-current" />
@@ -268,6 +285,16 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      {/* Business Modal */}
+      {selectedBusiness && (
+        <BusinessModal
+          business={selectedBusiness}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+        />
+      )}
+
       <Footer />
     </div>
   );
