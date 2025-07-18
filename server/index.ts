@@ -3,8 +3,19 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false }));
+
+// Add middleware to log all incoming requests with headers
+app.use((req, res, next) => {
+  if (req.url.includes('/api/articles') && req.method === 'PUT') {
+    console.log('=== PUT Request Debug ===');
+    console.log('URL:', req.url);
+    console.log('Headers:', req.headers);
+    console.log('Authorization:', req.headers.authorization);
+  }
+  next();
+});
 
 app.use((req, res, next) => {
   const start = Date.now();

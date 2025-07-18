@@ -19,10 +19,14 @@ export const auth = admin.auth();
 export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
+    console.log('=== Firebase Token Verification ===');
+    console.log('Request URL:', req.url, 'Method:', req.method);
+    console.log('All headers:', Object.keys(req.headers));
     console.log('Auth header received:', authHeader ? `Bearer ${authHeader.split('Bearer ')[1]?.substring(0, 20)}...` : 'None');
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       console.log('No valid authorization header found');
+      console.log('Available headers:', req.headers);
       return res.status(401).json({ message: 'No token provided' });
     }
 
