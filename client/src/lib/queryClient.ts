@@ -20,11 +20,15 @@ export async function apiRequest(
     const { getAuth } = await import('firebase/auth');
     const auth = getAuth();
     if (auth.currentUser) {
+      console.log('Getting fresh Firebase token for user:', auth.currentUser.email);
       token = await auth.currentUser.getIdToken(true); // Force refresh
       localStorage.setItem('firebaseToken', token);
+      console.log('Fresh token obtained, length:', token.length);
+    } else {
+      console.log('No current Firebase user found');
     }
   } catch (error) {
-    console.warn('Could not refresh Firebase token, using stored token');
+    console.warn('Could not refresh Firebase token, using stored token:', error);
   }
   
   const headers: Record<string, string> = data ? { "Content-Type": "application/json" } : {};
