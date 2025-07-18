@@ -34,6 +34,11 @@ export default function Explore() {
     };
   };
 
+  // Fetch categories
+  const { data: categories = [] } = useQuery<Category[]>({
+    queryKey: ['/api/categories'],
+  });
+
   // Function to update URL with current filters
   const updateUrl = (category: number | null, tags: string[]) => {
     const params = new URLSearchParams();
@@ -78,11 +83,6 @@ export default function Explore() {
       setSelectedTags(urlParams.tags);
     }
   }, [categories]);
-
-  // Fetch categories
-  const { data: categories = [] } = useQuery<Category[]>({
-    queryKey: ['/api/categories'],
-  });
 
   // Fetch businesses
   const { data: businesses = [], isLoading: businessesLoading } = useQuery<BusinessWithCategory[]>({
