@@ -17,10 +17,11 @@ export const auth = admin.auth();
 
 // Middleware to verify Firebase ID tokens
 export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
+  console.log('=== Firebase Token Verification START ===');
+  console.log('Request URL:', req.url, 'Method:', req.method);
+  
   try {
     const authHeader = req.headers.authorization;
-    console.log('=== Firebase Token Verification ===');
-    console.log('Request URL:', req.url, 'Method:', req.method);
     console.log('All headers:', Object.keys(req.headers));
     console.log('Auth header received:', authHeader ? `Bearer ${authHeader.split('Bearer ')[1]?.substring(0, 20)}...` : 'None');
     
@@ -32,8 +33,16 @@ export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
 
     const idToken = authHeader.split('Bearer ')[1];
     console.log('Attempting to verify token with length:', idToken.length);
-    const decodedToken = await auth.verifyIdToken(idToken);
-    console.log('Token verified successfully for user:', decodedToken.email);
+    console.log('Token starts with:', idToken.substring(0, 50));
+    
+    // Add debug for token verification
+    try {
+      const decodedToken = await auth.verifyIdToken(idToken);
+      console.log('Token verified successfully for user:', decodedToken.email);
+    } catch (verifyError) {
+      console.error('Token verification failed:', verifyError);
+      throw verifyError;
+    }
     
     // Fetch user data from database to get role
     // First try by Firebase UID, then by email if not found
