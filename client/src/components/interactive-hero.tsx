@@ -16,7 +16,7 @@ const prompts = [
   },
   {
     text: "I'm looking for an adventure.",
-    cta: "Lets get moving",
+    cta: "Show me street food spots",
     link: "/explore?category=adventure"
   },
   {
@@ -105,7 +105,6 @@ export function InteractiveHero() {
           backgroundImage: "url('/images/vpn-hero-02.png')",
         }}
       />
-      
       {/* Content */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-left max-w-lg md:max-w-2xl lg:max-w-3xl">
@@ -122,11 +121,7 @@ export function InteractiveHero() {
             <Link href={currentPrompt.link}>
               <Button
                 size="lg"
-                className={`
-                  bg-coral-sunset hover:bg-coral-sunset/90 text-white font-semibold px-8 py-3 text-lg
-                  transform transition-all duration-300 hover:scale-105 border-0
-                  ${showButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
-                `}
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-11 rounded-md bg-coral-sunset hover:bg-coral-sunset/90 text-white px-8 py-3 transform transition-all duration-300 hover:scale-105 border-0 opacity-100 translate-y-0 text-[20px] font-semibold"
                 style={{
                   transitionDelay: showButton ? '0.2s' : '0s',
                   boxShadow: 'none'
@@ -140,7 +135,6 @@ export function InteractiveHero() {
 
         </div>
       </div>
-      
       {/* Scroll Indicator */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
         <button 
