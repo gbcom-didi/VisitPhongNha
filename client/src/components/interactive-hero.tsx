@@ -33,6 +33,8 @@ export function InteractiveHero() {
   const [showButton, setShowButton] = useState(false);
 
   const currentPrompt = prompts[currentPromptIndex];
+  
+
 
   const scrollToExplore = () => {
     setTimeout(() => {
