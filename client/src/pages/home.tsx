@@ -35,15 +35,7 @@ export default function Home() {
     }
   }, [user, isLoading, toast]);
 
-  // Auto-advance carousel
-  useEffect(() => {
-    if (featuredBusinesses.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % featuredBusinesses.length);
-      }, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [featuredBusinesses.length]);
+  // Remove auto-advance carousel - use manual navigation only
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % featuredBusinesses.length);
@@ -219,18 +211,11 @@ export default function Home() {
           </div>
 
           {featuredBusinesses.length > 0 && (
-            <div className="relative overflow-hidden">
-              <div 
-                className="flex transition-transform duration-500 ease-in-out gap-6"
-                style={{ 
-                  transform: `translateX(-${currentSlide * (100 / 3)}%)`,
-                }}
-              >
-                {featuredBusinesses.map((business, index) => (
-                  <div 
-                    key={business.id}
-                    className="flex-shrink-0 w-80"
-                  >
+            <div className="relative">
+              {/* Desktop: Show 3 cards in a grid */}
+              <div className="hidden md:grid md:grid-cols-3 gap-6">
+                {featuredBusinesses.slice(0, 3).map((business) => (
+                  <div key={business.id} className="w-full">
                     <div 
                       className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer h-full"
                       onClick={() => handleBusinessClick(business)}
@@ -263,24 +248,84 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-              
-              {/* Navigation */}
-              {featuredBusinesses.length > 1 && (
-                <>
-                  <button 
-                    onClick={prevSlide}
-                    className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow z-10"
-                  >
-                    <ChevronLeft className="w-6 h-6 text-gray-600" />
-                  </button>
-                  <button 
-                    onClick={nextSlide}
-                    className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow z-10"
-                  >
-                    <ChevronRight className="w-6 h-6 text-gray-600" />
-                  </button>
-                </>
-              )}
+
+              {/* Mobile: Show slider with navigation */}
+              <div className="md:hidden relative overflow-hidden">
+                <div 
+                  className="flex transition-transform duration-500 ease-in-out gap-4"
+                  style={{ 
+                    transform: `translateX(-${currentSlide * 100}%)`,
+                  }}
+                >
+                  {featuredBusinesses.map((business, index) => (
+                    <div 
+                      key={business.id}
+                      className="flex-shrink-0 w-full max-w-sm mx-auto"
+                    >
+                      <div 
+                        className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer h-full"
+                        onClick={() => handleBusinessClick(business)}
+                      >
+                        <div className="h-48 bg-gray-200 relative">
+                          <img 
+                            src={business.imageUrl || '/images/my-hoa-lagoon-3.jpg'} 
+                            alt={business.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="p-6 h-40 flex flex-col justify-between">
+                          <div>
+                            <h4 className="text-lg font-semibold mb-2 line-clamp-1" style={{ color: '#137065' }}>{business.name}</h4>
+                            <p className="text-gray-600 text-sm mb-3 line-clamp-2">{business.description}</p>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-sm text-gray-500">Vietnam</span>
+                              {business.rating && (
+                                <div className="flex items-center space-x-1">
+                                  <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                                  <span className="text-sm font-medium">{parseFloat(business.rating).toFixed(1)}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Mobile Navigation */}
+                {featuredBusinesses.length > 1 && (
+                  <>
+                    <button 
+                      onClick={prevSlide}
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow z-10"
+                    >
+                      <ChevronLeft className="w-5 h-5 text-gray-600" />
+                    </button>
+                    <button 
+                      onClick={nextSlide}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow z-10"
+                    >
+                      <ChevronRight className="w-5 h-5 text-gray-600" />
+                    </button>
+                  </>
+                )}
+
+                {/* Mobile dots indicator */}
+                <div className="flex justify-center mt-4 space-x-2">
+                  {featuredBusinesses.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`w-2 h-2 rounded-full transition-colors ${
+                        index === currentSlide ? 'bg-tropical-aqua' : 'bg-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
