@@ -254,11 +254,12 @@ export function InspirationArticlePage() {
                 </div>
               )}
 
-              {/* Debug: Show external URL info */}
-              <div className="mb-4 p-2 bg-gray-100 rounded text-xs">
-                <strong>Debug Info:</strong><br />
-                External URL: {article.externalUrl || 'null'}<br />
-                Has external URL: {article.externalUrl ? 'true' : 'false'}
+              {/* Debug: Show ALL article data */}
+              <div className="mb-4 p-4 bg-yellow-100 border-2 border-yellow-500 rounded text-sm">
+                <strong>🔍 DEBUG INFO:</strong><br />
+                <pre className="mt-2 text-xs bg-white p-2 rounded overflow-auto">
+                  {JSON.stringify(article, null, 2)}
+                </pre>
               </div>
             </div>
 
