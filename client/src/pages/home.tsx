@@ -83,7 +83,7 @@ export default function Home() {
       <section id="what-is-visit-phong-nha" className="py-16 bg-white scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold mb-4 font-questrial bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+            <h2 className="text-2xl font-bold mb-4 font-questrial bg-gradient-to-r from-tropical-aqua via-jade-green to-mango-yellow bg-clip-text text-transparent">
               What is Visit Phong Nha?
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-sm">
