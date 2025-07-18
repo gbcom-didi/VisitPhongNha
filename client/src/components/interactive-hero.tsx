@@ -33,6 +33,20 @@ export function InteractiveHero() {
   const [showButton, setShowButton] = useState(false);
 
   const currentPrompt = prompts[currentPromptIndex];
+
+  // Automatic cycling mechanism - ensures prompts rotate even without user interaction
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowButton(false);
+      setTimeout(() => {
+        setIsTyping(true);
+        setDisplayedText('');
+        setCurrentPromptIndex((prev) => (prev + 1) % prompts.length);
+      }, 200);
+    }, 6000); // Change every 6 seconds
+
+    return () => clearInterval(interval);
+  }, []);
   
 
 
@@ -61,19 +75,21 @@ export function InteractiveHero() {
       if (displayedText.length < currentPrompt.text.length) {
         timeout = setTimeout(() => {
           setDisplayedText(currentPrompt.text.slice(0, displayedText.length + 1));
-        }, 50); // Typing speed
+        }, 80); // Typing speed
       } else {
         // Text finished typing, show button
         setIsTyping(false);
         setShowButton(true);
         
-        // Wait 3 seconds before cycling to next prompt
+        // Wait 4 seconds before cycling to next prompt
         timeout = setTimeout(() => {
           setShowButton(false);
-          setIsTyping(true);
-          setDisplayedText('');
-          setCurrentPromptIndex((prev) => (prev + 1) % prompts.length);
-        }, 3000);
+          setTimeout(() => {
+            setIsTyping(true);
+            setDisplayedText('');
+            setCurrentPromptIndex((prev) => (prev + 1) % prompts.length);
+          }, 200); // Small delay between prompts
+        }, 4000);
       }
     }
 
@@ -94,7 +110,7 @@ export function InteractiveHero() {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-left max-w-lg md:max-w-2xl lg:max-w-3xl">
           {/* Typewriter Text */}
-          <div className="text-3xl sm:text-4xl md:text-6xl font-bold mb-8 min-h-[120px] md:min-h-[150px] flex items-center font-questrial">
+          <div className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 min-h-[120px] md:min-h-[150px] flex items-center font-questrial">
             <span className="relative" style={{ color: '#137065' }}>
               {displayedText}
               {isTyping && (
@@ -109,12 +125,13 @@ export function InteractiveHero() {
               <Button
                 size="lg"
                 className={`
-                  bg-mango-yellow hover:bg-mango-yellow/90 text-white font-semibold px-8 py-3 text-lg
-                  transform transition-all duration-300 hover:scale-105 hover:shadow-lg
+                  bg-coral-sunset hover:bg-coral-sunset/90 text-white font-semibold px-8 py-3 text-lg
+                  transform transition-all duration-300 hover:scale-105 border-0
                   ${showButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
                 `}
                 style={{
-                  transitionDelay: showButton ? '0.2s' : '0s'
+                  transitionDelay: showButton ? '0.2s' : '0s',
+                  boxShadow: 'none'
                 }}
               >
                 {currentPrompt.cta}
@@ -123,14 +140,14 @@ export function InteractiveHero() {
           </div>
           
           {/* Progress Dots */}
-          <div className="flex justify-start space-x-2 mt-8">
+          <div className="flex justify-start space-x-3 mt-8">
             {prompts.map((_, index) => (
               <div
                 key={index}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                className={`w-3 h-3 rounded-full transition-all duration-500 ${
                   index === currentPromptIndex 
-                    ? 'bg-mango-yellow' 
-                    : 'bg-jade-green/50 hover:bg-jade-green/75'
+                    ? 'bg-coral-sunset scale-110' 
+                    : 'bg-jade-green/40 hover:bg-jade-green/60'
                 }`}
               />
             ))}
