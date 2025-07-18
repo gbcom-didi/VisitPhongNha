@@ -40,10 +40,10 @@ export default function Home() {
       <section id="what-is-visit-phong-nha" className="py-16 bg-white scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold mb-4 font-questrial" style={{ color: '#FF8B7A' }}>
+            <h2 className="text-3xl font-bold mb-4 font-questrial" style={{ color: '#FF8B7A' }}>
               What is Visit Phong Nha?
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto text-sm">
+            <p className="text-gray-600 max-w-2xl mx-auto text-base">
               Your intelligent travel companion for Phong Nha region. We combine local expertise 
               with modern technology to help you discover the world's most spectacular cave systems, 
               authentic local culture, and hidden gems known only to locals.
@@ -55,7 +55,7 @@ export default function Home() {
               <div className="w-16 h-16 bg-mango-yellow rounded-full flex items-center justify-center mx-auto mb-4">
                 <Map className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-lg font-semibold mb-2" style={{ color: '#F7E74A' }}>Explore Places</h3>
+              <h3 className="text-lg font-semibold mb-2" style={{ color: '#F4B942' }}>Interactive Explorer</h3>
               <p className="text-gray-600 mb-4 text-sm">
                 Discover spectacular caves, local restaurants, and unique attractions on our interactive map.
               </p>
@@ -71,7 +71,7 @@ export default function Home() {
               <div className="w-16 h-16 bg-coral-sunset rounded-full flex items-center justify-center mx-auto mb-4">
                 <Heart className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-lg font-semibold mb-2" style={{ color: '#FF5733' }}>Save Favorites</h3>
+              <h3 className="text-lg font-semibold mb-2" style={{ color: '#F87D51' }}>Personal Collection</h3>
               <p className="text-gray-600 mb-4 text-sm">
                 Create your personal travel wishlist by liking caves and places you want to explore.
               </p>
@@ -88,7 +88,7 @@ export default function Home() {
               <div className="w-16 h-16 bg-jade-green rounded-full flex items-center justify-center mx-auto mb-4">
                 <TrendingUp className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-lg font-semibold mb-2" style={{ color: '#0AA892' }}>Get Inspired</h3>
+              <h3 className="text-lg font-semibold mb-2" style={{ color: '#6DBFB3' }}>Local Insights</h3>
               <p className="text-gray-600 mb-4 text-sm">
                 Read local stories and discover hidden adventures from fellow travelers.
               </p>
@@ -104,53 +104,53 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Quick Actions */}
+      {/* Featured Places */}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h3 className="text-xl font-bold mb-4 font-questrial" style={{ color: '#0AA892' }}>Featured Places</h3>
-            <p className="text-gray-600 text-sm">Discover extraordinary places that showcase the best of Phong Nha</p>
+            <h3 className="text-2xl font-bold mb-4 font-questrial" style={{ color: '#6DBFB3' }}>Featured Places</h3>
+            <p className="text-gray-600 text-base">Discover extraordinary places that showcase the best of Phong Nha</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-8">
             <div 
-              className="group cursor-pointer bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow border border-gray-200"
-              onClick={() => window.location.href = '/explore?category=kiting'}
+              className="group cursor-pointer bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition-shadow border border-gray-200"
+              onClick={() => window.location.href = '/explore?category=caves'}
             >
-              <div className="flex items-center mb-4">
+              <div className="flex items-center mb-6">
                 <div 
                   className="w-12 h-12 rounded-lg flex items-center justify-center mr-4"
-                  style={{ backgroundColor: '#3FC1C4' }}
+                  style={{ backgroundColor: '#6DBFB3' }}
                 >
                   <Map className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-base font-semibold" style={{ color: '#137065' }}>Kitesurfing Schools</h4>
-                  <p className="text-xs text-gray-600">Learn from the pros</p>
+                  <h4 className="text-lg font-semibold" style={{ color: '#137065' }}>Cave Adventures</h4>
+                  <p className="text-sm text-gray-600">Explore underground wonders</p>
                 </div>
               </div>
-              <p className="text-gray-600 text-xs">
-                Find the best kitesurfing schools and spots with perfect wind conditions.
+              <p className="text-gray-600 text-sm">
+                Discover the world's most spectacular cave systems and underground rivers.
               </p>
             </div>
 
             <div 
-              className="group cursor-pointer bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow border border-gray-200"
+              className="group cursor-pointer bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition-shadow border border-gray-200"
               onClick={() => window.location.href = '/explore?category=food-drink'}
             >
-              <div className="flex items-center mb-4">
+              <div className="flex items-center mb-6">
                 <div 
                   className="w-12 h-12 rounded-lg flex items-center justify-center mr-4"
-                  style={{ backgroundColor: '#F7BAAD' }}
+                  style={{ backgroundColor: '#F87D51' }}
                 >
                   <Heart className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-base font-semibold" style={{ color: '#137065' }}>Local Cuisine</h4>
-                  <p className="text-xs text-gray-600">Authentic flavors</p>
+                  <h4 className="text-lg font-semibold" style={{ color: '#137065' }}>Local Cuisine</h4>
+                  <p className="text-sm text-gray-600">Authentic flavors</p>
                 </div>
               </div>
-              <p className="text-gray-600 text-xs">
+              <p className="text-gray-600 text-sm">
                 Discover authentic local restaurants and street food favorites.
               </p>
             </div>
