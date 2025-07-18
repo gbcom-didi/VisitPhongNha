@@ -88,9 +88,17 @@ export default function AdminArticles() {
       });
     },
     onError: (error: any) => {
+      console.error('Create article error:', error);
+      let errorMessage = error.message || "Failed to create article";
+      
+      // Check for authentication errors
+      if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
+        errorMessage = "Your session has expired. Please refresh the page and sign in again.";
+      }
+      
       toast({
         title: "Error",
-        description: error.message || "Failed to create article",
+        description: errorMessage,
         variant: "destructive",
       });
     },
@@ -118,9 +126,17 @@ export default function AdminArticles() {
       });
     },
     onError: (error: any) => {
+      console.error('Update article error:', error);
+      let errorMessage = error.message || "Failed to update article";
+      
+      // Check for authentication errors
+      if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
+        errorMessage = "Your session has expired. Please refresh the page and sign in again.";
+      }
+      
       toast({
         title: "Error",
-        description: error.message || "Failed to update article",
+        description: errorMessage,
         variant: "destructive",
       });
     },
@@ -138,9 +154,17 @@ export default function AdminArticles() {
       });
     },
     onError: (error: any) => {
+      console.error('Delete article error:', error);
+      let errorMessage = error.message || "Failed to delete article";
+      
+      // Check for authentication errors
+      if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
+        errorMessage = "Your session has expired. Please refresh the page and sign in again.";
+      }
+      
       toast({
         title: "Error",
-        description: error.message || "Failed to delete article",
+        description: errorMessage,
         variant: "destructive",
       });
     },
