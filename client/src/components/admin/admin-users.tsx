@@ -196,12 +196,16 @@ export default function AdminUsers() {
           <DialogTrigger asChild>
             <Button className="bg-tropical-aqua hover:bg-tropical-aqua/90">
               <Plus className="w-4 h-4 mr-2" />
-              Add User
+              Add Demo User
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Add New User</DialogTitle>
+              <DialogTitle>Add Demo User</DialogTitle>
+              <p className="text-sm text-gray-600 mt-2">
+                Note: Real users are created automatically when they sign up via Firebase authentication. 
+                This form is for creating demo/test users only.
+              </p>
             </DialogHeader>
             <UserForm 
               form={form} 

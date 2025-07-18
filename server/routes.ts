@@ -984,7 +984,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin user management routes
-  app.get('/api/admin/users', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.get('/api/admin/users', verifyFirebaseToken, requireFirebaseAdmin, async (req: any, res) => {
     try {
       const users = await storage.getAllUsers();
       res.json(users);
@@ -994,10 +994,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/admin/users', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.post('/api/admin/users', verifyFirebaseToken, requireFirebaseAdmin, async (req: any, res) => {
     try {
       const userData = req.body;
-      const user = await storage.createUser(userData);
+      
+      // Generate a unique ID for manual user creation (for demo purposes)
+      // In a real app, users would only be created via Firebase authentication
+      const userId = userData.id || `admin_created_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      const userWithId = {
+        ...userData,
+        id: userId
+      };
+      
+      const user = await storage.createUser(userWithId);
       res.status(201).json(user);
     } catch (error) {
       console.error("Error creating user:", error);
@@ -1005,7 +1015,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/admin/users/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.put('/api/admin/users/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req: any, res) => {
     try {
       const userId = req.params.id;
       const userData = req.body;
@@ -1017,7 +1027,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/admin/users/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.delete('/api/admin/users/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req: any, res) => {
     try {
       const userId = req.params.id;
       await storage.deleteUser(userId);
