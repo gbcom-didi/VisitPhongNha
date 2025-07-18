@@ -346,6 +346,12 @@ Changelog:
   - Applied validation fixes to both POST (create) and PUT (update) business routes
   - Enhanced array field cleaning to filter out empty entries for gallery, tags, and amenities
   - Business creation and editing functionality now works seamlessly without validation errors
+- July 18, 2025. Fixed user management authentication and duplicate route issues
+  - Resolved 401 Unauthorized errors in admin user management by removing duplicate route definitions
+  - Fixed conflicting `/api/admin/users` routes where first route was missing `verifyFirebaseToken` middleware
+  - User management system now properly displays all registered users with role-based filtering
+  - Authentication debugging confirmed Firebase token verification working correctly throughout admin routes
+  - Admin portal user management fully operational with create, edit, and delete functionality
 ```
 
 ## User Preferences

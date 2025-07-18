@@ -19,10 +19,7 @@ export const auth = admin.auth();
 export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    console.log(`Auth verification for ${req.method} ${req.path} - Header present: ${!!authHeader}`);
-    
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('No valid Bearer token found in request');
       return res.status(401).json({ message: 'No token provided' });
     }
 

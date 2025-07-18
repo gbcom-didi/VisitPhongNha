@@ -20,15 +20,11 @@ export async function apiRequest(
     const { getAuth } = await import('firebase/auth');
     const auth = getAuth();
     if (auth.currentUser) {
-      console.log('Getting fresh Firebase token for user:', auth.currentUser.email);
       token = await auth.currentUser.getIdToken(true); // Force refresh
       localStorage.setItem('firebaseToken', token);
-      console.log('Fresh token obtained, length:', token.length);
-    } else {
-      console.log('No current Firebase user found');
     }
   } catch (error) {
-    console.warn('Could not refresh Firebase token, using stored token:', error);
+    console.warn('Could not refresh Firebase token, using stored token');
   }
   
   const headers: Record<string, string> = data ? { "Content-Type": "application/json" } : {};
@@ -64,9 +60,6 @@ export const getQueryFn: <T>(options: {
       if (auth.currentUser) {
         token = await auth.currentUser.getIdToken(true); // Force refresh
         localStorage.setItem('firebaseToken', token);
-        console.log('Query client got fresh token for:', queryKey[0]);
-      } else {
-        console.warn('No Firebase user found for query:', queryKey[0]);
       }
     } catch (error) {
       console.warn('Could not refresh Firebase token for query, using stored token:', error);
@@ -76,9 +69,6 @@ export const getQueryFn: <T>(options: {
     
     if (token) {
       headers.Authorization = `Bearer ${token}`;
-      console.log('Query client sending request with auth header to:', queryKey[0]);
-    } else {
-      console.warn('No token available for query:', queryKey[0]);
     }
 
     const res = await fetch(queryKey[0] as string, {
