@@ -362,6 +362,15 @@ Changelog:
   - Fixed authentication middleware composition for proper admin route access control
   - Enhanced "All" button functionality to reset both category and tag filters, properly showing all businesses
   - Updated filter UI to show "All" as selected only when no filters are active
+- July 18, 2025. Implemented interactive hero section with typewriter animations and rotating prompts
+  - Created InteractiveHero component with typewriter animation effect and rotating user prompts
+  - Added four themed prompts that cycle every 6 seconds: cave exploration, street food, adventure, and beer
+  - Implemented smooth CTA button animations with coral sunset color scheme and no drop shadow
+  - Fixed routing issue where Home component wasn't rendering at root path (was showing Landing instead)
+  - Added automatic cycling mechanism to ensure prompts rotate properly with fast typewriter speed (40ms)
+  - Updated URL-based filtering to use readable category slugs (e.g., /explore?category=street-food)
+  - Enhanced user experience with cursor animation during typing and responsive design
+  - Made component modular for easy addition of new prompts and seamless integration with explore page filtering
 ```
 
 ## User Preferences

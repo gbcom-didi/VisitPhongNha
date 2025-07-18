@@ -75,7 +75,7 @@ export function InteractiveHero() {
       if (displayedText.length < currentPrompt.text.length) {
         timeout = setTimeout(() => {
           setDisplayedText(currentPrompt.text.slice(0, displayedText.length + 1));
-        }, 80); // Typing speed
+        }, 40); // Typing speed
       } else {
         // Text finished typing, show button
         setIsTyping(false);
@@ -110,12 +110,10 @@ export function InteractiveHero() {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-left max-w-lg md:max-w-2xl lg:max-w-3xl">
           {/* Typewriter Text */}
-          <div className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 min-h-[120px] md:min-h-[150px] flex items-center font-questrial">
+          <div className="text-3xl sm:text-4xl md:text-6xl font-normal mb-3 min-h-[120px] md:min-h-[150px] flex items-center font-questrial">
             <span className="relative" style={{ color: '#137065' }}>
               {displayedText}
-              {isTyping && (
-                <span className="animate-pulse ml-1" style={{ color: '#F7E74A' }}>|</span>
-              )}
+              <span className="animate-pulse ml-1" style={{ color: '#F7E74A' }}>|</span>
             </span>
           </div>
           
@@ -139,19 +137,7 @@ export function InteractiveHero() {
             </Link>
           </div>
           
-          {/* Progress Dots */}
-          <div className="flex justify-start space-x-3 mt-8">
-            {prompts.map((_, index) => (
-              <div
-                key={index}
-                className={`w-3 h-3 rounded-full transition-all duration-500 ${
-                  index === currentPromptIndex 
-                    ? 'bg-coral-sunset scale-110' 
-                    : 'bg-jade-green/40 hover:bg-jade-green/60'
-                }`}
-              />
-            ))}
-          </div>
+
         </div>
       </div>
       
