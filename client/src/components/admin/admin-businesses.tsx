@@ -180,13 +180,16 @@ export default function AdminBusinesses() {
       return apiRequest("DELETE", `/api/businesses/${businessId}`);
     },
     onSuccess: () => {
+      // Invalidate both business queries to refresh the list
       queryClient.invalidateQueries({ queryKey: ["/api/businesses"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/businesses", { showAll: true }] });
       toast({
         title: "Success",
         description: "Business deleted successfully",
       });
     },
     onError: (error: any) => {
+      console.error("Delete business error:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to delete business",
@@ -339,7 +342,11 @@ export default function AdminBusinesses() {
                       </Button>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            disabled={deleteBusinessMutation.isPending}
+                          >
                             <Trash2 className="w-4 h-4 text-red-600" />
                           </Button>
                         </AlertDialogTrigger>
@@ -351,12 +358,15 @@ export default function AdminBusinesses() {
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogCancel disabled={deleteBusinessMutation.isPending}>
+                              Cancel
+                            </AlertDialogCancel>
                             <AlertDialogAction
                               onClick={() => deleteBusinessMutation.mutate(business.id)}
-                              className="bg-red-600 hover:bg-red-700"
+                              disabled={deleteBusinessMutation.isPending}
+                              className="bg-red-600 hover:bg-red-700 disabled:opacity-50"
                             >
-                              Delete
+                              {deleteBusinessMutation.isPending ? "Deleting..." : "Delete"}
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
