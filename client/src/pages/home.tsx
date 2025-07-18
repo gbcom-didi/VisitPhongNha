@@ -178,7 +178,7 @@ export default function Home() {
             <div className="relative">
               <div className="relative h-96 rounded-xl overflow-hidden shadow-xl">
                 <img 
-                  src="/images/vpn-hero-02.png" 
+                  src="/images/DJI_0411.jpg" 
                   alt="Phong Nha Cave Adventure"
                   className="w-full h-full object-cover"
                 />
