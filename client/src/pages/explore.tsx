@@ -38,8 +38,11 @@ export default function Explore() {
   const updateUrl = (category: number | null, tags: string[]) => {
     const params = new URLSearchParams();
     
-    if (category) {
-      params.set('category', category.toString());
+    if (category && categories.length > 0) {
+      const categoryData = categories.find(cat => cat.id === category);
+      if (categoryData) {
+        params.set('category', categoryData.slug);
+      }
     }
     
     if (tags.length > 0) {
@@ -52,19 +55,29 @@ export default function Explore() {
 
   // Initialize filters from URL parameters on component mount
   useEffect(() => {
+    if (categories.length === 0) return; // Wait for categories to load
+    
     const urlParams = getUrlParams();
     
     if (urlParams.category) {
-      const categoryId = parseInt(urlParams.category);
-      if (!isNaN(categoryId)) {
-        setSelectedCategory(categoryId);
+      // First try to find by slug, then fallback to ID for backward compatibility
+      let categoryData = categories.find(cat => cat.slug === urlParams.category);
+      if (!categoryData) {
+        const categoryId = parseInt(urlParams.category);
+        if (!isNaN(categoryId)) {
+          categoryData = categories.find(cat => cat.id === categoryId);
+        }
+      }
+      
+      if (categoryData) {
+        setSelectedCategory(categoryData.id);
       }
     }
     
     if (urlParams.tags.length > 0) {
       setSelectedTags(urlParams.tags);
     }
-  }, []);
+  }, [categories]);
 
   // Fetch categories
   const { data: categories = [] } = useQuery<Category[]>({
