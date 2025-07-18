@@ -135,7 +135,7 @@ export default function Home() {
                   <Heart className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold mb-2 bg-gradient-to-r from-teal-700 to-teal-600 bg-clip-text text-transparent">Personal Collection</h4>
+                  <h4 className="text-lg font-semibold mb-2 bg-gradient-to-r from-teal-700 to-teal-600 bg-clip-text text-[#f35f4a]">Personal Collection</h4>
                   <p className="text-gray-600 text-sm mb-4">
                     Curate your perfect adventure by saving places that inspire you. Build your dream itinerary and never miss a hidden gem.
                   </p>
