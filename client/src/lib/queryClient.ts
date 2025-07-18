@@ -76,6 +76,9 @@ export const getQueryFn: <T>(options: {
     
     if (token) {
       headers.Authorization = `Bearer ${token}`;
+      console.log('Query client sending request with auth header to:', queryKey[0]);
+    } else {
+      console.warn('No token available for query:', queryKey[0]);
     }
 
     const res = await fetch(queryKey[0] as string, {
