@@ -113,7 +113,7 @@ export function InteractiveHero() {
           <div className="text-3xl sm:text-4xl md:text-6xl font-normal mb-1 min-h-[120px] md:min-h-[150px] flex items-center font-questrial">
             <span className="relative" style={{ color: '#137065' }}>
               {displayedText}
-              <span className="animate-pulse ml-1" style={{ color: '#F7E74A' }}>|</span>
+              <span className="animate-pulse ml-1" style={{ color: '#137065' }}>|</span>
             </span>
           </div>
           
