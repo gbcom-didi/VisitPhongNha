@@ -24,6 +24,7 @@ export default function Explore() {
   const [showMapInMobile, setShowMapInMobile] = useState(true);
   const [hoveredBusiness, setHoveredBusiness] = useState<BusinessWithCategory | null>(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [shouldFitBounds, setShouldFitBounds] = useState(false);
 
   // Function to get URL search parameters
   const getUrlParams = () => {
@@ -185,6 +186,13 @@ export default function Explore() {
   const handleCategoryChange = (categoryId: number | null) => {
     setSelectedCategory(categoryId);
     updateUrl(categoryId, selectedTags);
+    
+    // If "All" is selected (categoryId is null), trigger fit bounds
+    if (categoryId === null) {
+      setShouldFitBounds(true);
+      // Reset the flag after a short delay to prevent re-triggering
+      setTimeout(() => setShouldFitBounds(false), 100);
+    }
   };
 
   const handleTagsChange = (tags: string[]) => {
@@ -339,6 +347,7 @@ export default function Explore() {
               onBusinessClick={handleMapPinClick}
               selectedBusiness={selectedBusiness}
               hoveredBusiness={hoveredBusiness}
+              fitBounds={shouldFitBounds}
             />
             
             <button
@@ -381,6 +390,7 @@ export default function Explore() {
             onBusinessClick={handleMapPinClick}
             selectedBusiness={selectedBusiness}
             hoveredBusiness={hoveredBusiness}
+            fitBounds={shouldFitBounds}
           />
         </div>
       </div>

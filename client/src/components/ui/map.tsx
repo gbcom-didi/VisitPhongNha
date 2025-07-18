@@ -12,10 +12,11 @@ interface MapProps {
   hoveredBusiness?: BusinessWithCategory | null;
   center?: { lat: number; lng: number };
   zoom?: number;
+  fitBounds?: boolean;
 }
 
 // Google Maps component
-function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hoveredBusiness, center, zoom }: MapProps) {
+function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hoveredBusiness, center, zoom, fitBounds }: MapProps) {
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
   const businessMarkersRef = useRef<{ [businessId: number]: google.maps.Marker }>({});
@@ -99,6 +100,35 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       tooltipRef.current = null;
     }
   }, []);
+
+  const fitMapToBounds = useCallback(() => {
+    if (!mapRef.current || !window.google || businesses.length === 0) return;
+
+    const bounds = new google.maps.LatLngBounds();
+    
+    businesses.forEach((business) => {
+      if (!business.latitude || !business.longitude) return;
+      
+      const lat = parseFloat(business.latitude);
+      const lng = parseFloat(business.longitude);
+      
+      if (!isNaN(lat) && !isNaN(lng)) {
+        bounds.extend(new google.maps.LatLng(lat, lng));
+      }
+    });
+
+    if (!bounds.isEmpty()) {
+      mapRef.current.fitBounds(bounds);
+      
+      // Add some padding to the bounds
+      const listener = google.maps.event.addListenerOnce(mapRef.current, 'bounds_changed', () => {
+        const currentZoom = mapRef.current?.getZoom() || 10;
+        if (currentZoom > 15) {
+          mapRef.current?.setZoom(15);
+        }
+      });
+    }
+  }, [businesses]);
 
   const initializeMap = useCallback(() => {
     if (!mapContainerRef.current || !window.google) return;
@@ -216,6 +246,13 @@ function GoogleMapComponent({ businesses, onBusinessClick, selectedBusiness, hov
       businessMarkersRef.current[business.id] = marker;
     });
   }, [businesses, onBusinessClick, showTooltip, hideTooltip]);
+
+  // Fit bounds to show all markers when fitBounds prop changes
+  useEffect(() => {
+    if (fitBounds && mapRef.current && businesses.length > 0) {
+      fitMapToBounds();
+    }
+  }, [fitBounds, businesses, fitMapToBounds]);
 
   // Highlight selected business
   useEffect(() => {
