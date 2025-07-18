@@ -149,7 +149,10 @@ export function requireFirebaseRole(role: string): RequestHandler {
   return async (req, res, next) => {
     try {
       const user = req.user as any;
+      console.log('Role check - User:', user?.email, 'User Role:', user?.role, 'Required Role:', role);
+      
       if (!user) {
+        console.log('Role check failed: No user object');
         return res.status(401).json({ message: 'Unauthorized' });
       }
 
@@ -161,11 +164,15 @@ export function requireFirebaseRole(role: string): RequestHandler {
 
       const userLevel = roleHierarchy[user.role as keyof typeof roleHierarchy] || 0;
       const requiredLevel = roleHierarchy[role as keyof typeof roleHierarchy] || 0;
+      
+      console.log('Role levels - User level:', userLevel, 'Required level:', requiredLevel);
 
       if (userLevel < requiredLevel) {
+        console.log('Role check failed: Insufficient permissions');
         return res.status(403).json({ message: 'Insufficient permissions' });
       }
 
+      console.log('Role check passed');
       next();
     } catch (error) {
       console.error('Error checking role:', error);

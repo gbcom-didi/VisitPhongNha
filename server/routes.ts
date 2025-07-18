@@ -145,8 +145,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/businesses', requireFirebaseBusinessOwner, async (req: any, res) => {
+  app.post('/api/businesses', verifyFirebaseToken, requireFirebaseBusinessOwner, async (req: any, res) => {
     try {
+      console.log('Creating business - User:', req.user?.email, 'Role:', req.user?.role);
       // Extract categoryIds from the request body and validate the rest with the schema
       const { categoryIds, ...businessFields } = req.body;
       
