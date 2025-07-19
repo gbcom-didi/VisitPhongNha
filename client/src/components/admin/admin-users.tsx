@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Plus, Edit, Trash2, Search, User as UserIcon, Shield, Crown, Eye, Calendar, Mail } from "lucide-react";
+import { Plus, Edit, Trash2, Search, User as UserIcon, Shield, Crown, Eye, Calendar, Mail, Download } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { User } from "@shared/schema";
@@ -173,6 +173,39 @@ export default function AdminUsers() {
     }
   };
 
+  const exportToCSV = () => {
+    const csvHeaders = ["ID", "Email", "First Name", "Last Name", "Role", "Active", "Created At"];
+    const csvData = filteredUsers.map(user => [
+      user.id || "",
+      user.email || "",
+      user.firstName || "",
+      user.lastName || "",
+      user.role || "",
+      user.isActive ? "Yes" : "No",
+      user.createdAt ? new Date(user.createdAt).toLocaleDateString() : ""
+    ]);
+
+    const csvContent = [
+      csvHeaders.join(","),
+      ...csvData.map(row => row.map(field => `"${field}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `users-export-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: "Success",
+      description: `Exported ${filteredUsers.length} users to CSV`,
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -192,25 +225,36 @@ export default function AdminUsers() {
           <p className="text-gray-600">Manage user accounts, roles, and permissions</p>
         </div>
 
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-tropical-aqua hover:bg-tropical-aqua/90">
-              <Plus className="w-4 h-4 mr-2" />
-              Add User
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Add New User</DialogTitle>
-            </DialogHeader>
-            <UserForm 
-              form={form} 
-              onSubmit={onSubmit} 
-              isSubmitting={createUserMutation.isPending}
-              onReset={resetForm}
-            />
-          </DialogContent>
-        </Dialog>
+        <div className="flex gap-3">
+          <Button 
+            onClick={exportToCSV}
+            variant="outline"
+            className="border-coral-sunset text-coral-sunset hover:bg-coral-sunset hover:text-white"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Export CSV
+          </Button>
+          
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-tropical-aqua hover:bg-tropical-aqua/90">
+                <Plus className="w-4 h-4 mr-2" />
+                Add User
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Add New User</DialogTitle>
+              </DialogHeader>
+              <UserForm 
+                form={form} 
+                onSubmit={onSubmit} 
+                isSubmitting={createUserMutation.isPending}
+                onReset={resetForm}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {/* Filters and Search */}
