@@ -70,7 +70,7 @@ export function Favorites() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-tropical-aqua rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center bg-[#f35f4a]">
               <Heart className="w-6 h-6 text-white fill-current" />
             </div>
             <div>
