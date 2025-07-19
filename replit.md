@@ -371,6 +371,14 @@ Changelog:
   - Updated URL-based filtering to use readable category slugs (e.g., /explore?category=street-food)
   - Enhanced user experience with cursor animation during typing and responsive design
   - Made component modular for easy addition of new prompts and seamless integration with explore page filtering
+- July 19, 2025. Rebuilt Featured Places section and added CSV export to admin portal
+  - Completely replaced Featured Places slider with responsive business card grid layout
+  - Automatic detection of premium businesses with enhanced visual design and hover effects
+  - Removed premium badges and pagination dots for cleaner appearance
+  - Added "Explore More" button linking to explore page instead of business count text
+  - Implemented CSV export feature in admin portal user management section
+  - Export button respects search and role filters, downloads with automatic date-based filename
+  - CSV includes all user data: ID, email, names, role, active status, and created date
 ```
 
 ## User Preferences
