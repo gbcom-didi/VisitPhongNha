@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'wouter';
 import { useAuth } from '@/hooks/useAuth';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
@@ -261,11 +262,16 @@ export default function Home() {
                 ))}
               </div>
               
-              {/* Show count of premium places */}
+              {/* Explore More Button */}
               <div className="text-center mt-8">
-                <p className="text-sm text-gray-500">
-                  Showing {featuredBusinesses.length} premium {featuredBusinesses.length === 1 ? 'place' : 'places'}
-                </p>
+                <Link href="/explore">
+                  <Button
+                    size="lg"
+                    className="bg-coral-sunset hover:bg-coral-sunset/90 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+                  >
+                    Explore More
+                  </Button>
+                </Link>
               </div>
             </div>
           ) : (
