@@ -15,7 +15,7 @@ const prompts = [
     link: "/explore?category=street-food"
   },
   {
-    text: "I'm looking for an adventure.",
+    text: "I'm feeling adventurous.",
     cta: "Show me adventures",
     link: "/explore?category=adventure"
   },
