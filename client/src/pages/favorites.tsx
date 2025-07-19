@@ -75,7 +75,7 @@ export function Favorites() {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Saved Places</h1>
-              <p className="text-gray-600">Your saved places in Phan Rang</p>
+              <p className="text-gray-600">Build your dream itinerary and never miss a hidden gem.</p>
             </div>
           </div>
           
@@ -241,7 +241,6 @@ export function Favorites() {
           </div>
         )}
       </div>
-
       {/* Business Modal */}
       {selectedBusiness && (
         <BusinessModal
