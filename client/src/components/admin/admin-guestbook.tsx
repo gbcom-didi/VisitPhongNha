@@ -425,7 +425,25 @@ function GuestbookEntryList({
                 </p>
               )}
 
-
+              {entry.comments && entry.comments.length > 0 && (
+                <div className="mt-4 pt-4 border-t">
+                  <p className="text-sm font-medium text-gray-700 mb-2">
+                    Comments ({entry.comments.length})
+                  </p>
+                  <div className="space-y-2">
+                    {entry.comments.slice(0, 2).map((comment) => (
+                      <div key={comment.id} className="text-sm bg-gray-50 p-2 rounded">
+                        <span className="font-medium">{comment.authorName}:</span> {comment.comment}
+                      </div>
+                    ))}
+                    {entry.comments.length > 2 && (
+                      <p className="text-xs text-gray-500">
+                        +{entry.comments.length - 2} more comments
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
