@@ -554,6 +554,88 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Guestbook operations
+  async getGuestbookEntry(id: number): Promise<GuestbookEntryWithRelations | undefined> {
+    const entriesWithRelations = await db
+      .select({
+        id: guestbookEntries.id,
+        authorId: guestbookEntries.authorId,
+        authorName: guestbookEntries.authorName,
+        message: guestbookEntries.message,
+        nationality: guestbookEntries.nationality,
+        location: guestbookEntries.location,
+        latitude: guestbookEntries.latitude,
+        longitude: guestbookEntries.longitude,
+        relatedPlaceId: guestbookEntries.relatedPlaceId,
+        rating: guestbookEntries.rating,
+        likes: guestbookEntries.likes,
+        createdAt: guestbookEntries.createdAt,
+        author: {
+          id: users.id,
+          email: users.email,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          profileImageUrl: users.profileImageUrl,
+        },
+        relatedPlace: {
+          id: businesses.id,
+          name: businesses.name,
+          description: businesses.description,
+          imageUrl: businesses.imageUrl,
+        }
+      })
+      .from(guestbookEntries)
+      .leftJoin(users, eq(guestbookEntries.authorId, users.id))
+      .leftJoin(businesses, eq(guestbookEntries.relatedPlaceId, businesses.id))
+      .where(and(
+        eq(guestbookEntries.status, 'approved'),
+        eq(guestbookEntries.id, id)
+      ))
+      .limit(1);
+
+    if (entriesWithRelations.length === 0) {
+      return undefined;
+    }
+
+    const entry = entriesWithRelations[0];
+
+    // Get comments for the entry
+    const allComments = await db
+      .select({
+        id: guestbookComments.id,
+        entryId: guestbookComments.entryId,
+        authorId: guestbookComments.authorId,
+        authorName: guestbookComments.authorName,
+        comment: guestbookComments.comment,
+        parentCommentId: guestbookComments.parentCommentId,
+        likes: guestbookComments.likes,
+        createdAt: guestbookComments.createdAt,
+        author: {
+          id: users.id,
+          email: users.email,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          profileImageUrl: users.profileImageUrl,
+        }
+      })
+      .from(guestbookComments)
+      .leftJoin(users, eq(guestbookComments.authorId, users.id))
+      .where(eq(guestbookComments.entryId, entry.id))
+      .orderBy(asc(guestbookComments.createdAt));
+
+    // Organize comments in a nested structure
+    const topLevelComments = allComments.filter(c => !c.parentCommentId);
+    const comments = topLevelComments.map(comment => ({
+      ...comment,
+      replies: allComments.filter(c => c.parentCommentId === comment.id)
+    }));
+
+    return {
+      ...entry,
+      comments,
+      commentCount: comments.length
+    } as GuestbookEntryWithRelations;
+  }
+
   async getGuestbookEntries(): Promise<GuestbookEntryWithRelations[]> {
     const entriesWithRelations = await db
       .select({

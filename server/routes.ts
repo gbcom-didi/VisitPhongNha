@@ -691,6 +691,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get a single guestbook entry by ID
+  app.get('/api/guestbook/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const entry = await storage.getGuestbookEntry(id);
+      
+      if (!entry) {
+        return res.status(404).json({ message: "Guestbook entry not found" });
+      }
+      
+      res.json(entry);
+    } catch (error) {
+      console.error("Error fetching guestbook entry:", error);
+      res.status(500).json({ message: "Failed to fetch guestbook entry" });
+    }
+  });
+
   // Create a new guestbook entry
   app.post('/api/guestbook', verifyFirebaseToken, async (req, res) => {
     try {
