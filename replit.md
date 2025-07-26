@@ -389,6 +389,13 @@ Changelog:
   - Fixed Firebase authentication integration with proper SignInModal component
   - Enhanced user privacy by displaying author names directly from authorName field
   - Integrated guestbook section into BusinessModal with consistent tropical aqua branding
+- July 26, 2025. Temporarily disabled comment functionality in main guestbook while preserving backend
+  - Removed comment count display from guestbook entry cards on main page
+  - Hidden add comment buttons for both authenticated and non-authenticated users
+  - Commented out comment form and existing comments display in entry modals
+  - All backend comment functionality preserved intact for future restoration
+  - Fixed SQL syntax error in admin guestbook deleteGuestbookEntry function using proper inArray implementation
+  - Admin portal guestbook deletion now works correctly without database errors
 ```
 
 ## User Preferences
