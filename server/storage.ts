@@ -991,19 +991,25 @@ export class DatabaseStorage implements IStorage {
 
   // Additional guestbook management methods for admin
   async deleteGuestbookEntry(entryId: number): Promise<void> {
-    // First delete related likes and comments
-    await db
-      .delete(guestbookCommentLikes)
-      .where(eq(guestbookCommentLikes.commentId, inArray(
-        db.select({ id: guestbookComments.id })
-          .from(guestbookComments)
-          .where(eq(guestbookComments.entryId, entryId))
-      )));
+    // First get all comment IDs for this entry
+    const commentIds = await db
+      .select({ id: guestbookComments.id })
+      .from(guestbookComments)
+      .where(eq(guestbookComments.entryId, entryId));
 
+    // Delete comment likes for these comments
+    if (commentIds.length > 0) {
+      await db
+        .delete(guestbookCommentLikes)
+        .where(inArray(guestbookCommentLikes.commentId, commentIds.map(c => c.id)));
+    }
+
+    // Delete comments for this entry
     await db
       .delete(guestbookComments)
       .where(eq(guestbookComments.entryId, entryId));
 
+    // Delete entry likes
     await db
       .delete(guestbookEntryLikes)
       .where(eq(guestbookEntryLikes.entryId, entryId));
