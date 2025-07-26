@@ -411,7 +411,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
 
         {/* Guestbook Section */}
         <div className="mt-6 border-t pt-6">
-          <BusinessGuestbook business={business} />
+          <BusinessGuestbook business={business} onCloseModal={onClose} />
         </div>
 
         {/* Location Section */}

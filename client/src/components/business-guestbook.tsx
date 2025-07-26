@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -21,6 +21,7 @@ import type { BusinessWithCategory, GuestbookEntryWithRelations } from '@shared/
 
 interface BusinessGuestbookProps {
   business: BusinessWithCategory;
+  onCloseModal?: () => void;
 }
 
 const guestbookFormSchema = z.object({
@@ -31,10 +32,11 @@ const guestbookFormSchema = z.object({
 
 type GuestbookFormData = z.infer<typeof guestbookFormSchema>;
 
-export function BusinessGuestbook({ business }: BusinessGuestbookProps) {
+export function BusinessGuestbook({ business, onCloseModal }: BusinessGuestbookProps) {
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [location] = useLocation();
   const [showForm, setShowForm] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
 
@@ -323,16 +325,28 @@ export function BusinessGuestbook({ business }: BusinessGuestbookProps) {
 
           {/* View Guestbook Link - Always show */}
           <div className="text-center pt-4">
-            <Link href="/guestbook">
+            {location === '/guestbook' ? (
               <Button 
                 variant="outline" 
                 className="text-tropical-aqua border-tropical-aqua hover:bg-tropical-aqua hover:text-white"
+                onClick={onCloseModal}
               >
                 <BookOpen className="w-4 h-4 mr-2" />
-                View Guestbook
+                Close & Continue Reading
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
-            </Link>
+            ) : (
+              <Link href="/guestbook">
+                <Button 
+                  variant="outline" 
+                  className="text-tropical-aqua border-tropical-aqua hover:bg-tropical-aqua hover:text-white"
+                >
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  View Guestbook
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       ) : (
