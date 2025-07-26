@@ -379,6 +379,16 @@ Changelog:
   - Implemented CSV export feature in admin portal user management section
   - Export button respects search and role filters, downloads with automatic date-based filename
   - CSV includes all user data: ID, email, names, role, active status, and created date
+- July 26, 2025. Implemented business-specific guestbook integration in business modals
+  - Created BusinessGuestbook component with bidirectional business-comment linking
+  - Added API endpoint `/api/businesses/:id/guestbook` for fetching business-specific guestbook entries
+  - Implemented database method `getGuestbookEntriesByBusiness` for efficient data retrieval
+  - Limited display to 3 most recent guestbook entries with clean, minimal design
+  - Removed comment count and Google Maps link display for streamlined user experience
+  - Added always-visible "View Guestbook" button linking to main guestbook page
+  - Fixed Firebase authentication integration with proper SignInModal component
+  - Enhanced user privacy by displaying author names directly from authorName field
+  - Integrated guestbook section into BusinessModal with consistent tropical aqua branding
 ```
 
 ## User Preferences
