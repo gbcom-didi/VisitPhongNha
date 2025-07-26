@@ -307,12 +307,13 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
 
             {/* Reviews Section */}
             {business.rating && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                 <span className="font-medium text-gray-900">{parseFloat(business.rating).toFixed(1)}</span>
                 {business.reviewCount && business.reviewCount > 0 && (
                   <span className="text-sm text-gray-500">({business.reviewCount} reviews)</span>
                 )}
+                <span className="text-xs text-gray-400">• on Google</span>
               </div>
             )}
           </div>
