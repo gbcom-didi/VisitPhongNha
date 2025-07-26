@@ -10,7 +10,6 @@ import { useToast } from '@/hooks/use-toast';
 import { isUnauthorizedError } from '@/lib/authUtils';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { BusinessGuestbook } from './business-guestbook';
-import { GuestbookModal } from './guestbook-modal';
 import type { BusinessWithCategory } from '@shared/schema';
 
 interface BusinessModalProps {
@@ -59,8 +58,6 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
   const [showGallery, setShowGallery] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [localIsLiked, setLocalIsLiked] = useState(business.isLiked);
-  const [showGuestbookModal, setShowGuestbookModal] = useState(false);
-  const [selectedGuestbookEntryId, setSelectedGuestbookEntryId] = useState<number | undefined>();
 
   // Update local state when business prop changes
   useEffect(() => {
@@ -414,13 +411,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
 
         {/* Guestbook Section */}
         <div className="mt-6 border-t pt-6">
-          <BusinessGuestbook 
-            business={business} 
-            onOpenGuestbook={(entryId) => {
-              setSelectedGuestbookEntryId(entryId);
-              setShowGuestbookModal(true);
-            }}
-          />
+          <BusinessGuestbook business={business} />
         </div>
 
         {/* Location Section */}
@@ -595,25 +586,6 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
         </DialogContent>
       </Dialog>
     )}
-
-    {/* Guestbook Modal */}
-    <GuestbookModal
-      isOpen={showGuestbookModal}
-      onClose={() => {
-        setShowGuestbookModal(false);
-        setSelectedGuestbookEntryId(undefined);
-      }}
-      entryId={selectedGuestbookEntryId}
-      onBusinessClick={(businessId) => {
-        // If clicking on the same business, just close the guestbook modal
-        if (businessId === business.id) {
-          setShowGuestbookModal(false);
-          setSelectedGuestbookEntryId(undefined);
-        }
-        // For different businesses, this would require additional logic
-        // since we'd need to get the business data and replace the current modal
-      }}
-    />
     </>
   );
 }

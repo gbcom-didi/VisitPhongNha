@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { MessageSquare, Star, User, MapPin, CalendarDays, Send, BookOpen, ExternalLink } from 'lucide-react';
+import { MessageSquare, Star, User, MapPin, CalendarDays, Send, BookOpen } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
@@ -19,7 +19,6 @@ import type { BusinessWithCategory, GuestbookEntryWithRelations } from '@shared/
 
 interface BusinessGuestbookProps {
   business: BusinessWithCategory;
-  onOpenGuestbook?: (entryId?: number) => void;
 }
 
 const guestbookFormSchema = z.object({
@@ -30,7 +29,7 @@ const guestbookFormSchema = z.object({
 
 type GuestbookFormData = z.infer<typeof guestbookFormSchema>;
 
-export function BusinessGuestbook({ business, onOpenGuestbook }: BusinessGuestbookProps) {
+export function BusinessGuestbook({ business }: BusinessGuestbookProps) {
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -271,28 +270,11 @@ export function BusinessGuestbook({ business, onOpenGuestbook }: BusinessGuestbo
       {guestbookEntries.length > 0 ? (
         <div className="space-y-4">
           <Separator />
-          <div className="flex items-center justify-between">
-            <h4 className="font-medium text-gray-900">Recent Experiences</h4>
-            {guestbookEntries.length > 3 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onOpenGuestbook && onOpenGuestbook()}
-                className="text-tropical-aqua hover:text-tropical-aqua/80 hover:bg-tropical-aqua/10"
-              >
-                View All ({guestbookEntries.length})
-                <ExternalLink className="w-3 h-3 ml-1" />
-              </Button>
-            )}
-          </div>
+          <h4 className="font-medium text-gray-900">Recent Experiences</h4>
           
-          <div className="space-y-4">
-            {guestbookEntries.slice(0, 3).map((entry) => (
-              <Card 
-                key={entry.id} 
-                className="hover:shadow-md transition-shadow cursor-pointer"
-                onClick={() => onOpenGuestbook && onOpenGuestbook(entry.id)}
-              >
+          <div className="space-y-4 max-h-96 overflow-y-auto">
+            {guestbookEntries.map((entry) => (
+              <Card key={entry.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="pt-4">
                   <div className="space-y-3">
                     {/* Header with rating and author */}
@@ -347,20 +329,6 @@ export function BusinessGuestbook({ business, onOpenGuestbook }: BusinessGuestbo
                 </CardContent>
               </Card>
             ))}
-            
-            {/* Show "View More" link if there are more than 3 entries */}
-            {guestbookEntries.length > 3 && (
-              <div className="text-center pt-2">
-                <Button
-                  variant="outline"
-                  onClick={() => onOpenGuestbook && onOpenGuestbook()}
-                  className="text-tropical-aqua border-tropical-aqua hover:bg-tropical-aqua hover:text-white"
-                >
-                  View {guestbookEntries.length - 3} More Experience{guestbookEntries.length - 3 !== 1 ? 's' : ''}
-                  <ExternalLink className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
-            )}
           </div>
         </div>
       ) : (
