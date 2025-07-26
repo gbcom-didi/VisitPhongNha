@@ -654,13 +654,10 @@ export function Guestbook() {
                     </div>
                   )}
 
-                  {/* Entry Actions */}
+                  {/* Entry Actions - Comment functionality temporarily hidden */}
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                     <div className="flex items-center space-x-4">
-                      <div className="flex items-center text-gray-600">
-                        <MessageCircle className="w-4 h-4 mr-1" />
-                        {entry.commentCount || 0}
-                      </div>
+                      {/* Comment count removed */}
                     </div>
                   </div>
                 </CardContent>
@@ -758,45 +755,15 @@ export function Guestbook() {
                   </div>
                 )}
 
-                {/* Entry Actions */}
+                {/* Entry Actions - Comment functionality temporarily hidden */}
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                   <div className="flex items-center space-x-4">
-                    <div className="flex items-center text-gray-600">
-                      <MessageCircle className="w-4 h-4 mr-1" />
-                      {selectedEntry.commentCount || 0}
-                    </div>
+                    {/* Comment count and add comment buttons removed */}
                   </div>
-
-                  {isAuthenticated ? (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setCommentingOn(commentingOn === selectedEntry.id ? null : selectedEntry.id)}
-                      className="text-mango-yellow border-mango-yellow hover:bg-mango-yellow hover:text-black"
-                    >
-                      <MessageCircle className="w-4 h-4 mr-1" />
-                      Add Comment
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        toast({
-                          title: 'Sign in required',
-                          description: 'Please sign in to add comments and share your travel experiences.',
-                        });
-                      }}
-                      className="text-mango-yellow border-mango-yellow hover:bg-mango-yellow hover:text-black"
-                    >
-                      <MessageCircle className="w-4 h-4 mr-1" />
-                      Add Comment
-                    </Button>
-                  )}
                 </div>
 
-                {/* Comment Form */}
-                {commentingOn === selectedEntry.id && isAuthenticated && (
+                {/* Comment Form - Temporarily hidden */}
+                {/* {commentingOn === selectedEntry.id && isAuthenticated && (
                   <div className="pt-4 border-t border-gray-100">
                     <Form {...commentForm}>
                       <form onSubmit={commentForm.handleSubmit(onSubmitComment)} className="space-y-4">
@@ -837,10 +804,10 @@ export function Guestbook() {
                       </form>
                     </Form>
                   </div>
-                )}
+                )} */}
 
-                {/* Comments */}
-                {selectedEntry.comments && selectedEntry.comments.length > 0 && (
+                {/* Comments - Temporarily hidden */}
+                {/* {selectedEntry.comments && selectedEntry.comments.length > 0 && (
                   <div className="pt-4 border-t border-gray-100 space-y-3">
                     <h4 className="font-medium text-gray-900">Comments ({selectedEntry.comments.length})</h4>
                     {selectedEntry.comments.map((comment) => (
@@ -860,7 +827,7 @@ export function Guestbook() {
                       />
                     ))}
                   </div>
-                )}
+                )} */}
               </div>
             </DialogContent>
           </Dialog>
