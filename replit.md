@@ -396,6 +396,12 @@ Changelog:
   - All backend comment functionality preserved intact for future restoration
   - Fixed SQL syntax error in admin guestbook deleteGuestbookEntry function using proper inArray implementation
   - Admin portal guestbook deletion now works correctly without database errors
+- July 26, 2025. Enhanced business button visibility and Google attribution in modals
+  - Added Google attribution ("• on Google") to business modal rating displays
+  - Replaced simple badges with proper Button components for business links in guestbook entries
+  - Added ExternalLink icons and professional styling with shadows and hover effects
+  - Changed business button colors from mango yellow to tropical aqua blue for brand consistency
+  - Enhanced user experience with clearly clickable buttons that open business modals
 ```
 
 ## User Preferences
