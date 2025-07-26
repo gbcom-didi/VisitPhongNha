@@ -73,6 +73,7 @@ export interface IStorage {
   
   // Guestbook operations
   getGuestbookEntries(): Promise<GuestbookEntryWithRelations[]>;
+  getGuestbookEntriesByBusiness(businessId: number): Promise<GuestbookEntryWithRelations[]>;
   createGuestbookEntry(entry: InsertGuestbookEntry): Promise<GuestbookEntry>;
   updateGuestbookEntry(entryId: number, updates: Partial<InsertGuestbookEntry>): Promise<void>;
   deleteGuestbookEntry(entryId: number): Promise<void>;
@@ -586,6 +587,88 @@ export class DatabaseStorage implements IStorage {
       .leftJoin(users, eq(guestbookEntries.authorId, users.id))
       .leftJoin(businesses, eq(guestbookEntries.relatedPlaceId, businesses.id))
       .where(eq(guestbookEntries.status, 'approved'))
+      .orderBy(desc(guestbookEntries.createdAt));
+
+    // Get comments for each entry
+    const entriesWithComments = await Promise.all(
+      entriesWithRelations.map(async (entry) => {
+        const allComments = await db
+          .select({
+            id: guestbookComments.id,
+            entryId: guestbookComments.entryId,
+            authorId: guestbookComments.authorId,
+            authorName: guestbookComments.authorName,
+            comment: guestbookComments.comment,
+            parentCommentId: guestbookComments.parentCommentId,
+            likes: guestbookComments.likes,
+            createdAt: guestbookComments.createdAt,
+            author: {
+              id: users.id,
+              email: users.email,
+              firstName: users.firstName,
+              lastName: users.lastName,
+              profileImageUrl: users.profileImageUrl,
+            }
+          })
+          .from(guestbookComments)
+          .leftJoin(users, eq(guestbookComments.authorId, users.id))
+          .where(eq(guestbookComments.entryId, entry.id))
+          .orderBy(asc(guestbookComments.createdAt));
+
+        // Organize comments in a nested structure
+        const topLevelComments = allComments.filter(c => !c.parentCommentId);
+        const comments = topLevelComments.map(comment => ({
+          ...comment,
+          replies: allComments.filter(c => c.parentCommentId === comment.id)
+        }));
+
+        return {
+          ...entry,
+          comments,
+          commentCount: comments.length
+        } as GuestbookEntryWithRelations;
+      })
+    );
+
+    return entriesWithComments;
+  }
+
+  async getGuestbookEntriesByBusiness(businessId: number): Promise<GuestbookEntryWithRelations[]> {
+    const entriesWithRelations = await db
+      .select({
+        id: guestbookEntries.id,
+        authorId: guestbookEntries.authorId,
+        authorName: guestbookEntries.authorName,
+        message: guestbookEntries.message,
+        nationality: guestbookEntries.nationality,
+        location: guestbookEntries.location,
+        latitude: guestbookEntries.latitude,
+        longitude: guestbookEntries.longitude,
+        relatedPlaceId: guestbookEntries.relatedPlaceId,
+        rating: guestbookEntries.rating,
+        likes: guestbookEntries.likes,
+        createdAt: guestbookEntries.createdAt,
+        author: {
+          id: users.id,
+          email: users.email,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          profileImageUrl: users.profileImageUrl,
+        },
+        relatedPlace: {
+          id: businesses.id,
+          name: businesses.name,
+          description: businesses.description,
+          imageUrl: businesses.imageUrl,
+        }
+      })
+      .from(guestbookEntries)
+      .leftJoin(users, eq(guestbookEntries.authorId, users.id))
+      .leftJoin(businesses, eq(guestbookEntries.relatedPlaceId, businesses.id))
+      .where(and(
+        eq(guestbookEntries.status, 'approved'),
+        eq(guestbookEntries.relatedPlaceId, businessId)
+      ))
       .orderBy(desc(guestbookEntries.createdAt));
 
     // Get comments for each entry
