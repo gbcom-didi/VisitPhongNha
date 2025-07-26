@@ -19,7 +19,7 @@ import { BusinessModal } from '@/components/business-modal';
 import { SignInModal } from '@/components/auth/SignInModal';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { MessageCircle, Star, MapPin, Globe, Calendar, Flag, User, Reply, Check, ChevronsUpDown } from 'lucide-react';
+import { MessageCircle, Star, MapPin, Globe, Calendar, Flag, User, Reply, Check, ChevronsUpDown, ExternalLink } from 'lucide-react';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { BusinessWithCategory, GuestbookEntryWithRelations } from '@shared/schema';
 import { formatDistanceToNow } from 'date-fns';
@@ -673,28 +673,19 @@ export function Guestbook() {
                   {/* Related Place */}
                   {entry.relatedPlace && (
                     <div className="mb-4">
-                      <Badge 
-                        variant="secondary" 
-                        className="cursor-pointer transition-all duration-200 px-3 py-1.5 text-sm font-medium hover:shadow-md hover:scale-105"
-                        style={{ 
-                          backgroundColor: '#F4B942', 
-                          color: 'white', 
-                          borderColor: '#F4B942'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#E6A435';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = '#F4B942';
-                        }}
+                      <Button
+                        variant="default"
+                        size="sm"
+                        className="bg-[#F4B942] hover:bg-[#E6A435] text-white border-0 shadow-md hover:shadow-lg transition-all duration-200 px-4 py-2 rounded-full font-medium text-sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleBusinessClick(entry.relatedPlace!.id);
                         }}
                       >
-                        <MapPin className="w-3 h-3 mr-1" />
+                        <MapPin className="w-4 h-4 mr-2" />
                         {entry.relatedPlace.name}
-                      </Badge>
+                        <ExternalLink className="w-3 h-3 ml-2 opacity-70" />
+                      </Button>
                     </div>
                   )}
 
@@ -756,25 +747,16 @@ export function Guestbook() {
                 {/* Related Place */}
                 {selectedEntry.relatedPlace && (
                   <div>
-                    <Badge 
-                      variant="secondary" 
-                      className="cursor-pointer transition-all duration-200 px-3 py-1.5 text-sm font-medium hover:shadow-md hover:scale-105"
-                      style={{ 
-                        backgroundColor: '#F4B942', 
-                        color: 'white', 
-                        borderColor: '#F4B942'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#E6A435';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = '#F4B942';
-                      }}
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="bg-[#F4B942] hover:bg-[#E6A435] text-white border-0 shadow-md hover:shadow-lg transition-all duration-200 px-4 py-2 rounded-full font-medium text-sm"
                       onClick={() => handleBusinessClick(selectedEntry.relatedPlace!.id)}
                     >
-                      <MapPin className="w-3 h-3 mr-1" />
+                      <MapPin className="w-4 h-4 mr-2" />
                       {selectedEntry.relatedPlace.name}
-                    </Badge>
+                      <ExternalLink className="w-3 h-3 ml-2 opacity-70" />
+                    </Button>
                   </div>
                 )}
 
