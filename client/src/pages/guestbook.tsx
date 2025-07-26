@@ -10,6 +10,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 import { Badge } from '@/components/ui/badge';
 import { Navigation } from '@/components/navigation';
@@ -17,7 +19,7 @@ import { BusinessModal } from '@/components/business-modal';
 import { SignInModal } from '@/components/auth/SignInModal';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { MessageCircle, Star, MapPin, Globe, Calendar, Flag, User, Reply } from 'lucide-react';
+import { MessageCircle, Star, MapPin, Globe, Calendar, Flag, User, Reply, Check, ChevronsUpDown } from 'lucide-react';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { BusinessWithCategory, GuestbookEntryWithRelations } from '@shared/schema';
 import { formatDistanceToNow } from 'date-fns';
@@ -203,6 +205,7 @@ export function Guestbook() {
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithCategory | null>(null);
   const [showSignInModal, setShowSignInModal] = useState(false);
+  const [businessComboboxOpen, setBusinessComboboxOpen] = useState(false);
 
   // Fetch guestbook entries
   const { data: entries = [], isLoading } = useQuery<GuestbookEntryWithRelations[]>({
@@ -491,23 +494,64 @@ export function Guestbook() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Related Place</FormLabel>
-                          <Select
-                            onValueChange={(value) => field.onChange(value ? parseInt(value) : undefined)}
-                            value={field.value?.toString() || ''}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a place (optional)" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {businesses.map((business) => (
-                                <SelectItem key={business.id} value={business.id.toString()}>
-                                  {business.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <Popover open={businessComboboxOpen} onOpenChange={setBusinessComboboxOpen}>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  role="combobox"
+                                  aria-expanded={businessComboboxOpen}
+                                  className="w-full justify-between"
+                                >
+                                  {field.value
+                                    ? businesses.find((business) => business.id === field.value)?.name
+                                    : "Select a place (optional)"}
+                                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-full p-0" align="start">
+                              <Command>
+                                <CommandInput placeholder="Search places..." />
+                                <CommandList>
+                                  <CommandEmpty>No place found.</CommandEmpty>
+                                  <CommandGroup>
+                                    <CommandItem
+                                      value=""
+                                      onSelect={() => {
+                                        field.onChange(undefined);
+                                        setBusinessComboboxOpen(false);
+                                      }}
+                                    >
+                                      <Check
+                                        className={`mr-2 h-4 w-4 ${
+                                          !field.value ? "opacity-100" : "opacity-0"
+                                        }`}
+                                      />
+                                      None (optional)
+                                    </CommandItem>
+                                    {businesses.map((business) => (
+                                      <CommandItem
+                                        key={business.id}
+                                        value={business.name}
+                                        onSelect={() => {
+                                          field.onChange(business.id);
+                                          setBusinessComboboxOpen(false);
+                                        }}
+                                      >
+                                        <Check
+                                          className={`mr-2 h-4 w-4 ${
+                                            field.value === business.id ? "opacity-100" : "opacity-0"
+                                          }`}
+                                        />
+                                        {business.name}
+                                      </CommandItem>
+                                    ))}
+                                  </CommandGroup>
+                                </CommandList>
+                              </Command>
+                            </PopoverContent>
+                          </Popover>
                           <FormMessage />
                         </FormItem>
                       )}
