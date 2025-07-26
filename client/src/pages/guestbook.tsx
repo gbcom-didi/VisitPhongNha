@@ -676,7 +676,7 @@ export function Guestbook() {
                       <Button
                         variant="default"
                         size="sm"
-                        className="bg-[#F4B942] hover:bg-[#E6A435] text-white border-0 shadow-md hover:shadow-lg transition-all duration-200 px-4 py-2 rounded-full font-medium text-sm"
+                        className="bg-[#00BCD4] hover:bg-[#00ACC1] text-white border-0 shadow-md hover:shadow-lg transition-all duration-200 px-4 py-2 rounded-full font-medium text-sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleBusinessClick(entry.relatedPlace!.id);
@@ -750,7 +750,7 @@ export function Guestbook() {
                     <Button
                       variant="default"
                       size="sm"
-                      className="bg-[#F4B942] hover:bg-[#E6A435] text-white border-0 shadow-md hover:shadow-lg transition-all duration-200 px-4 py-2 rounded-full font-medium text-sm"
+                      className="bg-[#00BCD4] hover:bg-[#00ACC1] text-white border-0 shadow-md hover:shadow-lg transition-all duration-200 px-4 py-2 rounded-full font-medium text-sm"
                       onClick={() => handleBusinessClick(selectedEntry.relatedPlace!.id)}
                     >
                       <MapPin className="w-4 h-4 mr-2" />
