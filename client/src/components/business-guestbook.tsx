@@ -13,6 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { MessageSquare, Star, User, MapPin, CalendarDays, Send, BookOpen, ArrowRight } from 'lucide-react';
+import { SignInModal } from '@/components/auth/SignInModal';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
@@ -35,6 +36,7 @@ export function BusinessGuestbook({ business }: BusinessGuestbookProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
+  const [showSignInModal, setShowSignInModal] = useState(false);
 
   const form = useForm<GuestbookFormData>({
     resolver: zodResolver(guestbookFormSchema),
@@ -259,10 +261,7 @@ export function BusinessGuestbook({ business }: BusinessGuestbookProps) {
               <Button 
                 variant="outline" 
                 className="border-mango-yellow text-mango-yellow hover:bg-mango-yellow hover:text-white"
-                onClick={() => {
-                  // This will trigger the auth modal
-                  window.dispatchEvent(new CustomEvent('openAuthModal'));
-                }}
+                onClick={() => setShowSignInModal(true)}
               >
                 Sign In to Share
               </Button>
@@ -345,6 +344,12 @@ export function BusinessGuestbook({ business }: BusinessGuestbookProps) {
           </p>
         </div>
       )}
+
+      {/* Sign In Modal */}
+      <SignInModal 
+        isOpen={showSignInModal} 
+        onClose={() => setShowSignInModal(false)} 
+      />
     </div>
   );
 }
