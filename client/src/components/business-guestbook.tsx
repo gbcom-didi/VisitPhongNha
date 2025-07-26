@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { MessageSquare, Star, User, MapPin, CalendarDays, Send, BookOpen } from 'lucide-react';
+import { MessageSquare, Star, User, MapPin, CalendarDays, Send, BookOpen, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
@@ -44,10 +45,13 @@ export function BusinessGuestbook({ business }: BusinessGuestbookProps) {
     },
   });
 
-  // Fetch guestbook entries for this business
-  const { data: guestbookEntries = [], isLoading } = useQuery<GuestbookEntryWithRelations[]>({
+  // Fetch guestbook entries for this business (limit to 3 most recent)
+  const { data: allGuestbookEntries = [], isLoading } = useQuery<GuestbookEntryWithRelations[]>({
     queryKey: [`/api/businesses/${business.id}/guestbook`],
   });
+
+  // Limit to 3 most recent entries
+  const guestbookEntries = allGuestbookEntries.slice(0, 3);
 
   // Create guestbook entry mutation
   const createEntryMutation = useMutation({
@@ -92,6 +96,12 @@ export function BusinessGuestbook({ business }: BusinessGuestbookProps) {
     ));
   };
 
+  const formatUserName = (firstName: string | null, lastName: string | null) => {
+    if (!firstName) return 'Anonymous';
+    if (!lastName) return firstName;
+    return `${firstName} ${lastName.charAt(0)}.`;
+  };
+
   const formatDate = (dateString: string | Date | null) => {
     if (!dateString) return '';
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -121,11 +131,6 @@ export function BusinessGuestbook({ business }: BusinessGuestbookProps) {
         <div className="flex items-center gap-2">
           <MessageSquare className="w-5 h-5 text-tropical-aqua" />
           <h3 className="text-lg font-semibold">Guest Experiences</h3>
-          {guestbookEntries.length > 0 && (
-            <Badge variant="outline" className="text-tropical-aqua border-tropical-aqua">
-              {guestbookEntries.length}
-            </Badge>
-          )}
         </div>
         
         {isAuthenticated && !showForm && (
@@ -284,7 +289,12 @@ export function BusinessGuestbook({ business }: BusinessGuestbookProps) {
                           <User className="w-4 h-4 text-tropical-aqua" />
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">{entry.authorName}</p>
+                          <p className="font-medium text-gray-900">
+                            {entry.author?.firstName && entry.author?.lastName 
+                              ? formatUserName(entry.author.firstName, entry.author.lastName)
+                              : entry.authorName || 'Anonymous'
+                            }
+                          </p>
                           <div className="flex items-center gap-2 text-sm text-gray-500">
                             {entry.nationality && (
                               <>
@@ -309,27 +319,27 @@ export function BusinessGuestbook({ business }: BusinessGuestbookProps) {
 
                     {/* Message */}
                     <p className="text-gray-700 leading-relaxed">{entry.message}</p>
-
-                    {/* Location info if available */}
-                    {entry.location && (
-                      <div className="flex items-center gap-1 text-sm text-gray-500">
-                        <MapPin className="w-3 h-3" />
-                        <span className="truncate">{entry.location}</span>
-                      </div>
-                    )}
-
-                    {/* Comments count if any */}
-                    {entry.commentCount && entry.commentCount > 0 && (
-                      <div className="flex items-center gap-1 text-sm text-tropical-aqua">
-                        <MessageSquare className="w-3 h-3" />
-                        <span>{entry.commentCount} comment{entry.commentCount !== 1 ? 's' : ''}</span>
-                      </div>
-                    )}
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
+
+          {/* View Guestbook Link */}
+          {allGuestbookEntries.length > 3 && (
+            <div className="text-center pt-4">
+              <Link href="/guestbook">
+                <Button 
+                  variant="outline" 
+                  className="text-tropical-aqua border-tropical-aqua hover:bg-tropical-aqua hover:text-white"
+                >
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  View Guestbook
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       ) : (
         <div className="text-center py-8">
