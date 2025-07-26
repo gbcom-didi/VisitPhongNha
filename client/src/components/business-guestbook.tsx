@@ -290,10 +290,7 @@ export function BusinessGuestbook({ business }: BusinessGuestbookProps) {
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">
-                            {entry.author?.firstName && entry.author?.lastName 
-                              ? formatUserName(entry.author.firstName, entry.author.lastName)
-                              : entry.authorName || 'Anonymous'
-                            }
+                            {entry.authorName || 'Anonymous'}
                           </p>
                           <div className="flex items-center gap-2 text-sm text-gray-500">
                             {entry.nationality && (
@@ -325,21 +322,19 @@ export function BusinessGuestbook({ business }: BusinessGuestbookProps) {
             ))}
           </div>
 
-          {/* View Guestbook Link */}
-          {allGuestbookEntries.length > 3 && (
-            <div className="text-center pt-4">
-              <Link href="/guestbook">
-                <Button 
-                  variant="outline" 
-                  className="text-tropical-aqua border-tropical-aqua hover:bg-tropical-aqua hover:text-white"
-                >
-                  <BookOpen className="w-4 h-4 mr-2" />
-                  View Guestbook
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
-            </div>
-          )}
+          {/* View Guestbook Link - Always show */}
+          <div className="text-center pt-4">
+            <Link href="/guestbook">
+              <Button 
+                variant="outline" 
+                className="text-tropical-aqua border-tropical-aqua hover:bg-tropical-aqua hover:text-white"
+              >
+                <BookOpen className="w-4 h-4 mr-2" />
+                View Guestbook
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="text-center py-8">
