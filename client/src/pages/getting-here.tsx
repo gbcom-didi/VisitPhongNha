@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Plane, Bus, Train, Car, MapPin, Clock, DollarSign, ExternalLink, CheckCircle, AlertCircle, Info } from 'lucide-react';
+import { Plane, Bus, Train, Car, MapPin, Clock, DollarSign, ExternalLink, CheckCircle, AlertCircle, Info, Users, Bike, TreePine, Camera, Mountain } from 'lucide-react';
 
 export default function GettingHere() {
   const routes = {
@@ -243,9 +243,6 @@ export default function GettingHere() {
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="text-center text-white px-4">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">Getting to Phong Nha</h1>
-            <p className="text-xl md:text-2xl max-w-3xl mx-auto mb-4">
-              Your gateway to Vietnam's spectacular cave kingdom
-            </p>
             <p className="text-lg opacity-90 max-w-2xl mx-auto">
               Phong Nha is a small village beside the Son River and the main gateway to Phong Nha-Ke Bang National Park
             </p>
@@ -425,6 +422,291 @@ export default function GettingHere() {
               <div>
                 <div className="text-2xl font-bold text-coral-sunset">45km</div>
                 <div className="text-sm text-gray-600">From Đồng Hới</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Getting Around Section */}
+      <section className="py-16 bg-white border-t-4 border-tropical-aqua">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Getting Around Phong Nha</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Explore two distinct zones: the UNESCO-listed National Park and the scenic buffer zone of rice paddies and villages
+            </p>
+          </div>
+
+          {/* Activity Type Cards */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {/* Guided Tours */}
+            <Card className="border-2 border-mango-yellow/20 hover:shadow-xl transition-all duration-300">
+              <CardHeader className="text-center pb-4">
+                <div className="w-16 h-16 bg-mango-yellow rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-8 h-8 text-white" />
+                </div>
+                <CardTitle className="text-2xl text-mango-yellow">Guided Tours</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Cave & Park Highlights</h4>
+                    <p className="text-sm text-gray-600">
+                      Exclusive caves with licensed operators. Day tours include BBQ lunch and multiple park sights.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">DIY Trekking</h4>
+                    <p className="text-sm text-gray-600">
+                      Botanical Garden trails and deeper jungle treks with local guides.
+                    </p>
+                  </div>
+                  <div className="pt-3 border-t">
+                    <p className="text-xs text-gray-500">
+                      Book through Victory Road Villas or Phong Nha Farmstay
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Motorbike Tours */}
+            <Card className="border-2 border-coral-sunset/20 hover:shadow-xl transition-all duration-300">
+              <CardHeader className="text-center pb-4">
+                <div className="w-16 h-16 bg-coral-sunset rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Car className="w-8 h-8 text-white" />
+                </div>
+                <CardTitle className="text-2xl text-coral-sunset">Motorbike Tours</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Thang's Phong Nha Riders</h4>
+                    <p className="text-sm text-gray-600">
+                      Local riders take you on countryside adventures including park loop and Bong Lai Valley.
+                    </p>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                    <span className="font-semibold">Day Ride</span>
+                    <Badge variant="outline">~400,000 VND</Badge>
+                  </div>
+                  <div className="pt-3 border-t">
+                    <p className="text-xs text-gray-500">
+                      Book through homestays or local accommodations
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Cycling */}
+            <Card className="border-2 border-tropical-aqua/20 hover:shadow-xl transition-all duration-300">
+              <CardHeader className="text-center pb-4">
+                <div className="w-16 h-16 bg-tropical-aqua rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Bike className="w-8 h-8 text-white" />
+                </div>
+                <CardTitle className="text-2xl text-tropical-aqua">Cycling</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Bong Lai Valley</h4>
+                    <p className="text-sm text-gray-600">
+                      River road cycling through rice paddies, villages, and scenic countryside.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Bike Rental</h4>
+                    <p className="text-sm text-gray-600">
+                      Free bike use at Victory Road Villas and Phong Nha Farmstay with pickup/drop-off.
+                    </p>
+                  </div>
+                  <div className="pt-3 border-t">
+                    <p className="text-xs text-gray-500">
+                      Note: Botanical Garden route includes steep hills
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Walking */}
+            <Card className="border-2 border-jade-green/20 hover:shadow-xl transition-all duration-300">
+              <CardHeader className="text-center pb-4">
+                <div className="w-16 h-16 bg-jade-green rounded-full flex items-center justify-center mx-auto mb-4">
+                  <TreePine className="w-8 h-8 text-white" />
+                </div>
+                <CardTitle className="text-2xl text-jade-green">Walking</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Rice-Paddy Walks</h4>
+                    <p className="text-sm text-gray-600">
+                      Self-guided 4km village loop and 2km "Village Walk" at the Farmstay.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Day Hikes</h4>
+                    <p className="text-sm text-gray-600">
+                      Popular village to Bong Lai Valley hike for lunch at Pub With Cold Beer.
+                    </p>
+                  </div>
+                  <div className="pt-3 border-t">
+                    <p className="text-xs text-gray-500">
+                      Downloadable maps available for all routes
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Private Transport */}
+            <Card className="border-2 border-mango-yellow/20 hover:shadow-xl transition-all duration-300">
+              <CardHeader className="text-center pb-4">
+                <div className="w-16 h-16 bg-mango-yellow rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Car className="w-8 h-8 text-white" />
+                </div>
+                <CardTitle className="text-2xl text-mango-yellow">Private Transport</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Charter Vehicles</h4>
+                    <p className="text-sm text-gray-600">
+                      Cars or minibuses (with or without drivers) for families and groups.
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded">
+                    <Users className="w-4 h-4 text-gray-500" />
+                    <span className="text-sm">Perfect for group attractions</span>
+                  </div>
+                  <div className="pt-3 border-t">
+                    <p className="text-xs text-gray-500">
+                      Book through hotels or local operators
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Local Knowledge */}
+            <Card className="border-2 border-coral-sunset/20 hover:shadow-xl transition-all duration-300">
+              <CardHeader className="text-center pb-4">
+                <div className="w-16 h-16 bg-coral-sunset rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Info className="w-8 h-8 text-white" />
+                </div>
+                <CardTitle className="text-2xl text-coral-sunset">Local Knowledge</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Ask Locally</h4>
+                    <p className="text-sm text-gray-600">
+                      Get up-to-date schedules and availability from Victory Road Villas or Phong Nha Farmstay.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Download Maps</h4>
+                    <p className="text-sm text-gray-600">
+                      Essential for exploring Bong Lai Valley and village loops independently.
+                    </p>
+                  </div>
+                  <div className="pt-3 border-t">
+                    <p className="text-xs text-gray-500">
+                      Bring water, sunscreen, and rain gear for weather changes
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Two Zones Explanation */}
+          <div className="grid lg:grid-cols-2 gap-8 mb-12">
+            <Card className="bg-gradient-to-br from-jade-green/5 to-tropical-aqua/5 border-jade-green/20">
+              <CardHeader>
+                <div className="flex items-center space-x-3">
+                  <Mountain className="w-8 h-8 text-jade-green" />
+                  <CardTitle className="text-2xl text-jade-green">UNESCO National Park</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4">
+                  The protected Phong Nha-Ke Bang National Park features jungles, mountains, rivers, and world-famous caves. 
+                  Most activities here require guided tours with licensed operators.
+                </p>
+                <div className="space-y-2">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <CheckCircle className="w-4 h-4 text-jade-green mr-2" />
+                    Exclusive cave systems
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <CheckCircle className="w-4 h-4 text-jade-green mr-2" />
+                    Botanical Garden trails
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <CheckCircle className="w-4 h-4 text-jade-green mr-2" />
+                    Deep jungle trekking
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-mango-yellow/5 to-coral-sunset/5 border-mango-yellow/20">
+              <CardHeader>
+                <div className="flex items-center space-x-3">
+                  <TreePine className="w-8 h-8 text-mango-yellow" />
+                  <CardTitle className="text-2xl text-mango-yellow">Buffer Zone</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4">
+                  The scenic buffer zone surrounds the park with rice paddies, traditional villages, and gentle rivers. 
+                  Perfect for self-guided exploration by bike, motorbike, or on foot.
+                </p>
+                <div className="space-y-2">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <CheckCircle className="w-4 h-4 text-mango-yellow mr-2" />
+                    Bong Lai Valley cycling
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <CheckCircle className="w-4 h-4 text-mango-yellow mr-2" />
+                    Village walking loops
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <CheckCircle className="w-4 h-4 text-mango-yellow mr-2" />
+                    Rice paddy photography
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Final Tips */}
+          <div className="bg-gray-50 rounded-xl p-8 text-center">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Ready to Explore?</h3>
+            <p className="text-lg text-gray-600 mb-6 max-w-3xl mx-auto">
+              Whether you prefer guided adventures or independent exploration, Phong Nha offers something for every type of traveler. 
+              Start with local advice and work your way up to the perfect combination of activities.
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div>
+                <div className="text-2xl font-bold text-tropical-aqua">2</div>
+                <div className="text-sm text-gray-600">Distinct zones</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-jade-green">6</div>
+                <div className="text-sm text-gray-600">Activity types</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-mango-yellow">4km</div>
+                <div className="text-sm text-gray-600">Village loop</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-coral-sunset">∞</div>
+                <div className="text-sm text-gray-600">Adventures</div>
               </div>
             </div>
           </div>

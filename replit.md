@@ -412,6 +412,15 @@ Changelog:
   - Added practical tips section with booking advice and transfer information
   - Created quick distance reference grid for easy comparison between cities
   - Used brand color scheme with proper Tailwind CSS implementation for visual consistency
+- July 28, 2025. Added comprehensive Getting Around section to Getting Here page
+  - Integrated Getting Around content seamlessly with innovative card-based design
+  - Created 6 activity type cards: Guided Tours, Motorbike Tours, Cycling, Walking, Private Transport, Local Knowledge
+  - Added detailed information for each activity including pricing, booking details, and practical tips
+  - Implemented two-zone explanation distinguishing UNESCO National Park from Buffer Zone areas
+  - Included comprehensive activity details: Thang's Phong Nha Riders, Bong Lai Valley cycling, rice-paddy walks
+  - Added visual distinction with tropical aqua border separator and brand color scheme throughout
+  - Featured practical information about Victory Road Villas and Phong Nha Farmstay as booking resources
+  - Created engaging final summary section with activity statistics and exploration encouragement
 ```
 
 ## User Preferences
