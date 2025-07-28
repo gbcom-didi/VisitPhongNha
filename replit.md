@@ -402,6 +402,16 @@ Changelog:
   - Added ExternalLink icons and professional styling with shadows and hover effects
   - Changed business button colors from mango yellow to tropical aqua blue for brand consistency
   - Enhanced user experience with clearly clickable buttons that open business modals
+- July 28, 2025. Complete redesign of Getting Here page with comprehensive travel information
+  - Saved existing Getting Here page as backup (getting-here-backup.tsx) for future reference
+  - Created fresh innovative design with tabbed interface for different departure cities
+  - Added comprehensive travel data from verified Google document with real schedules and prices
+  - Implemented 6 departure cities: Hanoi, Da Nang, Hội An, Huế, Ninh Bình, and Đồng Hới
+  - Each city shows multiple transport options: bus, train, flight, private car, and motorbike
+  - Included detailed information: duration, pricing, schedules, and transport companies
+  - Added practical tips section with booking advice and transfer information
+  - Created quick distance reference grid for easy comparison between cities
+  - Used brand color scheme with proper Tailwind CSS implementation for visual consistency
 ```
 
 ## User Preferences
