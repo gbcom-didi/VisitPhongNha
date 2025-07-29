@@ -437,6 +437,25 @@ export class DatabaseStorage implements IStorage {
     return updatedBusiness;
   }
 
+  async updateBusinessByName(name: string, business: Partial<InsertBusiness>): Promise<Business | null> {
+    // Convert empty strings to null for optional fields
+    const processedData = Object.fromEntries(
+      Object.entries(business).map(([key, value]) => [
+        key,
+        value === '' ? null : value
+      ])
+    );
+    
+    // Update the business record
+    const [updatedBusiness] = await db
+      .update(businesses)
+      .set({ ...processedData, updatedAt: new Date() })
+      .where(eq(businesses.name, name))
+      .returning();
+
+    return updatedBusiness || null;
+  }
+
   async deleteBusiness(id: number): Promise<boolean> {
     try {
       // First, delete all related data
