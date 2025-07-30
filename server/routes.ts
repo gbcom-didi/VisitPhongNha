@@ -192,7 +192,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Get the database user ID for this Firebase user
+      console.log('Looking for user with Firebase UID:', userId);
       const user = await storage.getUser(userId);
+      console.log('Found user:', user ? `${user.email} (${user.role})` : 'null');
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
