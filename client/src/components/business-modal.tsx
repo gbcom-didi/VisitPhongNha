@@ -405,7 +405,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
         </div>
 
         {/* Guestbook Section */}
-        <div className="mt-6 border-t pt-6">
+        <div className="mt-6">
           <BusinessGuestbook business={business} onCloseModal={onClose} />
         </div>
 

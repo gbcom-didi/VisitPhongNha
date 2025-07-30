@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button';
 const prompts = [
   {
     text: "I want to explore a cave.",
-    cta: "Show me cave tours",
-    link: "/explore?category=caves"
+    cta: "Show me some caves",
+    link: "/explore?category=cave"
   },
   {
     text: "I want to eat street food.",
