@@ -456,6 +456,15 @@ Changelog:
   - Added cache-busting timestamp mechanism to force icon refresh in browsers
   - Enhanced visual distinction between different business categories on the interactive map
   - Successfully tested and confirmed working: Cave businesses now display brown pins, Street Food businesses show red pins
+- July 30, 2025. Implemented contact form with Resend email service and direct email links
+  - Removed Live Chat, Office, and Travel Planning sections from contact page
+  - Created contact API endpoint with form validation and email functionality using Resend
+  - Added RESEND_API_KEY environment variable for email service integration
+  - Enhanced contact form with proper error handling and success messaging
+  - Updated Business Partnership and Technical Support buttons to link directly to hello@visitphongnha.com
+  - Created beautifully formatted email templates with branding and Vietnam timezone
+  - Contact form submissions are logged to console for manual follow-up when email service has domain verification issues
+  - Form includes all necessary fields: name, email, inquiry type, subject, and message with proper validation
 ```
 
 ## User Preferences

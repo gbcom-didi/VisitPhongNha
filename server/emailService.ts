@@ -18,7 +18,7 @@ export async function sendContactEmail(params: ContactEmailParams): Promise<bool
   try {
     const { data, error } = await resend.emails.send({
       from: 'Visit Phong Nha Contact Form <onboarding@resend.dev>',
-      to: ['glenbowdencom@gmail.com'],
+      to: ['hello@visitphongnha.com'],
       subject: `[${params.type.toUpperCase()}] ${params.subject}`,
       html: `
         <h2>🌟 New Contact Form Submission - Visit Phong Nha</h2>

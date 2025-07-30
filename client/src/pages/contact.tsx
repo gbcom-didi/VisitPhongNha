@@ -263,9 +263,11 @@ export default function Contact() {
                 <p className="text-sm text-gray-600 mb-4">
                   Local business owner? Learn how to get featured on our platform and reach more travelers.
                 </p>
-                <Button variant="outline" size="sm" className="text-jade-green border-jade-green hover:bg-jade-green hover:text-white">
-                  Join as Partner
-                </Button>
+                <a href="mailto:hello@visitphongnha.com?subject=Business Partnership Inquiry" target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" size="sm" className="text-jade-green border-jade-green hover:bg-jade-green hover:text-white">
+                    Join as Partner
+                  </Button>
+                </a>
               </CardContent>
             </Card>
 
@@ -278,9 +280,11 @@ export default function Contact() {
                 <p className="text-sm text-gray-600 mb-4">
                   Having trouble with the website or mobile app? We're here to help you get back on track.
                 </p>
-                <Button variant="outline" size="sm" className="text-tropical-aqua border-tropical-aqua hover:bg-tropical-aqua hover:text-white">
-                  Get Help
-                </Button>
+                <a href="mailto:hello@visitphongnha.com?subject=Technical Support Request" target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" size="sm" className="text-tropical-aqua border-tropical-aqua hover:bg-tropical-aqua hover:text-white">
+                    Get Help
+                  </Button>
+                </a>
               </CardContent>
             </Card>
           </div>
