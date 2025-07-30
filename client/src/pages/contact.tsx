@@ -46,7 +46,7 @@ export default function Contact() {
       
       toast({
         title: "Message sent successfully!",
-        description: "We'll get back to you within 24 hours at hello@visitphongnha.com",
+        description: "We'll get back to you within 24 hours.",
       });
       
       setFormData({

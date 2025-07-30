@@ -17,20 +17,30 @@ interface ContactEmailParams {
 export async function sendContactEmail(params: ContactEmailParams): Promise<boolean> {
   try {
     const { data, error } = await resend.emails.send({
-      from: 'Visit Phong Nha <onboarding@resend.dev>',
+      from: 'Visit Phong Nha Contact Form <onboarding@resend.dev>',
       to: ['glenbowdencom@gmail.com'],
       subject: `[${params.type.toUpperCase()}] ${params.subject}`,
       html: `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>From:</strong> ${params.name} (${params.email})</p>
-        <p><strong>Type:</strong> ${params.type}</p>
-        <p><strong>Subject:</strong> ${params.subject}</p>
-        <hr>
-        <h3>Message:</h3>
-        <p style="white-space: pre-wrap;">${params.message}</p>
-        <hr>
-        <p><em>This message was sent via the Visit Phong Nha contact form.</em></p>
-        <p><em>Reply directly to this email to respond to ${params.name}.</em></p>
+        <h2>🌟 New Contact Form Submission - Visit Phong Nha</h2>
+        
+        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #00BCD4; margin-top: 0;">Contact Details:</h3>
+          <p><strong>Name:</strong> ${params.name}</p>
+          <p><strong>Email:</strong> ${params.email}</p>
+          <p><strong>Inquiry Type:</strong> ${params.type}</p>
+          <p><strong>Subject:</strong> ${params.subject}</p>
+        </div>
+        
+        <div style="background-color: #ffffff; padding: 20px; border-left: 4px solid #00BCD4; margin: 20px 0;">
+          <h3 style="color: #333; margin-top: 0;">Message:</h3>
+          <p style="white-space: pre-wrap; line-height: 1.6;">${params.message}</p>
+        </div>
+        
+        <div style="background-color: #e8f4f8; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 14px; color: #666;">
+          <p><strong>📧 To respond:</strong> Reply directly to this email to contact ${params.name}</p>
+          <p><strong>📅 Received:</strong> ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' })} (Vietnam time)</p>
+          <p><em>This message was sent via the Visit Phong Nha contact form at visitphongnha.com</em></p>
+        </div>
       `,
       replyTo: params.email,
     });

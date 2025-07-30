@@ -62,7 +62,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('Type:', contactData.type);
       console.log('Subject:', contactData.subject);
       console.log('Message:', contactData.message);
-      console.log('Sending to: hello@visitphongnha.com');
+      console.log('Sending to: glenbowdencom@gmail.com (forwarding for hello@visitphongnha.com)');
       console.log('=====================================\n');
 
       // Send email via Resend
@@ -71,7 +71,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (emailSent) {
         res.json({ 
           success: true, 
-          message: 'Contact form submitted successfully. Email sent to hello@visitphongnha.com' 
+          message: 'Message sent successfully! We will get back to you within 24 hours.' 
         });
       } else {
         // Email failed but log the submission
