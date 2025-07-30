@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { setupFirebaseAuth, verifyFirebaseToken, requireFirebaseAdmin, requireFirebaseBusinessOwner, requireFirebaseViewer, auth } from "./firebaseAuth";
 import { permissions } from "./rbac";
 import { checkSpam, checkRateLimit, getClientIP } from "./spamProtection";
+import { sendContactEmail } from "./emailService";
 import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema, insertArticleSchema, insertGuestbookEntrySchema, insertGuestbookCommentSchema, insertGuestbookEntryLikeSchema, insertGuestbookCommentLikeSchema, businesses as businessesTable, businessCategories, categories, articles, users, guestbookEntries, guestbookComments, guestbookEntryLikes, guestbookCommentLikes } from "@shared/schema";
 import * as googlePlacesImporter from "./googlePlacesImporter";
 import { z } from "zod";
@@ -53,7 +54,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const contactData = contactFormSchema.parse(req.body);
       
-      // Log the contact form submission to console for now
+      // Log the contact form submission to console
       console.log('\n=== NEW CONTACT FORM SUBMISSION ===');
       console.log('Timestamp:', new Date().toISOString());
       console.log('Name:', contactData.name);
@@ -61,15 +62,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('Type:', contactData.type);
       console.log('Subject:', contactData.subject);
       console.log('Message:', contactData.message);
-      console.log('To be sent to: hello@visitphongnha.com');
+      console.log('Sending to: hello@visitphongnha.com');
       console.log('=====================================\n');
 
-      // TODO: Implement actual email sending with SendGrid or similar service
+      // Send email via Resend
+      const emailSent = await sendContactEmail(contactData);
       
-      res.json({ 
-        success: true, 
-        message: 'Contact form submitted successfully. Message logged to console.' 
-      });
+      if (emailSent) {
+        res.json({ 
+          success: true, 
+          message: 'Contact form submitted successfully. Email sent to hello@visitphongnha.com' 
+        });
+      } else {
+        // Email failed but log the submission
+        console.error('Email sending failed, but submission logged');
+        res.status(500).json({ 
+          success: false, 
+          message: 'Failed to send email. Please try again or contact us directly.' 
+        });
+      }
     } catch (error) {
       console.error('Contact form error:', error);
       res.status(400).json({ 
