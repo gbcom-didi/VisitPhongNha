@@ -378,7 +378,12 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                   >
                     <a href={business.affiliateLink} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="w-4 h-4 mr-2" />
-                      Book with Affiliate
+                      {business.affiliateLink.includes('agoda.com') 
+                        ? 'Check availability on Agoda'
+                        : business.affiliateLink.includes('booking.com')
+                        ? 'Check availability on Booking.com'
+                        : 'Book with Affiliate'
+                      }
                     </a>
                   </Button>
                 )}
