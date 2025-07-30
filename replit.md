@@ -430,6 +430,11 @@ Changelog:
   - All businesses include complete Google Maps integration with authentic location data and high-quality images
   - Enhanced business coverage includes famous caves (Dark Cave, Hang Én, Son Doong), tour operators (Oxalis, Jungle Boss), and National Park attractions
   - Total business count increased from 89 to 95 with complete authentic data from verified Google Places sources
+- July 30, 2025. Consolidated affiliate links and improved business modal buttons
+  - Migrated all 42 affiliate links from affiliate_link field to agoda_url field for better organization
+  - Updated business modal buttons to show dynamic text based on URL: "Check availability on Agoda" for Agoda links, "Check availability on Booking.com" for Booking.com links
+  - Removed redundant affiliate link button since all URLs are now properly categorized in dedicated fields
+  - Enhanced user experience with clear, platform-specific call-to-action text
 ```
 
 ## User Preferences

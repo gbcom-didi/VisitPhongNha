@@ -367,22 +367,11 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                   >
                     <a href={business.agodaUrl} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="w-4 h-4 mr-2" />
-                      Book on Agoda
-                    </a>
-                  </Button>
-                )}
-                {business.affiliateLink && (
-                  <Button
-                    asChild
-                    className="w-full bg-[#6DBFB3] hover:bg-[#60B5A8] text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
-                  >
-                    <a href={business.affiliateLink} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      {business.affiliateLink.includes('agoda.com') 
+                      {business.agodaUrl.includes('agoda.com') 
                         ? 'Check availability on Agoda'
-                        : business.affiliateLink.includes('booking.com')
+                        : business.agodaUrl.includes('booking.com')
                         ? 'Check availability on Booking.com'
-                        : 'Book with Affiliate'
+                        : 'Book on Agoda'
                       }
                     </a>
                   </Button>
