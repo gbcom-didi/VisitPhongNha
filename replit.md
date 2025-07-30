@@ -465,6 +465,13 @@ Changelog:
   - Created beautifully formatted email templates with branding and Vietnam timezone
   - Contact form submissions are logged to console for manual follow-up when email service has domain verification issues
   - Form includes all necessary fields: name, email, inquiry type, subject, and message with proper validation
+- July 30, 2025. Created comprehensive Help and Terms & Privacy pages with consistent site design
+  - Built Help page with detailed FAQ section covering 8 common user questions about platform features
+  - Created Terms & Privacy page with separate sections for terms of service and privacy policy
+  - Added routing for both pages (/help and /privacy) and linked them from footer navigation
+  - Updated footer email link to hello@visitphongnha.com for consistent contact information
+  - Implemented "Still Need Help?" section with email support and contact form options
+  - Removed Quick Help cards section to streamline Help page design
 ```
 
 ## User Preferences

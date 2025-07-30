@@ -3,7 +3,7 @@ import { Footer } from '@/components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import { Mail, Phone, MessageCircle, MapPin, Clock, HelpCircle, Search, Heart, User, Calendar } from 'lucide-react';
+import { Mail, MessageCircle } from 'lucide-react';
 
 export default function Help() {
   return (
@@ -20,65 +20,10 @@ export default function Help() {
         </div>
       </section>
 
-      {/* Quick Help Cards */}
-      <section className="py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">Quick Help</h2>
-            <p className="text-gray-600">Get instant help with common tasks</p>
-          </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                <div className="w-12 h-12 bg-chili-red rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Search className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2">Finding Businesses</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Learn how to search, filter, and discover businesses in Phong Nha using our interactive map and directory.
-                </p>
-                <Button variant="outline" size="sm" className="text-chili-red border-chili-red hover:bg-chili-red hover:text-white">
-                  Learn More
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                <div className="w-12 h-12 bg-tropical-aqua rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Heart className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2">Saved Places</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Save your favorite places and access them later. Create your personal Phong Nha travel collection.
-                </p>
-                <Button variant="outline" size="sm" className="text-tropical-aqua border-tropical-aqua hover:bg-tropical-aqua hover:text-white">
-                  Learn More
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                <div className="w-12 h-12 bg-jade-green rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <User className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2">Account Help</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Get help with signing in, managing your account, and using Firebase authentication features.
-                </p>
-                <Button variant="outline" size="sm" className="text-jade-green border-jade-green hover:bg-jade-green hover:text-white">
-                  Learn More
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
 
       {/* FAQ Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">Frequently Asked Questions</h2>
@@ -146,7 +91,7 @@ export default function Help() {
       </section>
 
       {/* Contact Support Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-4 font-questrial">Still Need Help?</h2>
           <p className="text-gray-600 mb-8">Can't find what you're looking for? Our team is here to help.</p>
