@@ -35,9 +35,10 @@ export default function Explore() {
     };
   };
 
-  // Fetch categories
+  // Fetch categories (only populated ones for filtering)
   const { data: categories = [] } = useQuery<Category[]>({
-    queryKey: ['/api/categories'],
+    queryKey: ['/api/categories', { populated: true }],
+    queryFn: () => fetch('/api/categories?populated=true').then(res => res.json()),
   });
 
   // Function to update URL with current filters

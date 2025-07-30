@@ -8,7 +8,7 @@ import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema, inser
 // Import will be done dynamically in the route handlers
 import { z } from "zod";
 import { db } from "./db";
-import { eq, desc, asc } from "drizzle-orm";
+import { eq, desc, asc, sql } from "drizzle-orm";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -32,8 +32,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Categories routes
   app.get('/api/categories', async (req, res) => {
     try {
-      const categories = await storage.getCategories();
-      res.json(categories);
+      const onlyPopulated = req.query.populated === 'true';
+      
+      if (onlyPopulated) {
+        // Get only categories that have associated businesses
+        const result = await db.execute(sql`
+          SELECT DISTINCT c.id, c.name, c.slug, c.color
+          FROM categories c
+          INNER JOIN business_categories bc ON c.id = bc.category_id
+          INNER JOIN businesses b ON bc.business_id = b.id
+          WHERE b.is_active = true
+          ORDER BY c.name
+        `);
+        
+        res.json(result.rows);
+      } else {
+        const categories = await storage.getCategories();
+        res.json(categories);
+      }
     } catch (error) {
       console.error("Error fetching categories:", error);
       res.status(500).json({ message: "Failed to fetch categories" });
