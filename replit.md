@@ -448,6 +448,12 @@ Changelog:
   - Applied consistent name formatting across all guestbook entry displays in business modals
   - Fixed critical TypeScript compilation errors and database schema issues preventing app startup
   - Resolved missing imports and circular reference problems in server routes and schema definitions
+- July 30, 2025. Implemented unique colors and icons for Cave and Street Food map pins
+  - Changed Cave pins from Jade Green to Saddle Brown (#8B4513) with custom cave entrance icon
+  - Changed Street Food pins from Mango Yellow to Tomato Red (#FF6347) with food cart/stand icon
+  - Updated both client-side map configuration and database category colors for consistency
+  - Enhanced visual distinction between different business categories on the interactive map
+  - Cave icons now feature cave entrance design, Street Food icons show food cart with serving window
 ```
 
 ## User Preferences

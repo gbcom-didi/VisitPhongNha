@@ -493,7 +493,7 @@ export function Guestbook() {
                       name="relatedPlaceId"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Related Place</FormLabel>
+                          <FormLabel>Related Place - Link your comment to a place on our map</FormLabel>
                           <Popover open={businessComboboxOpen} onOpenChange={setBusinessComboboxOpen}>
                             <PopoverTrigger asChild>
                               <FormControl>
