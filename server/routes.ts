@@ -17,13 +17,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
   // Firebase configuration endpoint for client
   app.get('/api/firebase-config', (req, res) => {
+    // Temporarily hardcoded until Replit environment variables update
     res.json({
-      apiKey: process.env.FIREBASE_API_KEY,
-      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-      appId: process.env.FIREBASE_APP_ID
+      apiKey: "AIzaSyAlhyeEFRENZMDXi9KufBzCn9F05ZBRwYI",
+      authDomain: "visit-phong-nha-29b4e.firebaseapp.com",
+      projectId: "visit-phong-nha-29b4e",
+      storageBucket: "visit-phong-nha-29b4e.appspot.com",
+      messagingSenderId: "78816841018",
+      appId: "1:78816841018:web:581e281407b5dc940e1403"
     });
   });
 
