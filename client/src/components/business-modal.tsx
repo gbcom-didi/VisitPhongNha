@@ -356,7 +356,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                   >
                     <a href={business.bookingComUrl} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="w-4 h-4 mr-2" />
-                      Book on Booking.com
+                      Check availability on Booking.com
                     </a>
                   </Button>
                 )}
@@ -367,7 +367,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                   >
                     <a href={business.agodaUrl} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="w-4 h-4 mr-2" />
-                      Book on Agoda
+                      Check availability on Agoda
                     </a>
                   </Button>
                 )}
