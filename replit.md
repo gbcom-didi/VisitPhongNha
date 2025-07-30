@@ -442,6 +442,12 @@ Changelog:
   - Fixed Firebase Admin SDK project ID to use correct visit-phong-nha-29b4e project
   - Admin portal business creation now working correctly with proper Firebase authentication
   - User authentication and role-based permissions fully operational
+- July 30, 2025. Enhanced privacy in business modal guestbook display
+  - Updated BusinessGuestbook component to show only first name and last initial for privacy
+  - Changed from full names (e.g., "Glen Bowden") to privacy-friendly format (e.g., "Glen B.")
+  - Applied consistent name formatting across all guestbook entry displays in business modals
+  - Fixed critical TypeScript compilation errors and database schema issues preventing app startup
+  - Resolved missing imports and circular reference problems in server routes and schema definitions
 ```
 
 ## User Preferences

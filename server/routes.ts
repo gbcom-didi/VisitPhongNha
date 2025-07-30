@@ -920,7 +920,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Like/unlike a comment
-  app.post('/api/guestbook/comments/:id/like', verifyFirebaseToken, async (req, res) => {
+  app.post('/api/guestbook/comments/:id/like', verifyFirebaseToken, async (req: Request, res: Response) => {
     try {
       const user = req.user as any; // Firebase user object
       if (!user) {
@@ -937,7 +937,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin-only routes for moderation
-  app.get('/api/admin/guestbook/pending', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.get('/api/admin/guestbook/pending', verifyFirebaseToken, requireFirebaseAdmin, async (req: Request, res: Response) => {
     try {
       const pendingEntries = await storage.getPendingGuestbookEntries();
       res.json(pendingEntries);
@@ -947,7 +947,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/admin/guestbook/spam', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.get('/api/admin/guestbook/spam', verifyFirebaseToken, requireFirebaseAdmin, async (req: Request, res: Response) => {
     try {
       const spamEntries = await storage.getSpamGuestbookEntries();
       res.json(spamEntries);
@@ -957,7 +957,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/admin/guestbook/approved', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.get('/api/admin/guestbook/approved', verifyFirebaseToken, requireFirebaseAdmin, async (req: Request, res: Response) => {
     try {
       const approvedEntries = await storage.getApprovedGuestbookEntries();
       res.json(approvedEntries);
@@ -967,7 +967,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/admin/guestbook/:id/moderate', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.post('/api/admin/guestbook/:id/moderate', verifyFirebaseToken, requireFirebaseAdmin, async (req: Request, res: Response) => {
     try {
       const { status, notes } = req.body;
       const entryId = parseInt(req.params.id);
@@ -985,7 +985,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/admin/guestbook/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.put('/api/admin/guestbook/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req: Request, res: Response) => {
     try {
       const entryId = parseInt(req.params.id);
       const updates = req.body;
@@ -998,7 +998,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/admin/guestbook/comments/:id/moderate', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.post('/api/admin/guestbook/comments/:id/moderate', verifyFirebaseToken, requireFirebaseAdmin, async (req: Request, res: Response) => {
     try {
       const { status } = req.body;
       const commentId = parseInt(req.params.id);
@@ -1143,7 +1143,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/articles/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.delete('/api/articles/:id', verifyFirebaseToken, requireFirebaseAdmin, async (req: Request, res: Response) => {
     try {
       const articleId = parseInt(req.params.id);
       await storage.deleteArticle(articleId);
@@ -1155,7 +1155,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Import routes for business data management
-  app.post('/api/import/google-places', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.post('/api/import/google-places', verifyFirebaseToken, requireFirebaseAdmin, async (req: Request, res: Response) => {
     try {
       console.log('Starting Google Places import...');
       const importModule = await import('./googlePlacesImporter.js');
@@ -1167,7 +1167,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/import/manual', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.post('/api/import/manual', verifyFirebaseToken, requireFirebaseAdmin, async (req: Request, res: Response) => {
     try {
       console.log('Starting manual import...');
       const importModule = await import('./manualImport.js');
