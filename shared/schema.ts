@@ -130,7 +130,7 @@ export const guestbookComments = pgTable("guestbook_comments", {
   authorId: varchar("author_id").references(() => users.id).notNull(),
   authorName: varchar("author_name", { length: 255 }).notNull(),
   comment: text("comment").notNull(),
-  parentCommentId: integer("parent_comment_id").references(() => guestbookComments.id),
+  parentCommentId: integer("parent_comment_id"),
   likes: integer("likes").default(0),
   // Moderation fields
   status: varchar("status", { length: 20 }).default("pending"), // pending, approved, rejected, spam

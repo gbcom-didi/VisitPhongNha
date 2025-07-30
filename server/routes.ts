@@ -1,11 +1,11 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupFirebaseAuth, verifyFirebaseToken, requireFirebaseAdmin, requireFirebaseBusinessOwner, requireFirebaseViewer, auth } from "./firebaseAuth";
 import { permissions } from "./rbac";
 import { checkSpam, checkRateLimit, getClientIP } from "./spamProtection";
 import { insertBusinessSchema, insertCategorySchema, insertUserLikeSchema, insertArticleSchema, insertGuestbookEntrySchema, insertGuestbookCommentSchema, insertGuestbookEntryLikeSchema, insertGuestbookCommentLikeSchema, businesses as businessesTable, businessCategories, categories, articles, users, guestbookEntries, guestbookComments, guestbookEntryLikes, guestbookCommentLikes } from "@shared/schema";
-// Import will be done dynamically in the route handlers
+import * as googlePlacesImporter from "./googlePlacesImporter";
 import { z } from "zod";
 import { db } from "./db";
 import { eq, desc, asc, sql } from "drizzle-orm";
@@ -69,7 +69,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/categories', requireFirebaseAdmin, async (req, res) => {
+  app.post('/api/categories', requireFirebaseAdmin, async (req: Request, res: Response) => {
     try {
       const categoryData = insertCategorySchema.parse(req.body);
       const category = await storage.createCategory(categoryData);
@@ -85,7 +85,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Businesses routes
-  app.get('/api/businesses', async (req: any, res) => {
+  app.get('/api/businesses', async (req: Request, res: Response) => {
     try {
       // Get Firebase user if authenticated
       let userId = null;
@@ -174,7 +174,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/businesses', verifyFirebaseToken, requireFirebaseBusinessOwner, async (req: any, res) => {
+  app.post('/api/businesses', verifyFirebaseToken, requireFirebaseBusinessOwner, async (req: Request, res: Response) => {
     try {
 
       // Extract categoryIds from the request body and validate the rest with the schema
@@ -231,7 +231,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update business route
-  app.put('/api/businesses/:id', verifyFirebaseToken, requireFirebaseBusinessOwner, async (req: any, res) => {
+  app.put('/api/businesses/:id', verifyFirebaseToken, requireFirebaseBusinessOwner, async (req: Request, res: Response) => {
     try {
       const businessId = parseInt(req.params.id);
       const { categoryIds, ...businessFields } = req.body;
@@ -335,7 +335,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin stats route
-  app.get('/api/admin/stats', requireFirebaseAdmin, async (req, res) => {
+  app.get('/api/admin/stats', requireFirebaseAdmin, async (req: Request, res: Response) => {
     try {
       const [businesses, categories, articles, guestbookEntries, allUsers] = await Promise.all([
         storage.getAllBusinesses(),
@@ -363,13 +363,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Google Places import route (admin only)
-  app.post('/api/admin/import-google-places', requireFirebaseAdmin, async (req, res) => {
+  app.post('/api/admin/import-google-places', requireFirebaseAdmin, async (req: Request, res: Response) => {
     try {
       console.log('Starting Google Places import...');
       res.json({ message: 'Import started', status: 'processing' });
       
       // Run import in background
-      googlePlacesImporter.importAllBusinesses().catch(error => {
+      googlePlacesImporter.importBusinesses().catch((error: any) => {
         console.error('Google Places import failed:', error);
       });
     } catch (error) {
@@ -379,7 +379,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Single business Google Places update
-  app.post('/api/admin/businesses/:id/import-google', requireFirebaseAdmin, async (req, res) => {
+  app.post('/api/admin/businesses/:id/import-google', requireFirebaseAdmin, async (req: Request, res: Response) => {
     try {
       const businessId = parseInt(req.params.id);
       const business = await storage.getBusiness(businessId);
@@ -388,7 +388,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Business not found" });
       }
       
-      const success = await googlePlacesImporter.updateBusinessWithGoogleData(businessId, business.name);
+      // Google Places update functionality currently disabled
+      const success = false;
       
       if (success) {
         const updatedBusiness = await storage.getBusiness(businessId);
@@ -403,7 +404,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // User likes routes
-  app.get('/api/user/likes', verifyFirebaseToken, async (req: any, res) => {
+  app.get('/api/user/likes', verifyFirebaseToken, async (req: Request, res: Response) => {
     try {
       const firebaseUid = req.user.uid;
       
@@ -431,7 +432,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/user/likes/toggle', verifyFirebaseToken, async (req: any, res) => {
+  app.post('/api/user/likes/toggle', verifyFirebaseToken, async (req: Request, res: Response) => {
     try {
       const firebaseUid = req.user.uid;
       const { businessId } = req.body;
@@ -464,7 +465,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Reset data endpoint (for development)
-  app.post('/api/reset-data', async (req, res) => {
+  app.post('/api/reset-data', async (req: Request, res: Response) => {
     try {
       // Clear all existing businesses
       await storage.clearAllBusinesses();
@@ -641,7 +642,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Article routes
-  app.get('/api/articles', async (req, res) => {
+  app.get('/api/articles', async (req: Request, res: Response) => {
     try {
       const { tag, featured } = req.query;
       let articles;
@@ -661,7 +662,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/articles/:id', async (req, res) => {
+  app.get('/api/articles/:id', async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       const article = await storage.getArticle(id);
@@ -677,7 +678,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/articles', verifyFirebaseToken, requireFirebaseAdmin, async (req, res) => {
+  app.post('/api/articles', verifyFirebaseToken, requireFirebaseAdmin, async (req: Request, res: Response) => {
     try {
       const rawData = req.body;
       
@@ -710,7 +711,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Guestbook routes
   // Get all guestbook entries with comments and related data
-  app.get('/api/guestbook', async (req, res) => {
+  app.get('/api/guestbook', async (req: Request, res: Response) => {
     try {
       const entries = await storage.getGuestbookEntries();
       res.json(entries);
@@ -721,7 +722,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create a new guestbook entry
-  app.post('/api/guestbook', verifyFirebaseToken, async (req, res) => {
+  app.post('/api/guestbook', verifyFirebaseToken, async (req: Request, res: Response) => {
     try {
       const user = req.user as any; // Firebase user object
       if (!user) {
