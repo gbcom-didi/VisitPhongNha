@@ -57,10 +57,13 @@ export function BusinessDirectory({
   };
 
   const handleAllButtonClick = () => {
+    // Clear both category and tags, then update URL with cleared state
     onCategoryChange(null);
     if (onTagsChange) {
       onTagsChange([]);
     }
+    // Clear URL parameters by navigating to clean /explore path
+    window.history.replaceState({}, '', '/explore');
   };
 
   return (

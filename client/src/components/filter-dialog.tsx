@@ -25,9 +25,13 @@ export function FilterDialog({
 }: FilterDialogProps) {
   const handleCategorySelect = (categoryId: number | null) => {
     onCategoryChange(categoryId);
-    // If "All" is selected, also clear tags
-    if (categoryId === null && onTagsChange) {
-      onTagsChange([]);
+    // If "All" is selected, also clear tags and URL parameters
+    if (categoryId === null) {
+      if (onTagsChange) {
+        onTagsChange([]);
+      }
+      // Clear URL parameters by navigating to clean /explore path
+      window.history.replaceState({}, '', '/explore');
     }
   };
 
