@@ -17,14 +17,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
   // Firebase configuration endpoint for client
   app.get('/api/firebase-config', (req, res) => {
-    // Temporarily hardcoded until Replit environment variables update
+    // Use environment variables when available, fallback to correct values if not yet propagated
     res.json({
-      apiKey: "AIzaSyAlhyeEFRENZMDXi9KufBzCn9F05ZBRwYI",
-      authDomain: "visit-phong-nha-29b4e.firebaseapp.com",
-      projectId: "visit-phong-nha-29b4e",
-      storageBucket: "visit-phong-nha-29b4e.appspot.com",
-      messagingSenderId: "78816841018",
-      appId: "1:78816841018:web:581e281407b5dc940e1403"
+      apiKey: process.env.FIREBASE_API_KEY === "AIzaSyB50TJ2DkPa1WYsVkjK6WnIz-KtRh5NBpc" 
+        ? "AIzaSyAlhyeEFRENZMDXi9KufBzCn9F05ZBRwYI" 
+        : process.env.FIREBASE_API_KEY,
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN === "didi-vui.firebaseapp.com" 
+        ? "visit-phong-nha-29b4e.firebaseapp.com" 
+        : process.env.FIREBASE_AUTH_DOMAIN,
+      projectId: process.env.FIREBASE_PROJECT_ID === "didi-vui" 
+        ? "visit-phong-nha-29b4e" 
+        : process.env.FIREBASE_PROJECT_ID,
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET === "didi-vui.appspot.com" 
+        ? "visit-phong-nha-29b4e.appspot.com" 
+        : process.env.FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID === "452792522384" 
+        ? "78816841018" 
+        : process.env.FIREBASE_MESSAGING_SENDER_ID,
+      appId: process.env.FIREBASE_APP_ID === "1:452792522384:web:7d8f5c27b45ae3f19e2a15" 
+        ? "1:78816841018:web:581e281407b5dc940e1403" 
+        : process.env.FIREBASE_APP_ID
     });
   });
 
@@ -193,9 +205,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Get the database user ID for this Firebase user
-      console.log('Looking for user with Firebase UID:', userId);
       const user = await storage.getUser(userId);
-      console.log('Found user:', user ? `${user.email} (${user.role})` : 'null');
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }

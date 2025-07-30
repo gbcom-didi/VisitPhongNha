@@ -9,7 +9,9 @@ import { eq } from "drizzle-orm";
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.applicationDefault(),
-    projectId: "visit-phong-nha-29b4e", // Temporarily hardcoded until Replit environment variables update
+    projectId: process.env.FIREBASE_PROJECT_ID === "didi-vui" 
+      ? "visit-phong-nha-29b4e" 
+      : process.env.FIREBASE_PROJECT_ID,
   });
 }
 
