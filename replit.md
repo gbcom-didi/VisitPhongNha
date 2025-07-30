@@ -435,6 +435,13 @@ Changelog:
   - Updated business modal buttons to show dynamic text based on URL: "Check availability on Agoda" for Agoda links, "Check availability on Booking.com" for Booking.com links
   - Removed redundant affiliate link button since all URLs are now properly categorized in dedicated fields
   - Enhanced user experience with clear, platform-specific call-to-action text
+- July 30, 2025. Fixed Firebase authentication mismatch preventing admin business creation
+  - Resolved critical issue where Firebase UID mismatch prevented business creation in admin portal
+  - Updated Firebase project configuration from didi-vui to visit-phong-nha-29b4e
+  - Temporarily hardcoded Firebase configuration values to bypass Replit environment variable propagation delay
+  - Fixed Firebase Admin SDK project ID to use correct visit-phong-nha-29b4e project
+  - Admin portal business creation now working correctly with proper Firebase authentication
+  - User authentication and role-based permissions fully operational
 ```
 
 ## User Preferences
