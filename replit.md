@@ -421,6 +421,15 @@ Changelog:
   - Added visual distinction with tropical aqua border separator and brand color scheme throughout
   - Featured practical information about Victory Road Villas and Phong Nha Farmstay as booking resources
   - Created engaging final summary section with activity statistics and exploration encouragement
+- July 30, 2025. Complete business database overhaul with 95 new verified businesses
+  - Removed all 89 existing businesses and their foreign key relationships (guestbook, user likes, categories)
+  - Added missing Caves and Adventure categories to support all business types from CSV data
+  - Imported 95 new verified businesses from Google Places API with authentic data including ratings, reviews, galleries
+  - Formatted all phone numbers to +84 format and set affiliate links to Agoda as requested
+  - Database now contains comprehensive business listings: accommodation, food & drink, caves, adventure tours, attractions, street food
+  - All businesses include complete Google Maps integration with authentic location data and high-quality images
+  - Enhanced business coverage includes famous caves (Dark Cave, Hang Én, Son Doong), tour operators (Oxalis, Jungle Boss), and National Park attractions
+  - Total business count increased from 89 to 95 with complete authentic data from verified Google Places sources
 ```
 
 ## User Preferences

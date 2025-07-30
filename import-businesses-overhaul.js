@@ -2,9 +2,9 @@ import fs from 'fs';
 import { parse } from 'csv-parse/sync';
 import { db } from './server/db.ts';
 import { businesses, categories } from './shared/schema.ts';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 
-console.log('Importing remaining businesses with missing categories...');
+console.log('Starting business database overhaul...');
 
 // Function to format phone numbers to +84 format
 function formatPhoneNumber(phone) {
@@ -43,9 +43,6 @@ async function getCategoryMapping() {
   mapping['attractions'] = categoriesData.find(c => c.name === 'Attractions')?.id;
   mapping['caves'] = categoriesData.find(c => c.name === 'Caves')?.id;
   mapping['street food'] = categoriesData.find(c => c.name === 'Street Food')?.id;
-  mapping['cave'] = categoriesData.find(c => c.name === 'Caves')?.id;
-  mapping['tour'] = categoriesData.find(c => c.name === 'Adventure')?.id;
-  mapping['attraction'] = categoriesData.find(c => c.name === 'Attractions')?.id;
   
   return mapping;
 }
@@ -82,12 +79,25 @@ async function main() {
       trim: true
     });
     
+    console.log(`Found ${records.length} businesses to import`);
+    
     // Get category mapping
     const categoryMapping = await getCategoryMapping();
-    console.log('Updated category mapping:', categoryMapping);
+    console.log('Category mapping:', categoryMapping);
     
-    // Import only the previously skipped businesses
-    console.log('Starting import of remaining businesses...');
+    // Step 1: Remove all existing business relationships and businesses
+    console.log('Removing business-category relationships...');
+    await db.execute(sql`DELETE FROM business_categories`);
+    console.log('Removing guestbook business references...');
+    await db.execute(sql`UPDATE guestbook_entries SET related_place_id = NULL WHERE related_place_id IS NOT NULL`);
+    console.log('Removing user likes relationships...');
+    await db.execute(sql`DELETE FROM user_likes`);
+    console.log('Removing all existing businesses...');
+    const deletedCount = await db.delete(businesses);
+    console.log(`Deleted ${deletedCount?.length || 'all'} existing businesses`);
+    
+    // Step 2: Import new businesses
+    console.log('Starting import of new businesses...');
     let successCount = 0;
     let errorCount = 0;
     
@@ -100,15 +110,8 @@ async function main() {
         const categoryId = categoryMapping[categoryName] || null;
         
         if (!categoryId) {
-          console.log(`Still no category mapping found for "${record.categories}" - skipping business: ${record.name}`);
+          console.log(`Warning: No category mapping found for "${record.categories}" - skipping business: ${record.name}`);
           errorCount++;
-          continue;
-        }
-        
-        // Check if business was already imported (by name)
-        const existingBusiness = await db.select().from(businesses).where(eq(businesses.name, record.name));
-        if (existingBusiness.length > 0) {
-          console.log(`Business already exists: ${record.name} - skipping`);
           continue;
         }
         
@@ -153,10 +156,11 @@ async function main() {
       }
     }
     
-    console.log('\n=== REMAINING IMPORT SUMMARY ===');
+    console.log('\n=== IMPORT SUMMARY ===');
     console.log(`Successfully imported: ${successCount} businesses`);
-    console.log(`Errors/Skipped: ${errorCount}`);
-    console.log('Remaining import completed!');
+    console.log(`Errors: ${errorCount}`);
+    console.log(`Total processed: ${records.length}`);
+    console.log('Database overhaul completed!');
     
   } catch (error) {
     console.error('Fatal error during import:', error);
