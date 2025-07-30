@@ -17,8 +17,8 @@ interface ContactEmailParams {
 export async function sendContactEmail(params: ContactEmailParams): Promise<boolean> {
   try {
     const { data, error } = await resend.emails.send({
-      from: 'Visit Phong Nha <hello@visitphongnha.com>',
-      to: ['hello@visitphongnha.com'],
+      from: 'Visit Phong Nha <onboarding@resend.dev>',
+      to: ['glenbowdencom@gmail.com'],
       subject: `[${params.type.toUpperCase()}] ${params.subject}`,
       html: `
         <h2>New Contact Form Submission</h2>
@@ -32,7 +32,7 @@ export async function sendContactEmail(params: ContactEmailParams): Promise<bool
         <p><em>This message was sent via the Visit Phong Nha contact form.</em></p>
         <p><em>Reply directly to this email to respond to ${params.name}.</em></p>
       `,
-      reply_to: params.email,
+      replyTo: params.email,
     });
 
     if (error) {
