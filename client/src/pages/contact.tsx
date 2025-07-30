@@ -31,14 +31,22 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
     try {
-      // In production, this would send to your backend
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
       
       toast({
         title: "Message sent successfully!",
-        description: "We'll get back to you within 24 hours.",
+        description: "We'll get back to you within 24 hours at hello@visitphongnha.com",
       });
       
       setFormData({
@@ -51,7 +59,7 @@ export default function Contact() {
     } catch (error) {
       toast({
         title: "Error sending message",
-        description: "Please try again or contact us directly.",
+        description: "Please try again or contact us directly at hello@visitphongnha.com",
         variant: "destructive",
       });
     } finally {
@@ -213,35 +221,7 @@ export default function Contact() {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-start">
-                      <div className="w-10 h-10 bg-tropical-aqua rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                        <MessageCircle className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">Live Chat</h3>
-                        <p className="text-gray-600 text-sm mb-2">Chat with our team in real-time</p>
-                        <p className="text-sm text-gray-500">Available 9 AM - 6 PM ICT</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
 
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-start">
-                      <div className="w-10 h-10 bg-jade-green rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                        <MapPin className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">Office</h3>
-                        <p className="text-gray-600 text-sm mb-1">Phong Nha-Ke Bang</p>
-                        <p className="text-gray-600 text-sm">Quang Binh Province, Vietnam</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
 
                 <Card>
                   <CardContent className="p-6">
@@ -271,21 +251,8 @@ export default function Contact() {
             <p className="text-gray-600">Quick answers to frequently asked questions</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center p-6">
-              <CardContent className="p-0">
-                <div className="w-12 h-12 bg-tropical-aqua rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2">Travel Planning</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Need help planning your trip to Phan Rang? Our team can provide personalized recommendations.
-                </p>
-                <Button variant="outline" size="sm" className="text-tropical-aqua border-tropical-aqua hover:bg-tropical-aqua hover:text-white">
-                  Get Travel Tips
-                </Button>
-              </CardContent>
-            </Card>
+          <div className="grid md:grid-cols-2 gap-8">
+
 
             <Card className="text-center p-6">
               <CardContent className="p-0">

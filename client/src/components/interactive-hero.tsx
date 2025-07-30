@@ -17,7 +17,7 @@ const prompts = [
   {
     text: "I'm feeling adventurous.",
     cta: "Show me adventures",
-    link: "/explore?category=adventure"
+    link: "/explore?category=attraction"
   },
   {
     text: "I would like a cold beer!",

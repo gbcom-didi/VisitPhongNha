@@ -40,6 +40,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Contact form endpoint
+  const contactFormSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email("Valid email is required"),
+    subject: z.string().min(1, "Subject is required"),
+    message: z.string().min(10, "Message must be at least 10 characters"),
+    type: z.string().default('general')
+  });
+
+  app.post('/api/contact', async (req: Request, res: Response) => {
+    try {
+      const contactData = contactFormSchema.parse(req.body);
+      
+      // Log the contact form submission to console for now
+      console.log('\n=== NEW CONTACT FORM SUBMISSION ===');
+      console.log('Timestamp:', new Date().toISOString());
+      console.log('Name:', contactData.name);
+      console.log('Email:', contactData.email);
+      console.log('Type:', contactData.type);
+      console.log('Subject:', contactData.subject);
+      console.log('Message:', contactData.message);
+      console.log('To be sent to: hello@visitphongnha.com');
+      console.log('=====================================\n');
+
+      // TODO: Implement actual email sending with SendGrid or similar service
+      
+      res.json({ 
+        success: true, 
+        message: 'Contact form submitted successfully. Message logged to console.' 
+      });
+    } catch (error) {
+      console.error('Contact form error:', error);
+      res.status(400).json({ 
+        success: false, 
+        message: 'Invalid form data' 
+      });
+    }
+  });
+
   // Firebase auth already handles user endpoints
 
   // Categories routes
