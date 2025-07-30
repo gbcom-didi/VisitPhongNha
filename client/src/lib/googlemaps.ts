@@ -20,6 +20,7 @@ export const getCategoryColor = (categorySlug: string): string => {
     'accommodation': '#F4B942',    // Mango Yellow
     'adventure': '#F87D51',        // Coral Sunset  
     'attractions': '#00BCD4',      // Tropical Aqua
+    'cave': '#8B4513',            // Saddle Brown (earth/cave color)
     'caves': '#8B4513',           // Saddle Brown (earth/cave color)
     'food-drink': '#F87D51',      // Coral Sunset
     'street-food': '#FF6347',     // Tomato Red (vibrant food color)
@@ -50,6 +51,7 @@ export const getCategoryIconPath = (categorySlug: string): string => {
     'accommodation': 'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z', // House/building icon
     'adventure': 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z', // Star for adventure
     'attractions': 'M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-1.8c1.77 0 3.2-1.43 3.2-3.2 0-1.77-1.43-3.2-3.2-3.2S8.8 10.23 8.8 12c0 1.77 1.43 3.2 3.2 3.2z', // Camera for attractions
+    'cave': 'M2 20h20v2H2v-2zm3-6h14l-7-12-7 12zm5 2h4v2H10v-2z', // Triangle mountain with cave entrance
     'caves': 'M2 20h20v2H2v-2zm3-6h14l-7-12-7 12zm5 2h4v2H10v-2z', // Triangle mountain with cave entrance
     'food-drink': 'M8.1 13.34l2.83-2.83L3.91 3.5c-1.56 1.56-1.56 4.09 0 5.66l4.19 4.18zm6.78-1.81c1.53.71 3.68.21 5.27-1.38 1.91-1.91 2.28-4.65.81-6.12-1.46-1.46-4.2-1.1-6.12.81-1.59 1.59-2.09 3.74-1.38 5.27L3.7 19.87l1.41 1.41L12 14.41l6.88 6.88 1.41-1.41L13.41 13l1.47-1.47z', // Cutlery
     'street-food': 'M4 7h16l-1 10H5L4 7zm2 2v6h12V9H6zm3 3h6v2H9v-2z', // Food cart/stand with serving window
@@ -77,6 +79,9 @@ export const getCategoryIconPath = (categorySlug: string): string => {
 export const createCustomMarkerIcon = (categorySlug: string, size: number = 40, highlighted: boolean = false): string => {
   const color = highlighted ? '#000000' : getCategoryColor(categorySlug);
   const iconPath = getCategoryIconPath(categorySlug);
+  
+  // Add timestamp to force cache refresh
+  const timestamp = Date.now();
 
   // Create SVG marker with circular background and vector icon
   const svg = `
@@ -85,6 +90,7 @@ export const createCustomMarkerIcon = (categorySlug: string, size: number = 40, 
       <g transform="translate(${size * 0.25}, ${size * 0.25}) scale(${size * 0.02})">
         <path d="${iconPath}" fill="white"/>
       </g>
+      <text x="0" y="0" font-size="1" opacity="0">${timestamp}</text>
     </svg>
   `;
 
