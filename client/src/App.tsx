@@ -19,6 +19,8 @@ import AdminPortal from "@/pages/admin-portal";
 import { Favorites } from "@/pages/favorites";
 import { Guestbook } from "@/pages/guestbook";
 import { ModerationPage } from "@/pages/moderation";
+import Help from "@/pages/help";
+import TermsPrivacy from "@/pages/terms-privacy";
 
 function Router() {
   const { isAuthenticated, loading } = useAuth();
@@ -45,6 +47,8 @@ function Router() {
       <Route path="/moderation" component={ModerationPage} />
       <Route path="/saved" component={Favorites} />
       <Route path="/guestbook" component={Guestbook} />
+      <Route path="/help" component={Help} />
+      <Route path="/privacy" component={TermsPrivacy} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
