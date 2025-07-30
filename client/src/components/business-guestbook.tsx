@@ -291,7 +291,14 @@ export function BusinessGuestbook({ business, onCloseModal }: BusinessGuestbookP
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">
-                            {entry.authorName || 'Anonymous'}
+                            {(() => {
+                              if (!entry.authorName) return 'Anonymous';
+                              const nameParts = entry.authorName.split(' ');
+                              if (nameParts.length === 1) return nameParts[0];
+                              const firstName = nameParts[0];
+                              const lastName = nameParts[nameParts.length - 1];
+                              return `${firstName} ${lastName.charAt(0)}.`;
+                            })()}
                           </p>
                           <div className="flex items-center gap-2 text-sm text-gray-500">
                             {entry.nationality && (
