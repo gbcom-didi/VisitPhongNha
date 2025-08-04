@@ -6,7 +6,6 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { FcGoogle } from 'react-icons/fc';
-import { FaFacebook } from 'react-icons/fa';
 
 interface SignInModalProps {
   isOpen: boolean;
@@ -21,7 +20,7 @@ export function SignInModal({ isOpen, onClose }: SignInModalProps) {
   const [lastName, setLastName] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { signInWithGoogle, signInWithFacebook, signInWithEmail, signUpWithEmail } = useAuth();
+  const { signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
   const { toast } = useToast();
 
   const handleEmailAuth = async (e: React.FormEvent) => {
@@ -74,26 +73,6 @@ export function SignInModal({ isOpen, onClose }: SignInModalProps) {
     }
   };
 
-  const handleFacebookSignIn = async () => {
-    setLoading(true);
-    try {
-      await signInWithFacebook();
-      toast({
-        title: "Signed in with Facebook",
-        description: "Welcome to Visit Phong Nha!",
-      });
-      onClose();
-    } catch (error: any) {
-      toast({
-        title: "Facebook sign-in error",
-        description: error.message || "An error occurred during Facebook sign-in",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
@@ -105,24 +84,15 @@ export function SignInModal({ isOpen, onClose }: SignInModalProps) {
 
         <div className="space-y-4">
           {/* Social Sign-In Buttons */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="flex justify-center">
             <Button
               variant="outline"
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="w-full"
+              className="w-full max-w-sm"
             >
               <FcGoogle className="w-4 h-4 mr-2" />
               Google
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleFacebookSignIn}
-              disabled={loading}
-              className="w-full"
-            >
-              <FaFacebook className="w-4 h-4 mr-2 text-blue-600" />
-              Facebook
             </Button>
           </div>
 
