@@ -169,7 +169,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
           {allImages.length > 0 ? (
             <div className="relative w-full h-full bg-gray-200 rounded-lg overflow-hidden">
               <img
-                src={allImages[selectedImageIndex]}
+                src={allImages[selectedImageIndex] || ''}
                 alt={`${business.name} - Photo ${selectedImageIndex + 1}`}
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -538,7 +538,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
             {/* Main Gallery Image */}
             <div className="w-full h-full flex items-center justify-center p-8">
               <img
-                src={allImages[selectedImageIndex]}
+                src={allImages[selectedImageIndex] || ''}
                 alt={`${business.name} - Image ${selectedImageIndex + 1}`}
                 className="max-w-full max-h-full object-contain rounded-lg"
                 onError={(e) => {
@@ -567,7 +567,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                     onClick={() => setSelectedImageIndex(index)}
                   >
                     <img
-                      src={image}
+                      src={image || ''}
                       alt={`Thumbnail ${index + 1}`}
                       className="w-full h-full object-cover"
                       onError={(e) => {

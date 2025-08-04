@@ -377,7 +377,7 @@ export default function AdminUsers() {
                     
                     <div className="flex items-center text-xs text-gray-400">
                       <Calendar className="w-3 h-3 mr-1" />
-                      Joined {new Date(user.createdAt).toLocaleDateString()}
+                      Joined {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
                     </div>
                   </div>
                 </div>

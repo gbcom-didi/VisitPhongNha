@@ -393,7 +393,7 @@ export default function AdminArticles() {
                     </p>
                     
                     <div className="text-xs text-gray-400">
-                      Created: {new Date(article.createdAt).toLocaleDateString()}
+                      Created: {article.createdAt ? new Date(article.createdAt).toLocaleDateString() : 'N/A'}
                       {article.updatedAt && (
                         <> • Updated: {new Date(article.updatedAt).toLocaleDateString()}</>
                       )}

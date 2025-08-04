@@ -356,7 +356,7 @@ function GuestbookEntryList({
                 </div>
                 
                 <div className="text-sm text-gray-500">
-                  {new Date(entry.createdAt).toLocaleDateString()} • 
+                  {entry.createdAt ? new Date(entry.createdAt).toLocaleDateString() : 'N/A'} • 
                   {entry.relatedPlace && (
                     <span className="ml-1">Related to: {entry.relatedPlace.name}</span>
                   )}
