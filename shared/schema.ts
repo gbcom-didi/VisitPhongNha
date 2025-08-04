@@ -274,6 +274,11 @@ export const insertBusinessSchema = createInsertSchema(businesses).omit({
   updatedAt: true,
 }).extend({
   categoryIds: z.array(z.number()).optional(),
+  imageUrl: z.string().optional().refine(val => {
+    if (!val) return true;
+    // Allow full URLs or relative paths starting with /
+    return val.startsWith('/') || /^https?:\/\//.test(val);
+  }, "Image URL must be a valid URL or relative path starting with /"),
 });
 
 export const insertBusinessCategorySchema = createInsertSchema(businessCategories).omit({

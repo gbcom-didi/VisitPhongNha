@@ -30,7 +30,7 @@ const getBusinessImageUrl = (business: BusinessWithCategory | null): string => {
 
   // Fallback to category-based images if no authentic image available
   const categoryName = business.category?.name?.toLowerCase();
-  
+
   if (categoryName?.includes('cave')) {
     return 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&h=600&fit=crop';
   }
@@ -72,13 +72,13 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
     onMutate: async (businessId: number) => {
       // Optimistically update local state for immediate visual feedback
       setLocalIsLiked(prev => !prev);
-      
+
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: ['/api/businesses'] });
-      
+
       // Snapshot the previous value
       const previousBusinesses = queryClient.getQueryData(['/api/businesses']);
-      
+
       // Optimistically update to the new value
       queryClient.setQueryData(['/api/businesses'], (old: BusinessWithCategory[] | undefined) => {
         if (!old) return old;
@@ -88,17 +88,17 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
             : b
         );
       });
-      
+
       // Return a context object with the snapshotted value
       return { previousBusinesses, previousIsLiked: business.isLiked };
     },
     onError: (error: any, businessId: number, context: any) => {
       // Rollback local state
       setLocalIsLiked(context?.previousIsLiked || false);
-      
+
       // If the mutation fails, use the context returned from onMutate to roll back
       queryClient.setQueryData(['/api/businesses'], context?.previousBusinesses);
-      
+
       if (isUnauthorizedError(error)) {
         toast({
           title: "Please sign in",
@@ -139,13 +139,15 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
     }
   };
 
-
-
-  // Combine main image and gallery images
+  // Combine main image and gallery images, filtering out invalid URLs
   const allImages = [
-    business.imageUrl || getBusinessImageUrl(business),
+    business.imageUrl,
     ...(business.gallery || [])
-  ].filter(Boolean);
+  ].filter(url => url && url.trim() !== '' && !url.includes('google.com/maps/search/'))
+   .map(url => {
+     // Handle relative paths - they're already properly formatted for the browser
+     return url;
+   });
 
   const hasMultipleImages = allImages.length > 1;
   const thumbnailImages = allImages.slice(1, 5); // Show max 4 thumbnails
@@ -173,7 +175,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   const categoryName = business.category?.name?.toLowerCase();
-                  
+
                   let fallbackUrl = '';
                   if (categoryName?.includes('accommodation') || categoryName?.includes('hotel')) {
                     fallbackUrl = 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop&auto=format';
@@ -186,13 +188,13 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                   } else {
                     fallbackUrl = 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=800&h=600&fit=crop&auto=format';
                   }
-                  
+
                   if (!target.src.includes('unsplash.com')) {
                     target.src = fallbackUrl;
                   }
                 }}
               />
-              
+
               {/* Floating Like Button */}
               <Button
                 variant="outline"
@@ -206,7 +208,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
               >
                 <Heart className={`w-5 h-5 ${localIsLiked ? 'fill-current' : ''}`} />
               </Button>
-              
+
               {/* Slider Navigation - only show if multiple images */}
               {allImages.length > 1 && (
                 <>
@@ -222,7 +224,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                   >
                     <ChevronLeft className="w-5 h-5 text-gray-700" />
                   </button>
-                  
+
                   {/* Right Arrow */}
                   <button
                     onClick={() => {
@@ -235,14 +237,14 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                   >
                     <ChevronRight className="w-5 h-5 text-gray-700" />
                   </button>
-                  
+
                   {/* Photo Counter */}
                   <div className="absolute bottom-4 right-4 bg-black bg-opacity-60 text-white px-3 py-1 rounded-full text-sm font-medium">
                     {selectedImageIndex + 1} / {allImages.length}
                   </div>
                 </>
               )}
-              
+
               {/* View All Photos Button */}
               {allImages.length > 1 && (
                 <button
@@ -288,7 +290,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                   <Badge
                     style={{
                       backgroundColor: business.category.color + '20',
-                      color: business.category.color,
+                      color: category.color,
                       border: `1px solid ${business.category.color}40`
                     }}
                   >
@@ -343,9 +345,9 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                 </a>
               </Button>
             )}
-            
 
-            
+
+
             {/* Modern Booking Buttons Grid - Show when booking type is "affiliate" */}
             {business.bookingType === 'affiliate' && (
               <div className="grid grid-cols-1 gap-3 w-full">
@@ -378,7 +380,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                 )}
               </div>
             )}
-            
+
             {/* Direct Booking Contact - Show when booking type is "direct" */}
             {business.bookingType === 'direct' && business.directBookingContact && (
               <Button
@@ -412,7 +414,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
         {/* Location Section */}
         <div className="mt-6 border-t pt-6">
           <h4 className="text-lg font-semibold mb-3">Location</h4>
-          
+
           {/* Address and Phone under Location title */}
           <div className="mb-4 space-y-2">
             {business.address && (
@@ -433,7 +435,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
               </div>
             )}
           </div>
-          
+
           {/* Map Action Links */}
           <div className="flex items-center gap-6 mb-3">
             <a
@@ -459,7 +461,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
               Get Directions
             </a>
           </div>
-          
+
           <div className="w-full h-64 rounded-lg overflow-hidden border border-gray-200">
             <Wrapper
               apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
@@ -476,7 +478,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
               <BusinessLocationMap business={business} />
             </Wrapper>
           </div>
-          
+
           {/* Close Button under Map */}
           <div className="mt-4 text-center">
             <Button
@@ -498,7 +500,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
           <DialogHeader className="sr-only">
             <DialogTitle>Photo Gallery</DialogTitle>
           </DialogHeader>
-          
+
           <div className="relative w-full h-full flex items-center justify-center">
             {/* Close Button */}
             <Button
@@ -521,7 +523,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                 >
                   <ChevronLeft className="w-8 h-8" />
                 </Button>
-                
+
                 <Button
                   variant="ghost"
                   size="icon"

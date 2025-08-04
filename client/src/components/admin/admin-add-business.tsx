@@ -26,7 +26,12 @@ const businessFormSchema = z.object({
   email: z.string().email().optional().or(z.literal("")),
   website: z.string().url().optional().or(z.literal("")),
   hours: z.string().optional(),
-  imageUrl: z.string().url().optional().or(z.literal("")).refine(val => !val || val.length <= 1000, "Image URL must be less than 1000 characters"),
+  imageUrl: z.string().optional().or(z.literal("")).refine(val => {
+    if (!val) return true;
+    if (val.length > 1000) return false;
+    // Allow full URLs or relative paths starting with /
+    return val.startsWith('/') || /^https?:\/\//.test(val);
+  }, "Image URL must be a valid URL or relative path starting with /"),
   gallery: z.string().optional(),
   categoryIds: z.array(z.number()).min(1, "At least one category is required"),
   tags: z.string().optional(),

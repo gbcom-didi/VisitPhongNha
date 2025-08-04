@@ -32,6 +32,10 @@ export function BusinessCard({ business, onLike, onClick, onHover, onLeave }: Bu
   const getBusinessImageUrl = () => {
     // Use the authentic imageUrl from CSV data first (this is the mainImageURL)
     if (business.imageUrl && business.imageUrl.trim() !== '' && !business.imageUrl.includes('google.com/maps/search/')) {
+      // Handle relative paths by converting them to absolute paths
+      if (business.imageUrl.startsWith('/')) {
+        return business.imageUrl;
+      }
       return business.imageUrl;
     }
 
