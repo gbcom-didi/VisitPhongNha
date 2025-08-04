@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { isUnauthorizedError } from '@/lib/authUtils';
 import { apiRequest, queryClient } from '@/lib/queryClient';
+import { trackEvent } from '@/lib/analytics';
 import { BusinessGuestbook } from './business-guestbook';
 import type { BusinessWithCategory } from '@shared/schema';
 
@@ -129,10 +130,17 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
       });
       return;
     }
+    
+    // Track favorite action
+    trackEvent('favorite_business', 'engagement', business.name);
+    
     likeMutation.mutate(business.id);
   };
 
   const handleBookClick = () => {
+    // Track website visit
+    trackEvent('visit_website', 'conversion', business.name);
+    
     // In production, this would integrate with booking systems
     if (business.website) {
       window.open(business.website, '_blank');
@@ -339,6 +347,7 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                   }
                   target="_blank" 
                   rel="noopener noreferrer"
+                  onClick={() => trackEvent('visit_website', 'conversion', business.name)}
                 >
                   <Globe className="w-4 h-4 mr-2" />
                   Visit Website
@@ -356,7 +365,12 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                     asChild
                     className="w-full bg-[#F4B942] hover:bg-[#F2B038] text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
                   >
-                    <a href={business.bookingComUrl} target="_blank" rel="noopener noreferrer">
+                    <a 
+                      href={business.bookingComUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={() => trackEvent('booking_click', 'conversion', 'booking.com')}
+                    >
                       <ExternalLink className="w-4 h-4 mr-2" />
                       Book on Booking.com
                     </a>
@@ -367,7 +381,12 @@ export function BusinessModal({ business, isOpen, onClose, onLike }: BusinessMod
                     asChild
                     className="w-full bg-[#F87D51] hover:bg-[#F6724A] text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium px-6 py-3 rounded-xl"
                   >
-                    <a href={business.agodaUrl} target="_blank" rel="noopener noreferrer">
+                    <a 
+                      href={business.agodaUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={() => trackEvent('booking_click', 'conversion', 'agoda')}
+                    >
                       <ExternalLink className="w-4 h-4 mr-2" />
                       {business.agodaUrl.includes('agoda.com') 
                         ? 'Check availability on Agoda'

@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { FcGoogle } from 'react-icons/fc';
+import { trackEvent } from '@/lib/analytics';
 
 interface SignInModalProps {
   isOpen: boolean;
@@ -30,12 +31,14 @@ export function SignInModal({ isOpen, onClose }: SignInModalProps) {
     try {
       if (isSignUp) {
         await signUpWithEmail(email, password, firstName, lastName);
+        trackEvent('sign_up', 'authentication', 'email');
         toast({
           title: "Account created successfully",
           description: "Welcome to Visit Phong Nha!",
         });
       } else {
         await signInWithEmail(email, password);
+        trackEvent('login', 'authentication', 'email');
         toast({
           title: "Signed in successfully",
           description: "Welcome back!",
@@ -57,6 +60,7 @@ export function SignInModal({ isOpen, onClose }: SignInModalProps) {
     setLoading(true);
     try {
       await signInWithGoogle();
+      trackEvent('login', 'authentication', 'google');
       toast({
         title: "Signed in with Google",
         description: "Welcome to Visit Phong Nha!",
