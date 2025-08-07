@@ -1,5 +1,5 @@
 
-import { Facebook, Instagram, Youtube, Mail } from 'lucide-react';
+import { Facebook, Instagram, Mail } from 'lucide-react';
 import { Link } from 'wouter';
 
 export function Footer() {
@@ -30,25 +30,22 @@ export function Footer() {
             
             <div className="flex space-x-4">
               <a 
-                href="#" 
+                href="https://www.facebook.com/visitphongnha" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-jade-green hover:text-white transition-all duration-200"
                 aria-label="Facebook"
               >
                 <Facebook className="w-5 h-5" />
               </a>
               <a 
-                href="#" 
+                href="https://www.instagram.com/visitphongnha/" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-jade-green hover:text-white transition-all duration-200"
                 aria-label="Instagram"
               >
                 <Instagram className="w-5 h-5" />
-              </a>
-              <a 
-                href="#" 
-                className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-jade-green hover:text-white transition-all duration-200"
-                aria-label="YouTube"
-              >
-                <Youtube className="w-5 h-5" />
               </a>
               <a 
                 href="mailto:hello@visitphongnha.com" 
