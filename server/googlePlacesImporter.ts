@@ -2,7 +2,7 @@ import { db } from './db';
 import { businesses, categories } from '@shared/schema';
 import { eq, or } from 'drizzle-orm';
 
-const GOOGLE_PLACES_API_KEY = 'AIzaSyB9BiGD__jK5zG6owJJVL37bqh_S-1wf34';
+const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 const PHONG_NHA_LOCATION = '17.5985,106.2636'; // Phong Nha coordinates
 const SEARCH_RADIUS = 50000; // 50km radius
 
@@ -428,6 +428,11 @@ async function saveBusiness(placeDetails: PlaceDetailsResult, businessName: stri
 }
 
 export async function importBusinesses(): Promise<void> {
+  if (!GOOGLE_PLACES_API_KEY) {
+    console.error('❌ GOOGLE_PLACES_API_KEY environment variable is not set');
+    return;
+  }
+  
   console.log('🚀 Starting Google Places import for 97 businesses...');
   console.log(`📍 Search area: Phong Nha, Quang Binh (${PHONG_NHA_LOCATION})`);
   
