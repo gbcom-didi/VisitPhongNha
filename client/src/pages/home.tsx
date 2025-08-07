@@ -138,7 +138,7 @@ export default function Home() {
                   <div className="w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3 bg-gradient-to-br from-tropical-aqua to-cyan-600 shadow-md">
                     <Lightbulb className="w-6 h-6 text-white" />
                   </div>
-                  <h5 className="font-semibold mb-2 bg-gradient-to-r from-teal-700 to-teal-600 bg-clip-text text-transparent">Stories & Guides</h5>
+                  <h5 className="font-semibold mb-2 bg-gradient-to-r from-teal-700 to-teal-600 bg-clip-text text-transparent">Stories, Guides & Articles</h5>
                   <p className="text-gray-600 text-xs mb-3">
                     Authentic adventures and insider knowledge from fellow travelers.
                   </p>
